@@ -1,0 +1,95 @@
+icon_fontello(name, color = black) {
+    &:before {
+        font-family: 'Fontello'
+        color: color
+        display: inline-block
+
+        if name is 'arrow-left' {
+            content: '\e800'
+        }
+
+        if name is 'arrow-right' {
+            content: '\e801'
+        }
+
+        if name is 'clock' {
+            content: '\e802'
+        }
+
+        if name is 'calendar' {
+            content: '\e803'
+        }
+    }
+}
+
+icon_batch(name, color = black) {
+    &:before {
+        font-family: 'Batch'
+        color: color
+        display: inline-block
+
+        if name is 'alarm-clock' {
+            content: '\e001'
+        }
+
+        if name is 'arrow-up' {
+            content: '\e002'
+        }
+
+        if name is 'split' {
+            content: '\e003'
+        }
+    }
+}
+
+icon_monstr(name, color = black) {
+    &:before {
+        font-family: 'Monstr'
+        color: color
+        display: inline-block
+
+        if name is 'duration' {
+            content: '\e001'
+        }
+
+        if name is 'egg-timer' {
+            content: '\e002'
+        }
+    }
+}
+
+icon_cheminot(name, color = black) {
+    &:before {
+        font-family: 'Cheminot'
+        color: color
+        display: inline-block
+
+        if name is 'arrow-left' {
+            content: '\e001'
+        }
+
+        if name is 'arrow-right' {
+            content: '\e002'
+        }
+
+        if name is 'circle' {
+            content: '\e003'
+        }
+
+        if name is 'cross' {
+            content: '\e004'
+        }
+
+        if name is 'heart' {
+            content: '\e005'
+        }
+
+        if name is 'menu' {
+            content: '\e006'
+        }
+
+        if name is 'plus' {
+            content: '\e007'
+        }
+    }
+}

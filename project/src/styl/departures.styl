@@ -1,0 +1,118 @@
+#departures {
+
+    #wrapper {
+        background: grey-blue
+        position: absolute
+        width: 100%
+        overflow: hidden
+        bottom: 0
+
+        /* PULL AND REFRESH */
+        &.loading {
+            background: green
+            border-bottom-color: green
+
+            .pull-up {
+                color: white
+            }
+        }
+
+        &.flip:not(.loading) {
+            background: blue
+            border-bottom-color: blue
+
+            .pull-up {
+                color: white
+            }
+        }
+
+        #scroller {
+            position: absolute
+            width: 100%
+        }
+
+        .empty {
+            display: none
+            padding-top: 50%
+            text-align: center
+        }
+
+        ul {
+            > li {
+                border-bottom: 2px solid grey-blue
+                box-sizing: border-box
+                color: dark-blue
+                padding: 0 global-margin-right 2% global-margin-right
+                background: #FFF
+                transform: translate3d(0,0,0)
+
+                &.day {
+                    padding: 4%
+                    text-align: center
+                    background: grey-blue
+                    color: dark-blue
+                }
+
+                .meta {
+                    position: relative
+                    padding: 3% 0 3% 0
+
+                    .changements {
+                        color: grey-light
+                        icon_batch('split', grey-light)
+                    }
+
+                    .duration {
+                        display: inline-block
+                        right: 0
+                        position: absolute
+                        width: 22%
+
+                        .egg-timer {
+                            position: absolute
+                            left: 0
+                            icon_monstr('duration', grey-light)
+                        }
+
+                        .value {
+                            position: absolute
+                            right: 0
+                        }
+                    }
+                }
+
+                .start-end {
+                    position: relative
+                    padding: 0 0 2% 0
+
+                    span:not(:last-children) {
+                        margin-right: 2%
+                    }
+
+                    .start {
+                        display: inline-block
+                        width: 40%
+                        padding-left: 5%
+                    }
+                }
+
+                .alarm-clock {
+                    icon_batch('alarm-clock', grey-light)
+                }
+
+                .to {
+                    icon_cheminot('arrow-right', blue)
+                    margin: 0 5px 0 5px
+                    vertical-align: 2px
+                }
+            }
+
+            .pull-up {
+                text-align: center
+                padding: 5% 0 5% 0
+                background: transparent
+                border-bottom: none
+            }
+        }
+    }
+}

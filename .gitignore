@@ -1,0 +1,25 @@
+#=============#
+# CHEMINOT #
+#=============#
+
+node_modules
+project/www/css
+project/www/js
+project/www/index.html
+src/ts/**/*.js
+*.log
+.gulp*
+app/platforms/android/libs/
+app/platforms/android/obj/
+
+#=============#
+# IOS / XCODE #
+#=============#
+
+*.mobileprovision
+
+#=============#
+#     MISC    #
+#=============#
+
+private.json

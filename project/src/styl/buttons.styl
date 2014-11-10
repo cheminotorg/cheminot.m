@@ -1,0 +1,32 @@
+@import 'colors';
+@import 'icons';
+
+clear-button() {
+    margin: 0
+    padding: 0
+    border: none
+    background: transparent
+    outline: none
+}
+
+reset_button() {
+    clear-button()
+    icon_cheminot('cross', grey-light)
+}
+
+backward_button() {
+    clear-button()
+    icon_cheminot('arrow-left', white)
+}
+
+forward_button(enabled) {
+    clear-button()
+
+    if enabled {
+        icon_cheminot('arrow-right', blue)
+    }
+
+    if (!enabled) {
+        icon_cheminot('arrow-right', grey-light)
+    }
+}

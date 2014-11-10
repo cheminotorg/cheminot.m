@@ -1,0 +1,162 @@
+scale(value, factor) {
+    value * factor
+}
+
+header_height=64px
+header_size=18px
+item_height=66px
+item_size=18px
+input_height=66px
+input_size=18px
+btn_size=22px
+
+departures_clock_size=23px
+departures_startend_size=32px
+departures_to_size=21px
+departures_meta_size=18px
+departures_pullup_size=18px
+
+trip_span_size=16px
+trip_item_height=66px
+trip_line_width=4px
+trip_line_size=18px
+trip_time_width=80px
+
+device(min_width, max_width, factor) {
+    portrait = "only screen and (min-device-width : " + min_width + ") and (max-device-width : " + max_width + ")"
+    @media portrait {
+        header, .top-bar {
+            height: scale(header_height, factor)
+            font-size: scale(header_size, factor)
+        }
+
+        .list li {
+            height: scale(item_height, factor)
+            font-size: scale(item_size, factor)
+        }
+
+        input[type=text] {
+            height: scale(input_height, factor)
+            font-size: scale(input_size, factor)
+        }
+
+        .font:before {
+            font-size: scale(btn_size, factor)
+        }
+
+        .back-btn {
+            font-size: scale(btn_size, factor)
+        }
+
+        button.reset {
+            width: scale(btn_size, factor)
+        }
+
+        #departures {
+            .meta {
+                font-size: scale(departures_meta_size, factor)
+            }
+            .start-end {
+                font-size: scale(departures_startend_size, factor)
+            }
+            .alarm-clock:before {
+                font-size: scale(departures_clock_size, factor)
+            }
+            .to {
+                font-size: scale(departures_to_size, factor)
+            }
+            .pull-up {
+                font-size: scale(departures_pullup_size, factor)
+            }
+        }
+
+        #trip .stops li {
+            height: scale(trip_item_height, factor)
+            font-size: scale(trip_span_size, factor)
+
+            .time {
+                width: scale(trip_time_width, factor)
+            }
+
+            .line {
+                border-left: scale(trip_line_width, factor) solid dark-blue
+                font-size: scale(trip_line_size, factor)
+            }
+        }
+    }
+}
+
+
+// IPHONE 5 (default)
+@media only screen {
+    header, .top-bar {
+        height: header_height
+        font-size: header_size
+    }
+
+    .list li {
+        height: item_height
+        font-size: item_size
+    }
+
+    input[type=text] {
+        height: input_height
+        font-size: input_size
+    }
+
+    button.reset {
+        width: btn_size
+    }
+
+    .font:before {
+        font-size: btn_size
+    }
+
+    .back-btn {
+        font-size: btn_size
+    }
+
+    #departures {
+        .meta {
+            font-size: departures_meta_size
+        }
+        .start-end {
+            font-size: departures_startend_size
+        }
+        .alarm-clock:before {
+            font-size: departures_clock_size
+        }
+        .to {
+            font-size: departures_to_size
+        }
+        .pull-up {
+            font-size: departures_pullup_size
+        }
+    }
+
+    #trip .stops li {
+        height: trip_item_height
+        font-size: trip_span_size
+
+        .time {
+            width: trip_time_width
+        }
+
+        .line {
+            border-left: trip_line_width solid dark-blue
+            font-size: trip_line_size
+        }
+    }
+}
+
+// IPAD
+device(768px, 1024px, 2)
+
+// NEXUS 10
+device(800px, 1280px, 2)
+
+// NEXUS 4
+device(384px, 640px, 1.2)
+
+// NEXUS 5
+device(360px, 640px, 1.125)

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <title>split-2</title>
+    <description>Created with Sketch (http://www.bohemiancoding.com/sketch)</description>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="split-2" sketch:type="MSLayerGroup" transform="translate(24.000000, 24.000000) rotate(-90.000000) translate(-24.000000, -24.000000) " fill="#000000">
+            <path d="M15,36 C16.212,36 17.31,36.732 17.772,37.851 C18.234,38.973 17.979,40.263 17.121,41.121 L11.121,47.121 C10.536,47.706 9.768,48 9,48 C8.232,48 7.464,47.706 6.879,47.121 L0.879,41.121 C0.024,40.263 -0.234,38.973 0.228,37.851 C0.69,36.732 1.788,36 3,36 L6,36 L6,30 C6,25.029 9.975,21 14.943,21 L32.943,21 C34.602,21 36,19.656 36,18 L36,3 C36,1.344 37.341,0 39,0 C40.659,0 42,1.344 42,3 L42,18 C42,22.971 37.917,27 32.943,27 L14.943,27 C13.287,27 12,28.344 12,30 L12,36 L15,36 L15,36 Z M47.772,37.851 C48.234,38.973 47.979,40.263 47.121,41.121 L41.121,47.121 C40.536,47.706 39.768,48 39,48 C38.232,48 37.464,47.706 36.879,47.121 L30.879,41.121 C30.024,40.263 29.766,38.973 30.228,37.851 C30.69,36.732 31.788,36 33,36 L36,36 L36,29.574 C39,28.962 39,27.651 42,25.86 L42,36 L45,36 C46.212,36 47.31,36.732 47.772,37.851 L47.772,37.851 Z" id="Shape" sketch:type="MSShapeGroup"></path>
+        </g>
+    </g>
+</svg>

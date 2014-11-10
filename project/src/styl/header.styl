@@ -1,0 +1,27 @@
+#header {
+    overflow: hidden
+    z-index: 2
+    background: blue
+    color: #FFF
+    box-sizing: border-box
+    transition: .2s
+    transition-property: height
+
+    &.fold {
+        height: 0
+        padding: 0
+    }
+
+    h1 {
+        position: relative
+        top: 50%
+        transform: translateY(-50%)
+        text-align: center
+    }
+
+    .back-btn {
+        display: none
+        backward_button()
+        padding: 2%
+    }
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Cheminot</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name = "viewport" content = "width = device-width, height=device-height, initial-scale = 1, user-scalable = no, minimal-ui">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui" media="(device-height: 568px)">
+    <script data-main="js/main.js" src="js/vendors/require.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+    <main id="viewport">
+    </main>
+    <script src="cordova.js"></script>
+    <!-- <script src="mock/cordova.js"></script> -->
+    <script type="text/javascript">
+      require.config({
+        name: 'main',
+        paths: {
+          'mithril': 'vendors/mithril',
+          'q': 'vendors/q',
+          'Zanimo': 'vendors/Zanimo',
+          'IScroll': 'vendors/iscroll-probe',
+          'moment': 'vendors/moment',
+          'lodash': 'vendors/lodash'
+        }
+      });
+    </script>
+    <script src="js/settings.js"></script>
+    <script type="text/javascript">
+      if(cordova.isMock) {
+        window.document.addEventListener("readystatechange", function() {
+          if(document.readyState == "complete") {
+            document.body.classList.add('ready');
+          }
+        }, false);
+      } else {
+        window.document.addEventListener("deviceready", function() {
+          document.body.classList.add('ready');
+        }, false);
+      }
+    </script>
+  </body>
+</html>

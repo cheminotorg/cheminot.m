@@ -1,0 +1,96 @@
+#trip {
+
+    .title {
+        display: flex
+        align-items: center
+
+        > div {
+            margin: 0 auto
+            display: inline-block
+
+            .to {
+                icon_cheminot('arrow-right', blue)
+            }
+        }
+    }
+
+    #wrapper {
+        position: absolute
+        bottom: 0
+        width: 100%
+        overflow: hidden
+    }
+
+    .stops {
+        position: absolute
+        width: 100%
+        padding: 0 10%
+
+        > li {
+            display: flex
+            align-items: center
+
+            .stop, .at {
+                display: inline-block
+            }
+
+            .waiting {
+                margin-top: 4px
+                display: block
+            }
+
+            .time {
+                text-align: right
+
+                .alarm-clock {
+                    icon_batch('alarm-clock', grey-dark)
+                }
+
+                .at {
+                    position: relative
+                    color: grey-dark
+                    text-align: right
+                }
+            }
+
+            &:first-child .line:before {
+                color: green
+            }
+
+            &:last-child .line:before {
+                color: orange
+            }
+
+            &.changement .line:before {
+                color: blue
+            }
+
+            .line {
+                height: 100%
+                position: relative
+                padding-left: 20px
+                margin-left: 20px
+
+                icon_cheminot('circle', blue)
+
+                &::before {
+                    position: absolute
+                    left: -0.63em
+                    background: #FFF
+                    top: 1.36em
+                    color: grey
+                }
+            }
+
+            .stop {
+                .name {
+                    color: grey-dark
+                }
+
+                .waiting {
+                    color: grey-light
+                }
+            }
+        }
+    }
+}

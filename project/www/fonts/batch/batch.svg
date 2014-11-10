@@ -1,0 +1,43 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>
+Created by FontForge 20120731 at Sat May 24 11:45:46 2014
+ By Sebastien RENAULT
+Created by Sebastien RENAULT with FontForge 2.0 (http://fontforge.sf.net)
+</metadata>
+<defs>
+<font id="icons" horiz-adv-x="512" >
+  <font-face 
+    font-family="icons"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="512"
+    panose-1="2 0 6 9 0 0 0 0 0 0"
+    ascent="448"
+    descent="-64"
+    bbox="0 -64.7826 512 448.783"
+    underline-thickness="25"
+    underline-position="-52"
+    unicode-range="U+E001-E003"
+  />
+<missing-glyph 
+d="M17 0v341h136v-341h-136zM34 17h102v307h-102v-307z" />
+    <glyph glyph-name=".notdef" 
+d="M17 0v341h136v-341h-136zM34 17h102v307h-102v-307z" />
+    <glyph glyph-name=".null" horiz-adv-x="0" 
+ />
+    <glyph glyph-name="nonmarkingreturn" 
+ />
+    <glyph glyph-name="uniE001" unicode="&#xe001;" 
+d="M496 280q-41 111 -152 152q27 16 56 16q46 0 79 -33t33 -79q0 -29 -16 -56zM480 192q0 -90 -64 -156v-4v-64q0 -14 -9 -23t-23 -9t-23 9t-9 23v22q-46 -22 -96 -22t-96 22v-22q0 -14 -9 -23t-23 -9t-23 9t-9 23v64v4q-64 66 -64 156q0 93 65.5 158.5t158.5 65.5
+t158.5 -65.5t65.5 -158.5zM256 352q-66 0 -113 -47t-47 -113t47 -113t113 -47t113 47t47 113t-47 113t-113 47zM320 160h-64q-14 0 -23 9t-9 23v64q0 14 9 23t23 9t23 -9t9 -23v-32h32q14 0 23 -9t9 -23t-9 -23t-23 -9zM16 280q-16 27 -16 56q0 46 33 79t79 33q29 0 56 -16
+q-111 -41 -152 -152z" />
+    <glyph glyph-name="uniE002" unicode="&#xe002;" 
+d="M256 448q106 0 181 -75t75 -181t-75 -181t-181 -75t-181 75t-75 181t75 181t181 75zM256 0q80 0 136 56t56 136t-56 136t-136 56t-136 -56t-56 -136t56 -136t136 -56zM279 311l64 -64q15 -15 7 -35t-30 -20h-32v-96q0 -14 -9 -23t-23 -9t-23 9t-9 23v96h-32q-22 0 -30 20
+t7 35l64 64q9 9 23 9t23 -9z" />
+    <glyph glyph-name="uniE003" unicode="&#xe003;" 
+d="M384 96q0 22 20 30t35 -7l64 -64q9 -9 9 -23t-9 -23l-64 -64q-15 -15 -35 -7t-20 30v32h-64q-40 0 -68 27.5t-28 67.5v192q0 14 -9.5 23.5t-22.5 9.5h-160q-14 0 -23 9t-9 23t9 23t23 9h160q40 0 68 -28.5t28 -68.5v-192q0 -13 9 -22t23 -9h64v32zM404 446q20 8 35 -7
+l64 -64q9 -9 9 -23t-9 -23l-64 -64q-15 -15 -35 -7t-20 30v32h-69q-3 14 -8.5 22.5t-14.5 19t-16 22.5h108v32q0 22 20 30z" />
+  </font>
+</defs></svg>

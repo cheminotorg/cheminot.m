@@ -1,0 +1,39 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>
+Created by FontForge 20120731 at Sat May 24 10:27:22 2014
+ By Sebastien RENAULT
+Created by Sebastien RENAULT with FontForge 2.0 (http://fontforge.sf.net)
+</metadata>
+<defs>
+<font id="icons" horiz-adv-x="187" >
+  <font-face 
+    font-family="icons"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="512"
+    panose-1="2 0 6 3 0 0 0 0 0 0"
+    ascent="448"
+    descent="-64"
+    bbox="0 -14 413 398"
+    underline-thickness="25"
+    underline-position="-52"
+    unicode-range="U+E001-E002"
+  />
+<missing-glyph 
+d="M17 0v341h136v-341h-136zM34 17h102v307h-102v-307z" />
+    <glyph glyph-name=".notdef" 
+d="M17 0v341h136v-341h-136zM34 17h102v307h-102v-307z" />
+    <glyph glyph-name=".null" horiz-adv-x="0" 
+ />
+    <glyph glyph-name="nonmarkingreturn" horiz-adv-x="170" 
+ />
+    <glyph glyph-name="uniE001" unicode="&#xe001;" horiz-adv-x="413" 
+d="M46 196q0 -20 2 -30l-44 -11q-3 14 -3 41h45zM32 83q-12 20 -20 43l43 11q4 -10 14 -28zM110 64l-23 -39q-21 15 -37 34l37 26q10 -11 23 -21zM207 398q85 0 145.5 -60t60.5 -146t-60.5 -146t-145.5 -60q-52 0 -95 23l23 39q34 -17 72 -17q67 0 114 47t47 114t-47 114
+t-114 47q-69 0 -117 -46l36 -36l-126 -23l23 126l35 -35q59 59 149 59zM311 192v-41h-131v142h40v-101h91z" />
+    <glyph glyph-name="uniE002" unicode="&#xe002;" horiz-adv-x="260" 
+d="M235 276l-50 -63q-15 -20 0 -40l51 -65q24 -30 24 -69v-53h-260v53q0 39 24 69l50 65q15 20 0 40l-50 63q-24 30 -24 69v53h260v-53q0 -38 -25 -69zM204 83l-50 65q-11 14 -14 31v-14h-20v14q-3 -17 -14 -31l-51 -65q-15 -20 -15 -47h11q4 17 56 44q2 2 3.5 2.5t3.5 1.5
+q6 3 6 15h20q0 -12 6 -15q50 -28 59 -40q2 -4 3 -8h12q0 25 -16 47zM72 280h116l16 21q16 20 16 47h-180q0 -28 15 -47zM120 154h20v-15h-20v15zM120 126h20v-15h-20v15z" />
+  </font>
+</defs></svg>

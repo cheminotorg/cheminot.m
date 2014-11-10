@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <title>chemino 2@2x</title>
+    <description>Created with Sketch (http://www.bohemiancoding.com/sketch)</description>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="details-produit-1" sketch:type="MSArtboardGroup" transform="translate(-566.000000, -308.000000)">
+            <g id="ARRIVÉE" sketch:type="MSLayerGroup" transform="translate(0.000000, 264.000000)">
+                <g id="Oval-46-+-Shape" transform="translate(566.000000, 44.000000)" sketch:type="MSShapeGroup">
+                    <path d="M22,44 C34.1502651,44 44,34.1502651 44,22 C44,9.8497349 34.1502651,0 22,0 C9.8497349,0 0,9.8497349 0,22 C0,34.1502651 9.8497349,44 22,44 Z" id="Oval-46" fill="#ABB6C1"></path>
+                    <path d="M34,20.8387097 L23.1612903,20.8387097 L23.1612903,10 L20.8387097,10 L20.8387097,20.8387097 L10,20.8387097 L10,23.1612903 L20.8387097,23.1612903 L20.8387097,34 L23.1612903,34 L23.1612903,23.1612903 L34,23.1612903 L34,20.8387097 Z" id="Shape" fill="#FFFFFF" transform="translate(22.000000, 22.000000) rotate(-45.000000) translate(-22.000000, -22.000000) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

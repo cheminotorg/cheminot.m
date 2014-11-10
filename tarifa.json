@@ -1,0 +1,110 @@
+{
+  "name": "Cheminot",
+  "id": "m.cheminot",
+  "description": "SNCF TER",
+  "version": "0.1.0",
+  "platforms": [
+    "ios",
+    "android",
+    "browser"
+  ],
+  "configurations": {
+    "ios": {
+      "default": {
+        "id": "m.cheminot",
+        "product_name": "Cheminot",
+        "product_file_name": "Cheminot"
+      },
+      "dev": {
+        "id": "m.cheminot.dev",
+        "product_name": "Cheminot dev",
+        "product_file_name": "Cheminot-dev"
+      },
+      "stage": {
+        "id": "m.cheminot.stage",
+        "product_name": "Cheminot stage",
+        "product_file_name": "Cheminot-stage"
+      },
+      "prod": {
+        "id": "m.cheminot.prod",
+        "product_name": "Cheminot prod",
+        "product_file_name": "Cheminot-prod"
+      }
+    },
+    "android": {
+      "default": {
+        "id": "m.cheminot",
+        "product_name": "Cheminot",
+        "product_file_name": "Cheminot"
+      },
+      "dev": {
+        "id": "m.cheminot.dev",
+        "product_name": "Cheminot dev",
+        "product_file_name": "Cheminot-dev"
+      },
+      "stage": {
+        "id": "m.cheminot.stage",
+        "product_name": "Cheminot stage",
+        "product_file_name": "Cheminot-stage"
+      },
+      "prod": {
+        "id": "m.cheminot.prod",
+        "product_name": "Cheminot prod",
+        "product_file_name": "Cheminot-prod"
+      }
+    },
+    "browser": {
+      "default": {
+        "id": "m.cheminot",
+        "product_name": "Cheminot",
+        "product_file_name": "Cheminot"
+      },
+      "dev": {
+        "id": "m.cheminot.dev",
+        "product_name": "Cheminot dev",
+        "product_file_name": "Cheminot-dev"
+      },
+      "stage": {
+        "id": "m.cheminot.stage",
+        "product_name": "Cheminot stage",
+        "product_file_name": "Cheminot-stage"
+      },
+      "prod": {
+        "id": "m.cheminot.prod",
+        "product_name": "Cheminot prod",
+        "product_file_name": "Cheminot-prod"
+      }
+    }
+  },
+  "cordova": {
+    "preferences": {
+      "DisallowOverscroll": true,
+      "EnableViewportScale": false,
+      "KeyboardDisplayRequiresUserAction": false,
+      "ShowSplashScreenSpinner": false,
+      "HideKeyboardFormAccessoryBar": false,
+      "SplashScreen": "screen",
+      "BackgroundColor": "0xffffffff",
+      "AutoHideSplashScreen": false,
+      "KeyboardShrinksView": true,
+      "KeepRunning": true
+    },
+    "accessOrigin": [
+      "*"
+    ]
+  },
+  "author": {
+    "name": "Sébastien Renault",
+    "email": "srenault.contact@gmail.com",
+    "href": "https://github.com/srenault"
+  },
+  "check": {
+    "ios": "./project/bin/check_ios.js",
+    "android": "./project/bin/check_android.js",
+    "browser": "./project/bin/check_browser.js"
+  },
+  "plugins": {
+    "org.apache.cordova.splashscreen": "https://github.com/apache/cordova-plugin-splashscreen.git#r0.3.4",
+    "m.cheminot.plugin": "../m.cheminot.plugin"
+  }
+}

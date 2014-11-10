@@ -1,0 +1,180 @@
+#viewport {
+    width: 100%
+    top: 0
+    bottom: 0
+    position: absolute
+}
+
+#home {
+
+    .tabs {
+
+        .hint {
+            opacity: 0
+        }
+
+        li {
+            height: 100%
+            color: grey-dark
+            line-height: 4
+            width: 33.3%
+            float: left
+            font-size: 16px
+            text-align: center
+            position: relative
+
+            &.selected {
+                color: #FFF
+
+                .hint {
+                    opacity: 1
+                    transition: 0.4s
+                    position: absolute
+                    left: 0
+                    right: 0
+                    bottom: 0
+                    background: blue
+                    height: 8%
+                }
+            }
+        }
+    }
+
+    .start-end {
+        position: relative
+        background: #FFF
+        border-top: 10px solid grey-blue
+
+        form {
+            .input {
+                position: relative
+                z-index: 2
+                width: 100%
+                border-top: 1px solid grey-blue
+
+                &.animating {
+                    position: absolute
+                    z-index: 1
+
+                    &.above {
+                        z-index: 3
+                    }
+                }
+
+                &:last-child {
+                    border-bottom: 10px solid grey-blue
+                }
+
+                input {
+                    padding-right: 30px
+                }
+
+                button.reset {
+                    position: absolute
+                    display: none
+                    top: 0
+                    height: 100%
+                    reset_button()
+                    right: global-margin-right
+
+                    &.focus {
+                        display: block
+                    }
+                }
+            }
+        }
+    }
+
+    .stations {
+
+        #wrapper {
+            overflow: hidden
+            position: absolute
+            width: 100%
+            bottom: 0
+
+            .suggestions {
+                position: absolute
+                width: 100%
+
+                li {
+                    position: relative
+
+                    div {
+                        width: 100%
+
+                        .match {
+                            color: dark-blue
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .datetime {
+
+        li {
+            position: relative
+        }
+
+        input[type=date], input[type=time] {
+            position: absolute
+            top: 0
+            bottom: 0
+            right: 0
+            left: 0
+            opacity: 0
+        }
+
+        .date, .time {
+            > span {
+                display: inline-block
+            }
+
+            .label {
+                color: dark-blue
+                width: 63%
+                text-align: left
+            }
+
+            .value {
+                color: blue
+                width: 35%
+                text-align: right
+            }
+        }
+
+        .date {
+            display: none;
+
+            &.other {
+                display: flex
+            }
+        }
+
+        .submit {
+            .go {
+                position: absolute
+                top: 0
+                height: 100%
+                width: 16px
+                right: global-margin-right
+            }
+
+            &.disabled {
+                .go {
+                    forward_button(enabled=false)
+                }
+            }
+
+            &.enabled {
+                color: blue
+
+                .go {
+                    forward_button(enabled=true)
+                }
+            }
+        }
+    }
+}
