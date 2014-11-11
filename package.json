@@ -2,6 +2,11 @@
   "name": "cheminot.m",
   "version": "0.1.0",
   "author": "Sebastien Renault (https://github.com/srenault)",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/srenault/cheminot.m"
+  },
+  "description": "Build tool for cheminot.m",
   "devDependencies": {
     "gulp": "latest",
     "gulp-util": "latest",
@@ -11,7 +16,6 @@
     "gulp-tsc": "latest",
     "nib": "latest",
     "gulp-sourcemaps": "latest",
-    "gulp-rimraf": "latest",
     "del": "latest",
     "sre-gulp-rjs": "latest",
     "gulp-browserify": "latest",

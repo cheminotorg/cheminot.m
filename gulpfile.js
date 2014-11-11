@@ -4,7 +4,7 @@ var gulp = require('gulp'),
     gutil = require('gulp-util'),
     nib = require('nib'),
     sourcemaps = require('gulp-sourcemaps'),
-    clean = require('gulp-rimraf'),
+    del = require('del'),
     exec = require('gulp-exec'),
     rjs = require('sre-gulp-rjs'),
     watch = require('gulp-watch'),
@@ -47,12 +47,11 @@ var Assets = {
     }
 };
 
-gulp.task('clean-vendors', function() {
-    return gulp.src(Assets.vendors.dest)
-        .pipe(clean());
+gulp.task('clean:vendors', function(cb) {
+    del([Assets.vendors.dest], cb);
 });
 
-gulp.task('vendors', ['clean-vendors'], function() {
+gulp.task('vendors', ['clean:vendors'], function() {
     function browserifyVendor(path, name) {
         return gulp.src(path)
             .pipe(browserify({ "standalone": name }))
@@ -68,12 +67,11 @@ gulp.task('vendors', ['clean-vendors'], function() {
     });
 });
 
-gulp.task('clean-js', function() {
-    return gulp.src(Assets.ts.dest.files)
-        .pipe(clean());
+gulp.task('clean:js', function(cb) {
+    del(Assets.ts.dest.files, cb);
 });
 
-gulp.task('ts', ['clean-js'], function() {
+gulp.task('ts', ['clean:js'], function() {
     return gulp.src(Assets.ts.src.main)
         .pipe(ts({
             module: 'amd',
@@ -84,12 +82,11 @@ gulp.task('ts', ['clean-js'], function() {
         .pipe(gulp.dest(Assets.ts.dest.dir));
 });
 
-gulp.task('clean-css', function() {
-    return gulp.src(Assets.styl.dest.dir)
-        .pipe(clean());
+gulp.task('clean:css', function(cb) {
+    del([Assets.styl.dest.dir], cb);
 });
 
-gulp.task('styl', ['clean-css'], function() {
+gulp.task('styl', ['clean:css'], function() {
     return gulp.src(Assets.styl.src.files)
         .pipe(stylus({
             use: nib(),
@@ -126,33 +123,13 @@ gulp.task('default', ['watch']);
 
 gulp.task('compile', ['ts', 'styl']);
 
-gulp.task('compile-prod', ['requirejs', 'styl']);
+gulp.task('compile:prod', ['requirejs', 'styl']);
 
 gulp.task('build', function() {
     return gulp.src('.')
         .pipe(exec('tarifa build web', {
             pipeStdout: true
         }));
-});
-
-gulp.task('cheminotc-copy-lib', function() {
-  return gulp.src('../cheminot.c/lib/jsoncpp/jsoncpp.cpp')
-    .pipe(gulp.dest('app/plugins/m.cheminot.plugin/src/android/jni/jsoncpp/'));
-});
-
-gulp.task('cheminotc-copy', ['cheminotc-copy-lib'], function() {
-  gulp.src('../cheminot.c/cheminotc.cpp')
-    .pipe(gulp.dest('app/plugins/m.cheminot.plugin/src/android/jni/cheminotc/'));
-});
-
-gulp.task('cheminotc', ['cheminotc-copy'], function() {
-  return gulp.src('.')
-    .pipe(exec('tarifa plugin remove m.cheminot.plugin', {
-      pipeStdout: true
-    }))
-    .pipe(exec('tarifa plugin add m.cheminot.plugin', {
-      pipeStdout: true
-    }));
 });
 
 module.exports = gulp;

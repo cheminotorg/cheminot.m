@@ -50,10 +50,7 @@ module.exports.build = function (platform, settings, configurationName) {
     };
 
     switch(configurationName) {
-        case 'default': gulp.start.apply(gulp, ['compile']); break;
-        case 'stage': gulp.start.apply(gulp, ['compile-prod']); break;
-        case 'prod': gulp.start.apply(gulp, ['compile-prod']); break;
-        default: gulp.start.apply(gulp, ['compile']);
+    default: gulp.start.apply(gulp, ['compile']);
     }
 
     return d.promise;

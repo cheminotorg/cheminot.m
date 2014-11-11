@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget id="m.cheminot" version="0.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Cheminot</name>
-    <description>SNCF TER</description>
+    <description>Offline train mobile application</description>
     <author email="srenault.contact@gmail.com" href="https://github.com/srenault">Sébastien Renault</author>
     <content src="index.html"/>
     <access origin="*"/>

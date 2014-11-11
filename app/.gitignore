@@ -14,7 +14,11 @@ target
 *.class
 
 # generated files - android project subfolder
-platforms/browser/www
+platforms/browser/www/css
+platforms/browser/www/fonts
+platforms/browser/www/*.html
+platforms/browser/www/js
+platforms/browser/www/mock
 platforms/android/bin/
 platforms/android/gen/
 platforms/android/.gradle/

@@ -1,7 +1,11 @@
 {
   "name": "cheminot",
   "version": "0.0.0",
-  "description": "SNCF TER",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/srenault/cheminot.m"
+  },
+  "description": "Offline train mobile application",
   "dependencies": {
     "q": "1.0.1",
     "mithril": "git://github.com/lhorie/mithril.js.git",
