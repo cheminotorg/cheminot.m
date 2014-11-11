@@ -31,12 +31,15 @@ else
     patch "${ROOT}/node_modules/gulp-tsc/lib/tsc.js" < "${ROOT}/setup/tsc.patch"
 
     echo "\n------------------------------"
-    echo "Add platforms"
+    echo "Add and build platforms"
     echo "------------------------------"
     mkdir "${ROOT}/app/platforms"
+    ln -s "${ROOT}/project/www" "${ROOT}/app/www"
     tarifa platform add browser
     tarifa platform add android
+    tarifa build android
     tarifa platform add ios
+    tarifa build ios
 
     echo "\n------------------------------"
     echo "Building vendors"
