@@ -9,6 +9,7 @@ project/www/index.html
 src/ts/**/*.js
 *.log
 app/platforms
+app/plugins/*.json
 images/
 
 #=============#

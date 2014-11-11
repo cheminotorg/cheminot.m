@@ -3,7 +3,11 @@
   "id": "m.cheminot",
   "description": "Offline train mobile application",
   "version": "0.1.0",
-  "platforms": [],
+  "platforms": [
+    "browser",
+    "android",
+    "ios"
+  ],
   "cordova": {
     "preferences": {
       "DisallowOverscroll": true,
@@ -34,5 +38,73 @@
   "plugins": {
     "org.apache.cordova.splashscreen": "https://github.com/apache/cordova-plugin-splashscreen.git#r0.3.4",
     "m.cheminot.plugin": "../m.cheminot.plugin"
+  },
+  "configurations": {
+    "browser": {
+      "default": {
+        "id": "m.cheminot",
+        "product_name": "Cheminot",
+        "product_file_name": "Cheminot"
+      },
+      "dev": {
+        "id": "m.cheminot.dev",
+        "product_name": "Cheminot dev",
+        "product_file_name": "Cheminot-dev"
+      },
+      "stage": {
+        "id": "m.cheminot.stage",
+        "product_name": "Cheminot stage",
+        "product_file_name": "Cheminot-stage"
+      },
+      "prod": {
+        "id": "m.cheminot.prod",
+        "product_name": "Cheminot prod",
+        "product_file_name": "Cheminot-prod"
+      }
+    },
+    "android": {
+      "default": {
+        "id": "m.cheminot",
+        "product_name": "Cheminot",
+        "product_file_name": "Cheminot"
+      },
+      "dev": {
+        "id": "m.cheminot.dev",
+        "product_name": "Cheminot dev",
+        "product_file_name": "Cheminot-dev"
+      },
+      "stage": {
+        "id": "m.cheminot.stage",
+        "product_name": "Cheminot stage",
+        "product_file_name": "Cheminot-stage"
+      },
+      "prod": {
+        "id": "m.cheminot.prod",
+        "product_name": "Cheminot prod",
+        "product_file_name": "Cheminot-prod"
+      }
+    },
+    "ios": {
+      "default": {
+        "id": "m.cheminot",
+        "product_name": "Cheminot",
+        "product_file_name": "Cheminot"
+      },
+      "dev": {
+        "id": "m.cheminot.dev",
+        "product_name": "Cheminot dev",
+        "product_file_name": "Cheminot-dev"
+      },
+      "stage": {
+        "id": "m.cheminot.stage",
+        "product_name": "Cheminot stage",
+        "product_file_name": "Cheminot-stage"
+      },
+      "prod": {
+        "id": "m.cheminot.prod",
+        "product_name": "Cheminot prod",
+        "product_file_name": "Cheminot-prod"
+      }
+    }
   }
 }

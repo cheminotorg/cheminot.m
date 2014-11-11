@@ -31,6 +31,16 @@ else
     patch "${ROOT}/node_modules/gulp-tsc/lib/tsc.js" < "${ROOT}/setup/tsc.patch"
 
     echo "\n------------------------------"
+    echo "Add platforms"
+    echo "------------------------------"
+    tarifa platform remove browser
+    tarifa platform add browser
+    tarifa platform remove android
+    tarifa platform add android
+    tarifa platform remove ios
+    tarifa platform add ios
+
+    echo "\n------------------------------"
     echo "Building vendors"
     echo "------------------------------"
     "${ROOT}/node_modules/gulp/bin/gulp.js" vendors
