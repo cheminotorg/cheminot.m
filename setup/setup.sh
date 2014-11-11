@@ -33,11 +33,9 @@ else
     echo "\n------------------------------"
     echo "Add platforms"
     echo "------------------------------"
-    tarifa platform remove browser
+    mkdir "${ROOT}/app/platforms"
     tarifa platform add browser
-    tarifa platform remove android
     tarifa platform add android
-    tarifa platform remove ios
     tarifa platform add ios
 
     echo "\n------------------------------"
