@@ -11,6 +11,7 @@ import m.cheminot.plugin.jni.CheminotLib;
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.app.Activity;
 
@@ -35,7 +36,7 @@ public class Cheminot extends CordovaPlugin {
       break;
 
     case lookForBestTrip:
-      this.lookForBestTrip(cbc);
+      this.lookForBestTrip(args, cbc);
       break;
 
     default:
@@ -53,7 +54,6 @@ public class Cheminot extends CordovaPlugin {
       cbc.success(CheminotLib.init(dbpath));
     } catch (IOException e) {
       cbc.error(e.getMessage());
-      e.printStackTrace();
     }
   }
 
@@ -75,6 +75,14 @@ public class Cheminot extends CordovaPlugin {
     }
   }
 
-  private void lookForBestTrip(CallbackContext cbc) {
+  private void lookForBestTrip(JSONArray args, CallbackContext cbc) {
+    try {
+      String vsId = args.getString(0);
+      String veId = args.getString(1);
+      int at = args.getInt(2);
+      CheminotLib.lookForBestTrip(vsId, veId, at);
+    } catch (JSONException e) {
+      cbc.error(e.getMessage());
+    }
   }
 }
