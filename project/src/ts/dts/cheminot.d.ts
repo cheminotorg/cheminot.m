@@ -19,9 +19,10 @@ interface StopTime {
 declare module cordova {
 
   module plugins {
-    module SoftKeyboard {
-      function show(success: () => void, error: () => void): void;
-      function hide(success: () => void, error: () => void): void;
+    module Keyboard {
+      var isVisible: boolean;
+      function show(): void;
+      function close(): void;
     }
 
     module Cheminot {

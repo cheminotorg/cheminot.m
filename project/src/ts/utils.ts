@@ -115,29 +115,6 @@ export module Detectizr {
   }
 }
 
-export module Keyboard {
-
-  export function show(): Q.Promise<void> {
-    var d = Q.defer<void>();
-    cordova.plugins.SoftKeyboard.show(() => {
-      d.resolve(null);
-    }, () => {
-      d.reject(null);
-    });
-    return d.promise;
-  }
-
-  export function hide(): Q.Promise<void> {
-    var d = Q.defer<void>();
-    cordova.plugins.SoftKeyboard.hide(() => {
-      d.resolve(null);
-    }, () => {
-      d.reject(null);
-    });
-    return d.promise;
-  }
-}
-
 export module Promise {
 
   export function done(): Q.Promise<void> {

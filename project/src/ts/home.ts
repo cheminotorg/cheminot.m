@@ -8,6 +8,7 @@ import Utils = require('utils');
 import Suggestions = require('suggestions');
 import Routes = require('routes');
 import View = require('view');
+import native = require('native');
 
 export interface Ctrl {
   scope: () => HTMLElement;
@@ -279,7 +280,7 @@ export class Home implements m.Module<Ctrl> {
         Q.all([hideInput(ctrl), hideDateTimePanel(ctrl)]).then(() => {
           return moveUpViewport(ctrl).then(() => {
             enableInputStation(ctrl, inputStation);
-            Utils.Keyboard.show().then(() => m.endComputation());
+            native.Keyboard.show().then(() => m.endComputation());
           });
         });
       },
@@ -378,7 +379,7 @@ export class Home implements m.Module<Ctrl> {
         var inputStationEnd = <HTMLElement> ctrl.scope().querySelector('.input.end input');
         inputStationStart.blur();
         inputStationEnd.blur();
-        Utils.Keyboard.hide();
+        native.Keyboard.close();
       },
 
       onDateTimeChange: (ctrl: Ctrl, e: Event) => {
@@ -481,7 +482,7 @@ function resetInputStationsPosition(ctrl: Ctrl, inputStation: HTMLInputElement):
   m.startComputation();
   disableInputStation(ctrl, inputStation);
   m.endComputation();
-  return Utils.Keyboard.hide().then(() => {
+  return native.Keyboard.close().then(() => {
     moveDownViewport(ctrl).then(() => {
       showInput(ctrl).then(() => {
         showDateTimePanel(ctrl).then(() => {

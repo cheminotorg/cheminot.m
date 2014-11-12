@@ -1,4 +1,40 @@
 import Mock = require('mock');
+import Q = require('q');
+
+export module Keyboard {
+
+  export function show(): Q.Promise<void> {
+    var d = Q.defer<void>();
+    cordova.plugins.Keyboard.show();
+    var start = Date.now();
+    var intervalId = setInterval(() => {
+      console.log('interval show > ' + Date.now());
+      if(cordova.plugins.Keyboard.isVisible) {
+        clearInterval(intervalId);
+        d.resolve(null);
+      } else if(Date.now() > start + 2000) {
+        d.reject(null);
+      }
+    }, 75);
+    return d.promise;
+  }
+
+  export function close(): Q.Promise<void> {
+    var d = Q.defer<void>();
+    cordova.plugins.Keyboard.close();
+    var start = Date.now();
+    var intervalId = setInterval(() => {
+      console.log('interval close < ' + Date.now());
+      if(!cordova.plugins.Keyboard.isVisible) {
+        clearInterval(intervalId);
+        d.resolve(null);
+      } else if(Date.now() > start + 2000) {
+        d.reject(null);
+      }
+    }, 75);
+    return d.promise;
+  }
+}
 
 export module Cheminot {
 
