@@ -31,26 +31,24 @@ else
     patch "${ROOT}/node_modules/gulp-tsc/lib/tsc.js" < "${ROOT}/setup/tsc.patch"
 
     echo "\n------------------------------"
-    echo "Add and build platforms"
-    echo "------------------------------"
-    mkdir "${ROOT}/app/platforms"
-    ln -s "${ROOT}/project/www" "${ROOT}/app/www"
-    tarifa platform add browser
-    tarifa platform add android
-    patch "${ROOT}/app/platforms/android/build.gradle" < "${ROOT}/setup/build.gradle.patch"
-    android update project --target android-19 --name Cheminot --path "${ROOT}/app/platforms/android" --subprojects
-    ndk-build -C "${ROOT}/app/platforms/android"
-    tarifa build android
-    tarifa platform add ios
-    tarifa build ios
-
-    echo "\n------------------------------"
     echo "Building vendors"
     echo "------------------------------"
     "${ROOT}/node_modules/gulp/bin/gulp.js" vendors
 
     echo "\n------------------------------"
+    echo "Add and build android platform"
+    echo "------------------------------"
+    mkdir "${ROOT}/app/platforms"
+    ln -s "${ROOT}/project/www" "${ROOT}/app/www"
+    tarifa platform add android
+    patch "${ROOT}/app/platforms/android/build.gradle" < "${ROOT}/setup/build.gradle.patch"
+    android update project --target android-19 --name Cheminot --path "${ROOT}/app/platforms/android" --subprojects
+    ndk-build -C "${ROOT}/app/platforms/android"
+    tarifa build android
+
+    echo "\n------------------------------"
     echo "Running app in the browser"
     echo "------------------------------"
+    tarifa platform add browser
     tarifa run browser
 fi
