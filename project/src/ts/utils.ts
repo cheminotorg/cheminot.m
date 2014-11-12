@@ -113,10 +113,6 @@ export module Detectizr {
   export function isIOS7() {
     return isIOS() && navigator.userAgent.match(/OS 7/);
   }
-
-  export function isCordovaApp() {
-    return !cordova.isMock;
-  }
 }
 
 export module Keyboard {

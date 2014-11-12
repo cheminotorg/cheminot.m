@@ -5,6 +5,7 @@ import IScroll = require('IScroll');
 import moment = require('moment');
 import Utils = require('utils');
 import View = require('view');
+import native = require('native');
 
 export interface Ctrl {
   scope: () => HTMLElement;
@@ -228,7 +229,7 @@ export class Departures implements m.Module<Ctrl> {
 }
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
-  cordova.plugins.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at.getTime(),
+  native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at.getTime(),
     (trip) => {
       m.startComputation();
       var departure = tripToDeparture(trip);
@@ -258,7 +259,7 @@ function tripToDeparture(trip: StopTime[]): Departure {
     startTime: startTime,
     endTime: endTime,
     nbSteps: trip.length,
-    id: cordova.isMock ? id + '|' + Date.now() : id
+    id: native.Cheminot.isMocked() ? id + '|' + Date.now() : id
   };
 }
 

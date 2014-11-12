@@ -18,8 +18,6 @@ interface StopTime {
 
 declare module cordova {
 
-  var isMock: boolean;
-
   module plugins {
     module SoftKeyboard {
       function show(success: () => void, error: () => void): void;
@@ -28,7 +26,7 @@ declare module cordova {
 
     module Cheminot {
       function init(success: (version: string) => void, error: () => void): void;
-      function lookForBestTrip(start: string, end: string, at: number, success: (stopsTime: StopTime[]) => void, error: () => void): void;
+      function lookForBestTrip(start: string, end: string, at: number, success: (stopsTime: StopTime[]) => void, error: (e: string) => void): void;
     }
   }
 }

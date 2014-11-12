@@ -44,7 +44,8 @@ module.exports.build = function (platform, settings, configurationName) {
         var settingsContent = "Settings = " + JSON.stringify(mapSettings(settings, platform, configurationName)) + ';';
         fs.writeFileSync(settingsPath, settingsContent, {"encoding": "utf8"});
         preprocess.preprocessFileSync(htmlPath.src, htmlPath.dest, {
-            PLATFORM : platform
+            PLATFORM : platform,
+            MOCKED: configurationName == 'default'
         });
         d.resolve();
     };
