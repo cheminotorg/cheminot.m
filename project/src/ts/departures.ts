@@ -116,7 +116,7 @@ export class Departures implements m.Module<Ctrl> {
 
   controller(): Ctrl {
     var at = parseInt(m.route.param("at"), 10);
-    var scope = () => document.querySelector('#departures');
+    var scope = () => <HTMLElement> document.querySelector('#departures');
     return {
       scope: scope,
 
@@ -125,8 +125,8 @@ export class Departures implements m.Module<Ctrl> {
       },
 
       iscroll: _.once(function() {
-        var wrapper = scope().querySelector('#wrapper');
-        var header = document.querySelector('#header');
+        var wrapper = <HTMLElement> scope().querySelector('#wrapper');
+        var header = <HTMLElement> document.querySelector('#header');
         var top = header.offsetTop + header.offsetHeight;
         wrapper.style.top = top + 'px';
 
@@ -192,7 +192,7 @@ export class Departures implements m.Module<Ctrl> {
       isPullUpDisplayed: m.prop(false),
 
       isPullUpLoading: Utils.m.prop(false, (isLoading: boolean) => {
-        var wrapper = scope().querySelector('#wrapper');
+        var wrapper = <HTMLElement> scope().querySelector('#wrapper');
         if(isLoading) {
           wrapper.classList.add('loading');
         } else {
@@ -201,7 +201,7 @@ export class Departures implements m.Module<Ctrl> {
       }),
 
       isPullUpFlip: Utils.m.prop(false, (isFlip: boolean) => {
-        var wrapper = scope().querySelector('#wrapper');
+        var wrapper = <HTMLElement> scope().querySelector('#wrapper');
         if(isFlip) {
           wrapper.classList.add('flip');
         } else {
@@ -271,8 +271,8 @@ function isMoreItemsNeeded(ctrl: Ctrl): boolean {
 }
 
 function isScreenFull(ctrl: Ctrl): boolean {
-  var departures = ctrl.scope().querySelector('.departures');
-  var header = document.querySelector('#header');
+  var departures = <HTMLElement> ctrl.scope().querySelector('.departures');
+  var header = <HTMLElement> document.querySelector('#header');
   var viewportSize = Utils.viewportSize();
   var height = Math.max(viewportSize[0], viewportSize[1]);
   var isFull = (departures.offsetHeight + header.offsetHeight) >= height;

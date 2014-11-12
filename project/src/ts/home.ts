@@ -244,7 +244,7 @@ export class Home implements m.Module<Ctrl> {
   controller(): Ctrl {
     return {
       scope: () => {
-        return document.querySelector('#home');
+        return <HTMLElement> document.querySelector('#home');
       },
 
       shouldBeHidden: () => {
@@ -252,7 +252,7 @@ export class Home implements m.Module<Ctrl> {
       },
 
       onTabTouched: (ctrl: Ctrl, e: Event) => {
-        var tab = e.currentTarget;
+        var tab = <HTMLElement> e.currentTarget;
 
         m.startComputation();
         ctrl.isTodayTabSelected(false);
@@ -270,8 +270,8 @@ export class Home implements m.Module<Ctrl> {
       },
 
       onInputStationTouched: (ctrl: Ctrl, e: Event) => {
-        var station = e.currentTarget;
-        var inputStation = station.querySelector('input');
+        var station = <HTMLElement> e.currentTarget;
+        var inputStation = <HTMLElement> station.querySelector('input');
         var hideInput = isInputStationStart(inputStation) ? hideInputStationEnd : hideInputStationStart;
         m.startComputation();
         setInputStationValue(ctrl, inputStation, '');
@@ -331,8 +331,8 @@ export class Home implements m.Module<Ctrl> {
       }),
 
       adaptWrapperTop: (ctrl: Ctrl) => {
-        var wrapper = ctrl.scope().querySelector('#wrapper');
-        var startEndWrapper = ctrl.scope().querySelector('.start-end');
+        var wrapper = <HTMLElement> ctrl.scope().querySelector('#wrapper');
+        var startEndWrapper = <HTMLElement> ctrl.scope().querySelector('.start-end');
         var top = startEndWrapper.offsetTop + startEndWrapper.offsetHeight + Math.abs(document.body.offsetTop) + 10;
         wrapper.style.top = top + 'px';
       },
@@ -341,7 +341,7 @@ export class Home implements m.Module<Ctrl> {
 
       onStationSelected: (ctrl: Ctrl, e: Event) => {
         if(!ctrl.isScrollingStations()) {
-          var station = e.currentTarget;
+          var station = <HTMLElement> e.currentTarget;
           var id = station.getAttribute('data-id');
           var name = station.getAttribute('data-name');
           var inputStation = currentInputStation(ctrl);
@@ -356,7 +356,7 @@ export class Home implements m.Module<Ctrl> {
 
       onResetStationTouched: (ctrl: Ctrl, e: Event) => {
         e.stopPropagation();
-        var resetButton = e.currentTarget;
+        var resetButton = <HTMLElement> e.currentTarget;
         var inputStation = <HTMLInputElement> resetButton.previousElementSibling;
         m.startComputation();
         if(ctrl.isViewportUp()) resetInputStationsPosition(ctrl, inputStation);
@@ -374,8 +374,10 @@ export class Home implements m.Module<Ctrl> {
       },
 
       onScrollStations: (ctrl: Ctrl, e: Event) => {
-        ctrl.scope().querySelector('.input.start input').blur();
-        ctrl.scope().querySelector('.input.end input').blur();
+        var inputStationStart = <HTMLElement> ctrl.scope().querySelector('.input.start input');
+        var inputStationEnd = <HTMLElement> ctrl.scope().querySelector('.input.end input');
+        inputStationStart.blur();
+        inputStationEnd.blur();
         Utils.Keyboard.hide();
       },
 
@@ -409,8 +411,8 @@ function isInputStationStart(el: Element): boolean {
 }
 
 function hideInputStationEnd(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var inputStationEnd = ctrl.scope().querySelector('.input.end');
-  var inputStationStart = ctrl.scope().querySelector('.input.start');
+  var inputStationEnd = <HTMLElement> ctrl.scope().querySelector('.input.end');
+  var inputStationStart = <HTMLElement> ctrl.scope().querySelector('.input.start');
   inputStationStart.classList.remove('animating');
   inputStationEnd.classList.add('animating');
   var translateY = inputStationStart.offsetTop - inputStationEnd.offsetTop;
@@ -418,7 +420,7 @@ function hideInputStationEnd(ctrl: Ctrl): Q.Promise<HTMLElement> {
 }
 
 function showInputStationEnd(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var inputStationEnd = ctrl.scope().querySelector('.input.end');
+  var inputStationEnd = <HTMLElement> ctrl.scope().querySelector('.input.end');
   return Zanimo(inputStationEnd, 'transform', 'translate3d(0,0,0)', 10).then(() => {
     inputStationEnd.classList.remove('animating');
     inputStationEnd.classList.remove('above');
@@ -427,21 +429,23 @@ function showInputStationEnd(ctrl: Ctrl): Q.Promise<HTMLElement> {
 }
 
 function hideInputStationStart(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var stationStart = ctrl.scope().querySelector('.input.start');
+  var stationStart = <HTMLElement> ctrl.scope().querySelector('.input.start');
   stationStart.style.display = 'none';
   return Utils.Promise.pure(stationStart);
 }
 
 function showInputStationStart(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var stationStart = ctrl.scope().querySelector('.input.start');
+  var stationStart = <HTMLElement> ctrl.scope().querySelector('.input.start');
   stationStart.style.display = 'block';
   return Utils.Promise.pure(stationStart);
 }
 
 function moveUpViewport(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var viewport = document.querySelector('#viewport');
-  var headerHeight = document.querySelector('#header').offsetHeight;
-  var tabsHeight = ctrl.scope().querySelector('.tabs').offsetHeight;
+  var viewport = <HTMLElement> document.querySelector('#viewport');
+  var header = <HTMLElement> document.querySelector('#header');
+  var headerHeight = header.offsetHeight;
+  var tabs = <HTMLElement> ctrl.scope().querySelector('.tabs');
+  var tabsHeight = tabs.offsetHeight;
   var translateY = tabsHeight + headerHeight;
   return Zanimo(viewport, 'transform', 'translate3d(0,-'+ translateY + 'px,0)', 200).then(() => {
     viewport.style.bottom = '-' + translateY + 'px';
@@ -451,7 +455,7 @@ function moveUpViewport(ctrl: Ctrl): Q.Promise<HTMLElement> {
 }
 
 function moveDownViewport(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var viewport = document.querySelector('#viewport');
+  var viewport = <HTMLElement> document.querySelector('#viewport');
   return Zanimo(viewport, 'transform', 'translate3d(0,0,0)', 200).then(() => {
     viewport.style.bottom = '0';
     ctrl.isViewportUp(false);
@@ -460,13 +464,13 @@ function moveDownViewport(ctrl: Ctrl): Q.Promise<HTMLElement> {
 }
 
 function hideDateTimePanel(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var datetime = ctrl.scope().querySelector('.datetime');
+  var datetime = <HTMLElement> ctrl.scope().querySelector('.datetime');
   datetime.style.display = 'none';
   return Utils.Promise.pure(datetime);
 }
 
 function showDateTimePanel(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var datetime = ctrl.scope().querySelector('.datetime');
+  var datetime = <HTMLElement> ctrl.scope().querySelector('.datetime');
   datetime.style.display = 'block';
   return Utils.Promise.pure(datetime);
 }

@@ -81,7 +81,7 @@ function render(ctrl: Ctrl) {
 export class Trip implements m.Module<Ctrl> {
   controller(): Ctrl {
     var id = m.route.param("id");
-    var scope = () => document.querySelector('#trip');
+    var scope = () => <HTMLElement> document.querySelector('#trip');
     return {
       scope: scope,
 
@@ -96,13 +96,13 @@ export class Trip implements m.Module<Ctrl> {
       },
 
       iscroll: _.once(function() {
-        var wrapper = scope().querySelector('#wrapper');
+        var wrapper = <HTMLElement> scope().querySelector('#wrapper');
         return new IScroll(wrapper);
       }),
 
       adaptWrapperTop: (ctrl: Ctrl) => {
-        var wrapper = ctrl.scope().querySelector('#wrapper');
-        var title = scope().querySelector('.title');
+        var wrapper = <HTMLElement> ctrl.scope().querySelector('#wrapper');
+        var title = <HTMLElement> scope().querySelector('.title');
         var top = title.offsetTop + title.offsetHeight;
         wrapper.style.top = top + 'px';
       }

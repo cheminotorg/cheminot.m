@@ -76,8 +76,7 @@ gulp.task('ts', ['clean:js'], function() {
         .pipe(ts({
             module: 'amd',
             noImplicitAny: true,
-            safe: true,
-            noLib: true
+            safe: true
         }))
         .pipe(gulp.dest(Assets.ts.dest.dir));
 });
