@@ -37,6 +37,9 @@ else
     ln -s "${ROOT}/project/www" "${ROOT}/app/www"
     tarifa platform add browser
     tarifa platform add android
+    patch "${ROOT}/app/platforms/android/build.gradle" < "${ROOT}/setup/build.gradle.patch"
+    android update project --target android-19 --name Cheminot --path "${ROOT}/app/platforms/android" --subprojects
+    ndk-build -C "${ROOT}/app/platforms/android"
     tarifa build android
     tarifa platform add ios
     tarifa build ios

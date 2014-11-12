@@ -1,0 +1,11 @@
+--- build.gradle	2014-11-12 18:04:10.000000000 +0100
++++ build.gradle1	2014-11-12 18:04:34.000000000 +0100
+@@ -31,6 +31,8 @@
+             renderscript.srcDirs = ['src']
+             res.srcDirs = ['res']
+             assets.srcDirs = ['assets']
++            jniLibs.srcDirs = ['libs']
++            jni.srcDirs = []
+         }
+     }
+ 

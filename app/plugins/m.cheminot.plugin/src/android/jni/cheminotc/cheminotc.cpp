@@ -10,6 +10,7 @@
 #include <memory>
 #include <sqlite3.h>
 #include <json/json.h>
+#include <cheminotc.h>
 
 namespace cheminotc {
 
@@ -20,24 +21,11 @@ namespace cheminotc {
     return os.str() ;
   }
 
-  struct StopTime {
-    std::string tripId;
-    struct tm arrival;
-    struct tm departure;
-    int pos;
-  };
-
   struct Calendar {
     std::string serviceId;
     std::map<std::string, bool> week;
     struct tm startDate;
     struct tm endDate;
-  };
-
-  struct CalendarException {
-    std::string serviceId;
-    struct tm date;
-    int exceptionType;
   };
 
   struct Trip {
@@ -51,13 +39,6 @@ namespace cheminotc {
     std::string name;
     double lat;
     double lng;
-  };
-
-  struct Vertice {
-    std::string id;
-    std::string name;
-    std::list<std::string> edges;
-    std::list<StopTime> stopTimes;
   };
 
   struct tm getNow() {
@@ -330,7 +311,7 @@ namespace cheminotc {
     return parseVerticeRow(results.begin());
   }
 
-  std::map<std::string, std::list<CalendarException>> getCalendarExceptions(sqlite3 *handle) {
+  std::map<std::string, std::list<CalendarException> > getCalendarExceptions(sqlite3 *handle) {
     std::string query = "SELECT value FROM CACHE WHERE key = 'exceptions'";
     std::list< std::map<std::string, const void*> > results = executeSQL(handle, query);
     char *exceptions = (char *)results.front()["value"];
@@ -353,17 +334,28 @@ namespace cheminotc {
     return trips;
   }
 
-  struct ArrivalTime {
-    std::string stopId;
-    struct tm arrival;
-    struct tm departure;
-    std::string tripId;
-    Vertice *vertice;
-    int pos;
-  };
-
   bool isTerminus(StopTime *a) {
     return hasSameTime(&a->arrival, &a->departure) && a->pos > 0;
+  }
+
+  Json::Value serializeArrivalTime(ArrivalTime arrivalTime) {
+    Json::Value json;
+    int arrival = asTimestamp(arrivalTime.arrival);
+    int departure = asTimestamp(arrivalTime.departure);
+    json["stopId"] = arrivalTime.stopId;
+    json["arrival"] = arrival;
+    json["departure"] = departure;
+    json["tripId"] = arrivalTime.tripId;
+    json["pos"] = arrivalTime.pos;
+    return json;
+  }
+
+  Json::Value serializeArrivalTimes(std::list<ArrivalTime> arrivalTimes) {
+    Json::Value array;
+    for(cheminotc::ArrivalTime arrivalTime : arrivalTimes) {
+      array.append(serializeArrivalTime(arrivalTime));
+    }
+    return array;
   }
 
   class CompareArrivalTime {
@@ -597,5 +589,10 @@ namespace cheminotc {
 
     path.push_front(gs);
     return path;
+  }
+
+  std::list<ArrivalTime> lookForBestTrip(sqlite3 *handle, std::map<std::string, Vertice> *graph, std::map<std::string, std::list<CalendarException>> *calendarExceptions, std::string vsId, std::string veId, struct tm at) {
+    auto arrivalTimes = refineArrivalTimes(handle, graph, calendarExceptions, vsId, veId, at);
+    return pathSelection(graph, &arrivalTimes, at, vsId, veId);
   }
 }
