@@ -41,7 +41,8 @@ var Assets = {
             Zanimo: 'project/node_modules/zanimo/src/Zanimo.js',
             IScroll: 'project/node_modules/iscroll/build/iscroll-probe.js',
             moment: 'project/node_modules/moment/moment.js',
-            lodash: 'project/node_modules/lodash/lodash.js'
+            lodash: 'project/node_modules/lodash/lodash.js',
+            qstart: 'project/node_modules/qstart/qstart.js'
         },
         dest: 'project/www/js/vendors/'
     }
