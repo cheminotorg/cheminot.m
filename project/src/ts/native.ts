@@ -8,7 +8,6 @@ export module Keyboard {
     cordova.plugins.Keyboard.show();
     var start = Date.now();
     var intervalId = setInterval(() => {
-      console.log('interval show > ' + Date.now());
       if(cordova.plugins.Keyboard.isVisible) {
         clearInterval(intervalId);
         d.resolve(null);
@@ -24,7 +23,6 @@ export module Keyboard {
     cordova.plugins.Keyboard.close();
     var start = Date.now();
     var intervalId = setInterval(() => {
-      console.log('interval close < ' + Date.now());
       if(!cordova.plugins.Keyboard.isVisible) {
         clearInterval(intervalId);
         d.resolve(null);
@@ -42,15 +40,21 @@ export module Cheminot {
     return document.querySelector('body').hasAttribute('data-mocked');
   }
 
-  export function init(success: (version: string) => void, error: (err: string) => void): void {
-    Mock.init(success, error);
+  export function init(): Q.Promise<string> {
+    var d = Q.defer<string>();
+    Mock.init((version) => d.resolve(version), (e: string) => d.reject(e));
+    return d.promise;
   }
 
-  export function lookForBestTrip (vsId: string, veId: string, at: number, success: (stopTimes: StopTime[]) => void, error: (err: string) => void): void {
+  export function lookForBestTrip (vsId: string, veId: string, at: number): Q.Promise<StopTime[]> {
+    var d = Q.defer<StopTime[]>();
+    var success = (stopTimes: StopTime[]) => d.resolve(stopTimes);
+    var error = (e: string) => d.reject(e);
     if(isMocked()) {
       Mock.lookForBestTrip(vsId, veId, at, success, error);
     } else {
       cordova.plugins.Cheminot.lookForBestTrip(vsId, veId, at, success, error);
     }
+    return d.promise;
   }
 }

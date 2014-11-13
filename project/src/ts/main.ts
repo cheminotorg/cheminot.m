@@ -9,14 +9,15 @@
 
 'use strict';
 
+import Q = require('q');
 import m = require('mithril');
 import qstart = require('qstart');
 import App = require('app');
 import Routes = require('routes');
 import Suggestions = require('suggestions');
+import native = require('native');
 
-qstart.then(() => {
-  Suggestions.init();
+Q.all([qstart, Suggestions.init(), native.Cheminot.init()]).then(() => {
   m.route.mode = 'hash';
   m.route(document.querySelector('#viewport'), "/", {
     "/": App.get(),

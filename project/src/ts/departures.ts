@@ -229,24 +229,20 @@ export class Departures implements m.Module<Ctrl> {
 }
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
-  native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at.getTime(),
-    (trip) => {
-      m.startComputation();
-      var departure = tripToDeparture(trip);
-      ctrl.departures().push(departure);
-      sessionStorage.setItem(departure.id, JSON.stringify(trip));
-      ctrl.currentPageSize(ctrl.currentPageSize() + 1);
-      ctrl.lastArrivalTime(departure.endTime);
-      if(isMoreItemsNeeded(ctrl)) {
-        lookForNextDepartures(ctrl, departure.endTime);
-      } else {
-        ctrl.currentPageSize(0);
-      }
-      m.endComputation();
-    },
-    () => {
+  native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at.getTime()).then((trip) => {
+    m.startComputation();
+    var departure = tripToDeparture(trip);
+    ctrl.departures().push(departure);
+    sessionStorage.setItem(departure.id, JSON.stringify(trip));
+    ctrl.currentPageSize(ctrl.currentPageSize() + 1);
+    ctrl.lastArrivalTime(departure.endTime);
+    if(isMoreItemsNeeded(ctrl)) {
+      lookForNextDepartures(ctrl, departure.endTime);
+    } else {
+      ctrl.currentPageSize(0);
     }
-  );
+    m.endComputation();
+  });
 }
 
 function tripToDeparture(trip: StopTime[]): Departure {

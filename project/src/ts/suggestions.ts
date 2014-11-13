@@ -14,7 +14,7 @@ function getStationsTree(): Q.Promise<any> {
   if(!STATIONS) {
     req.onreadystatechange = () => {
       if (req.readyState === 4) {
-        if(req.status === 200) {
+        if(req.status === 200 || req.status === 0) {
           var stations = JSON.parse(req.responseText);
           STATIONS = stations;
           d.resolve(stations);
