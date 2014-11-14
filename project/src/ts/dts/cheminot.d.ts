@@ -26,7 +26,7 @@ declare module cordova {
     }
 
     module Cheminot {
-      function init(success: (version: string) => void, error: () => void): void;
+      function init(success: (version: string) => void, error: (e: string) => void): void;
       function lookForBestTrip(start: string, end: string, at: number, success: (stopsTime: StopTime[]) => void, error: (e: string) => void): void;
     }
   }

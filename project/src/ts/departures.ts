@@ -229,7 +229,7 @@ export class Departures implements m.Module<Ctrl> {
 }
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
-  native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at.getTime()).then((trip) => {
+  native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at).then((trip) => {
     m.startComputation();
     var departure = tripToDeparture(trip);
     ctrl.departures().push(departure);
