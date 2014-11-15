@@ -36,11 +36,11 @@ else
     "${ROOT}/node_modules/gulp/bin/gulp.js" vendors
 
     echo "\n------------------------------"
-    echo "Add and build android platform"
+    echo "Setup platforms"
     echo "------------------------------"
     mkdir "${ROOT}/app/platforms"
     ln -s "${ROOT}/project/www" "${ROOT}/app/www"
-    tarifa platform add android
+    tarifa check
     patch "${ROOT}/app/platforms/android/build.gradle" < "${ROOT}/setup/build.gradle.patch"
     android update project --target android-19 --name Cheminot --path "${ROOT}/app/platforms/android" --subprojects
     ndk-build -C "${ROOT}/app/platforms/android"
@@ -49,6 +49,5 @@ else
     echo "\n------------------------------"
     echo "Running app in the browser"
     echo "------------------------------"
-    tarifa platform add browser
     tarifa run browser
 fi

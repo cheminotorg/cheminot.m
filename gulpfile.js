@@ -127,9 +127,20 @@ gulp.task('compile:prod', ['requirejs', 'styl']);
 
 gulp.task('build', function() {
     return gulp.src('.')
-        .pipe(exec('tarifa build web', {
-            pipeStdout: true
-        }));
+        .pipe(exec('tarifa build web'))
+        .pipe(exec.reporter());
+});
+
+gulp.task('setup:android', function() {
+    return gulp.src('.')
+        .pipe(exec('tarifa platform add android'))
+        .pipe(exec.reporter());
+});
+
+gulp.task('setup:browser', function() {
+    return gulp.src('.')
+        .pipe(exec('tarifa platform add browser'))
+        .pipe(exec.reporter());
 });
 
 module.exports = gulp;
