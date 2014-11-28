@@ -88,16 +88,12 @@ export module Log {
 
 export module Detectizr {
 
-  export function isMobile() { 
-    if(navigator.userAgent.match(/Android/i) ||
-       navigator.userAgent.match(/webOS/i) ||
-       navigator.userAgent.match(/BlackBerry/i) ||
-       navigator.userAgent.match(/Windows Phone/i) ||
-       isIOS()) {
-      return true;
-    } else {
-      return false;
-    }
+  export function isMobile() {
+    return isAndroid() ||
+      isIOS() ||
+      navigator.userAgent.match(/webOS/i) ||
+      navigator.userAgent.match(/BlackBerry/i) ||
+      navigator.userAgent.match(/Windows Phone/i);
   }
 
   export function isAndroid() {
