@@ -20,7 +20,7 @@ export interface Ctrl {
   pullUpProgress: (value?: number) => number;
   pullUpLabel: (value?: string) => string;
   nbItemsPerScreen: (value?: number) => number;
-  lastArrivalTime: (value?: Date) => Date;
+  lastDepartureTime: (value?: Date) => Date;
   currentPageSize: (value?: number) => number;
   at: Date;
   isScrollingDepartures: (value?: boolean) => boolean;
@@ -28,7 +28,7 @@ export interface Ctrl {
 }
 
 function formatDay(dateTime: Date): string {
-  return moment(dateTime).format('dddd MM MMMM');
+  return moment(dateTime).format('dddd MM');
 }
 
 function formatTime(dateTime: Date): string {
@@ -162,7 +162,7 @@ export class Departures implements m.Module<Ctrl> {
           if(this.isPullUpFlip() && !this.isPullUpLoading()) {
             this.isPullUpLoading(true);
             this.pullUpLabel('Chargement...');
-            lookForNextDepartures(this, this.lastArrivalTime());
+            lookForNextDepartures(this, Utils.DateTime.addMinutes(this.lastDepartureTime(), 1));
           } else {
             this.pullUpProgress(0);
             this.isPullUpFlip(false);
@@ -217,7 +217,7 @@ export class Departures implements m.Module<Ctrl> {
         if(pullUpLabel) pullUpLabel.textContent = label;
       }),
 
-      lastArrivalTime: m.prop(),
+      lastDepartureTime: m.prop(),
 
       isScrollingDepartures: m.prop(false)
     };
@@ -229,32 +229,43 @@ export class Departures implements m.Module<Ctrl> {
 }
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
-  native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at).then((trip) => {
+  var te = Utils.DateTime.addHours(at, 2);
+  native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1).then((trip) => {
     m.startComputation();
-    var departure = tripToDeparture(trip);
-    ctrl.departures().push(departure);
-    sessionStorage.setItem(departure.id, JSON.stringify(trip));
-    ctrl.currentPageSize(ctrl.currentPageSize() + 1);
-    ctrl.lastArrivalTime(departure.endTime);
-    if(isMoreItemsNeeded(ctrl)) {
-      lookForNextDepartures(ctrl, departure.endTime);
+    if(trip.length > 0) {
+      var departure = tripToDeparture(trip);
+      ctrl.departures().push(departure);
+      sessionStorage.setItem(departure.id, JSON.stringify(trip));
+      ctrl.currentPageSize(ctrl.currentPageSize() + 1);
+      ctrl.lastDepartureTime(departure.startTime);
+      if(isMoreItemsNeeded(ctrl)) {
+        lookForNextDepartures(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
+      } else {
+        ctrl.currentPageSize(0);
+      }
     } else {
-      ctrl.currentPageSize(0);
+      ctrl.lastDepartureTime(te);
+      console.log(te);
+      lookForNextDepartures(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
     }
     m.endComputation();
   });
 }
 
-function tripToDeparture(trip: StopTime[]): Departure {
-  var startTime = _.head(trip).departureTime;
-  var endTime = _.last(trip).arrivalTime;
-  var id = startTime.getTime() + '|' + endTime.getTime();
+function tripToDeparture(trip: ArrivalTime[]): Departure {
+  var startTime = _.head(trip).departure;
+  var endTime = _.last(trip).arrival;
+  var id = startTime + '|' + endTime;
+  var nbSteps = Object.keys(_.groupBy(trip, (arrivalTime: ArrivalTime) => {
+    return arrivalTime.tripId;
+  })).length;
+
   return {
     startId: _.head(trip).stopId,
     endId: _.last(trip).stopId,
-    startTime: startTime,
-    endTime: endTime,
-    nbSteps: trip.length,
+    startTime: new Date(startTime),
+    endTime: new Date(endTime),
+    nbSteps: nbSteps,
     id: native.Cheminot.isMocked() ? id + '|' + Date.now() : id
   };
 }

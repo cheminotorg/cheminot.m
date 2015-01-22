@@ -3,15 +3,19 @@ var exec = require('cordova/exec');
 var Cheminot = function() {
 };
 
-Cheminot.init = function() {
-    exec(null, null, "Cheminot", "init", []);
+Cheminot.init = function(success, fail) {
+  exec(success, fail, "Cheminot", "init", []);
 };
 
-Cheminot.lookForBestTrip = function(vsId, veId, at, success, fail) {
-    exec(function success(result) {
-        var trip = JSON.parse(result);
-        success && success(trip);
-    }, fail, "Cheminot", "lookForBestTrip", [vsId, veId, at.getTime()]);
+Cheminot.lookForBestTrip = function(vsId, veId, at, te, max, success, fail) {
+  exec(function (result) {
+    try {
+      var trip = JSON.parse(result);
+      success && success(trip);
+    } catch(e) {
+      fail && fail(e);
+    }
+  }, fail, "Cheminot", "lookForBestTrip", [vsId, veId, at, te, max]);
 };
 
 module.exports = Cheminot;

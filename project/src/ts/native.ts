@@ -52,15 +52,22 @@ export module Cheminot {
     return d.promise;
   }
 
-  export function lookForBestTrip (vsId: string, veId: string, at: Date): Q.Promise<StopTime[]> {
-    var timestamp = at.getTime() / 1000;
-    var d = Q.defer<StopTime[]>();
-    var success = (stopTimes: StopTime[]) => d.resolve(stopTimes);
+  export function lookForBestTrip (vsId: string, veId: string, at: Date, te: Date, max: number): Q.Promise<ArrivalTime[]> {
+    var atTimestamp = at.getTime() / 1000;
+    var teTimestamp = te.getTime() / 1000;
+    var d = Q.defer<ArrivalTime[]>();
+    var success = (arrivalTimes: ArrivalTime[]) => {
+      d.resolve(arrivalTimes.map((arrivalTime) => {
+        arrivalTime.arrival = arrivalTime.arrival * 1000;
+        arrivalTime.departure = arrivalTime.departure * 1000;
+        return arrivalTime;
+      }));
+    }
     var error = (e: string) => d.reject(e);
     if(isMocked()) {
-      Mock.lookForBestTrip(vsId, veId, timestamp, success, error);
+      Mock.lookForBestTrip(vsId, veId, atTimestamp, teTimestamp, max, success, error);
     } else {
-      cordova.plugins.Cheminot.lookForBestTrip(vsId, veId, timestamp, success, error);
+      cordova.plugins.Cheminot.lookForBestTrip(vsId, veId, atTimestamp, teTimestamp, max, success, error);
     }
     return d.promise;
   }

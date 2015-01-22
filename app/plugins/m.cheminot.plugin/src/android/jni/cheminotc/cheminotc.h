@@ -2,14 +2,18 @@
 #include <map>
 #include <list>
 #include <memory>
-#include <../jsoncpp/json/json.h>
+#include "protobuf/cheminotBuf.pb.h"
+#include <json/json.h>
 
 namespace cheminotc {
 
+  typedef google::protobuf::Map< std::string,m::cheminot::data::Vertice> Graph;
+  typedef google::protobuf::Map<std::string,m::cheminot::data::CalendarExceptions> CalendarDates;
+
   struct StopTime {
     std::string tripId;
-    struct tm arrival;
-    struct tm departure;
+    tm arrival;
+    tm departure;
     int pos;
   };
 
@@ -22,30 +26,78 @@ namespace cheminotc {
 
   struct ArrivalTime {
     std::string stopId;
-    struct tm arrival;
-    struct tm departure;
+    tm arrival;
+    tm departure;
     std::string tripId;
-    Vertice *vertice;
     int pos;
   };
 
-  struct CalendarException {
+  struct CalendarDate {
     std::string serviceId;
-    struct tm date;
+    tm date;
     int exceptionType;
   };
+
+  struct Calendar {
+    std::string serviceId;
+    std::unordered_map<std::string, bool> week;
+    tm startDate;
+    tm endDate;
+  };
+
+  struct Trip {
+    std::string id;
+    std::unique_ptr<Calendar> calendar;
+    std::string direction;
+  };
+
+  typedef std::map<time_t, ArrivalTime> ArrivalTimeFunc; //TODO unordered_map
+
+  typedef std::unordered_map<std::string, ArrivalTimeFunc> ArrivalTimesFunc;
+
+  typedef std::unordered_map<std::string, std::shared_ptr<Vertice>> VerticesCache;
+
+  typedef std::unordered_map<std::string, std::list<std::shared_ptr<CalendarDate>>> CalendarDatesCache;
+
+  typedef std::unordered_map<std::string, std::shared_ptr<Trip>> TripsCache;
+
+  tm getNow();
 
   sqlite3* openConnection(std::string path);
 
   std::string getVersion(sqlite3 *handle);
 
-  std::map<std::string, Vertice> buildGraph(sqlite3 *handle);
+  void parseGraph(std::string path, Graph *graph);
 
-  std::map<std::string, std::list<CalendarException>> getCalendarExceptions(sqlite3 *handle);
+  void parseCalendarDates(std::string content, CalendarDates *calendarDates);
 
-  std::list<ArrivalTime> lookForBestTrip(sqlite3 *handle, std::map<std::string, Vertice> *graph, std::map<std::string, std::list<CalendarException>> *calendarExceptions, std::string vsId, std::string veId, struct tm at);
+  ArrivalTimesFunc refineArrivalTimes(sqlite3 *handle, Graph *graph, TripsCache *tripsCache, VerticesCache *verticesCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
 
-  Json::Value serializeArrivalTimes(std::list<ArrivalTime> arrivalTimes);
+  std::list<ArrivalTime> lookForBestTrip(sqlite3 *handle, Graph *graph, TripsCache *tripsCache, VerticesCache *verticesCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
 
-  struct tm asDateTime(time_t t);
+  bool hasSameDateTime(const tm &a, const tm &b);
+
+  bool datetimeIsBeforeEq(const tm &a, const tm &b);
+
+  bool dateIsBeforeEq(const tm &a, const tm &b);
+
+  bool timeIsBeforeEq(const tm &a, const tm &b);
+
+  bool datetimeIsBeforeNotEq(const tm &a, const tm &b);
+
+  std::string formatTime(tm time);
+
+  std::string formatDate(tm time);
+
+  std::string formatDateTime(tm datetime);
+
+  tm asDateTime(time_t t);
+
+  tm addMinutes(tm datetime, int n);
+
+  tm addHours(tm datetime, int n);
+
+  std::shared_ptr<Vertice> getVerticeFromGraph(Graph *graph, VerticesCache *verticesCache, std::string id);
+
+  Json::Value serializeArrivalTimes(Graph *graph, VerticesCache *verticesCache, std::list<ArrivalTime> arrivalTimes);
 }

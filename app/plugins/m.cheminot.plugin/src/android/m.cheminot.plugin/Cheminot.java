@@ -46,24 +46,28 @@ public class Cheminot extends CordovaPlugin {
     return true;
   }
 
-  private void init(CallbackContext cbc) {
-    String database = "cheminot.db";
-    try {
-      this.prepareDatabase(database);
-      String dbpath = this.cordova.getActivity().getDatabasePath(database).getAbsolutePath();
-      cbc.success(CheminotLib.init(dbpath));
-    } catch (IOException e) {
-      cbc.error(e.getMessage());
-    }
+  private void init(final CallbackContext cbc) {
+    final Activity activity = this.cordova.getActivity();
+    this.cordova.getThreadPool().execute(new Runnable() {
+        public void run() {
+          try {
+            String dbPath = copyFromAssets(activity, "cheminot.db");
+            String graphPath = copyFromAssets(activity, "graph");
+            String calendarDatesPath = copyFromAssets(activity, "calendar_dates");
+            cbc.success(CheminotLib.init(dbPath, graphPath, calendarDatesPath));
+          } catch (IOException e) {
+            cbc.error(e.getMessage());
+          }
+        }
+    });
   }
 
-  private void prepareDatabase(String database) throws IOException {
-    Activity activity = this.cordova.getActivity();
-    File dbFile = activity.getDatabasePath(database);
+  private static String copyFromAssets(Activity activity, String file) throws IOException {
+    File dbFile = activity.getDatabasePath(file);
     if(!dbFile.exists()){
       File dbDirectory = new File(dbFile.getParent());
       dbDirectory.mkdirs();
-      InputStream in = activity.getApplicationContext().getAssets().open(database);
+      InputStream in = activity.getApplicationContext().getAssets().open(file);
       OutputStream out = new FileOutputStream(dbFile);
       byte[] buf = new byte[1024];
       int len;
@@ -73,16 +77,23 @@ public class Cheminot extends CordovaPlugin {
       in.close();
       out.close();
     }
+    return activity.getDatabasePath(file).getAbsolutePath();
   }
 
-  private void lookForBestTrip(JSONArray args, CallbackContext cbc) {
-    try {
-      String vsId = args.getString(0);
-      String veId = args.getString(1);
-      int at = args.getInt(2);
-      cbc.success(CheminotLib.lookForBestTrip(vsId, veId, at));
-    } catch (JSONException e) {
-      cbc.error(e.getMessage());
-    }
+  private void lookForBestTrip(final JSONArray args, final CallbackContext cbc) {
+      this.cordova.getThreadPool().execute(new Runnable() {
+          public void run() {
+            try {
+              String vsId = args.getString(0);
+              String veId = args.getString(1);
+              int at = args.getInt(2);
+              int te = args.getInt(3);
+              int max = args.getInt(4);
+              cbc.success(CheminotLib.lookForBestTrip(vsId, veId, at, te, max));
+            } catch (JSONException e) {
+              cbc.error(e.getMessage());
+            }
+          }
+      });
   }
 }

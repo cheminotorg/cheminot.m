@@ -7,7 +7,7 @@ if [ -z "$TYPESCRIPT" ]
 then
     echo "Please provide typescript directory path."
 else
-    echo "---------------------"
+    echo "\n---------------------"
     echo "Installing build tool"
     echo "---------------------"
     npm install
@@ -51,3 +51,5 @@ else
     echo "------------------------------"
     tarifa run browser
 fi
+
+echo "\nDONE!"

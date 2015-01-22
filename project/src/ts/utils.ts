@@ -27,6 +27,14 @@ export module DateTime {
     var year = from.getFullYear();
     return moment(reference).date(date).month(month).year(year).toDate()
   }
+
+  export function addMinutes(date: Date, n: number): Date {
+    return moment(date).add(n, 'minutes').toDate();
+  }
+
+  export function addHours(date: Date, n: number): Date {
+    return moment(date).add(n, 'hours').toDate();
+  }
 }
 
 export module m {

@@ -9,7 +9,7 @@ export interface Ctrl {
   scope: () => HTMLElement;
   shouldBeHidden: () => boolean;
   id: string;
-  trip: () => StopTime[];
+  trip: () => ArrivalTime[];
   iscroll: () => IScroll;
   adaptWrapperTop: (ctrl: Ctrl) => void;
 }
@@ -22,13 +22,13 @@ function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
   if(ctrl.shouldBeHidden()) {
     return new Array<m.VirtualElement>();
   } else {
-    return ctrl.trip().map((stopTime, index) => {
+    return ctrl.trip().map((arrivalTime, index) => {
 
-      var waiting = moment(stopTime.departureTime).diff(moment(stopTime.arrivalTime));
+      var waiting = moment(arrivalTime.departure).diff(moment(arrivalTime.arrival));
       var hasChangement = (() => {
         var prev = ctrl.trip()[index - 1];
         if(prev) {
-          return prev.tripId !== stopTime.tripId;
+          return prev.tripId !== arrivalTime.tripId;
         } else {
           return false;
         }
@@ -41,18 +41,18 @@ function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
             ctrl.iscroll().refresh();
           }
         },
-        key: stopTime.stopId,
+        key: arrivalTime.stopId,
         class: hasChangement ? 'changement' : ''
       };
 
       return m('li', attrs, [
         m('div.time', {}, [
           m('span.alarm-clock'),
-          m('span.at', {}, formatTime(stopTime.departureTime))
+          m('span.at', {}, formatTime(new Date(arrivalTime.departure)))
         ]),
         m('span.line'),
         m('div.stop', {}, [
-          m('span.name', {}, stopTime.stopName),
+          m('span.name', {}, arrivalTime.stopName),
           m('span.waiting', {}, waiting > 0 ? moment.duration(waiting).minutes() + ' min': '')
         ])
       ])
