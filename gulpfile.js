@@ -79,6 +79,9 @@ gulp.task('ts', ['clean:js'], function() {
       noImplicitAny: true,
       safe: true
     }))
+    .on('error', function (err) {
+      console.log(err);
+    })
     .pipe(gulp.dest(Assets.ts.dest.dir));
 });
 

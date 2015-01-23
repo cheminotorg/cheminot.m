@@ -17,6 +17,7 @@
     "qstart": "0.2.0"
   },
   "devDependencies": {
-    "preprocess": "latest"
+    "preprocess": "latest",
+    "chokidar": "latest"
   }
 }
