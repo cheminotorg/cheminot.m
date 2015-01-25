@@ -48,7 +48,7 @@ function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
       return m('li', attrs, [
         m('div.time', {}, [
           m('span.alarm-clock'),
-          m('span.at', {}, formatTime(new Date(arrivalTime.departure)))
+          m('span.at', {}, formatTime(arrivalTime.departure))
         ]),
         m('span.line'),
         m('div.stop', {}, [
@@ -82,6 +82,8 @@ export class Trip implements m.Module<Ctrl> {
   controller(): Ctrl {
     var id = m.route.param("id");
     var scope = () => <HTMLElement> document.querySelector('#trip');
+    var trip = JSON.parse(sessionStorage.getItem(id));
+    var arrivalTimes = trip ? trip.arrivalTimes : [];
     return {
       scope: scope,
 
@@ -92,7 +94,7 @@ export class Trip implements m.Module<Ctrl> {
       id: id,
 
       trip: () => {
-        return JSON.parse(sessionStorage.getItem(id));
+        return arrivalTimes;
       },
 
       iscroll: _.once(function() {

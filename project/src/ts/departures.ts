@@ -232,10 +232,9 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
   var te = Utils.DateTime.addHours(at, 2);
   native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1).then((trip) => {
     m.startComputation();
-    if(trip.length > 0) {
+    if(trip.arrivalTimes.length > 0) {
       var departure = tripToDeparture(trip);
       ctrl.departures().push(departure);
-      sessionStorage.setItem(departure.id, JSON.stringify(trip));
       ctrl.currentPageSize(ctrl.currentPageSize() + 1);
       ctrl.lastDepartureTime(departure.startTime);
       if(isMoreItemsNeeded(ctrl)) {
@@ -252,21 +251,18 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
   });
 }
 
-function tripToDeparture(trip: ArrivalTime[]): Departure {
-  var startTime = _.head(trip).departure;
-  var endTime = _.last(trip).arrival;
-  var id = startTime + '|' + endTime;
-  var nbSteps = Object.keys(_.groupBy(trip, (arrivalTime: ArrivalTime) => {
-    return arrivalTime.tripId;
-  })).length;
+function tripToDeparture(trip: ArrivalTimes): Departure {
+  var start = _.head(trip.arrivalTimes);
+  var end = _.last(trip.arrivalTimes);
+  var nbSteps = Object.keys(_.groupBy(trip.arrivalTimes, arrivalTime => arrivalTime.tripId)).length;
 
   return {
-    startId: _.head(trip).stopId,
-    endId: _.last(trip).stopId,
-    startTime: new Date(startTime),
-    endTime: new Date(endTime),
+    startId: start.stopId,
+    endId: end.stopId,
+    startTime: start.departure,
+    endTime: end.arrival,
     nbSteps: nbSteps,
-    id: native.Cheminot.isMocked() ? id + '|' + Date.now() : id
+    id: trip.id
   };
 }
 

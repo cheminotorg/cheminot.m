@@ -89,6 +89,7 @@ declare class IScroll {
 	x: number;
 	y: number;
 	directionY: number;
+	options: IScrollOptions;
 
 	// Events
 	on: (type: string, fn: () => void) => void;

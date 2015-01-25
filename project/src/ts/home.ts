@@ -291,13 +291,13 @@ export class Home implements m.Module<Ctrl> {
         ctrl.stations(Suggestions.search(inputStation.value));
       },
 
-      inputStationStartTerm: m.prop('Chartres'),
+      inputStationStartTerm: m.prop(''),
 
-      inputStationEndTerm: m.prop('Paris-Montparnasse'),
+      inputStationEndTerm: m.prop(''),
 
-      inputStationStartSelected: m.prop('StopPoint:OCETrain TER-87394007'),
+      inputStationStartSelected: m.prop(''),
 
-      inputStationEndSelected: m.prop('StopPoint:OCETrain TER-87391003'),
+      inputStationEndSelected: m.prop(''),
 
       isInputStationStartDisabled: m.prop(true),
 
@@ -322,11 +322,19 @@ export class Home implements m.Module<Ctrl> {
       iscroll: _.once(function() {
         var wrapper = this.scope().querySelector('#wrapper');
         var iscroll = new IScroll(wrapper);
+
         iscroll.on('scrollStart', () => {
+          if(native.Keyboard.isVisible()) {
+            iscroll.options.momentum = false;
+          } else {
+            iscroll.options.momentum = true;
+          }
           this.isScrollingStations(true);
         });
+
         iscroll.on('scrollEnd', () => {
           this.isScrollingStations(false);
+          iscroll.options.momentum = true;
         });
         return iscroll;
       }),

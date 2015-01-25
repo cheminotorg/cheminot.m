@@ -1,3 +1,8 @@
+interface ArrivalTimes {
+  id: string;
+  arrivalTimes: ArrivalTime[];
+}
+
 interface Departure {
   startId: string;
   endId: string;
@@ -10,8 +15,8 @@ interface Departure {
 interface ArrivalTime {
   stopId: string;
   stopName: string;
-  arrival: number;
-  departure: number;
+  arrival: Date;
+  departure: Date;
   tripId: string;
   pos: number;
 }
@@ -27,7 +32,7 @@ declare module cordova {
 
     module Cheminot {
       function init(success: (version: string) => void, error: (e: string) => void): void;
-      function lookForBestTrip(start: string, end: string, at: number, te: number, max: number, success: (stopsTime: ArrivalTime[]) => void, error: (e: string) => void): void;
+      function lookForBestTrip(start: string, end: string, at: Date, te: Date, max: number, success: (arrivalTime: ArrivalTime[]) => void, error: (e: string) => void): void;
     }
   }
 }

@@ -18,6 +18,10 @@ export module Keyboard {
     return d.promise;
   }
 
+  export function isVisible(): boolean {
+    return cordova.plugins.Keyboard.isVisible;
+  }
+
   export function close(): Q.Promise<void> {
     var d = Q.defer<void>();
     cordova.plugins.Keyboard.close();
@@ -52,23 +56,33 @@ export module Cheminot {
     return d.promise;
   }
 
-  export function lookForBestTrip (vsId: string, veId: string, at: Date, te: Date, max: number): Q.Promise<ArrivalTime[]> {
-    var atTimestamp = at.getTime() / 1000;
-    var teTimestamp = te.getTime() / 1000;
-    var d = Q.defer<ArrivalTime[]>();
-    var success = (arrivalTimes: ArrivalTime[]) => {
-      d.resolve(arrivalTimes.map((arrivalTime) => {
-        arrivalTime.arrival = arrivalTime.arrival * 1000;
-        arrivalTime.departure = arrivalTime.departure * 1000;
-        return arrivalTime;
-      }));
-    }
-    var error = (e: string) => d.reject(e);
-    if(isMocked()) {
-      Mock.lookForBestTrip(vsId, veId, atTimestamp, teTimestamp, max, success, error);
+  export function lookForBestTrip (vsId: string, veId: string, at: Date, te: Date, max: number): Q.Promise<ArrivalTimes> {
+    var d = Q.defer<ArrivalTimes>();
+    var id = hashTdspQuery(vsId, veId, at, te, max);
+    var tripFromCache = sessionStorage.getItem(id);
+
+    if(tripFromCache) {
+      d.resolve(JSON.parse(tripFromCache));
     } else {
-      cordova.plugins.Cheminot.lookForBestTrip(vsId, veId, atTimestamp, teTimestamp, max, success, error);
+      var success = (arrivalTimes: ArrivalTime[]) => {
+        var trip = { id: id, arrivalTimes: arrivalTimes };
+        sessionStorage.setItem(id, JSON.stringify(trip));
+        d.resolve(trip);
+      }
+
+      var error = (e: string) => d.reject(e);
+
+      if(isMocked()) {
+        Mock.lookForBestTrip(vsId, veId, at, te, max, success, error);
+      } else {
+        cordova.plugins.Cheminot.lookForBestTrip(vsId, veId, at, te, max, success, error);
+      }
     }
+
     return d.promise;
+  }
+
+  function hashTdspQuery(vs: string, ve: string, at: Date, te: Date, max: number): string {
+    return [vs, ve, at.getTime(), te.getTime(), max].join('|');
   }
 }
