@@ -77,6 +77,15 @@ export function search(term: string): Station[] {
   return (term.length > 0) ? step(term.toLowerCase(), STATIONS, []) : [];
 }
 
+export function getStationByTerm(term: string): Station {
+  var results = search(term);
+  if(results.length === 1) {
+    return results[0];
+  } else {
+    return null;
+  }
+}
+
 export function init(): Q.Promise<any> {
   return getStationsTree();
 }

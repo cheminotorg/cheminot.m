@@ -27,6 +27,7 @@ export interface Ctrl {
   inputStationEndSelected: (value?: string) => string;
   isInputStationStartDisabled: (value?: boolean) => boolean;
   isInputStationEndDisabled: (value?: boolean) => boolean;
+  currentTab: (value?: string) => string;
   isTodayTabSelected: (value?: boolean) => boolean;
   isTomorrowTabSelected: (value?: boolean) => boolean;
   isOtherTabSelected: (value?: boolean) => boolean;
@@ -74,10 +75,10 @@ function renderTabs(ctrl: Ctrl) {
 
   var hint = m("div", { class: "hint" });
 
-  return m("ul", { class: "top-bar tabs"}, [
-    m("li", _.merge(todayAttrs, attributes), ["Aujourd'hui", hint]),
-    m("li", _.merge(tomorrowAttrs, attributes), ["Demain", hint]),
-    m("li", _.merge(otherAttrs, attributes), ["Autre", hint])
+  return m('ul', { class: 'top-bar tabs'}, [
+    m('li', _.merge(todayAttrs, attributes), ["Aujourd'hui", hint]),
+    m('li', _.merge(tomorrowAttrs, attributes), ['Demain', hint]),
+    m('li', _.merge(otherAttrs, attributes), ['Autre', hint])
   ])
 }
 
@@ -102,7 +103,6 @@ function renderInputsStation(ctrl: Ctrl) {
         if(!el.getAttribute('disabled')) el.focus();
       }
     };
-
     return View.handleAttributes(attrs, (name, value) => {
       if(name == 'disabled') {
         return isStartStation ? ctrl.isInputStationStartDisabled() : ctrl.isInputStationEndDisabled();
@@ -243,13 +243,24 @@ function render(ctrl: Ctrl) {
 export class Home implements m.Module<Ctrl> {
 
   controller(): Ctrl {
+    var startTerm = m.route.param('start') || '';
+    var endTerm = m.route.param('end') || '';
+    var startStation = startTerm ? Suggestions.getStationByTerm(startTerm) : null;
+    var endStation = endTerm ? Suggestions.getStationByTerm(endTerm) : null;
+    var tab = m.route.param('tab');
+    var currentTab = m.prop(tab);
+    var at = (() => {
+      var x = parseInt(m.route.param('at'), 10);
+      return (x ? new Date(x) : new Date());
+    })();
+
     return {
       scope: () => {
         return <HTMLElement> document.querySelector('#home');
       },
 
       shouldBeHidden: () => {
-        return !Routes.matchHome(m.route());
+        return !Routes.matchHome(tab, m.route(), startTerm, endTerm, at);
       },
 
       onTabTouched: (ctrl: Ctrl, e: Event) => {
@@ -291,27 +302,35 @@ export class Home implements m.Module<Ctrl> {
         ctrl.stations(Suggestions.search(inputStation.value));
       },
 
-      inputStationStartTerm: m.prop(''),
+      inputStationStartTerm: m.prop(startTerm),
 
-      inputStationEndTerm: m.prop(''),
+      inputStationEndTerm: m.prop(endTerm),
 
-      inputStationStartSelected: m.prop(''),
+      inputStationStartSelected: m.prop(startStation ? startStation.id : ''),
 
-      inputStationEndSelected: m.prop(''),
+      inputStationEndSelected: m.prop(endStation ? endStation.id : ''),
 
       isInputStationStartDisabled: m.prop(true),
 
       isInputStationEndDisabled: m.prop(true),
 
-      isTodayTabSelected: m.prop(true),
+      currentTab: currentTab,
 
-      isTomorrowTabSelected: m.prop(false),
+      isTodayTabSelected: Utils.m.prop(tab == 'today', function(active) {
+        if(active) currentTab('today');
+      }),
 
-      isOtherTabSelected: m.prop(false),
+      isTomorrowTabSelected: Utils.m.prop(tab == 'tomorrow', (active) => {
+        if(active) currentTab('tomorrow');
+      }),
 
-      inputDateSelected: m.prop(moment().format('YYYY-MM-DD')),
+      isOtherTabSelected: Utils.m.prop(tab == 'other', function(active) {
+        if(active) currentTab('other');
+      }),
 
-      inputTimeSelected: m.prop(moment().format('HH:mm')),
+      inputDateSelected: m.prop(moment(at).format('YYYY-MM-DD')),
+
+      inputTimeSelected: m.prop(moment(at).format('HH:mm')),
 
       isViewportUp: m.prop(false),
 
@@ -376,10 +395,10 @@ export class Home implements m.Module<Ctrl> {
       },
 
       onSubmitTouched: (ctrl: Ctrl, e: Event) => {
-        var atDate = moment(ctrl.inputDateSelected()).toDate();
-        var atTime = moment(ctrl.inputTimeSelected(), 'hh:mm').toDate();
-        var atDateTime = Utils.DateTime.setSameTime(atTime, atDate);
-        m.route(Routes.departures(ctrl.inputStationStartSelected(), ctrl.inputStationEndSelected(), atDateTime.getTime()));
+        var atDateTime = inputDateTimeSelected(ctrl);
+        var uri = Routes.home(ctrl.currentTab(), ctrl.inputStationStartTerm(), ctrl.inputStationEndTerm(), inputDateTimeSelected(ctrl));
+        window.history.pushState({}, '', '#' + uri);
+        m.route(Routes.departures(ctrl.inputStationStartSelected(), ctrl.inputStationEndSelected(), atDateTime));
       },
 
       onScrollStations: (ctrl: Ctrl, e: Event) => {
@@ -546,6 +565,13 @@ function setInputStationValue(ctrl: Ctrl, input: HTMLElement, value: string): vo
 
 function setInputStationSelected(ctrl: Ctrl, input: HTMLElement, id: string): void {
   isInputStationStart(input) ? ctrl.inputStationStartSelected(id) : ctrl.inputStationEndSelected(id);
+}
+
+function inputDateTimeSelected(ctrl: Ctrl): Date {
+  var atDate = moment(ctrl.inputDateSelected()).toDate();
+  var atTime = moment(ctrl.inputTimeSelected(), 'hh:mm').toDate();
+  var atDateTime = Utils.DateTime.setSameTime(atTime, atDate);
+  return atDateTime;
 }
 
 function isTodayTab(el: HTMLElement): boolean {

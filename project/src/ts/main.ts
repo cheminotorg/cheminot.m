@@ -19,8 +19,9 @@ import native = require('native');
 
 Q.all([qstart, Suggestions.init(), native.Cheminot.init()]).then(() => {
   m.route.mode = 'hash';
-  m.route(document.querySelector('#viewport'), "/", {
-    "/": App.get(),
+  m.route(document.querySelector('#viewport'), "/query/today", {
+    "/query/:tab/:start/:end/:at": App.get(),
+    "/query/:tab": App.get(),
     "/departures/:start/:end/:at": App.get(),
     "/trip/:id": App.get()
   });

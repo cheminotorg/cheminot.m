@@ -1,3 +1,8 @@
+interface Station {
+  name: string;
+  id: string;
+}
+
 interface ArrivalTimes {
   id: string;
   arrivalTimes: ArrivalTime[];
