@@ -1,5 +1,6 @@
 import m = require('mithril');
 import Q = require('q');
+import _ = require('lodash');
 
 var STATIONS: any[] = null;
 
@@ -74,7 +75,9 @@ export function search(term: string): Station[] {
     }
   }
 
-  return (term.length > 0) ? step(term.toLowerCase(), STATIONS, []) : [];
+  var results =  (term.length > 0) ? step(term.toLowerCase(), STATIONS, []) : [];
+  results = _.take(results, 100);
+  return results;
 }
 
 export function getStationByTerm(term: string): Station {
