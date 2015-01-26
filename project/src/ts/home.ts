@@ -97,10 +97,12 @@ function renderInputsStation(ctrl: Ctrl) {
     var attrs: View.Attributes = {
       disabled: "true",
       type: "text",
-      onkeyup: _.partial(ctrl.onInputStationKeyUp, ctrl),
       value: isStartStation ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm(),
       config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
         if(!el.getAttribute('disabled')) el.focus();
+        if (!isUpdate) {
+          el.addEventListener('input', _.partial(ctrl.onInputStationKeyUp, ctrl))
+        }
       }
     };
     return View.handleAttributes(attrs, (name, value) => {
@@ -297,9 +299,11 @@ export class Home implements m.Module<Ctrl> {
       },
 
       onInputStationKeyUp: (ctrl: Ctrl, e: Event) => {
-        var inputStation = currentInputStation(ctrl);
+        var inputStation = <HTMLInputElement> e.currentTarget;
+        m.startComputation();
         setInputStationValue(ctrl, inputStation, inputStation.value);
         ctrl.stations(Suggestions.search(inputStation.value));
+        m.endComputation();
       },
 
       inputStationStartTerm: m.prop(startTerm),
