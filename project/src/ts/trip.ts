@@ -4,6 +4,7 @@ import _ = require('lodash');
 import IScroll = require('IScroll');
 import moment = require('moment');
 import View = require('view');
+import native = require('native');
 
 export interface Ctrl {
   scope: () => HTMLElement;
@@ -84,7 +85,8 @@ export class Trip implements m.Module<Ctrl> {
     var scope = () => <HTMLElement> document.querySelector('#trip');
     var trip = JSON.parse(sessionStorage.getItem(id));
     var arrivalTimes = trip ? trip.arrivalTimes : [];
-    return {
+
+    var ctrl = {
       scope: scope,
 
       shouldBeHidden: () => {
@@ -109,6 +111,14 @@ export class Trip implements m.Module<Ctrl> {
         wrapper.style.top = top + 'px';
       }
     };
+
+    native.onBackButton('trip', () => {
+      if(!ctrl.shouldBeHidden()) {
+        history.back();
+      }
+    });
+
+    return ctrl;
   }
 
   view(ctrl: Ctrl) {

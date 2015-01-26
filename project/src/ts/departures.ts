@@ -118,7 +118,8 @@ export class Departures implements m.Module<Ctrl> {
   controller(): Ctrl {
     var at = parseInt(m.route.param("at"), 10);
     var scope = () => <HTMLElement> document.querySelector('#departures');
-    return {
+
+    var ctrl = {
       scope: scope,
 
       shouldBeHidden: () => {
@@ -221,6 +222,14 @@ export class Departures implements m.Module<Ctrl> {
 
       isScrollingDepartures: m.prop(false)
     };
+
+    native.onBackButton('departures', () => {
+      if(!ctrl.shouldBeHidden()) {
+        history.back();
+      }
+    });
+
+    return ctrl;
   }
 
   view(ctrl: Ctrl) {

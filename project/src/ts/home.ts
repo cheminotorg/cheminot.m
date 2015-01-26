@@ -247,20 +247,20 @@ export class Home implements m.Module<Ctrl> {
     var endTerm = m.route.param('end') || '';
     var startStation = startTerm ? Suggestions.getStationByTerm(startTerm) : null;
     var endStation = endTerm ? Suggestions.getStationByTerm(endTerm) : null;
-    var tab = m.route.param('tab');
+    var tab = m.route.param('tab') || 'today';
     var currentTab = m.prop(tab);
     var at = (() => {
       var x = parseInt(m.route.param('at'), 10);
       return (x ? new Date(x) : new Date());
     })();
 
-    return {
+    var ctrl = {
       scope: () => {
         return <HTMLElement> document.querySelector('#home');
       },
 
       shouldBeHidden: () => {
-        return !Routes.matchHome(tab, m.route(), startTerm, endTerm, at);
+        return !Routes.matchHome(currentTab(), m.route(), startTerm, endTerm, at);
       },
 
       onTabTouched: (ctrl: Ctrl, e: Event) => {
@@ -417,19 +417,22 @@ export class Home implements m.Module<Ctrl> {
         } else if(wrapper.classList.contains('time')) {
           ctrl.inputTimeSelected(input.value);
         }
-      }
+      },
     }
+
+    native.onBackButton('home', () => {
+      if(!ctrl.shouldBeHidden()) {
+        var input = ctrl.isInputStationStartDisabled() ? getInputStationEnd(ctrl) : getInputStationStart(ctrl);
+        resetInputStationsPosition(ctrl, input);
+      }
+    });
+
+    return ctrl;
   }
 
   view(ctrl: Ctrl) {
     return render(ctrl);
   }
-}
-
-var home = new Home();
-
-export function get(): Home {
-  return home;
 }
 
 /** BACK STAGE */
@@ -438,9 +441,17 @@ function isInputStationStart(el: Element): boolean {
   return el.getAttribute('name') == "start";
 }
 
+function getInputStationStart(ctrl: Ctrl): HTMLInputElement {
+  return <HTMLInputElement> ctrl.scope().querySelector('.input.start input');
+}
+
+function getInputStationEnd(ctrl: Ctrl): HTMLInputElement {
+  return <HTMLInputElement> ctrl.scope().querySelector('.input.end input');
+}
+
 function hideInputStationEnd(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var inputStationEnd = <HTMLElement> ctrl.scope().querySelector('.input.end');
-  var inputStationStart = <HTMLElement> ctrl.scope().querySelector('.input.start');
+  var inputStationEnd = <HTMLInputElement> ctrl.scope().querySelector('.input.end');
+  var inputStationStart = <HTMLInputElement> ctrl.scope().querySelector('.input.start');
   inputStationStart.classList.remove('animating');
   inputStationEnd.classList.add('animating');
   var translateY = inputStationStart.offsetTop - inputStationEnd.offsetTop;
@@ -584,4 +595,11 @@ function isTomorrowTab(el: HTMLElement): boolean {
 
 function isOtherTab(el: HTMLElement): boolean {
   return el.classList.contains('other');
+}
+
+
+var home = new Home();
+
+export function get(): Home {
+  return home;
 }

@@ -1,6 +1,18 @@
 import Mock = require('mock');
 import Q = require('q');
 
+export interface BackButtonHandlers {
+  [index: string]: (e: Event) => void;
+}
+
+var handlers: BackButtonHandlers = {};
+export function onBackButton(key: string, f: (e: Event) => void) {
+  var h = handlers[key];
+  if(h) document.removeEventListener('backbutton', h);
+  handlers[key] = f;
+  document.addEventListener('backbutton', f, false);
+};
+
 export module Keyboard {
 
   export function show(): Q.Promise<void> {
