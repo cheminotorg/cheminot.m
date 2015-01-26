@@ -11,7 +11,7 @@ export module Keyboard {
       if(cordova.plugins.Keyboard.isVisible) {
         clearInterval(intervalId);
         d.resolve(null);
-      } else if(Date.now() > start + 2000) {
+      } else if((Date.now() > start + 2000) || Cheminot.isMocked()) {
         d.reject(null);
       }
     }, 75);
@@ -83,6 +83,7 @@ export module Cheminot {
   }
 
   function hashTdspQuery(vs: string, ve: string, at: Date, te: Date, max: number): string {
-    return [vs, ve, at.getTime(), te.getTime(), max].join('|');
+    var seed = isMocked() ? Date.now() : '';
+    return [vs, ve, at.getTime(), te.getTime(), max, seed].join('|');
   }
 }

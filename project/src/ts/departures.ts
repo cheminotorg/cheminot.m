@@ -244,7 +244,6 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
       }
     } else {
       ctrl.lastDepartureTime(te);
-      console.log(te);
       lookForNextDepartures(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
     }
     m.endComputation();

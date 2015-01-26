@@ -280,7 +280,7 @@ export class Home implements m.Module<Ctrl> {
         Q.all([hideInput(ctrl), hideDateTimePanel(ctrl)]).then(() => {
           return moveUpViewport(ctrl).then(() => {
             enableInputStation(ctrl, inputStation);
-            native.Keyboard.show().then(() => m.endComputation());
+            native.Keyboard.show().fin(() => m.endComputation())
           });
         });
       },
