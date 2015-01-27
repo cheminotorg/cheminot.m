@@ -187,5 +187,28 @@ export module DOM {
       });
       return el;
     }
+
+    export function touchend(el: HTMLElement, handler: (e: Event) => void): Element {
+      var istouchend = false;
+      el.addEventListener('touchstart', (e) => {
+        if(!el.classList.contains('touching')) {
+          setTimeout(() => {
+            if(!istouchend) {
+              el.classList.add('touching');
+            } else {
+              istouchend = false;
+              el.classList.remove('touching');
+            }
+          }, 400);
+        }
+      });
+
+      el.addEventListener('touchend', (e) =>{
+        istouchend = !el.classList.contains('touching')
+        el.classList.remove('touching');
+        handler(e);
+      });
+      return el;
+    }
   }
 }

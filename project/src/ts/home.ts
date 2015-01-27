@@ -147,12 +147,12 @@ function renderInputsStation(ctrl: Ctrl) {
 /// RENDER STATION SUGGESTIONS
 
 function renderStations(ctrl: Ctrl) {
-  var term = ctrl.inputStationStartTerm() || ctrl.inputStationEndTerm();
+  var term = ctrl.isInputStationEndDisabled() ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
   var stationAttrs = function(index: number) {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if (!isUpdate) {
-          el.addEventListener('touchend', _.partial(ctrl.onStationSelected, ctrl));
+          Utils.DOM.Event.touchend(el, _.partial(ctrl.onStationSelected, ctrl));
         }
         if((index + 1) === ctrl.stations().length) {
           ctrl.adaptWrapperTop(ctrl);
@@ -287,6 +287,7 @@ export class Home implements m.Module<Ctrl> {
         var station = <HTMLElement> e.currentTarget;
         var inputStation = <HTMLElement> station.querySelector('input');
         var hideInput = isInputStationStart(inputStation) ? hideInputStationEnd : hideInputStationStart;
+        isInputStationStart(inputStation) ? ctrl.inputStationStartTerm('') : ctrl.inputStationEndTerm('');
         m.startComputation();
         setInputStationValue(ctrl, inputStation, '');
         setInputStationSelected(ctrl, inputStation, '');
@@ -340,7 +341,13 @@ export class Home implements m.Module<Ctrl> {
 
       isSubmitDisabled: m.prop(true),
 
-      isScrollingStations: m.prop(false),
+      isScrollingStations: Utils.m.prop(false, (isScrolling) => {
+        if(isScrolling) {
+          document.body.classList.add('scrolling');
+        } else {
+          document.body.classList.remove('scrolling');
+        }
+      }),
 
       iscroll: _.once(function() {
         var wrapper = this.scope().querySelector('#wrapper');
@@ -348,16 +355,13 @@ export class Home implements m.Module<Ctrl> {
 
         iscroll.on('scrollStart', () => {
           if(native.Keyboard.isVisible()) {
-            iscroll.options.momentum = false;
-          } else {
-            iscroll.options.momentum = true;
+            iscroll.stop();
           }
           this.isScrollingStations(true);
         });
 
         iscroll.on('scrollEnd', () => {
           this.isScrollingStations(false);
-          iscroll.options.momentum = true;
         });
         return iscroll;
       }),
@@ -372,7 +376,7 @@ export class Home implements m.Module<Ctrl> {
       stations: m.prop([]),
 
       onStationSelected: (ctrl: Ctrl, e: Event) => {
-        if(!ctrl.isScrollingStations()) {
+        if(!ctrl.isScrollingStations() && !native.Keyboard.isVisible()) {
           var station = <HTMLElement> e.currentTarget;
           var id = station.getAttribute('data-id');
           var name = station.getAttribute('data-name');
@@ -399,10 +403,12 @@ export class Home implements m.Module<Ctrl> {
       },
 
       onSubmitTouched: (ctrl: Ctrl, e: Event) => {
-        var atDateTime = inputDateTimeSelected(ctrl);
-        var uri = Routes.home(ctrl.currentTab(), ctrl.inputStationStartTerm(), ctrl.inputStationEndTerm(), inputDateTimeSelected(ctrl));
-        window.history.pushState({}, '', '#' + uri);
-        m.route(Routes.departures(ctrl.inputStationStartSelected(), ctrl.inputStationEndSelected(), atDateTime));
+        if(canBeSubmitted(ctrl)) {
+          var atDateTime = inputDateTimeSelected(ctrl);
+          var uri = Routes.home(ctrl.currentTab(), ctrl.inputStationStartTerm(), ctrl.inputStationEndTerm(), inputDateTimeSelected(ctrl));
+          window.history.pushState({}, '', '#' + uri);
+          m.route(Routes.departures(ctrl.inputStationStartSelected(), ctrl.inputStationEndSelected(), atDateTime));
+        }
       },
 
       onScrollStations: (ctrl: Ctrl, e: Event) => {

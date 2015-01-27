@@ -7,6 +7,16 @@ global-reset()
     -webkit-user-select: none
 }
 
+body:not(.scrolling) .touching {
+    transition: 0.4s
+    background: blue
+    color: #FFF !important
+
+    .match {
+        color: #FFF !important
+    }
+}
+
 input {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
     -webkit-appearance: none
