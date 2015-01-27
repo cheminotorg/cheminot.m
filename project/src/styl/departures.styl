@@ -1,5 +1,27 @@
 #departures {
 
+    .empty-loading {
+        z-index: 1
+        position: absolute
+        top: 45%
+        color: blue
+        padding: 10px
+        text-align: center
+        width: 100%
+
+        .label {
+            position: relative
+            icon_monstr('gears', blue)
+
+            &:before {
+                font-size: 100px
+                position: absolute
+                top: -100px
+                left: 10px
+            }
+        }
+    }
+
     #wrapper {
         background: grey-blue
         position: absolute
@@ -38,6 +60,9 @@
         }
 
         ul {
+            position: relative
+            z-index: 2
+
             > li {
                 border-bottom: 2px solid grey-blue
                 box-sizing: border-box

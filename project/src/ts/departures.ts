@@ -60,11 +60,15 @@ function render(ctrl: Ctrl) {
     m("span.label", {}, 'Tirer pour actualiser')
   ]);
 
-  var departuresList = ctrl.departures().map((departure) => {
+  var loading = m("div.empty-loading", { key: 'departures-loading' }, [
+    m("span.label", {}, 'Chargement...')
+  ]);
+
+  var departuresList = ctrl.departures().map((departure, index) => {
     var attrs = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if (!isUpdate) {
-          el.addEventListener('touchend', _.partial(ctrl.onDepartureSelected, ctrl, departure));
+          Utils.DOM.Event.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
         }
       },
       key: departure.id
@@ -100,17 +104,22 @@ function render(ctrl: Ctrl) {
   var departuresAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!ctrl.shouldBeHidden()) {
+        ctrl.iscroll().refresh();
         if(!isUpdate) {
           lookForNextDepartures(ctrl, ctrl.at);
         } else {
-          ctrl.iscroll().refresh();
           ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 600)
         }
       }
     }
   };
 
-  return [m("div#wrapper", {}, m("ul.departures", departuresAttrs, departures.elements))];
+  var wrapper = [m("ul.departures", departuresAttrs, departures.elements)]
+  if(ctrl.departures().length == 0) {
+    wrapper.push(loading);
+  }
+
+  return [m("div#wrapper", {}, wrapper)];
 }
 
 export class Departures implements m.Module<Ctrl> {
@@ -220,7 +229,13 @@ export class Departures implements m.Module<Ctrl> {
 
       lastDepartureTime: m.prop(),
 
-      isScrollingDepartures: m.prop(false)
+      isScrollingDepartures: Utils.m.prop(false, (isScrolling) => {
+        if(isScrolling) {
+          document.body.classList.add('scrolling');
+        } else {
+          document.body.classList.remove('scrolling');
+        }
+      })
     };
 
     native.onBackButton('departures', () => {

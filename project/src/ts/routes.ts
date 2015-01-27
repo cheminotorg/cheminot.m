@@ -1,9 +1,5 @@
 export function home(tab: string, start: string, end: string, at: Date) {
-  if(tab != 'today' && start && end) {
-    return '/query/' + [tab, start, end, at.getTime()].join('/');
-  } else {
-    return '/';
-  }
+  return '/query/' + [tab, start, end, at.getTime()].join('/');
 }
 
 export function departures(startId: string, endId: string, at: Date) {

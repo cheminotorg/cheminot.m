@@ -15,6 +15,7 @@ departures_startend_size=32px
 departures_to_size=21px
 departures_meta_size=18px
 departures_pullup_size=18px
+departures_loading_size=18px
 
 trip_span_size=16px
 trip_item_height=66px
@@ -67,6 +68,9 @@ device(min_width, max_width, factor) {
             }
             .pull-up {
                 font-size: scale(departures_pullup_size, factor)
+            }
+            .empty-loading {
+                font-size: scale(departures_loading_size, factor)
             }
         }
 
@@ -131,6 +135,9 @@ device(min_width, max_width, factor) {
         }
         .pull-up {
             font-size: departures_pullup_size
+        }
+        .empty-loading {
+            font-size: departures_loading_size
         }
     }
 

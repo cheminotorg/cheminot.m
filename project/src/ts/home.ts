@@ -354,14 +354,13 @@ export class Home implements m.Module<Ctrl> {
         var iscroll = new IScroll(wrapper);
 
         iscroll.on('scrollStart', () => {
-          if(native.Keyboard.isVisible()) {
-            iscroll.stop();
-          }
           this.isScrollingStations(true);
+          iscroll.options.momentum = !native.Keyboard.isVisible();
         });
 
         iscroll.on('scrollEnd', () => {
           this.isScrollingStations(false);
+          iscroll.options.momentum = !native.Keyboard.isVisible();
         });
         return iscroll;
       }),
@@ -376,7 +375,7 @@ export class Home implements m.Module<Ctrl> {
       stations: m.prop([]),
 
       onStationSelected: (ctrl: Ctrl, e: Event) => {
-        if(!ctrl.isScrollingStations() && !native.Keyboard.isVisible()) {
+        if(!ctrl.isScrollingStations()) {
           var station = <HTMLElement> e.currentTarget;
           var id = station.getAttribute('data-id');
           var name = station.getAttribute('data-name');

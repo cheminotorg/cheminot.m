@@ -20,6 +20,7 @@
     "sre-gulp-rjs": "latest",
     "gulp-browserify": "latest",
     "gulp-exec": "latest",
-    "gulp-watch": "latest"
+    "gulp-watch": "latest",
+    "gulp-iconfont": "latest"
   }
 }

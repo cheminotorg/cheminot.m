@@ -9,7 +9,8 @@ var gulp = require('gulp'),
     rjs = require('sre-gulp-rjs'),
     watch = require('gulp-watch'),
     browserify = require('gulp-browserify'),
-    fs = require('fs');
+    fs = require('fs'),
+    iconfont = require('gulp-iconfont');
 
 var Assets = {
   ts: {
@@ -125,6 +126,18 @@ gulp.task('watch', ['compile'], function() {
 gulp.task('default', ['watch']);
 
 gulp.task('compile', ['ts', 'styl']);
+
+gulp.task('font', function() {
+  gulp.src(['project/www/fonts/svg/iconmonstr/*.svg'])
+    .pipe(iconfont({
+      fontName: 'iconmonstr',
+      appendCodepoints: true
+    }))
+    .on('codepoints', function(codepoints, options) {
+      console.log(codepoints, options);
+    })
+    .pipe(gulp.dest('project/www/fonts/generated/'));
+});
 
 gulp.task('compile:prod', ['requirejs', 'styl']);
 
