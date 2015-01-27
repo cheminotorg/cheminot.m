@@ -101,7 +101,7 @@ export class Trip implements m.Module<Ctrl> {
 
       iscroll: _.once(function() {
         var wrapper = <HTMLElement> scope().querySelector('#wrapper');
-        return new IScroll(wrapper);
+        return new IScroll(wrapper, { bounce: false });
       }),
 
       adaptWrapperTop: (ctrl: Ctrl) => {

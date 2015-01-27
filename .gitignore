@@ -11,6 +11,7 @@ src/ts/**/*.js
 app/platforms
 app/plugins/*.json
 images/
+src/ts/.gulp*
 
 #=============#
 # IOS / XCODE #
