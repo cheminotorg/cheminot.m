@@ -2009,22 +2009,7 @@ declare module _ {
         * @param arrays Arrays to process.
         * @return A new array of grouped elements.
         **/
-        zip(...arrays: any[][]): any[][];
-
-        /**
-        * @see _.zip
-        **/
-        zip(...arrays: any[]): any[];
-
-        /**
-        * @see _.zip
-        **/
-        unzip(...arrays: any[][]): any[][];
-
-        /**
-        * @see _.zip
-        **/
-        unzip(...arrays: any[]): any[];
+        zip<T, U>(t: T[], u: U[]): [T, U][];
     }
 
     //_.zipObject

@@ -84,7 +84,7 @@ function render(ctrl: Ctrl) {
     ]);
   });
 
-  var zipped = _.zip(ctrl.departures(), departuresList);
+  var zipped = _.zip<Departure, m.VirtualElement>(ctrl.departures(), departuresList);
   var departures = _.reduce(zipped, (acc, d) => {
     var model = d[0];
     var dom = d[1];
@@ -290,7 +290,7 @@ function tripToDeparture(trip: ArrivalTimes): Departure {
 }
 
 function isMoreItemsNeeded(ctrl: Ctrl): boolean {
-  if(!isScreenFull(ctrl) && ctrl.nbItemsPerScreen() == 0) {
+  if(!isScreenFull(ctrl) && ctrl.nbItemsPerScreen() == 0 && !ctrl.shouldBeHidden()) {
     return true;
   } else {
     return ctrl.currentPageSize() < ctrl.nbItemsPerScreen();
