@@ -12,7 +12,7 @@ app/platforms
 app/plugins/*.json
 images/
 src/ts/.gulp*
-
+generated
 #=============#
 # IOS / XCODE #
 #=============#

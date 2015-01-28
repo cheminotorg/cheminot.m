@@ -128,7 +128,7 @@ gulp.task('default', ['watch']);
 gulp.task('compile', ['ts', 'styl']);
 
 gulp.task('font', function() {
-  gulp.src(['project/www/fonts/svg/iconmonstr/*.svg'])
+  gulp.src(['misc/fonts/svg/iconmonstr/*.svg'])
     .pipe(iconfont({
       fontName: 'iconmonstr',
       appendCodepoints: true
@@ -136,7 +136,7 @@ gulp.task('font', function() {
     .on('codepoints', function(codepoints, options) {
       console.log(codepoints, options);
     })
-    .pipe(gulp.dest('project/www/fonts/generated/'));
+    .pipe(gulp.dest('misc/fonts/generated/'));
 });
 
 gulp.task('compile:prod', ['requirejs', 'styl']);
