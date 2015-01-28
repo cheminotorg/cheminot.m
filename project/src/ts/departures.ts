@@ -68,7 +68,7 @@ function render(ctrl: Ctrl) {
     var attrs = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if (!isUpdate) {
-          Utils.DOM.Event.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
+          Utils.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
         }
       },
       key: departure.id

@@ -41,3 +41,12 @@ declare module cordova {
     }
   }
 }
+
+interface Splashscreen {
+  hide(): void;
+  show(): void;
+}
+
+interface Navigator {
+  splashscreen: Splashscreen;
+}

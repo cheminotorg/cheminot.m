@@ -15,4 +15,5 @@
     <preference name="AutoHideSplashScreen" value="false"/>
     <preference name="KeyboardShrinksView" value="true"/>
     <preference name="KeepRunning" value="true"/>
+    <preference name="SplashScreenDelay" value="60000"/>
 </widget>

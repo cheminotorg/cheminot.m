@@ -4,6 +4,7 @@ import Header = require('header');
 import Home = require('home');
 import Departures = require('departures');
 import Trip = require('trip');
+import Utils = require('utils');
 
 export interface Ctrl {
   header: Header.Ctrl;
@@ -77,12 +78,19 @@ export class App implements m.Module<Ctrl> {
   }
 
   view(ctrl: Ctrl) {
-    return [
+    var attributes = {
+      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+        if (!isUpdate) {
+          setTimeout(() => Utils.$.trigger('cheminot:ready'), 200);
+        }
+      }
+    }
+    return [m('main#viewport', attributes, [
       renderHeader(ctrl.header),
       renderHome(ctrl.home),
       renderDepartures(ctrl.departures),
       renderTrip(ctrl.trip)
-    ];
+    ])];
   }
 }
 

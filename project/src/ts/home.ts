@@ -88,7 +88,7 @@ function renderInputsStation(ctrl: Ctrl) {
   var inputStationWrapperAttrs = {
     config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
       if (!isUpdate) {
-        Utils.DOM.Event.one(el, 'touchend', _.partial(ctrl.onInputStationTouched, ctrl));
+        Utils.$.one(el, 'touchend', _.partial(ctrl.onInputStationTouched, ctrl));
       }
     }
   };
@@ -152,7 +152,7 @@ function renderStations(ctrl: Ctrl) {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if (!isUpdate) {
-          Utils.DOM.Event.touchend(el, _.partial(ctrl.onStationSelected, ctrl));
+          Utils.$.touchend(el, _.partial(ctrl.onStationSelected, ctrl));
         }
         if((index + 1) === ctrl.stations().length) {
           ctrl.adaptWrapperTop(ctrl);
@@ -533,7 +533,7 @@ function resetInputStationsPosition(ctrl: Ctrl, inputStation: HTMLInputElement):
     moveDownViewport(ctrl).then(() => {
       showInput(ctrl).then(() => {
         showDateTimePanel(ctrl).then(() => {
-          Utils.DOM.Event.one(resetButton.parentElement, 'touchend', _.partial(ctrl.onInputStationTouched, ctrl));
+          Utils.$.one(resetButton.parentElement, 'touchend', _.partial(ctrl.onInputStationTouched, ctrl));
         });
       });
     });

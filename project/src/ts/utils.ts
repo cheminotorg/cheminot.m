@@ -176,39 +176,44 @@ export module Transition {
   }
 }
 
-export module DOM {
+export module $ {
 
-  export module Event {
+  export function bind(event: string, handler: (e: Event) => void): void {
+    document.body.addEventListener(event, handler);
+  }
 
-    export function one(el: Element, event: string, handler: (e: Event) => void): Element {
-      el.addEventListener(event, function h(e) {
-        handler(e);
-        el.removeEventListener(event, h);
-      });
-      return el;
-    }
+  export function trigger(event: string): void {
+    document.body.dispatchEvent(new Event(event));
+  }
 
-    export function touchend(el: HTMLElement, handler: (e: Event) => void): Element {
-      var istouchend = false;
-      el.addEventListener('touchstart', (e) => {
-        if(!el.classList.contains('touching')) {
-          setTimeout(() => {
-            if(!istouchend) {
-              el.classList.add('touching');
-            } else {
-              istouchend = false;
-              el.classList.remove('touching');
-            }
-          }, 400);
-        }
-      });
+  export function one(el: HTMLElement, event: string, handler: (e: Event) => void): HTMLElement {
+    el.addEventListener(event, function h(e) {
+      handler(e);
+      el.removeEventListener(event, h);
+    });
+    return el;
+  }
 
-      el.addEventListener('touchend', (e) =>{
-        istouchend = !el.classList.contains('touching')
-        el.classList.remove('touching');
-        handler(e);
-      });
-      return el;
-    }
+  export function touchend(el: HTMLElement, handler: (e: Event) => void): Element {
+    var istouchend = false;
+    el.addEventListener('touchstart', (e) => {
+      if(!el.classList.contains('touching')) {
+        setTimeout(() => {
+          if(!istouchend) {
+            el.classList.add('touching');
+          } else {
+            istouchend = false;
+            el.classList.remove('touching');
+          }
+        }, 400);
+      }
+    });
+
+    el.addEventListener('touchend', (e) =>{
+      istouchend = !el.classList.contains('touching')
+      el.classList.remove('touching');
+      handler(e);
+    });
+    return el;
   }
 }

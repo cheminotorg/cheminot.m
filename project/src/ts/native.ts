@@ -13,6 +13,24 @@ export function onBackButton(key: string, f: (e: Event) => void) {
   document.addEventListener('backbutton', f, false);
 };
 
+export module Splashscreen {
+
+  // interface Splashscreen {
+  //   hide(): void;
+  //   show(): void;
+  // }
+
+  // export function show(): void {
+  //   var splashscreen: Splashscreen = <Splashscreen> navigator['splashscreen'];
+  //   splashscreen.show();
+  // }
+
+  // export function hide(): void {
+  //   var splashscreen = <Splashscreen> navigator['splashscreen'];
+  //   splashscreen.hide();
+  // }
+}
+
 export module Keyboard {
 
   export function show(): Q.Promise<void> {

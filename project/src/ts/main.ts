@@ -16,10 +16,12 @@ import App = require('app');
 import Routes = require('routes');
 import Suggestions = require('suggestions');
 import native = require('native');
+import Utils = require('utils');
 
 Q.all([qstart, Suggestions.init(), native.Cheminot.init()]).then(() => {
+
   m.route.mode = 'hash';
-  m.route(document.querySelector('#viewport'), "/", {
+  m.route(document.querySelector('body'), "/", {
     "/": App.get(),
     "/query/:tab/:start/:end/:at": App.get(),
     "/departures/:start/:end/:at": App.get(),
@@ -27,4 +29,8 @@ Q.all([qstart, Suggestions.init(), native.Cheminot.init()]).then(() => {
   });
 }).catch((e) => {
   console.log(e.stack);
+});
+
+Utils.$.bind('cheminot:ready', () => {
+  navigator.splashscreen.hide();
 });

@@ -18,7 +18,8 @@
       "BackgroundColor": "0xffffffff",
       "AutoHideSplashScreen": false,
       "KeyboardShrinksView": true,
-      "KeepRunning": true
+      "KeepRunning": true,
+      "SplashScreenDelay": 60000
     },
     "accessOrigin": [
       "*"
