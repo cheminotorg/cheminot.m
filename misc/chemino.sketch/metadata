@@ -167,7 +167,7 @@
 		<string>HelveticaNeue-Medium</string>
 		<string>HelveticaNeue-Medium</string>
 		<string>AvenirNext-Regular</string>
-		<string>.LucidaGrandeUI</string>
+		<string>Nunito-Bold</string>
 		<string>AvenirNext-DemiBold</string>
 		<string>AvenirNext-Regular</string>
 		<string>Nunito-Bold</string>
@@ -197,7 +197,7 @@
 		<string>Nunito-Bold</string>
 	</array>
 	<key>length</key>
-	<integer>2741720</integer>
+	<integer>2742348</integer>
 	<key>version</key>
 	<integer>18</integer>
 </dict>
