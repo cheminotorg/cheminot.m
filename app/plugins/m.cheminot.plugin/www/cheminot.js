@@ -13,15 +13,23 @@ Cheminot.lookForBestTrip = function(vsId, veId, at, te, max, success, fail) {
   exec(function (result) {
     try {
       var trip = JSON.parse(result);
-      success && success(trip.map(function(arrivalTime) {
-        arrivalTime.arrival = new Date(arrivalTime.arrival * 1000);
-        arrivalTime.departure = new Date(arrivalTime.departure * 1000);
-        return arrivalTime;
-      }));
+      if(trip) {
+        success && success(trip.map(function(arrivalTime) {
+          arrivalTime.arrival = new Date(arrivalTime.arrival * 1000);
+          arrivalTime.departure = new Date(arrivalTime.departure * 1000);
+          return arrivalTime;
+        }));
+      } else {
+        fail && fail('Computation was probably aborted');
+      }
     } catch(e) {
       fail && fail(e);
     }
   }, fail, "Cheminot", "lookForBestTrip", [vsId, veId, atTimestamp, teTimestamp, max]);
+};
+
+Cheminot.abort = function(success, fail) {
+  exec(success, fail, "Cheminot", "abort", []);
 };
 
 module.exports = Cheminot;

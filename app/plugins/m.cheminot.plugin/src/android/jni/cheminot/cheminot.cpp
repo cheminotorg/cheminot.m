@@ -12,6 +12,7 @@
 
 static cheminotc::Graph graph;
 static cheminotc::CalendarDates calendarDates;
+static cheminotc::Tracker tracker = { false };
 static sqlite3* connection = NULL;
 
 //Cache
@@ -61,7 +62,7 @@ JNIEXPORT jstring JNICALL Java_m_cheminot_plugin_jni_CheminotLib_lookForBestTrip
   LOGD("CALENDAR %lu", b);
   LOGD("###> lookForBestTrip %s %s %s %s", vsId, veId, cheminotc::formatDateTime(at).c_str(), cheminotc::formatDateTime(te).c_str());
 
-  std::list<cheminotc::ArrivalTime> arrivalTimes = cheminotc::lookForBestTrip(connection, &graph, &tripsCache, &verticesCache, &calendarDates, &calendarDatesCache, vsId, veId, at, te, max);
+  std::list<cheminotc::ArrivalTime> arrivalTimes = cheminotc::lookForBestTrip(&tracker, connection, &graph, &tripsCache, &verticesCache, &calendarDates, &calendarDatesCache, vsId, veId, at, te, max);
 
   long unsigned int c = arrivalTimes.size();
   LOGD("######> DONE %lu", c);

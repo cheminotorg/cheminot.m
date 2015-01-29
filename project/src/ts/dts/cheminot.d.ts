@@ -38,6 +38,7 @@ declare module cordova {
     module Cheminot {
       function init(success: (version: string) => void, error: (e: string) => void): void;
       function lookForBestTrip(start: string, end: string, at: Date, te: Date, max: number, success: (arrivalTime: ArrivalTime[]) => void, error: (e: string) => void): void;
+      function abort(success: () => void, error: (e: string) => void): void;
     }
   }
 }

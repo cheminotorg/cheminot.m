@@ -13,24 +13,6 @@ export function onBackButton(key: string, f: (e: Event) => void) {
   document.addEventListener('backbutton', f, false);
 };
 
-export module Splashscreen {
-
-  // interface Splashscreen {
-  //   hide(): void;
-  //   show(): void;
-  // }
-
-  // export function show(): void {
-  //   var splashscreen: Splashscreen = <Splashscreen> navigator['splashscreen'];
-  //   splashscreen.show();
-  // }
-
-  // export function hide(): void {
-  //   var splashscreen = <Splashscreen> navigator['splashscreen'];
-  //   splashscreen.hide();
-  // }
-}
-
 export module Keyboard {
 
   export function show(): Q.Promise<void> {
@@ -86,7 +68,7 @@ export module Cheminot {
     return d.promise;
   }
 
-  export function lookForBestTrip (vsId: string, veId: string, at: Date, te: Date, max: number): Q.Promise<ArrivalTimes> {
+  export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number): Q.Promise<ArrivalTimes> {
     var d = Q.defer<ArrivalTimes>();
     var id = hashTdspQuery(vsId, veId, at, te, max);
     var tripFromCache = sessionStorage.getItem(id);
@@ -109,6 +91,12 @@ export module Cheminot {
       }
     }
 
+    return d.promise;
+  }
+
+  export function abort(): Q.Promise<void> {
+    var d = Q.defer<void>();
+    cordova.plugins.Cheminot.abort(() => d.resolve(null), () => d.reject(null));
     return d.promise;
   }
 

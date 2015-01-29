@@ -24,6 +24,7 @@ export interface Ctrl {
   currentPageSize: (value?: number) => number;
   at: Date;
   isScrollingDepartures: (value?: boolean) => boolean;
+  isComputationInProgress: (value?: boolean) => boolean;
   iscroll: () => IScroll;
 }
 
@@ -195,9 +196,8 @@ export class Departures implements m.Module<Ctrl> {
       currentPageSize: m.prop(0),
 
       onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => {
-        if(!ctrl.isScrollingDepartures()) {
-          m.route(Routes.trip(departure.id));
-        }
+        if(ctrl.isComputationInProgress()) native.Cheminot.abort();
+        if(!ctrl.isScrollingDepartures()) m.route(Routes.trip(departure.id));
       },
 
       isPullUpDisplayed: m.prop(false),
@@ -229,6 +229,8 @@ export class Departures implements m.Module<Ctrl> {
 
       lastDepartureTime: m.prop(),
 
+      isComputationInProgress: m.prop(false),
+
       isScrollingDepartures: Utils.m.prop(false, (isScrolling) => {
         if(isScrolling) {
           document.body.classList.add('scrolling');
@@ -239,9 +241,8 @@ export class Departures implements m.Module<Ctrl> {
     };
 
     native.onBackButton('departures', () => {
-      if(!ctrl.shouldBeHidden()) {
-        history.back();
-      }
+      if(ctrl.isComputationInProgress()) native.Cheminot.abort();
+      if(!ctrl.shouldBeHidden()) history.back();
     });
 
     return ctrl;
@@ -254,7 +255,9 @@ export class Departures implements m.Module<Ctrl> {
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
   var te = Utils.DateTime.addHours(at, 2);
+  ctrl.isComputationInProgress(true);
   native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1).then((trip) => {
+    ctrl.isComputationInProgress(false);
     m.startComputation();
     if(trip.arrivalTimes.length > 0) {
       var departure = tripToDeparture(trip);
