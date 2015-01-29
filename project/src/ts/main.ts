@@ -31,6 +31,10 @@ Q.all([qstart, Suggestions.init(), native.Cheminot.init()]).then(() => {
   console.log(e.stack);
 });
 
+var now = Date.now();
 Utils.$.bind('cheminot:ready', () => {
-  navigator.splashscreen.hide();
+  var min = 2000;
+  var spent = now - Date.now();
+  var t = spent < min ? (min - spent) : 0;
+  window.setTimeout(() => navigator.splashscreen.hide(), t);
 });

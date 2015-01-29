@@ -10,9 +10,9 @@ src/ts/**/*.js
 *.log
 app/platforms
 app/plugins/*.json
-images/
-src/ts/.gulp*
+project/src/ts/.gulp*
 generated
+misc/splashscreen
 #=============#
 # IOS / XCODE #
 #=============#
