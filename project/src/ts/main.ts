@@ -17,9 +17,11 @@ import Routes = require('routes');
 import Suggestions = require('suggestions');
 import native = require('native');
 import Utils = require('utils');
+import moment = require('moment');
+import locale = require('locale');
 
 Q.all([qstart, Suggestions.init(), native.Cheminot.init()]).then(() => {
-
+  locale.init();
   m.route.mode = 'hash';
   m.route(document.querySelector('body'), "/", {
     "/": App.get(),

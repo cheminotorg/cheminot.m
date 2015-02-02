@@ -384,6 +384,8 @@ interface MomentStatic {
     lang(language?: string): string;
     lang(language?: string, definition?: MomentLanguage): string;
 
+    defineLocale(language: string, object: Object): void;
+
     locale(language?: string): string;
     locale(language?: string[]): string;
     locale(language?: string, definition?: MomentLanguage): string;

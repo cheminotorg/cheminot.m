@@ -3,6 +3,7 @@ import Routes = require('routes');
 import _ = require('lodash');
 import IScroll = require('IScroll');
 import moment = require('moment');
+import locale = require('locale');
 import Utils = require('utils');
 import View = require('view');
 import native = require('native');
@@ -29,7 +30,7 @@ export interface Ctrl {
 }
 
 function formatDay(dateTime: Date): string {
-  return moment(dateTime).format('dddd MM');
+  return moment(dateTime).format('dddd D MMMM YYYY');
 }
 
 function formatTime(dateTime: Date): string {
