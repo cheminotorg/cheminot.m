@@ -18,7 +18,7 @@ import android.app.Activity;
 public class Cheminot extends CordovaPlugin {
 
   enum CheminotAction {
-    unknown, init, lookForBestTrip
+    unknown, init, lookForBestTrip, abort
   }
 
   @Override
@@ -37,6 +37,10 @@ public class Cheminot extends CordovaPlugin {
 
     case lookForBestTrip:
       this.lookForBestTrip(args, cbc);
+      break;
+
+    case abort:
+      this.abort(cbc);
       break;
 
     default:
@@ -95,5 +99,10 @@ public class Cheminot extends CordovaPlugin {
             }
           }
       });
+  }
+
+  private void abort(CallbackContext cbc) {
+    CheminotLib.abort();
+    cbc.success();
   }
 }

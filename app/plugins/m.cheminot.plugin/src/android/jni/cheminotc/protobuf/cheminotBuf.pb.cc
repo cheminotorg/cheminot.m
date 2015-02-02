@@ -45,6 +45,9 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 const ::google::protobuf::Descriptor* Calendar_descriptor_ = NULL;
 const ::google::protobuf::internal::GeneratedMessageReflection*
   Calendar_reflection_ = NULL;
+const ::google::protobuf::Descriptor* TripStopIds_descriptor_ = NULL;
+const ::google::protobuf::internal::GeneratedMessageReflection*
+  TripStopIds_reflection_ = NULL;
 
 }  // namespace
 
@@ -180,6 +183,21 @@ void protobuf_AssignDesc_cheminotBuf_2eproto() {
       sizeof(Calendar),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Calendar, _internal_metadata_),
       GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Calendar, _is_default_instance_));
+  TripStopIds_descriptor_ = file->message_type(7);
+  static const int TripStopIds_offsets_[1] = {
+    GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TripStopIds, stopids_),
+  };
+  TripStopIds_reflection_ =
+    ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
+      TripStopIds_descriptor_,
+      TripStopIds::default_instance_,
+      TripStopIds_offsets_,
+      -1,
+      -1,
+      -1,
+      sizeof(TripStopIds),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TripStopIds, _internal_metadata_),
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(TripStopIds, _is_default_instance_));
 }
 
 namespace {
@@ -224,6 +242,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
       CalendarDate_descriptor_, &CalendarDate::default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
       Calendar_descriptor_, &Calendar::default_instance());
+  ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
+      TripStopIds_descriptor_, &TripStopIds::default_instance());
 }
 
 }  // namespace
@@ -243,6 +263,8 @@ void protobuf_ShutdownFile_cheminotBuf_2eproto() {
   delete CalendarDate_reflection_;
   delete Calendar::default_instance_;
   delete Calendar_reflection_;
+  delete TripStopIds::default_instance_;
+  delete TripStopIds_reflection_;
 }
 
 void protobuf_AddDesc_cheminotBuf_2eproto() {
@@ -274,7 +296,8 @@ void protobuf_AddDesc_cheminotBuf_2eproto() {
     "onday\030\002 \001(\t\022\017\n\007tuesday\030\003 \001(\t\022\021\n\twednesda"
     "y\030\004 \001(\t\022\020\n\010thursday\030\005 \001(\t\022\016\n\006friday\030\006 \001("
     "\t\022\020\n\010saturday\030\007 \001(\t\022\016\n\006sunday\030\010 \001(\t\022\021\n\ts"
-    "tartDate\030\t \001(\t\022\017\n\007endDate\030\n \001(\tb\006proto3", 919);
+    "tartDate\030\t \001(\t\022\017\n\007endDate\030\n \001(\t\"\036\n\013TripS"
+    "topIds\022\017\n\007stopIds\030\001 \003(\tb\006proto3", 951);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "cheminotBuf.proto", &protobuf_RegisterTypes);
   Graph::default_instance_ = new Graph();
@@ -284,6 +307,7 @@ void protobuf_AddDesc_cheminotBuf_2eproto() {
   CalendarExceptions::default_instance_ = new CalendarExceptions();
   CalendarDate::default_instance_ = new CalendarDate();
   Calendar::default_instance_ = new Calendar();
+  TripStopIds::default_instance_ = new TripStopIds();
   Graph::default_instance_->InitAsDefaultInstance();
   Vertice::default_instance_->InitAsDefaultInstance();
   StopTime::default_instance_->InitAsDefaultInstance();
@@ -291,6 +315,7 @@ void protobuf_AddDesc_cheminotBuf_2eproto() {
   CalendarExceptions::default_instance_->InitAsDefaultInstance();
   CalendarDate::default_instance_->InitAsDefaultInstance();
   Calendar::default_instance_->InitAsDefaultInstance();
+  TripStopIds::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_cheminotBuf_2eproto);
 }
 
@@ -2793,6 +2818,227 @@ void Calendar::InternalSwap(Calendar* other) {
   ::google::protobuf::Metadata metadata;
   metadata.descriptor = Calendar_descriptor_;
   metadata.reflection = Calendar_reflection_;
+  return metadata;
+}
+
+
+// ===================================================================
+
+#ifndef _MSC_VER
+const int TripStopIds::kStopIdsFieldNumber;
+#endif  // !_MSC_VER
+
+TripStopIds::TripStopIds()
+  : ::google::protobuf::Message() , _internal_metadata_(NULL)  {
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:m.cheminot.data.TripStopIds)
+}
+
+void TripStopIds::InitAsDefaultInstance() {
+  _is_default_instance_ = true;
+}
+
+TripStopIds::TripStopIds(const TripStopIds& from)
+  : ::google::protobuf::Message(),
+    _internal_metadata_(NULL) {
+  SharedCtor();
+  MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:m.cheminot.data.TripStopIds)
+}
+
+void TripStopIds::SharedCtor() {
+    _is_default_instance_ = false;
+  ::google::protobuf::internal::GetEmptyString();
+  _cached_size_ = 0;
+}
+
+TripStopIds::~TripStopIds() {
+  // @@protoc_insertion_point(destructor:m.cheminot.data.TripStopIds)
+  SharedDtor();
+}
+
+void TripStopIds::SharedDtor() {
+  if (this != default_instance_) {
+  }
+}
+
+void TripStopIds::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const ::google::protobuf::Descriptor* TripStopIds::descriptor() {
+  protobuf_AssignDescriptorsOnce();
+  return TripStopIds_descriptor_;
+}
+
+const TripStopIds& TripStopIds::default_instance() {
+  if (default_instance_ == NULL) protobuf_AddDesc_cheminotBuf_2eproto();
+  return *default_instance_;
+}
+
+TripStopIds* TripStopIds::default_instance_ = NULL;
+
+TripStopIds* TripStopIds::New(::google::protobuf::Arena* arena) const {
+  TripStopIds* n = new TripStopIds;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void TripStopIds::Clear() {
+  stopids_.Clear();
+}
+
+bool TripStopIds::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:m.cheminot.data.TripStopIds)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // repeated string stopIds = 1;
+      case 1: {
+        if (tag == 10) {
+         parse_stopIds:
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->add_stopids()));
+          ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+            this->stopids(this->stopids_size() - 1).data(),
+            this->stopids(this->stopids_size() - 1).length(),
+            ::google::protobuf::internal::WireFormat::PARSE,
+            "m.cheminot.data.TripStopIds.stopIds");
+        } else {
+          goto handle_unusual;
+        }
+        if (input->ExpectTag(10)) goto parse_stopIds;
+        if (input->ExpectAtEnd()) goto success;
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:m.cheminot.data.TripStopIds)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:m.cheminot.data.TripStopIds)
+  return false;
+#undef DO_
+}
+
+void TripStopIds::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:m.cheminot.data.TripStopIds)
+  // repeated string stopIds = 1;
+  for (int i = 0; i < this->stopids_size(); i++) {
+  ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+    this->stopids(i).data(), this->stopids(i).length(),
+    ::google::protobuf::internal::WireFormat::SERIALIZE,
+    "m.cheminot.data.TripStopIds.stopIds");
+    ::google::protobuf::internal::WireFormatLite::WriteString(
+      1, this->stopids(i), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:m.cheminot.data.TripStopIds)
+}
+
+::google::protobuf::uint8* TripStopIds::SerializeWithCachedSizesToArray(
+    ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:m.cheminot.data.TripStopIds)
+  // repeated string stopIds = 1;
+  for (int i = 0; i < this->stopids_size(); i++) {
+    ::google::protobuf::internal::WireFormat::VerifyUTF8StringNamedField(
+      this->stopids(i).data(), this->stopids(i).length(),
+      ::google::protobuf::internal::WireFormat::SERIALIZE,
+      "m.cheminot.data.TripStopIds.stopIds");
+    target = ::google::protobuf::internal::WireFormatLite::
+      WriteStringToArray(1, this->stopids(i), target);
+  }
+
+  // @@protoc_insertion_point(serialize_to_array_end:m.cheminot.data.TripStopIds)
+  return target;
+}
+
+int TripStopIds::ByteSize() const {
+  int total_size = 0;
+
+  // repeated string stopIds = 1;
+  total_size += 1 * this->stopids_size();
+  for (int i = 0; i < this->stopids_size(); i++) {
+    total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
+      this->stopids(i));
+  }
+
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = total_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void TripStopIds::MergeFrom(const ::google::protobuf::Message& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  const TripStopIds* source =
+    ::google::protobuf::internal::dynamic_cast_if_available<const TripStopIds*>(
+      &from);
+  if (source == NULL) {
+    ::google::protobuf::internal::ReflectionOps::Merge(from, this);
+  } else {
+    MergeFrom(*source);
+  }
+}
+
+void TripStopIds::MergeFrom(const TripStopIds& from) {
+  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+  stopids_.MergeFrom(from.stopids_);
+}
+
+void TripStopIds::CopyFrom(const ::google::protobuf::Message& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void TripStopIds::CopyFrom(const TripStopIds& from) {
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool TripStopIds::IsInitialized() const {
+
+  return true;
+}
+
+void TripStopIds::Swap(TripStopIds* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void TripStopIds::InternalSwap(TripStopIds* other) {
+  stopids_.UnsafeArenaSwap(&other->stopids_);
+  _internal_metadata_.Swap(&other->_internal_metadata_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::google::protobuf::Metadata TripStopIds::GetMetadata() const {
+  protobuf_AssignDescriptorsOnce();
+  ::google::protobuf::Metadata metadata;
+  metadata.descriptor = TripStopIds_descriptor_;
+  metadata.reflection = TripStopIds_reflection_;
   return metadata;
 }
 

@@ -11,7 +11,7 @@ namespace cheminotc {
   typedef google::protobuf::Map<std::string,m::cheminot::data::CalendarExceptions> CalendarDates;
 
   struct Tracker {
-    bool canceled;
+    bool abort;
   };
 
   struct StopTime {
@@ -53,6 +53,7 @@ namespace cheminotc {
     std::string id;
     std::unique_ptr<Calendar> calendar;
     std::string direction;
+    std::list<std::string> stopIds;
   };
 
   typedef std::map<time_t, ArrivalTime> ArrivalTimeFunc; //TODO unordered_map
@@ -76,6 +77,8 @@ namespace cheminotc {
   void parseCalendarDates(std::string content, CalendarDates *calendarDates);
 
   ArrivalTimesFunc refineArrivalTimes(Tracker *tracker, sqlite3 *handle, Graph *graph, TripsCache *tripsCache, VerticesCache *verticesCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
+
+  std::list<ArrivalTime> lookForBestDirectTrip(sqlite3 *handle, Graph *graph, VerticesCache *verticesCache, TripsCache *tripsCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te);
 
   std::list<ArrivalTime> lookForBestTrip(Tracker *tracker, sqlite3 *handle, Graph *graph, TripsCache *tripsCache, VerticesCache *verticesCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
 
@@ -101,11 +104,7 @@ namespace cheminotc {
 
   tm addHours(tm datetime, int n);
 
-  Json::Value serializeArrivalTimes(std::list<ArrivalTime> arrivalTimes);
+  Json::Value serializeArrivalTimes(Graph *graph, VerticesCache *verticesCache, std::list<ArrivalTime> arrivalTimes);
 
-  Json::Value serializeArrivalTime(ArrivalTime arrivalTime);
-
-  Json::Value serializeStopTimes(std::list<StopTime> stopTimes);
-
-  Json::Value serializeEdges(std::list<std::string> edges);
+  std::shared_ptr<Vertice> getVerticeFromGraph(const tm *dateref, Graph *graph, VerticesCache *verticesCache, std::string id);
 }

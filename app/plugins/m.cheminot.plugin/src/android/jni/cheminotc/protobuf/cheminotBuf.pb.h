@@ -47,6 +47,7 @@ class CalendarDates;
 class CalendarExceptions;
 class CalendarDate;
 class Calendar;
+class TripStopIds;
 
 // ===================================================================
 
@@ -849,6 +850,94 @@ class Calendar : public ::google::protobuf::Message {
 
   void InitAsDefaultInstance();
   static Calendar* default_instance_;
+};
+// -------------------------------------------------------------------
+
+class TripStopIds : public ::google::protobuf::Message {
+ public:
+  TripStopIds();
+  virtual ~TripStopIds();
+
+  TripStopIds(const TripStopIds& from);
+
+  inline TripStopIds& operator=(const TripStopIds& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor();
+  static const TripStopIds& default_instance();
+
+  void Swap(TripStopIds* other);
+
+  // implements Message ----------------------------------------------
+
+  inline TripStopIds* New() const { return New(NULL); }
+
+  TripStopIds* New(::google::protobuf::Arena* arena) const;
+  void CopyFrom(const ::google::protobuf::Message& from);
+  void MergeFrom(const ::google::protobuf::Message& from);
+  void CopyFrom(const TripStopIds& from);
+  void MergeFrom(const TripStopIds& from);
+  void Clear();
+  bool IsInitialized() const;
+
+  int ByteSize() const;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input);
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const;
+  ::google::protobuf::uint8* SerializeWithCachedSizesToArray(::google::protobuf::uint8* output) const;
+  int GetCachedSize() const { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(TripStopIds* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return _internal_metadata_.arena();
+  }
+  inline void* MaybeArenaPtr() const {
+    return _internal_metadata_.raw_arena_ptr();
+  }
+  public:
+
+  ::google::protobuf::Metadata GetMetadata() const;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated string stopIds = 1;
+  inline int stopids_size() const;
+  inline void clear_stopids();
+  static const int kStopIdsFieldNumber = 1;
+  inline const ::std::string& stopids(int index) const;
+  inline ::std::string* mutable_stopids(int index);
+  inline void set_stopids(int index, const ::std::string& value);
+  inline void set_stopids(int index, const char* value);
+  inline void set_stopids(int index, const char* value, size_t size);
+  inline ::std::string* add_stopids();
+  inline void add_stopids(const ::std::string& value);
+  inline void add_stopids(const char* value);
+  inline void add_stopids(const char* value, size_t size);
+  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& stopids() const;
+  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_stopids();
+
+  // @@protoc_insertion_point(class_scope:m.cheminot.data.TripStopIds)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
+  bool _is_default_instance_;
+  ::google::protobuf::RepeatedPtrField< ::std::string> stopids_;
+  mutable int _cached_size_;
+  friend void  protobuf_AddDesc_cheminotBuf_2eproto();
+  friend void protobuf_AssignDesc_cheminotBuf_2eproto();
+  friend void protobuf_ShutdownFile_cheminotBuf_2eproto();
+
+  void InitAsDefaultInstance();
+  static TripStopIds* default_instance_;
 };
 // ===================================================================
 
@@ -1831,6 +1920,64 @@ inline void Calendar::set_allocated_enddate(::std::string* enddate) {
   }
   enddate_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), enddate);
   // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Calendar.endDate)
+}
+
+// -------------------------------------------------------------------
+
+// TripStopIds
+
+// repeated string stopIds = 1;
+inline int TripStopIds::stopids_size() const {
+  return stopids_.size();
+}
+inline void TripStopIds::clear_stopids() {
+  stopids_.Clear();
+}
+inline const ::std::string& TripStopIds::stopids(int index) const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.TripStopIds.stopIds)
+  return stopids_.Get(index);
+}
+inline ::std::string* TripStopIds::mutable_stopids(int index) {
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.TripStopIds.stopIds)
+  return stopids_.Mutable(index);
+}
+inline void TripStopIds::set_stopids(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:m.cheminot.data.TripStopIds.stopIds)
+  stopids_.Mutable(index)->assign(value);
+}
+inline void TripStopIds::set_stopids(int index, const char* value) {
+  stopids_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.TripStopIds.stopIds)
+}
+inline void TripStopIds::set_stopids(int index, const char* value, size_t size) {
+  stopids_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.TripStopIds.stopIds)
+}
+inline ::std::string* TripStopIds::add_stopids() {
+  return stopids_.Add();
+}
+inline void TripStopIds::add_stopids(const ::std::string& value) {
+  stopids_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:m.cheminot.data.TripStopIds.stopIds)
+}
+inline void TripStopIds::add_stopids(const char* value) {
+  stopids_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:m.cheminot.data.TripStopIds.stopIds)
+}
+inline void TripStopIds::add_stopids(const char* value, size_t size) {
+  stopids_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:m.cheminot.data.TripStopIds.stopIds)
+}
+inline const ::google::protobuf::RepeatedPtrField< ::std::string>&
+TripStopIds::stopids() const {
+  // @@protoc_insertion_point(field_list:m.cheminot.data.TripStopIds.stopIds)
+  return stopids_;
+}
+inline ::google::protobuf::RepeatedPtrField< ::std::string>*
+TripStopIds::mutable_stopids() {
+  // @@protoc_insertion_point(field_mutable_list:m.cheminot.data.TripStopIds.stopIds)
+  return &stopids_;
 }
 
 
