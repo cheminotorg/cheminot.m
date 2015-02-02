@@ -1,5 +1,6 @@
 import Mock = require('mock');
 import Q = require('q');
+import _ = require('lodash');
 
 export interface BackButtonHandlers {
   [index: string]: (e: Event) => void;
@@ -68,6 +69,33 @@ export module Cheminot {
     return d.promise;
   }
 
+  export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: Date): Q.Promise<[boolean, ArrivalTimes]> {
+    var d = Q.defer<[boolean, ArrivalTimes]>();
+    var id = hashTdspQuery(vsId, veId, at, te);
+    var tripFromCache = sessionStorage.getItem(id);
+
+    if(tripFromCache) {
+      d.resolve(JSON.parse(tripFromCache));
+    } else {
+      var success = (result: [boolean, ArrivalTime[]]) => {
+        var arrivalTimes = result[1];
+        var hasDirect = result[0];
+        var trip = { id: id, arrivalTimes: arrivalTimes };
+        sessionStorage.setItem(id, JSON.stringify([hasDirect, trip]));
+        d.resolve([hasDirect, trip]);
+      }
+      var error = (e: string) => d.reject(e);
+
+      if(isMocked()) {
+        Mock.lookForBestDirectTrip(vsId, veId, at, te, 0, success, error);
+      } else {
+        cordova.plugins.Cheminot.lookForBestDirectTrip(vsId, veId, at, te, success, error);
+      }
+    }
+
+    return d.promise;
+  }
+
   export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number): Q.Promise<ArrivalTimes> {
     var d = Q.defer<ArrivalTimes>();
     var id = hashTdspQuery(vsId, veId, at, te, max);
@@ -81,7 +109,6 @@ export module Cheminot {
         sessionStorage.setItem(id, JSON.stringify(trip));
         d.resolve(trip);
       }
-
       var error = (e: string) => d.reject(e);
 
       if(isMocked()) {
@@ -100,7 +127,7 @@ export module Cheminot {
     return d.promise;
   }
 
-  function hashTdspQuery(vs: string, ve: string, at: Date, te: Date, max: number): string {
+  function hashTdspQuery(vs: string, ve: string, at: Date, te: Date, max: number = 0): string {
     var seed = isMocked() ? Date.now() : '';
     return [vs, ve, at.getTime(), te.getTime(), max, seed].join('|');
   }
