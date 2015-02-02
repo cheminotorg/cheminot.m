@@ -58,7 +58,17 @@ function renderMeta(departure: Departure): m.VirtualElement[] {
 }
 
 function render(ctrl: Ctrl) {
-  var pullUp = m("li.pull-up", { key: 'departures-pullup' }, [
+  var pullupAttrs = {
+    key: 'departures-pullup',
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(!ctrl.shouldBeHidden()) {
+        ctrl.iscroll().refresh();
+        ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 600);
+      }
+    }
+  };
+
+  var pullUp = m("li.pull-up", pullupAttrs, [
     m("span.label", {}, 'Tirer pour actualiser')
   ]);
 
@@ -110,7 +120,7 @@ function render(ctrl: Ctrl) {
         if(!isUpdate) {
           lookForNextDepartures(ctrl, ctrl.at);
         } else {
-          ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 600)
+          ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 0);
         }
       }
     }
@@ -259,22 +269,22 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
   ctrl.isComputationInProgress(true);
   native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1).then((trip) => {
     ctrl.isComputationInProgress(false);
-    m.startComputation();
     if(trip.arrivalTimes.length > 0) {
       var departure = tripToDeparture(trip);
       ctrl.departures().push(departure);
       ctrl.currentPageSize(ctrl.currentPageSize() + 1);
       ctrl.lastDepartureTime(departure.startTime);
+      m.redraw(true);
       if(isMoreItemsNeeded(ctrl)) {
         lookForNextDepartures(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
       } else {
         ctrl.currentPageSize(0);
+        m.redraw(true);
       }
     } else {
       ctrl.lastDepartureTime(te);
       lookForNextDepartures(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
     }
-    m.endComputation();
   });
 }
 
