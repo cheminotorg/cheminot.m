@@ -6,6 +6,7 @@ interface Station {
 interface ArrivalTimes {
   id: string;
   arrivalTimes: ArrivalTime[];
+  isDirect: boolean;
 }
 
 interface Departure {

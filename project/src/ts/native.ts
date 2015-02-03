@@ -69,8 +69,8 @@ export module Cheminot {
     return d.promise;
   }
 
-  export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: Date): Q.Promise<[boolean, ArrivalTimes]> {
-    var d = Q.defer<[boolean, ArrivalTimes]>();
+  export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: Date): Q.Promise<ArrivalTimes> {
+    var d = Q.defer<ArrivalTimes>();
     var id = hashTdspQuery(vsId, veId, at, te);
     var tripFromCache = sessionStorage.getItem(id);
 
@@ -78,11 +78,10 @@ export module Cheminot {
       d.resolve(JSON.parse(tripFromCache));
     } else {
       var success = (result: [boolean, ArrivalTime[]]) => {
-        var arrivalTimes = result[1];
-        var hasDirect = result[0];
-        var trip = { id: id, arrivalTimes: arrivalTimes };
-        sessionStorage.setItem(id, JSON.stringify([hasDirect, trip]));
-        d.resolve([hasDirect, trip]);
+        var arrivalTimes = result[1], hasDirect = result[0];
+        var trip = { id: id, arrivalTimes: arrivalTimes, isDirect: hasDirect };
+        sessionStorage.setItem(id, JSON.stringify(trip));
+        d.resolve(trip);
       }
       var error = (e: string) => d.reject(e);
 
@@ -105,7 +104,7 @@ export module Cheminot {
       d.resolve(JSON.parse(tripFromCache));
     } else {
       var success = (arrivalTimes: ArrivalTime[]) => {
-        var trip = { id: id, arrivalTimes: arrivalTimes };
+        var trip = { id: id, arrivalTimes: arrivalTimes, isDirect: false };
         sessionStorage.setItem(id, JSON.stringify(trip));
         d.resolve(trip);
       }

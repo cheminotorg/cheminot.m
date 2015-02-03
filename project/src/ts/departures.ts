@@ -266,12 +266,10 @@ export class Departures implements m.Module<Ctrl> {
 }
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
-  var te = Utils.DateTime.addHours(at, 2);
+  var te = Utils.DateTime.addHours(at, 12);
   ctrl.isComputationInProgress(true);
-  native.Cheminot.lookForBestDirectTrip(ctrl.startStation, ctrl.endStation, at, te).then((result) => {
-    var trip = result[1];
-    var hasDirect = result[0];
-    if(!trip.arrivalTimes.length && !hasDirect) { // NO DIRECT TRIP FOUND
+  native.Cheminot.lookForBestDirectTrip(ctrl.startStation, ctrl.endStation, at, te).then((trip) => {
+    if(!trip.arrivalTimes.length && !trip.isDirect) {
       return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1)
     } else return Q(trip);
   }).then((trip) => {
