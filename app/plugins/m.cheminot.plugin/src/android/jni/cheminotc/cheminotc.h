@@ -10,10 +10,6 @@ namespace cheminotc {
   typedef google::protobuf::Map< std::string,m::cheminot::data::Vertice> Graph;
   typedef google::protobuf::Map<std::string,m::cheminot::data::CalendarExceptions> CalendarDates;
 
-  struct Tracker {
-    bool abort;
-  };
-
   struct StopTime {
     std::string tripId;
     tm arrival;
@@ -72,15 +68,21 @@ namespace cheminotc {
 
   std::string getVersion(sqlite3 *handle);
 
+  void lock(sqlite3 *handle);
+
+  void unlock(sqlite3 *handle);
+
+  bool isLocked(sqlite3 *handle);
+
   void parseGraph(std::string path, Graph *graph);
 
   void parseCalendarDates(std::string content, CalendarDates *calendarDates);
 
-  ArrivalTimesFunc refineArrivalTimes(Tracker *tracker, sqlite3 *handle, Graph *graph, TripsCache *tripsCache, VerticesCache *verticesCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
+  std::pair<bool, ArrivalTimesFunc> refineArrivalTimes(sqlite3 *handle, Graph *graph, TripsCache *tripsCache, VerticesCache *verticesCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
 
-  std::list<ArrivalTime> lookForBestDirectTrip(sqlite3 *handle, Graph *graph, VerticesCache *verticesCache, TripsCache *tripsCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te);
+  std::pair<bool, std::list<ArrivalTime>> lookForBestDirectTrip(sqlite3 *handle, Graph *graph, VerticesCache *verticesCache, TripsCache *tripsCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te);
 
-  std::list<ArrivalTime> lookForBestTrip(Tracker *tracker, sqlite3 *handle, Graph *graph, TripsCache *tripsCache, VerticesCache *verticesCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
+  std::pair<bool, std::list<ArrivalTime>> lookForBestTrip(sqlite3 *handle, Graph *graph, TripsCache *tripsCache, VerticesCache *verticesCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
 
   bool hasSameDateTime(const tm &a, const tm &b);
 

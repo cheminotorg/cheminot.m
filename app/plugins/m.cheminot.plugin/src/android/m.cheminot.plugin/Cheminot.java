@@ -18,7 +18,7 @@ import android.app.Activity;
 public class Cheminot extends CordovaPlugin {
 
   enum CheminotAction {
-    unknown, init, lookForBestTrip, abort
+    unknown, init, lookForBestTrip, lookForBestDirectTrip, abort
   }
 
   @Override
@@ -37,6 +37,10 @@ public class Cheminot extends CordovaPlugin {
 
     case lookForBestTrip:
       this.lookForBestTrip(args, cbc);
+      break;
+
+    case lookForBestDirectTrip:
+      this.lookForBestDirectTrip(args, cbc);
       break;
 
     case abort:
@@ -101,8 +105,28 @@ public class Cheminot extends CordovaPlugin {
       });
   }
 
-  private void abort(CallbackContext cbc) {
-    CheminotLib.abort();
-    cbc.success();
+  private void lookForBestDirectTrip(final JSONArray args, final CallbackContext cbc) {
+      this.cordova.getThreadPool().execute(new Runnable() {
+          public void run() {
+            try {
+              String vsId = args.getString(0);
+              String veId = args.getString(1);
+              int at = args.getInt(2);
+              int te = args.getInt(3);
+              cbc.success(CheminotLib.lookForBestDirectTrip(vsId, veId, at, te));
+            } catch (JSONException e) {
+              cbc.error(e.getMessage());
+            }
+          }
+      });
+  }
+
+  private void abort(final CallbackContext cbc) {
+    this.cordova.getThreadPool().execute(new Runnable() {
+      public void run() {
+        CheminotLib.abort();
+        cbc.success();
+      }
+    });
   }
 }
