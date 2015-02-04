@@ -279,7 +279,6 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
       return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1)
     } else return Q(trip);
   }).then((trip) => {
-    ctrl.isComputationInProgress(false);
     if(trip.arrivalTimes.length > 0) {
       var departure = tripToDeparture(trip);
       ctrl.departures().push(departure);
@@ -290,6 +289,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
         lookForNextDepartures(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
       } else {
         ctrl.currentPageSize(0);
+        ctrl.isComputationInProgress(false);
         m.redraw(true);
       }
     } else {
@@ -315,11 +315,9 @@ function tripToDeparture(trip: ArrivalTimes): Departure {
 }
 
 function isMoreItemsNeeded(ctrl: Ctrl): boolean {
-  if(!isScreenFull(ctrl) && ctrl.nbItemsPerScreen() == 0 && !ctrl.shouldBeHidden()) {
-    return true;
-  } else {
-    return ctrl.currentPageSize() < ctrl.nbItemsPerScreen();
-  }
+  var hasFirstPageNotFull = ctrl.nbItemsPerScreen() == 0 && !isScreenFull(ctrl);
+  var hasLastPageNotFull = isScreenFull(ctrl) && ctrl.currentPageSize() < ctrl.nbItemsPerScreen();
+  return (hasFirstPageNotFull || hasLastPageNotFull) && !ctrl.shouldBeHidden();
 }
 
 function isScreenFull(ctrl: Ctrl): boolean {
