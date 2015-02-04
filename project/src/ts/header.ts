@@ -11,8 +11,13 @@ export class Header implements m.Module<Ctrl> {
   }
 
   view(ctrl: Ctrl) {
+    var loader = m('div.holo', {}, [
+      m('div.outer', {}),
+      m('div.inner', {})
+    ]);
     return [
-      m("h1", {}, "Cheminot")
+      m("h1", {}, "Cheminot"),
+      loader
     ];
   }
 }

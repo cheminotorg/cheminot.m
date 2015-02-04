@@ -160,7 +160,7 @@ export class Departures implements m.Module<Ctrl> {
           if(this.isPullUpLoading() && this.currentPageSize() == 0) {
             this.isPullUpLoading(false);
             this.isPullUpFlip(false);
-            this.pullUpLabel('Tirer pour actualiser');
+            this.pullUpLabel('Tirer pour continuer');
           }
         });
 
@@ -241,7 +241,13 @@ export class Departures implements m.Module<Ctrl> {
 
       lastDepartureTime: m.prop(),
 
-      isComputationInProgress: m.prop(false),
+      isComputationInProgress: Utils.m.prop(false, (inProgress) => {
+        if(inProgress) {
+          document.body.classList.add('loading');
+        } else {
+          document.body.classList.remove('loading');
+        }
+      }),
 
       isScrollingDepartures: Utils.m.prop(false, (isScrolling) => {
         if(isScrolling) {
