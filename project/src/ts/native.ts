@@ -127,7 +127,6 @@ export module Cheminot {
   }
 
   function hashTdspQuery(vs: string, ve: string, at: Date, te: Date, max: number = 0): string {
-    var seed = isMocked() ? Date.now() : '';
-    return [vs, ve, at.getTime(), te.getTime(), max, seed].join('|');
+    return [vs, ve, at.getTime(), te.getTime(), max].join('|');
   }
 }
