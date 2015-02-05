@@ -240,6 +240,7 @@ export class Departures implements m.Module<Ctrl> {
 
       onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => {
         if(ctrl.isComputationInProgress()) native.Cheminot.abort();
+        ctrl.isComputationInProgress(false);
         if(!ctrl.isScrollingDepartures()) m.route(Routes.trip(departure.id));
       },
 
