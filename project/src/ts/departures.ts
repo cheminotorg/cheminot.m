@@ -25,6 +25,7 @@ export interface Ctrl {
   lastDepartureTime: (value?: Date) => Date;
   currentPageSize: (value?: number) => number;
   at: Date;
+  isComputingLongTrip: (value?: boolean) => boolean;
   isScrollingDepartures: (value?: boolean) => boolean;
   isComputationInProgress: (value?: boolean) => boolean;
   iscroll: () => IScroll;
@@ -73,8 +74,14 @@ function render(ctrl: Ctrl) {
     m("span.label", {}, 'Tirer pour actualiser')
   ]);
 
+  var loadingLabel = 'Chargement...';
+  if(ctrl.isComputingLongTrip()) {
+    loadingLabel = "Votre trajet n'est pas direct! Veuillez patienter un instant..."
+  }
+
   var loading = m("div.empty-loading", { key: 'departures-loading' }, [
-    m("span.label", {}, 'Chargement...')
+    m('div.gears', {}),
+    m("span.label", {}, loadingLabel)
   ]);
 
   var departuresList = ctrl.departures().map((departure, index) => {
@@ -160,7 +167,7 @@ export class Departures implements m.Module<Ctrl> {
           if(this.isPullUpLoading() && this.currentPageSize() == 0) {
             this.isPullUpLoading(false);
             this.isPullUpFlip(false);
-            this.pullUpLabel('Tirer pour continuer');
+            this.pullUpLabel('Tirer pour actualiser');
           }
         });
 
@@ -241,6 +248,8 @@ export class Departures implements m.Module<Ctrl> {
 
       lastDepartureTime: m.prop(),
 
+      isComputingLongTrip: m.prop(false),
+
       isComputationInProgress: Utils.m.prop(false, (inProgress) => {
         if(inProgress) {
           document.body.classList.add('loading');
@@ -259,7 +268,10 @@ export class Departures implements m.Module<Ctrl> {
     };
 
     native.onBackButton('departures', () => {
-      if(ctrl.isComputationInProgress()) native.Cheminot.abort();
+      if(ctrl.isComputationInProgress()) {
+        ctrl.isComputationInProgress(false);
+        native.Cheminot.abort();
+      }
       if(!ctrl.shouldBeHidden()) history.back();
     });
 
@@ -276,7 +288,10 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
   ctrl.isComputationInProgress(true);
   native.Cheminot.lookForBestDirectTrip(ctrl.startStation, ctrl.endStation, at, te).then((trip) => {
     if(!trip.arrivalTimes.length && !trip.isDirect) {
-      return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1)
+      m.startComputation();
+      ctrl.isComputingLongTrip(true);
+      m.endComputation();
+      return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1);
     } else return Q(trip);
   }).then((trip) => {
     if(trip.arrivalTimes.length > 0) {
@@ -290,6 +305,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
       } else {
         ctrl.currentPageSize(0);
         ctrl.isComputationInProgress(false);
+        ctrl.isComputingLongTrip(false);
         m.redraw(true);
       }
     } else {
