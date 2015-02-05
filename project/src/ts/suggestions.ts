@@ -82,8 +82,8 @@ export function search(term: string): Station[] {
 
 export function getStationByTerm(term: string): Station {
   var results = search(term);
-  if(results.length === 1) {
-    return results[0];
+  if(results.length > 0) {
+    return _.head(results);
   } else {
     return null;
   }

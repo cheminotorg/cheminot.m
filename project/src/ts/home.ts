@@ -123,7 +123,7 @@ function renderInputsStation(ctrl: Ctrl) {
       }
     }, (name, value) => {
       if((name + ':' + value) == 'class:focus') {
-        var isSelected = isStartStation ? ctrl.inputStationStartSelected()!='' : ctrl.inputStationEndSelected()!='';
+        var isSelected = isStartStation ? ctrl.inputStationStartSelected() !='' : ctrl.inputStationEndSelected() != '';
         var isEnabled = isStartStation ? !ctrl.isInputStationStartDisabled() : !ctrl.isInputStationEndDisabled();
         return isSelected || isEnabled;
       }
