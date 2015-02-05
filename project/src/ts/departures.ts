@@ -325,7 +325,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
       ctrl.totalPageSize(ctrl.totalPageSize() + 1);
       ctrl.lastDepartureTime(departure.startTime);
       if(isMoreItemsNeeded(ctrl)) {
-        m.endComputation();
+        if(ctrl.isComputingLongTrip()) m.endComputation();
         lookForNextDepartures(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
       } else {
         ctrl.currentPageSize(0);

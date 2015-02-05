@@ -139,7 +139,7 @@ export function getArrivalTimes(): ArrivalTime[] {
 export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number, success: (stopTimes: ArrivalTime[]) => void, error: (err: string) => void): void {
   window.setTimeout(function() {
     success(getArrivalTimes());
-  }, 500 * 3);
+  }, 500);
 }
 
 export function lookForBestDirectTrip (vsId: string, veId: string, at: Date, te: Date, max: number, success: (result: [boolean, ArrivalTime[]]) => void, error: (err: string) => void): void {
