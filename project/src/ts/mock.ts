@@ -26,7 +26,15 @@ export function init(success: (version: string) => void, error: (err: string) =>
   success("XXXXXXXX");
 }
 
-export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number, success: (stopTimes: ArrivalTime[]) => void, error: (err: string) => void): void {
+export function getTrip(): ArrivalTimes {
+  return {
+    id: 'xxxxx',
+    arrivalTimes: getArrivalTimes(),
+    isDirect: true
+  };
+}
+
+export function getArrivalTimes(): ArrivalTime[] {
   var leMansParis = [
     {
       stopId: 'StopPoint:OCETrain TER-87396002',
@@ -125,9 +133,13 @@ export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, 
       pos: 11
     }
   ];
+  return leMansParis;
+}
+
+export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number, success: (stopTimes: ArrivalTime[]) => void, error: (err: string) => void): void {
   window.setTimeout(function() {
-    success(leMansParis);
-  }, 500);
+    success(getArrivalTimes());
+  }, 500 * 3);
 }
 
 export function lookForBestDirectTrip (vsId: string, veId: string, at: Date, te: Date, max: number, success: (result: [boolean, ArrivalTime[]]) => void, error: (err: string) => void): void {

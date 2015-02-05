@@ -7,6 +7,7 @@ import locale = require('locale');
 import Utils = require('utils');
 import View = require('view');
 import native = require('native');
+import Mock = require('mock');
 import Q = require('q');
 
 export interface Ctrl {
@@ -22,8 +23,10 @@ export interface Ctrl {
   pullUpProgress: (value?: number) => number;
   pullUpLabel: (value?: string) => string;
   nbItemsPerScreen: (value?: number) => number;
+  itemHeight: (value?: number) => number;
   lastDepartureTime: (value?: Date) => Date;
   currentPageSize: (value?: number) => number;
+  totalPageSize: (value?: number) => number;
   at: Date;
   isComputingLongTrip: (value?: boolean) => boolean;
   isScrollingDepartures: (value?: boolean) => boolean;
@@ -84,16 +87,7 @@ function render(ctrl: Ctrl) {
     m("span.label", {}, loadingLabel)
   ]);
 
-  var departuresList = ctrl.departures().map((departure, index) => {
-    var attrs = {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-        if (!isUpdate) {
-          Utils.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
-        }
-      },
-      key: departure.id
-    };
-
+  var renderDepartureItem = (departure: Departure, attrs: View.Attributes) => {
     return m('li', attrs, [
       m('div.meta', {}, renderMeta(departure)),
       m('div.start-end', {}, [
@@ -102,6 +96,19 @@ function render(ctrl: Ctrl) {
         m('span.end', {}, formatTime(departure.endTime))
       ])
     ]);
+  }
+
+  var departuresList = ctrl.departures().map((departure) => {
+    var attrs: View.Attributes = {
+      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+        if(!isUpdate) {
+          Utils.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
+        }
+      },
+      key: departure.id
+    };
+
+    return renderDepartureItem(departure, attrs);
   });
 
   var zipped = _.zip<Departure, m.VirtualElement>(ctrl.departures(), departuresList);
@@ -119,6 +126,19 @@ function render(ctrl: Ctrl) {
 
   if(ctrl.isPullUpDisplayed()) {
     departures.elements.push(pullUp);
+  }
+
+  if(!departures.elements.length) {
+    var departure = tripToDeparture(Mock.getTrip());
+    var attrs: View.Attributes = {
+      'class': 'fake',
+      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+        if(!isUpdate) {
+          ctrl.itemHeight(el.clientHeight);
+        }
+      }
+    };
+    departures.elements.push(renderDepartureItem(departure, attrs));
   }
 
   var departuresAttrs = {
@@ -212,7 +232,11 @@ export class Departures implements m.Module<Ctrl> {
 
       nbItemsPerScreen: m.prop(0),
 
+      itemHeight: m.prop(0),
+
       currentPageSize: m.prop(0),
+
+      totalPageSize: m.prop(0),
 
       onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => {
         if(ctrl.isComputationInProgress()) native.Cheminot.abort();
@@ -286,11 +310,11 @@ export class Departures implements m.Module<Ctrl> {
 function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
   var te = Utils.DateTime.addHours(at, 12);
   ctrl.isComputationInProgress(true);
+  m.startComputation();
   native.Cheminot.lookForBestDirectTrip(ctrl.startStation, ctrl.endStation, at, te).then((trip) => {
     if(!trip.arrivalTimes.length && !trip.isDirect) {
-      m.startComputation();
       ctrl.isComputingLongTrip(true);
-      m.endComputation();
+      m.redraw(true);
       return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1);
     } else return Q(trip);
   }).then((trip) => {
@@ -298,20 +322,21 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
       var departure = tripToDeparture(trip);
       ctrl.departures().push(departure);
       ctrl.currentPageSize(ctrl.currentPageSize() + 1);
+      ctrl.totalPageSize(ctrl.totalPageSize() + 1);
       ctrl.lastDepartureTime(departure.startTime);
-      m.redraw(true);
       if(isMoreItemsNeeded(ctrl)) {
+        m.endComputation();
         lookForNextDepartures(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
       } else {
         ctrl.currentPageSize(0);
         ctrl.isComputationInProgress(false);
         ctrl.isComputingLongTrip(false);
-        m.redraw(true);
       }
     } else {
       ctrl.lastDepartureTime(te);
       lookForNextDepartures(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
     }
+    m.endComputation();
   });
 }
 
@@ -331,17 +356,17 @@ function tripToDeparture(trip: ArrivalTimes): Departure {
 }
 
 function isMoreItemsNeeded(ctrl: Ctrl): boolean {
-  var hasFirstPageNotFull = ctrl.nbItemsPerScreen() == 0 && !isScreenFull(ctrl);
-  var hasLastPageNotFull = isScreenFull(ctrl) && ctrl.currentPageSize() < ctrl.nbItemsPerScreen();
+  var screenFull = isScreenFull(ctrl);
+  var hasFirstPageNotFull = ctrl.nbItemsPerScreen() == 0 && !screenFull;
+  var hasLastPageNotFull = screenFull && ctrl.currentPageSize() < ctrl.nbItemsPerScreen();
   return (hasFirstPageNotFull || hasLastPageNotFull) && !ctrl.shouldBeHidden();
 }
 
 function isScreenFull(ctrl: Ctrl): boolean {
-  var departures = <HTMLElement> ctrl.scope().querySelector('.departures');
   var header = <HTMLElement> document.querySelector('#header');
   var viewportSize = Utils.viewportSize();
   var height = Math.max(viewportSize[0], viewportSize[1]);
-  var isFull = (departures.offsetHeight + header.offsetHeight) >= height;
+  var isFull = (header.offsetHeight + (ctrl.itemHeight() * ctrl.totalPageSize())) >= height;
   if(isFull && ctrl.nbItemsPerScreen() == 0) {
     ctrl.nbItemsPerScreen(ctrl.departures().length);
   }
