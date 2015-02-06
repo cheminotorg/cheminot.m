@@ -1,5 +1,6 @@
 import Mock = require('mock');
 import Q = require('q');
+import Cache = require('cache');
 import _ = require('lodash');
 
 export interface BackButtonHandlers {
@@ -70,63 +71,45 @@ export module Cheminot {
   }
 
   export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: Date): Q.Promise<ArrivalTimes> {
-    var d = Q.defer<ArrivalTimes>();
-    var id = hashTdspQuery(vsId, veId, at, te);
-    var tripFromCache = sessionStorage.getItem(id);
-
-    if(tripFromCache) {
-      d.resolve(JSON.parse(tripFromCache));
-    } else {
+    var key = Cache.key(vsId, veId, at, te);
+    return Cache.getOrSetTrip(key, () => {
+      var d = Q.defer<ArrivalTimes>();
       var success = (result: [boolean, ArrivalTime[]]) => {
         var arrivalTimes = result[1], hasDirect = result[0];
-        var trip = { id: id, arrivalTimes: arrivalTimes, isDirect: hasDirect };
-        sessionStorage.setItem(id, JSON.stringify(trip));
+        var trip = { id: key, arrivalTimes: arrivalTimes, isDirect: hasDirect };
         d.resolve(trip);
       }
       var error = (e: string) => d.reject(e);
-
       if(isMocked()) {
         Mock.lookForBestDirectTrip(vsId, veId, at, te, 0, success, error);
       } else {
         cordova.plugins.Cheminot.lookForBestDirectTrip(vsId, veId, at, te, success, error);
       }
-    }
-
-    return d.promise;
+      return d.promise;
+    });
   }
 
   export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number): Q.Promise<ArrivalTimes> {
-    var d = Q.defer<ArrivalTimes>();
-    var id = hashTdspQuery(vsId, veId, at, te, max);
-    var tripFromCache = sessionStorage.getItem(id);
-
-    if(tripFromCache) {
-      d.resolve(JSON.parse(tripFromCache));
-    } else {
+    var key = Cache.key(vsId, veId, at, te, max);
+    return Cache.getOrSetTrip(key, () => {
+      var d = Q.defer<ArrivalTimes>();
       var success = (arrivalTimes: ArrivalTime[]) => {
-        var trip = { id: id, arrivalTimes: arrivalTimes, isDirect: false };
-        sessionStorage.setItem(id, JSON.stringify(trip));
+        var trip = { id: key, arrivalTimes: arrivalTimes, isDirect: false };
         d.resolve(trip);
       }
       var error = (e: string) => d.reject(e);
-
       if(isMocked()) {
         Mock.lookForBestTrip(vsId, veId, at, te, max, success, error);
       } else {
         cordova.plugins.Cheminot.lookForBestTrip(vsId, veId, at, te, max, success, error);
       }
-    }
-
-    return d.promise;
+      return d.promise;
+    });
   }
 
   export function abort(): Q.Promise<void> {
     var d = Q.defer<void>();
     cordova.plugins.Cheminot.abort(() => d.resolve(null), () => d.reject(null));
     return d.promise;
-  }
-
-  function hashTdspQuery(vs: string, ve: string, at: Date, te: Date, max: number = 0): string {
-    return [vs, ve, at.getTime(), te.getTime(), max].join('|');
   }
 }
