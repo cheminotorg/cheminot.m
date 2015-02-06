@@ -38,6 +38,10 @@ function formatDay(dateTime: Date): string {
   return moment(dateTime).format('dddd D MMMM YYYY');
 }
 
+function formatDateTime(dateTime: Date): string {
+  return moment(dateTime).format('d/MM/YYYY HH:mm');
+}
+
 function formatTime(dateTime: Date): string {
   return moment(dateTime).format('HH:mm');
 }
@@ -308,36 +312,39 @@ export class Departures implements m.Module<Ctrl> {
   }
 }
 
-function lookForNextDepartures(ctrl: Ctrl, at: Date): void {
-  var te = Utils.DateTime.addHours(at, 12);
-  ctrl.isComputationInProgress(true);
-  m.startComputation();
-  native.Cheminot.lookForBestDirectTrip(ctrl.startStation, ctrl.endStation, at, te).then((trip) => {
-    if(!trip.arrivalTimes.length && !trip.isDirect) {
-      ctrl.isComputingLongTrip(true);
-      m.redraw(true);
-      return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1);
-    } else return Q(trip);
-  }).then((trip) => {
-    if(trip.arrivalTimes.length > 0) {
-      var departure = tripToDeparture(trip);
-      ctrl.departures().push(departure);
-      ctrl.currentPageSize(ctrl.currentPageSize() + 1);
-      ctrl.totalPageSize(ctrl.totalPageSize() + 1);
-      ctrl.lastDepartureTime(departure.startTime);
-      if(isMoreItemsNeeded(ctrl)) {
-        if(ctrl.isComputingLongTrip()) m.endComputation();
-        lookForNextDepartures(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
+function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<void> {
+  var step = (ctrl: Ctrl, at: Date): Q.Promise<void> => {
+    var te = Utils.DateTime.addHours(at, 12);
+    ctrl.isComputationInProgress(true);
+    console.log(formatDateTime(at) + ' - ' + formatDateTime(te));
+    return native.Cheminot.lookForBestDirectTrip(ctrl.startStation, ctrl.endStation, at, te).then((trip) => {
+      if(!trip.arrivalTimes.length && !trip.isDirect) {
+        ctrl.isComputingLongTrip(true);
+        m.redraw(true);
+        return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1);
+      } else return Q(trip);
+    }).then((trip) => {
+      if(trip.arrivalTimes.length > 0) {
+        var departure = tripToDeparture(trip);
+        ctrl.departures().push(departure);
+        if(ctrl.isComputingLongTrip()) m.redraw(true);
+        ctrl.currentPageSize(ctrl.currentPageSize() + 1);
+        ctrl.totalPageSize(ctrl.totalPageSize() + 1);
+        ctrl.lastDepartureTime(departure.startTime);
+        if(isMoreItemsNeeded(ctrl)) {
+          return step(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
+        }
       } else {
-        ctrl.currentPageSize(0);
-        ctrl.isComputationInProgress(false);
-        ctrl.isComputingLongTrip(false);
+        ctrl.lastDepartureTime(te);
+        return step(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
       }
-    } else {
-      ctrl.lastDepartureTime(te);
-      lookForNextDepartures(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
-    }
-    m.endComputation();
+    });
+  }
+  return step(ctrl, at).fin(() => {
+    ctrl.currentPageSize(0);
+    ctrl.isComputationInProgress(false);
+    ctrl.isComputingLongTrip(false);
+    if(!ctrl.isComputingLongTrip()) m.redraw(true);
   });
 }
 
