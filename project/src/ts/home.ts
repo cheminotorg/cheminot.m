@@ -152,7 +152,7 @@ function renderStations(ctrl: Ctrl) {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if (!isUpdate) {
-          Utils.$.touchend(el, _.partial(ctrl.onStationSelected, ctrl));
+          el.addEventListener('touchend', _.partial(ctrl.onStationSelected, ctrl));
         }
         if((index + 1) === ctrl.stations().length) {
           ctrl.adaptWrapperTop(ctrl);

@@ -109,7 +109,7 @@ function render(ctrl: Ctrl) {
     var attrs: View.Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
+          el.addEventListener('touchend', _.partial(ctrl.onDepartureSelected, ctrl, departure));
         }
       },
       key: departure.id
