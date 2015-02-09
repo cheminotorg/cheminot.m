@@ -9,12 +9,14 @@ import View = require('view');
 import native = require('native');
 import Mock = require('mock');
 import Q = require('q');
+import Cache = require('cache');
 
 export interface Ctrl {
   scope: () => HTMLElement;
   shouldBeHidden: () => boolean;
   startStation: string;
   endStation: string;
+  cached: (value?: Array<Departure>) => Array<Departure>;
   departures: (value?: Array<Departure>) => Array<Departure>;
   onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => void;
   isPullUpDisplayed: (value?: boolean) => boolean;
@@ -26,7 +28,6 @@ export interface Ctrl {
   itemHeight: (value?: number) => number;
   lastDepartureTime: (value?: Date) => Date;
   currentPageSize: (value?: number) => number;
-  totalPageSize: (value?: number) => number;
   at: Date;
   isComputingLongTrip: (value?: boolean) => boolean;
   isScrollingDepartures: (value?: boolean) => boolean;
@@ -72,7 +73,9 @@ function render(ctrl: Ctrl) {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!ctrl.shouldBeHidden()) {
         ctrl.iscroll().refresh();
-        ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 600);
+        if(ctrl.cached().length != ctrl.departures().length) {
+          ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 600);
+        }
       }
     }
   };
@@ -150,9 +153,18 @@ function render(ctrl: Ctrl) {
       if(!ctrl.shouldBeHidden()) {
         ctrl.iscroll().refresh();
         if(!isUpdate) {
+          var cached = Cache.getAllTripsFrom(ctrl.startStation, ctrl.endStation, ctrl.at, 0, nextDeparture, departureBound).map((departure) => {
+            return tripToDeparture(departure);
+          });
+          ctrl.cached(cached);
+          cached.forEach((departure) =>ctrl.departures().push(departure));
+          if(cached.length) ctrl.lastDepartureTime(_.last(cached).startTime);
+          ctrl.currentPageSize(cached.length);
           lookForNextDepartures(ctrl, ctrl.at);
         } else {
-          ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 0);
+          if(ctrl.cached().length != ctrl.departures().length) {
+            ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 0);
+          }
         }
       }
     }
@@ -234,13 +246,13 @@ export class Departures implements m.Module<Ctrl> {
 
       departures: m.prop([]),
 
+      cached: m.prop([]),
+
       nbItemsPerScreen: m.prop(0),
 
       itemHeight: m.prop(0),
 
       currentPageSize: m.prop(0),
-
-      totalPageSize: m.prop(0),
 
       onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => {
         if(ctrl.isComputationInProgress()) native.Cheminot.abort();
@@ -314,31 +326,31 @@ export class Departures implements m.Module<Ctrl> {
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<void> {
   var step = (ctrl: Ctrl, at: Date): Q.Promise<void> => {
-    var te = Utils.DateTime.addHours(at, 12);
-    ctrl.isComputationInProgress(true);
-    console.log(formatDateTime(at) + ' - ' + formatDateTime(te));
-    return native.Cheminot.lookForBestDirectTrip(ctrl.startStation, ctrl.endStation, at, te).then((trip) => {
-      if(!trip.arrivalTimes.length && !trip.isDirect) {
-        ctrl.isComputingLongTrip(true);
-        m.redraw(true);
-        return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1);
-      } else return Q(trip);
-    }).then((trip) => {
-      if(trip.arrivalTimes.length > 0) {
-        var departure = tripToDeparture(trip);
-        ctrl.departures().push(departure);
-        if(ctrl.isComputingLongTrip()) m.redraw(true);
-        ctrl.currentPageSize(ctrl.currentPageSize() + 1);
-        ctrl.totalPageSize(ctrl.totalPageSize() + 1);
-        ctrl.lastDepartureTime(departure.startTime);
-        if(isMoreItemsNeeded(ctrl)) {
-          return step(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
+    if(isMoreItemsNeeded(ctrl)) {
+      var te = departureBound(at);
+      ctrl.isComputationInProgress(true);
+      return native.Cheminot.lookForBestDirectTrip(ctrl.startStation, ctrl.endStation, at, te).then((trip) => {
+        if(!trip.arrivalTimes.length && !trip.isDirect) {
+          ctrl.isComputingLongTrip(true);
+          m.redraw(true);
+          return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1);
+        } else return Q(trip);
+      }).then((trip) => {
+        if(trip.arrivalTimes.length > 0) {
+          var departure = tripToDeparture(trip);
+          ctrl.departures().push(departure);
+          if(ctrl.isComputingLongTrip()) m.redraw(true);
+          ctrl.currentPageSize(ctrl.currentPageSize() + 1);
+          ctrl.lastDepartureTime(departure.startTime);
+          return step(ctrl, nextDeparture(ctrl.lastDepartureTime()));
+        } else {
+          ctrl.lastDepartureTime(te);
+          return step(ctrl, nextDeparture(ctrl.lastDepartureTime()));
         }
-      } else {
-        ctrl.lastDepartureTime(te);
-        return step(ctrl, Utils.DateTime.addMinutes(ctrl.lastDepartureTime(), 1));
-      }
-    });
+      });
+    } else {
+      return Utils.Promise.done();
+    }
   }
   return step(ctrl, at).fin(() => {
     ctrl.currentPageSize(0);
@@ -346,6 +358,14 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<void> {
     ctrl.isComputingLongTrip(false);
     if(!ctrl.isComputingLongTrip()) m.redraw(true);
   });
+}
+
+function nextDeparture(departure: Date): Date {
+  return Utils.DateTime.addMinutes(departure, 1);
+}
+
+function departureBound(departure: Date): Date {
+  return Utils.DateTime.addHours(departure, 12);
 }
 
 function tripToDeparture(trip: ArrivalTimes): Departure {
@@ -374,7 +394,7 @@ function isScreenFull(ctrl: Ctrl): boolean {
   var header = <HTMLElement> document.querySelector('#header');
   var viewportSize = Utils.viewportSize();
   var height = Math.max(viewportSize[0], viewportSize[1]);
-  var isFull = (header.offsetHeight + (ctrl.itemHeight() * ctrl.totalPageSize())) >= height;
+  var isFull = (header.offsetHeight + (ctrl.itemHeight() * ctrl.departures().length)) >= height;
   if(isFull && ctrl.nbItemsPerScreen() == 0) {
     ctrl.nbItemsPerScreen(ctrl.departures().length);
   }
