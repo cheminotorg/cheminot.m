@@ -275,7 +275,6 @@ export class Home implements m.Module<Ctrl> {
       onTabTouched: (ctrl: Ctrl, e: Event) => {
         var tab = <HTMLElement> e.currentTarget;
 
-        m.startComputation();
         ctrl.isTodayTabSelected(false);
         ctrl.isTomorrowTabSelected(false);
         ctrl.isOtherTabSelected(false);
@@ -287,7 +286,7 @@ export class Home implements m.Module<Ctrl> {
         } else if(isOtherTab(tab)) {
           ctrl.isOtherTabSelected(true);
         }
-        m.endComputation();
+        m.redraw();
       },
 
       onInputStationTouched: (ctrl: Ctrl, e: Event) => {
@@ -308,10 +307,9 @@ export class Home implements m.Module<Ctrl> {
 
       onInputStationKeyUp: (ctrl: Ctrl, e: Event) => {
         var inputStation = <HTMLInputElement> e.currentTarget;
-        m.startComputation();
         setInputStationValue(ctrl, inputStation, inputStation.value);
         ctrl.stations(Suggestions.search(inputStation.value));
-        m.endComputation();
+        m.redraw();
       },
 
       inputStationStartTerm: m.prop(startTerm),
@@ -387,12 +385,11 @@ export class Home implements m.Module<Ctrl> {
           var id = station.getAttribute('data-id');
           var name = station.getAttribute('data-name');
           var inputStation = currentInputStation(ctrl);
-          m.startComputation();
           ctrl.stations([]);
           setInputStationValue(ctrl, inputStation, name);
           setInputStationSelected(ctrl, inputStation, id);
           resetInputStationsPosition(ctrl, inputStation);
-          m.endComputation();
+          m.redraw();
         }
       },
 
@@ -400,12 +397,11 @@ export class Home implements m.Module<Ctrl> {
         e.stopPropagation();
         var resetButton = <HTMLElement> e.currentTarget;
         var inputStation = <HTMLInputElement> resetButton.previousElementSibling;
-        m.startComputation();
         if(ctrl.isViewportUp()) resetInputStationsPosition(ctrl, inputStation);
         setInputStationValue(ctrl, inputStation, '');
         setInputStationSelected(ctrl, inputStation, '');
         ctrl.stations([]);
-        m.endComputation();
+        m.redraw();
       },
 
       onSubmitTouched: (ctrl: Ctrl, e: Event) => {
@@ -533,9 +529,8 @@ function showDateTimePanel(ctrl: Ctrl): Q.Promise<HTMLElement> {
 function resetInputStationsPosition(ctrl: Ctrl, inputStation: HTMLInputElement): Q.Promise<void> {
   var showInput = isInputStationStart(inputStation) ? showInputStationEnd : showInputStationStart;
   var resetButton = <HTMLElement> inputStation.nextElementSibling;
-  m.startComputation();
   disableInputStation(ctrl, inputStation);
-  m.endComputation();
+  m.redraw();
   return native.Keyboard.close().then(() => {
     moveDownViewport(ctrl).then(() => {
       showInput(ctrl).then(() => {
