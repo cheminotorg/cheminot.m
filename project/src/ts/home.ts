@@ -170,16 +170,23 @@ function renderStations(ctrl: Ctrl) {
     }
   }
 
+  var stopsList = ctrl.stations().map((station, index) => {
+    return m('li', _.merge({ "data-id": station.id, "data-name": station.name }, stationAttrs(index)),
+             m('div', {}, [
+               m('span', { class: 'match' }, _.take(station.name, term.length).join('')),
+               m('span', {}, _.drop(station.name, term.length).join(''))
+             ]));
+  });
+
+  var emptyResult = m('li.empty', {}, 'Aucun résultat');
+
+  var inputDisabled = ctrl.isInputStationStartDisabled() && ctrl.isInputStationEndDisabled();
+
+  var items = (!stopsList.length && term && !inputDisabled) ? emptyResult : stopsList;
+
   return m("div", { class: "stations" },
            m("div", { id: "wrapper" },
-             m("ul", _.merge({ class: "suggestions list" }, suggestionsAttrs),
-               ctrl.stations().map((station, index) => {
-                 return m('li', _.merge({ "data-id": station.id, "data-name": station.name }, stationAttrs(index)),
-                          m('div', {}, [
-                            m('span', { class: 'match' }, _.take(station.name, term.length).join('')),
-                            m('span', {}, _.drop(station.name, term.length).join(''))
-                          ]));
-               }))));
+             m("ul", _.merge({ class: "suggestions list" }, suggestionsAttrs), items)));
 }
 
 /// RENDER DATETIME SELECTOR
