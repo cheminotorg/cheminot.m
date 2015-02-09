@@ -5,7 +5,6 @@ import IScroll = require('IScroll');
 import moment = require('moment');
 import locale = require('locale');
 import Utils = require('utils');
-import View = require('view');
 import native = require('native');
 import Mock = require('mock');
 import Q = require('q');
@@ -95,7 +94,7 @@ function render(ctrl: Ctrl) {
     m("span.label", {}, loadingLabel)
   ]);
 
-  var renderDepartureItem = (departure: Departure, attrs: View.Attributes) => {
+  var renderDepartureItem = (departure: Departure, attrs: Attributes) => {
     return m('li', attrs, [
       m('div.meta', {}, renderMeta(departure)),
       m('div.start-end', {}, [
@@ -107,7 +106,7 @@ function render(ctrl: Ctrl) {
   }
 
   var departuresList = ctrl.departures().map((departure) => {
-    var attrs: View.Attributes = {
+    var attrs: Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
           el.addEventListener('touchend', _.partial(ctrl.onDepartureSelected, ctrl, departure));
@@ -138,7 +137,7 @@ function render(ctrl: Ctrl) {
 
   if(!departures.elements.length) {
     var departure = tripToDeparture(Mock.getTrip());
-    var attrs: View.Attributes = {
+    var attrs: Attributes = {
       'class': 'fake',
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {

@@ -7,7 +7,6 @@ import moment = require('moment');
 import Utils = require('utils');
 import Suggestions = require('suggestions');
 import Routes = require('routes');
-import View = require('view');
 import i18n = require('i18n');
 import native = require('native');
 
@@ -53,21 +52,21 @@ function renderTabs(ctrl: Ctrl) {
     }
   }
 
-  var todayAttrs = View.handleAttributes({ class: 'today selected'}, (name, value) => {
+  var todayAttrs = Utils.m.handleAttributes({ class: 'today selected'}, (name, value) => {
     if((name + ':' + value) == 'class:selected') {
       return ctrl.isTodayTabSelected();
     }
     return true;
   });
 
-  var tomorrowAttrs = View.handleAttributes({ class: 'tomorrow selected'}, (name, value) => {
+  var tomorrowAttrs = Utils.m.handleAttributes({ class: 'tomorrow selected'}, (name, value) => {
     if((name + ':' + value) == 'class:selected') {
       return ctrl.isTomorrowTabSelected();
     }
     return true;
   });
 
-  var otherAttrs = View.handleAttributes({ class: 'other selected'}, (name, value) => {
+  var otherAttrs = Utils.m.handleAttributes({ class: 'other selected'}, (name, value) => {
     if((name + ':' + value) == 'class:selected') {
       return ctrl.isOtherTabSelected();
     }
@@ -95,7 +94,7 @@ function renderInputsStation(ctrl: Ctrl) {
   };
 
   var inputStationAttrs = (isStartStation: boolean) => {
-    var attrs: View.Attributes = {
+    var attrs: Attributes = {
       disabled: "true",
       type: "text",
       value: isStartStation ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm(),
@@ -106,7 +105,7 @@ function renderInputsStation(ctrl: Ctrl) {
         }
       }
     };
-    return View.handleAttributes(attrs, (name, value) => {
+    return Utils.m.handleAttributes(attrs, (name, value) => {
       if(name == 'disabled') {
         return isStartStation ? ctrl.isInputStationStartDisabled() : ctrl.isInputStationEndDisabled();
       } else return true;
@@ -114,7 +113,7 @@ function renderInputsStation(ctrl: Ctrl) {
   };
 
   var resetStationAttrs = (isStartStation: boolean) => {
-    return View.handleAttributes({
+    return Utils.m.handleAttributes({
       class: 'font reset focus',
       type: 'button',
       config: (el: HTMLElement, isUpdate: boolean, context: any) => {
@@ -197,7 +196,7 @@ function renderDateTime(ctrl: Ctrl) {
     onchange: _.partial(ctrl.onDateTimeChange, ctrl),
   };
 
-  var dateSelectorAttrs = View.handleAttributes({ class: 'date other' }, (name, value) => {
+  var dateSelectorAttrs = Utils.m.handleAttributes({ class: 'date other' }, (name, value) => {
     if((name + ':' + value) == 'class:other') {
       return ctrl.isOtherTabSelected();
     }
@@ -205,7 +204,7 @@ function renderDateTime(ctrl: Ctrl) {
   });
 
   var submitAttrs: any = (() => {
-    var attrs = View.handleAttributes({ class: 'submit enabled disabled' }, (name, value) => {
+    var attrs = Utils.m.handleAttributes({ class: 'submit enabled disabled' }, (name, value) => {
       if((name + ':' + value) == 'class:disabled') {
         return !canBeSubmitted(ctrl);
       } else if((name + ':' + value) == 'class:enabled'){

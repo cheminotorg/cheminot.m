@@ -1,3 +1,7 @@
+interface Attributes {
+  [index: string]: any;
+}
+
 interface Station {
   name: string;
   id: string;

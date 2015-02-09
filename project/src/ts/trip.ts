@@ -3,7 +3,6 @@ import Routes = require('routes');
 import _ = require('lodash');
 import IScroll = require('IScroll');
 import moment = require('moment');
-import View = require('view');
 import native = require('native');
 
 export interface Ctrl {
@@ -35,7 +34,7 @@ function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
         }
       })();
 
-      var attrs: View.Attributes = {
+      var attrs: Attributes = {
         config: function(el: HTMLElement, isUpdate: boolean, context: any) {
           if((index + 1) === ctrl.trip().length) {
             ctrl.adaptWrapperTop(ctrl);

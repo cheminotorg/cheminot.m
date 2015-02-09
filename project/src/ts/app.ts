@@ -1,5 +1,4 @@
 import m = require('mithril');
-import View = require('view');
 import Header = require('header');
 import Home = require('home');
 import Departures = require('departures');
@@ -18,12 +17,12 @@ function renderHeader(ctrl: Header.Ctrl) {
 }
 
 function renderHome(ctrl: Home.Ctrl) {
-  var attributes: View.Attributes = {
+  var attributes: Attributes = {
     'id': 'home',
     'class': 'view hidden'
   };
 
-  attributes = View.handleAttributes(attributes, (name, value) => {
+  attributes = Utils.m.handleAttributes(attributes, (name, value) => {
     switch (name + ':' + value) {
       case 'class:hidden': return ctrl.shouldBeHidden();
       default: return true;
@@ -34,12 +33,12 @@ function renderHome(ctrl: Home.Ctrl) {
 }
 
 function renderDepartures(ctrl: Departures.Ctrl) {
-  var attributes: View.Attributes = {
+  var attributes: Attributes = {
     'id': 'departures',
     'class': 'view hidden'
   };
 
-  attributes = View.handleAttributes(attributes, (name, value) => {
+  attributes = Utils.m.handleAttributes(attributes, (name, value) => {
     switch (name + ':' + value) {
     case 'class:hidden': return ctrl.shouldBeHidden();
       default: return true;
@@ -51,12 +50,12 @@ function renderDepartures(ctrl: Departures.Ctrl) {
 
 function renderTrip(ctrl: Trip.Ctrl) {
 
-  var attributes: View.Attributes = {
+  var attributes: Attributes = {
     'id': 'trip',
     'class': 'view hidden'
   };
 
-  attributes = View.handleAttributes(attributes, (name, value) => {
+  attributes = Utils.m.handleAttributes(attributes, (name, value) => {
     switch (name + ':' + value) {
     case 'class:hidden': return ctrl.shouldBeHidden();
       default: return true;
