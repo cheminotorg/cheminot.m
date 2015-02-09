@@ -8,6 +8,7 @@ import Utils = require('utils');
 import Suggestions = require('suggestions');
 import Routes = require('routes');
 import View = require('view');
+import i18n = require('i18n');
 import native = require('native');
 
 export interface Ctrl {
@@ -76,9 +77,9 @@ function renderTabs(ctrl: Ctrl) {
   var hint = m("div", { class: "hint" });
 
   return m('ul', { class: 'top-bar tabs'}, [
-    m('li', _.merge(todayAttrs, attributes), ["Aujourd'hui", hint]),
-    m('li', _.merge(tomorrowAttrs, attributes), ['Demain', hint]),
-    m('li', _.merge(otherAttrs, attributes), ['Autre', hint])
+    m('li', _.merge(todayAttrs, attributes), [i18n.fr('today'), hint]),
+    m('li', _.merge(tomorrowAttrs, attributes), [i18n.fr('tomorrow'), hint]),
+    m('li', _.merge(otherAttrs, attributes), [i18n.fr('other'), hint])
   ])
 }
 
@@ -134,11 +135,11 @@ function renderInputsStation(ctrl: Ctrl) {
   return m("div", { class: "start-end" },
            m("form", {}, [
              m("div", _.merge({ class: "input start" }, inputStationWrapperAttrs), [
-               m("input", _.merge({ name: "start", placeholder: "Départ" }, inputStationAttrs(true))),
+               m("input", _.merge({ name: "start", placeholder: i18n.fr('departure') }, inputStationAttrs(true))),
                m("button", resetStationAttrs(true))
              ]),
              m("div", _.merge({ class: "input end"}, inputStationWrapperAttrs), [
-               m("input", _.merge({ name: "end", placeholder: "Arrivée" }, inputStationAttrs(false))),
+               m("input", _.merge({ name: "end", placeholder: i18n.fr('arrival') }, inputStationAttrs(false))),
                m("button", resetStationAttrs(false))
              ])
            ]));
@@ -178,7 +179,7 @@ function renderStations(ctrl: Ctrl) {
              ]));
   });
 
-  var emptyResult = m('li.empty', {}, 'Aucun résultat');
+  var emptyResult = m('li.empty', {}, i18n.fr('no-result'));
 
   var inputDisabled = ctrl.isInputStationStartDisabled() && ctrl.isInputStationEndDisabled();
 
@@ -224,17 +225,17 @@ function renderDateTime(ctrl: Ctrl) {
 
   return m("ul", { class: 'list datetime'}, [
     m("li", dateSelectorAttrs, [
-      m("span", { class: "label" }, "Date de départ"),
+      m("span", { class: "label" }, i18n.fr('departure-date')),
       m("span", { class: "value" }, ctrl.inputDateSelected()),
       m("input", _.merge({ type: "date" }, inputDateTimeAttrs))
     ]),
     m("li", { class: "time" }, [
-      m("span", { class: "label" }, "Heure de départ"),
+      m("span", { class: "label" }, i18n.fr('departure-time')),
       m("span", { class: "value" }, ctrl.inputTimeSelected()),
       m("input", _.merge({ type: "time" }, inputDateTimeAttrs))
     ]),
     m("li", submitAttrs, [
-      m("span", {}, "Rechercher"),
+      m("span", {}, i18n.fr('search')),
       m("button", { class: "font go" })
     ])
   ]);

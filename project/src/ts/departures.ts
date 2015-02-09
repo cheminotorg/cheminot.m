@@ -10,6 +10,7 @@ import native = require('native');
 import Mock = require('mock');
 import Q = require('q');
 import Cache = require('cache');
+import i18n = require('i18n');
 
 export interface Ctrl {
   scope: () => HTMLElement;
@@ -58,7 +59,7 @@ function renderMeta(departure: Departure): m.VirtualElement[] {
   ]);
 
   if(departure.nbSteps <= 1) {
-    return [m("span.steps", {}, "Direct"), duration];
+    return [m("span.steps", {}, i18n.fr('direct')), duration];
   } else {
     return [m("span.steps", {}, [
       m("span.value", {}, departure.nbSteps),
@@ -81,12 +82,12 @@ function render(ctrl: Ctrl) {
   };
 
   var pullUp = m("li.pull-up", pullupAttrs, [
-    m("span.label", {}, 'Tirer pour actualiser')
+    m("span.label", {}, i18n.fr('pull-to-refresh'))
   ]);
 
   var loadingLabel = 'Chargement...';
   if(ctrl.isComputingLongTrip()) {
-    loadingLabel = "Votre trajet n'est pas direct! Veuillez patienter un instant..."
+    loadingLabel = i18n.fr('trip-not-direct');
   }
 
   var loading = m("div.empty-loading", { key: 'departures-loading' }, [
@@ -203,7 +204,7 @@ export class Departures implements m.Module<Ctrl> {
           if(this.isPullUpLoading() && this.currentPageSize() == 0) {
             this.isPullUpLoading(false);
             this.isPullUpFlip(false);
-            this.pullUpLabel('Tirer pour actualiser');
+            this.pullUpLabel(i18n.fr('pull-to-refresh'));
           }
         });
 
@@ -215,10 +216,10 @@ export class Departures implements m.Module<Ctrl> {
           this.pullUpProgress(computePullUpBar(iscroll));
           if(this.pullUpProgress() >= 100) {
             this.isPullUpFlip(true);
-            this.pullUpLabel('Relacher pour actualiser');
+            this.pullUpLabel(i18n.fr('release-to-refresh'));
           } else {
             this.isPullUpFlip(false);
-            this.pullUpLabel('Tirer pour actualiser');
+            this.pullUpLabel(i18n.fr('pull-to-refresh'));
           }
           this.maxScrollY = this.maxScrollY;
         });
@@ -227,7 +228,7 @@ export class Departures implements m.Module<Ctrl> {
           this.isScrollingDepartures(false);
           if(this.isPullUpFlip() && !this.isPullUpLoading()) {
             this.isPullUpLoading(true);
-            this.pullUpLabel('Chargement...');
+            this.pullUpLabel(i18n.fr('loading'));
             lookForNextDepartures(this, Utils.DateTime.addMinutes(this.lastDepartureTime(), 1));
           } else {
             this.pullUpProgress(0);
@@ -282,7 +283,7 @@ export class Departures implements m.Module<Ctrl> {
 
       pullUpProgress: m.prop(0),
 
-      pullUpLabel: Utils.m.prop('Tirer pour rafraichir', (label: string) => {
+      pullUpLabel: Utils.m.prop(i18n.fr('pull-to-refresh'), (label: string) => {
         var pullUpLabel = scope().querySelector('.pull-up .label')
         if(pullUpLabel) pullUpLabel.textContent = label;
       }),
