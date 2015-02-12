@@ -18,8 +18,7 @@ export class Header implements m.Module<Ctrl> {
     ]);
     return [
       m("h1", {}, "Cheminot"),
-      loader,
-      info
+      loader
     ];
   }
 }

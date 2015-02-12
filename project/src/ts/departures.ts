@@ -96,11 +96,13 @@ function render(ctrl: Ctrl) {
 
   var renderDepartureItem = (departure: Departure, attrs: Attributes) => {
     return m('li', attrs, [
-      m('div.meta', {}, renderMeta(departure)),
-      m('div.start-end', {}, [
-        m('span.alarm-clock'),
-        m('span.start', {}, formatTime(departure.startTime)),
-        m('span.end', {}, formatTime(departure.endTime))
+      m('div.wrapper', {}, [
+        m('div.meta', {}, renderMeta(departure)),
+        m('div.start-end', {}, [
+          m('span.alarm-clock'),
+          m('span.start', {}, formatTime(departure.startTime)),
+          m('span.end', {}, formatTime(departure.endTime))
+        ])
       ])
     ]);
   }

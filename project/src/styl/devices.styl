@@ -5,18 +5,26 @@ scale(value, factor) {
 header_height=54px
 header_size=20px
 header_label_size=16px
+top_bar_height=64px
+top_bar_size=18px
 item_height=66px
 item_size=18px
 input_height=66px
 input_size=18px
 btn_size=22px
 
-departures_clock_size=23px
-departures_startend_size=32px
-departures_to_size=21px
-departures_meta_size=18px
+departures_wrapper_width=400px
+departures_pullup_padding=14px
 departures_pullup_size=18px
 departures_loading_size=18px
+departures_item_padding=14px
+departures_item_meta_size=18px
+departures_item_meta_padding=10px
+departures_item_startend_size=32px
+departures_item_startend_padding=8px
+departures_item_start_width=140px
+departures_item_clock_size=23px
+departures_item_to_size=21px
 
 trip_span_size=16px
 trip_item_height=66px
@@ -27,9 +35,14 @@ trip_time_width=80px
 device(min_width, max_width, factor) {
     portrait = "only screen and (min-device-width : " + min_width + ") and (max-device-width : " + max_width + ")"
     @media portrait {
-        header, .top-bar {
+        header {
             height: scale(header_height, factor)
             font-size: scale(header_size, factor)
+        }
+
+        .top-bar {
+            height: scale(top_bar_height, factor)
+            font-size: scale(top_bar_size, factor)
             .label {
                 font-size: scale(header_label_size, factor)
             }
@@ -58,20 +71,34 @@ device(min_width, max_width, factor) {
         }
 
         #departures {
-            .meta {
-                font-size: scale(departures_meta_size, factor)
+            .wrapper {
+                max-width: departures_wrapper_width
             }
-            .start-end {
-                font-size: scale(departures_startend_size, factor)
-            }
-            .alarm-clock:before {
-                font-size: scale(departures_clock_size, factor)
-            }
-            .to {
-                font-size: scale(departures_to_size, factor)
-            }
-            .pull-up {
-                font-size: scale(departures_pullup_size, factor)
+            li {
+                &:not(.pull-up) {
+                    padding: 0 scale(departures_item_padding, factor) 2% scale(departures_item_padding, factor)
+                }
+                &.pull-up {
+                    padding: scale(departures_pullup_padding, factor) 0 scale(departures_pullup_padding, factor) 0
+                    font-size: scale(departures_pullup_size, factor)
+                }
+                .meta {
+                    font-size: scale(departures_item_meta_size, factor)
+                    padding: scale(departures_item_meta_padding, factor) 0 scale(departures_item_meta_padding, factor) 0
+                }
+                .start-end {
+                    font-size: scale(departures_item_startend_size, factor)
+                    padding: 0 0 scale(departures_item_startend_padding, factor) 0
+                }
+                .alarm-clock:before {
+                    font-size: scale(departures_item_clock_size, factor)
+                }
+                .to {
+                    font-size: scale(departures_item_to_size, factor)
+                }
+                .start {
+                    width: scale(departures_item_start_width, factor)
+                }
             }
             .empty-loading {
                 font-size: scale(departures_loading_size, factor)
@@ -97,9 +124,14 @@ device(min_width, max_width, factor) {
 
 // IPHONE 5 (default)
 @media only screen {
-    header, .top-bar {
+    header {
         height: header_height
         font-size: header_size
+    }
+
+    top-bar {
+        height: header_height
+        font-size: top_bar_size
         .label {
             font-size: header_label_size
         }
@@ -128,20 +160,34 @@ device(min_width, max_width, factor) {
     }
 
     #departures {
-        .meta {
-            font-size: departures_meta_size
+        .wrapper {
+            max-width: departures_wrapper_width
         }
-        .start-end {
-            font-size: departures_startend_size
-        }
-        .alarm-clock:before {
-            font-size: departures_clock_size
-        }
-        .to {
-            font-size: departures_to_size
-        }
-        .pull-up {
-            font-size: departures_pullup_size
+        li {
+            &:not(.pull-up) {
+                padding: 0 departures_item_padding 2% departures_item_padding
+            }
+            &.pull-up {
+                padding: departures_pullup_padding 0 departures_pullup_padding 0
+                font-size: departures_pullup_size
+            }
+            .meta {
+                font-size: departures_item_meta_size
+                padding: departures_item_meta_padding 0 departures_item_meta_padding 0
+            }
+            .start-end {
+                padding: 0 0 departures_item_startend_padding 0
+                font-size: departures_item_startend_size
+            }
+            .alarm-clock:before {
+                font-size: departures_item_clock_size
+            }
+            .to {
+                font-size: departures_item_to_size
+            }
+            .start {
+                width: departures_item_start_width
+            }
         }
         .empty-loading {
             font-size: departures_loading_size

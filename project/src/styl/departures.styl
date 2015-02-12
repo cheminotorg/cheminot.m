@@ -61,9 +61,12 @@
                 border-bottom: 2px solid grey-blue
                 box-sizing: border-box
                 color: dark-blue
-                padding: 0 global-margin-right 2% global-margin-right
                 background: #FFF
                 transform: translate3d(0,0,0)
+
+                .wrapper {
+                    margin: auto
+                }
 
                 &.fake {
                     visibility: hidden
@@ -78,7 +81,6 @@
 
                 .meta {
                     position: relative
-                    padding: 3% 0 3% 0
 
                     .changements {
                         color: grey-light
@@ -89,32 +91,22 @@
                         display: inline-block
                         right: 0
                         position: absolute
-                        width: 22%
 
                         .egg-timer {
-                            position: absolute
-                            left: 0
+                            vertical-align: -2px
                             icon_monstr('duration', grey-light)
                         }
 
                         .value {
-                            position: absolute
-                            right: 0
                         }
                     }
                 }
 
                 .start-end {
                     position: relative
-                    padding: 0 0 2% 0
-
-                    span:not(:last-children) {
-                        margin-right: 2%
-                    }
 
                     .start {
                         display: inline-block
-                        width: 40%
                         padding-left: 5%
                     }
                 }
@@ -134,7 +126,6 @@
 
             .pull-up {
                 text-align: center
-                padding: 5% 0 5% 0
                 background: transparent
                 border-bottom: none
             }
