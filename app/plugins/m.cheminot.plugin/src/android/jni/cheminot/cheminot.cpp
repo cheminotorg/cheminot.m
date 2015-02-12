@@ -32,7 +32,7 @@ JNIEXPORT jstring JNICALL Java_m_cheminot_plugin_jni_CheminotLib_init(JNIEnv *en
   const char *calendarDatesPath = env->GetStringUTFChars(jcalendarDatesPath, (jboolean *)0);
 
   connection = cheminotc::openConnection(dbPath);
-  std::string result = cheminotc::getVersion(connection);
+  Json::Value meta = cheminotc::getMeta(connection);
 
   if(calendarDates.empty()) {
     cheminotc::parseCalendarDates(calendarDatesPath, &calendarDates);
@@ -46,7 +46,8 @@ JNIEXPORT jstring JNICALL Java_m_cheminot_plugin_jni_CheminotLib_init(JNIEnv *en
   env->ReleaseStringUTFChars(jgraphPath, graphPath);
   env->ReleaseStringUTFChars(jcalendarDatesPath, calendarDatesPath);
 
-  return env->NewStringUTF(result.c_str());
+  Json::FastWriter* writer = new Json::FastWriter();
+  return env->NewStringUTF(writer->write(meta).c_str());
 }
 
 JNIEXPORT jstring JNICALL Java_m_cheminot_plugin_jni_CheminotLib_lookForBestTrip(JNIEnv *env, jclass clazz, jstring jvsId, jstring jveId, jint jat, jint jte, jint jmax) {

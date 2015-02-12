@@ -55,6 +55,9 @@ namespace cheminotc {
   tm parseDate(std::string datetime) {
     tm date;
     strptime(datetime.c_str(), "%d/%m/%Y", &date);
+    date.tm_hour = 0;
+    date.tm_min = 0;
+    date.tm_sec = 0;
     return date;
   }
 
@@ -63,7 +66,7 @@ namespace cheminotc {
     return *(localtime (&t));
   }
 
-  time_t asTimestamp(tm a) { //TODO
+  time_t asTimestamp(tm a) {
     time_t timestamp = mktime(&a);
     return timestamp;
   }
@@ -418,6 +421,31 @@ namespace cheminotc {
     std::string query = "SELECT value FROM META WHERE key = 'version'";
     std::list< std::unordered_map<std::string, const void*> > results = executeQuery(handle, query);
     return (char *)results.front()["value"];
+  }
+
+  tm getCreationDate(sqlite3 *handle) {
+    std::string query = "SELECT value FROM META WHERE key = 'createdAt'";
+    std::list< std::unordered_map<std::string, const void*> > results = executeQuery(handle, query);
+    std::string date = (char *)results.front()["value"];
+    return parseDate(date);
+  }
+
+  tm getExpirationDate(sqlite3 *handle) {
+    std::string query = "SELECT value FROM META WHERE key = 'expiredAt'";
+    std::list< std::unordered_map<std::string, const void*> > results = executeQuery(handle, query);
+    std::string date = (char *)results.front()["value"];
+    return parseDate(date);
+  }
+
+  Json::Value getMeta(sqlite3 *handle) {
+    std::string version = getVersion(handle);
+    int createdAt = asTimestamp(getCreationDate(handle));
+    int expiredAt = asTimestamp(getExpirationDate(handle));
+    Json::Value json;
+    json["version"] = version;
+    json["createdAt"] = createdAt;
+    json["expiredAt"] = expiredAt;
+    return json;
   }
 
   std::list<std::shared_ptr<Trip>> getDirectTrips(sqlite3 *handle, TripsCache *tripsCache, std::string vsId, std::string veId) {

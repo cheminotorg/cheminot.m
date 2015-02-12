@@ -7,6 +7,8 @@ Cheminot.init = function(success, fail) {
   exec(function(result) {
     try {
       var meta = JSON.parse(result);
+      meta.createdAt = new Date(meta.createdAt * 1000);
+      meta.expiredAt = new Date(meta.expiredAt * 1000);
       success && success(meta);
     } catch(e) {
       fail && fail(e);
