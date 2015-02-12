@@ -215,4 +215,24 @@ export module $ {
     });
     return el;
   }
+
+  export function longtouch(el: HTMLElement, ms: number, handler: (e: Event) => void): Element {
+    el.addEventListener('touchstart', (e) => {
+      if(!el.classList.contains('press')) {
+        el.classList.add('press');
+        setTimeout(() => {
+          el.classList.add('press-done');
+          navigator.vibrate(300);
+        }, ms);
+      }
+    });
+
+    el.addEventListener('touchend', (e) =>{
+      if(el.classList.contains('press-done')) handler(e);
+      el.classList.remove('press');
+      el.classList.remove('press-done');
+    });
+
+    return el;
+  }
 }

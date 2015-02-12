@@ -78,6 +78,38 @@ h1 {
     font-family-bold()
 }
 
+.settings {
+    display: none
+    position: absolute
+    background: blue
+    color: #000;
+    z-index: 4;
+    width: 100%;
+    table-layout: fixed;
+    padding: 10px
+    color: #FFF
+    top: 32vh
+
+    &.fade-in {
+        display: block
+    }
+
+    td {
+        padding: 6px
+    }
+
+    button {
+        border: none;
+        background: #FFF;
+        position: absolute;
+        bottom: 40%;
+        right: 10%;
+        padding: 10px;
+        font-size: 20px;
+        color: dark-blue;
+    }
+}
+
 #viewport {
     width: 100%
 

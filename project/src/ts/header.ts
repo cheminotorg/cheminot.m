@@ -11,7 +11,6 @@ export class Header implements m.Module<Ctrl> {
   }
 
   view(ctrl: Ctrl) {
-    var info = m('span.info', {});
     var loader = m('div.holo', {}, [
       m('div.outer', {}),
       m('div.inner', {})

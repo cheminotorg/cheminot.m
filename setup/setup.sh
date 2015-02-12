@@ -43,6 +43,10 @@ else
     tarifa check
     patch "${ROOT}/app/platforms/android/build.gradle" < "${ROOT}/setup/build.gradle.patch"
     android update project --target android-19 --name Cheminot --path "${ROOT}/app/platforms/android" --subprojects
+    echo "\n------------------------------"
+    echo "Patching AndroidManifest.xml"
+    echo "------------------------------"
+    patch "${ROOT}/app/platforms/android/AndroidManifest.xml" < "${ROOT}/setup/AndroidManifest.xml.patch"
     ndk-build -C "${ROOT}/app/platforms/android"
     tarifa build android
 

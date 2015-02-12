@@ -22,6 +22,7 @@ import locale = require('locale');
 
 Q.all([qstart, Suggestions.init(), native.Cheminot.init()]).spread((a: any, b: any, meta: Meta) => {
   locale.init();
+  Settings.db = meta;
   m.route.mode = 'hash';
   m.route(document.querySelector('body'), "/", {
     "/": App.get(),

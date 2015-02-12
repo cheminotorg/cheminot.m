@@ -4,6 +4,8 @@ import Home = require('home');
 import Departures = require('departures');
 import Trip = require('trip');
 import Utils = require('utils');
+import _ = require('lodash');
+import moment = require('moment');
 
 export interface Ctrl {
   header: Header.Ctrl;
@@ -12,8 +14,47 @@ export interface Ctrl {
   trip: Trip.Ctrl;
 }
 
+function renderSettings() {
+  var formatDay = (dateTime: Date) => {
+    return moment(dateTime).format('dddd D MMMM YYYY');
+  }
+
+  var buttonAttrs: Attributes = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(!isUpdate) {
+        el.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          var settings = <HTMLElement> document.querySelector('.settings');
+          settings.classList.remove('fade-in');
+        });
+      }
+    }
+  }
+
+  return m('div.settings', {}, [
+    m('table', {}, [
+      m('tr', {}, [m('td', {}, 'bundleId'), m('td', Settings.bundleId)]),
+      m('tr', {}, [m('td', {}, 'version'), m('td', {}, Settings.version)]),
+      m('tr', {}, [m('td', {}, 'git'), m('td', {}, Settings.gitVersion)]),
+      m('tr', {}, [m('td', {}, 'db creation'), m('td', {}, formatDay(Settings.db.createdAt))]),
+      m('tr', {}, [m('td', {}, 'db expiration'), m('td', {}, formatDay(Settings.db.expiredAt))]),
+      m('tr', {}, [m('td', {}, 'db version'), m('td', {}, Settings.db.version)])]),
+    m('button', buttonAttrs, "OK")
+  ]);
+}
+
 function renderHeader(ctrl: Header.Ctrl) {
-  return m("header", { id: "header" }, Header.get().view(ctrl));
+  var headerAttrs: Attributes = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(!isUpdate) {
+        Utils.$.longtouch(el, 3000, () => {
+          var settings = <HTMLElement> document.querySelector('.settings');
+          settings.classList.add('fade-in');
+        });
+      }
+    }
+  }
+  return m("header", _.merge({ id: "header" }, headerAttrs), Header.get().view(ctrl));
 }
 
 function renderHome(ctrl: Home.Ctrl) {
@@ -85,6 +126,7 @@ export class App implements m.Module<Ctrl> {
       }
     }
     return [m('main#viewport', attributes, [
+      renderSettings(),
       renderHeader(ctrl.header),
       renderHome(ctrl.home),
       renderDepartures(ctrl.departures),

@@ -2,12 +2,6 @@ interface Attributes {
   [index: string]: any;
 }
 
-interface Meta {
-  version: string;
-  createdAt: Date;
-  expiredAt: Date;
-}
-
 interface Station {
   name: string;
   id: string;
@@ -62,6 +56,13 @@ interface Splashscreen {
 
 interface Navigator {
   splashscreen: Splashscreen;
+  vibrate(ms: number): boolean;
+}
+
+interface Meta {
+  version: string;
+  createdAt: Date;
+  expiredAt: Date;
 }
 
 interface Settings {
@@ -69,6 +70,11 @@ interface Settings {
   version: string;
   appName: string;
   gitVersion: string;
+  db: Meta;
+}
+
+interface CHTMLElement {
+  remove(): void
 }
 
 declare var Settings: Settings;
