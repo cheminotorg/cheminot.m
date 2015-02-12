@@ -275,9 +275,7 @@ export class Departures implements m.Module<Ctrl> {
       isPullUpLoading: Utils.m.prop(false, (isLoading: boolean) => {
         var wrapper = <HTMLElement> scope().querySelector('#wrapper');
         isLoading ? wrapper.classList.add('loading') : wrapper.classList.remove('loading');
-        if(isLoading && !ctrl.isComputingLongTrip()) {
-          document.body.classList.add('loading')
-        } else document.body.classList.remove('loading');
+        isLoading ? displayHolo(ctrl) : hideHolo(ctrl);
       }),
 
       isPullUpFlip: Utils.m.prop(false, (isFlip: boolean) => {
@@ -338,7 +336,10 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<void> {
         if(trip.arrivalTimes.length > 0) {
           var departure = tripToDeparture(trip);
           ctrl.departures().push(departure);
-          if(ctrl.isComputingLongTrip()) m.redraw(true);
+          if(ctrl.isComputingLongTrip()) {
+            displayHolo(ctrl);
+            m.redraw(true);
+          }
           ctrl.currentPageSize(ctrl.currentPageSize() + 1);
           ctrl.lastDepartureTime(departure.startTime);
           return step(ctrl, nextDeparture(ctrl.lastDepartureTime()));
@@ -351,11 +352,12 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<void> {
       return Utils.Promise.done();
     }
   }
-  return Utils.Promise.withMinimumDelay(step(ctrl, at), 1000).fin(() => {
+  return step(ctrl, at).fin(() => {
     ctrl.currentPageSize(0);
     ctrl.isComputationInProgress(false);
     ctrl.isComputingLongTrip(false);
     if(!ctrl.isComputingLongTrip()) m.redraw(true);
+    hideHolo(ctrl);
   });
 }
 
@@ -406,6 +408,14 @@ function computePullUpBar(iscroll: IScroll): number {
   var deltaY = iscroll.y + Math.abs(iscroll.maxScrollY);
   var value = Math.abs(deltaY * 100 / max);
   return deltaY < 0 ? value : 0;
+}
+
+function displayHolo(ctrl: Ctrl): void {
+  document.body.classList.add('loading')
+}
+
+function hideHolo(ctrl: Ctrl): void {
+  document.body.classList.remove('loading');
 }
 
 var departures = new Departures();

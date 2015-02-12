@@ -52,7 +52,7 @@ export function getAllTripsFrom(vs:string, ve: string, at: Date, max: number, ne
 
     var k = key(vs, ve, lastDeparture, te, max);
     var trip = getTrip(k);
-    if(trip) {
+    if(trip && trip.arrivalTimes.length) {
       var stopTime = _.head(trip.arrivalTimes);
       if(lastDeparture.getTime() > stopTime.departure.getTime()) {
         trip = null;
