@@ -4,7 +4,14 @@ var Cheminot = function() {
 };
 
 Cheminot.init = function(success, fail) {
-  exec(success, fail, "Cheminot", "init", []);
+  exec(function(result) {
+    try {
+      var meta = JSON.parse(result);
+      success && success(meta);
+    } catch(e) {
+      fail && fail(e);
+    }
+  }, fail, "Cheminot", "init", []);
 };
 
 Cheminot.lookForBestTrip = function(vsId, veId, at, te, max, success, fail) {

@@ -518,6 +518,8 @@ namespace cheminotc {
       bool availableToday = isTripValidToday(trip, when);
       bool inPeriod = isTripInPeriod(trip, when);
       return (!removed && inPeriod && availableToday) || added;
+    } else {
+      return true;
     }
     return false;
   }
@@ -925,8 +927,8 @@ namespace cheminotc {
     std::shared_ptr<Vertice> vs = getVerticeFromGraph(&ts, graph, verticesCache, vsId);
     std::shared_ptr<Vertice> ve = getVerticeFromGraph(&ts, graph, verticesCache, veId);
     std::list<std::shared_ptr<Trip>> trips = getDirectTrips(handle, tripsCache, vsId, veId);
-    std::pair<std::shared_ptr<Trip>, StopTime> bestTrip;
 
+    std::pair<std::shared_ptr<Trip>, tm> bestTrip;
     bool hasBestTrip = false;
     for(auto iterator = trips.begin(), end = trips.end(); iterator != end; ++iterator) {
       std::shared_ptr<Trip> trip = *iterator;
@@ -942,15 +944,18 @@ namespace cheminotc {
       if(vsIt != vs->stopTimes.end() && veIt != ve->stopTimes.end()) {
         StopTime stopTimeVs = *vsIt;
         StopTime stopTimeVe = *veIt;
+        tm departureVs = stopTimeVs.departure;
+        tm arrivalVe = stopTimeVe.arrival;
 
         if(datetimeIsBeforeNotEq(stopTimeVs.departure, ts)) {
-          stopTimeVs.departure = addDays(stopTimeVs.departure, 1);
+          departureVs = addDays(departureVs, 1);
+          arrivalVe = addDays(arrivalVe, 1);
         }
 
-        if(isTripValidOn(trip, calendarDates, calendarDatesCache, stopTimeVs.departure)) {
-          if(stopTimeVs.pos < stopTimeVe.pos && datetimeIsBeforeEq(ts, stopTimeVs.departure) && datetimeIsBeforeEq(stopTimeVs.departure, te)) {
-            if(!hasBestTrip || datetimeIsBeforeNotEq(stopTimeVe.arrival, bestTrip.second.arrival)) {
-              bestTrip = {trip, stopTimeVe};
+        if(isTripValidOn(trip, calendarDates, calendarDatesCache, departureVs)) {
+          if(stopTimeVs.pos < stopTimeVe.pos && datetimeIsBeforeEq(ts, departureVs) && datetimeIsBeforeEq(departureVs, te)) {
+            if(!hasBestTrip || datetimeIsBeforeNotEq(arrivalVe, bestTrip.second)) {
+              bestTrip = {trip, arrivalVe};
               hasBestTrip = true;
             }
           }
