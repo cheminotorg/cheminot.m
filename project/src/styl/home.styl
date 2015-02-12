@@ -19,9 +19,16 @@
             line-height: 4
             width: 33.3%
             float: left
-            font-size: 16px
             text-align: center
             position: relative
+
+            .label {
+                top: 50%
+                position: absolute
+                transform: translateY(-50%)
+                width: 100%
+                left: 0
+            }
 
             &.selected {
                 color: #FFF
@@ -163,7 +170,6 @@
                 position: absolute
                 top: 0
                 height: 100%
-                width: 16px
                 right: global-margin-right
             }
 

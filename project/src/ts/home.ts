@@ -76,9 +76,9 @@ function renderTabs(ctrl: Ctrl) {
   var hint = m("div", { class: "hint" });
 
   return m('ul', { class: 'top-bar tabs'}, [
-    m('li', _.merge(todayAttrs, attributes), [i18n.fr('today'), hint]),
-    m('li', _.merge(tomorrowAttrs, attributes), [i18n.fr('tomorrow'), hint]),
-    m('li', _.merge(otherAttrs, attributes), [i18n.fr('other'), hint])
+    m('li', _.merge(todayAttrs, attributes), [m('span.label', {}, i18n.fr('today')), hint]),
+    m('li', _.merge(tomorrowAttrs, attributes), [m('span.label', {}, i18n.fr('tomorrow')), hint]),
+    m('li', _.merge(otherAttrs, attributes), [m('span.label', {}, i18n.fr('other')), hint])
   ])
 }
 

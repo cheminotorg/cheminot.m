@@ -90,7 +90,7 @@ function render(ctrl: Ctrl) {
   }
 
   var loading = m("div.empty-loading", { key: 'departures-loading' }, [
-    m('div.gears', {}),
+    m('img.train', { src: 'images/cheminot_f4f7f9.gif' }),
     m("span.label", {}, loadingLabel)
   ]);
 

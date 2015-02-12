@@ -4,6 +4,7 @@ scale(value, factor) {
 
 header_height=54px
 header_size=20px
+header_label_size=16px
 item_height=66px
 item_size=18px
 input_height=66px
@@ -29,6 +30,9 @@ device(min_width, max_width, factor) {
         header, .top-bar {
             height: scale(header_height, factor)
             font-size: scale(header_size, factor)
+            .label {
+                font-size: scale(header_label_size, factor)
+            }
         }
 
         .list li {
@@ -96,6 +100,9 @@ device(min_width, max_width, factor) {
     header, .top-bar {
         height: header_height
         font-size: header_size
+        .label {
+            font-size: header_label_size
+        }
     }
 
     .list li {
@@ -160,7 +167,7 @@ device(min_width, max_width, factor) {
 device(768px, 1024px, 2)
 
 // NEXUS 10
-device(800px, 1280px, 2)
+device(800px, 1280px, 1.5)
 
 // NEXUS 5
 device(360px, 640px, 1.125)
