@@ -15,7 +15,7 @@ var messages: Messages = {
     'search': 'Rechercher',
     'direct': 'Direct',
     'pull-to-refresh': 'Tirer pour actualiser',
-    'trip-not-direct': 'Votre trajet n\'est pas direct! Veuillez patienter un instant...',
+    'trip-not-direct': 'Votre trajet n\'est pas direct! Veuillez patienter...',
     'release-to-refresh': 'Relacher pour actualiser',
     'loading': 'Chargement...',
     'changement': 'changement'

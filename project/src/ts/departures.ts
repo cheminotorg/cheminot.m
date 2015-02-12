@@ -91,7 +91,7 @@ function render(ctrl: Ctrl) {
 
   var loading = m("div.empty-loading", { key: 'departures-loading' }, [
     m('img.train', { src: 'images/cheminot_f4f7f9.gif' }),
-    m("span.label", {}, loadingLabel)
+    m('p', {}, m('span.label', {}, loadingLabel))
   ]);
 
   var renderDepartureItem = (departure: Departure, attrs: Attributes) => {
@@ -293,13 +293,7 @@ export class Departures implements m.Module<Ctrl> {
 
       isComputingLongTrip: m.prop(false),
 
-      isComputationInProgress: Utils.m.prop(false, (inProgress) => {
-        if(inProgress) {
-          document.body.classList.add('loading');
-        } else {
-          document.body.classList.remove('loading');
-        }
-      }),
+      isComputationInProgress: Utils.m.prop(false),
 
       isScrollingDepartures: Utils.m.prop(false, (isScrolling) => {
         if(isScrolling) {

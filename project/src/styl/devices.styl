@@ -17,6 +17,7 @@ departures_wrapper_width=400px
 departures_pullup_padding=14px
 departures_pullup_size=18px
 departures_loading_size=18px
+departures_longtrip_width=230px
 departures_item_padding=14px
 departures_item_meta_size=18px
 departures_item_meta_padding=10px
@@ -71,6 +72,9 @@ device(min_width, max_width, factor) {
         }
 
         #departures {
+            .empty-loading .label {
+                width: scale(departures_longtrip_width, factor)
+            }
             .wrapper {
                 max-width: departures_wrapper_width
             }
@@ -160,6 +164,9 @@ device(min_width, max_width, factor) {
     }
 
     #departures {
+        .empty-loading .label {
+            width: departures_longtrip_width
+        }
         .wrapper {
             max-width: departures_wrapper_width
         }
