@@ -9,8 +9,14 @@
         width: 100%
 
         .train {
+            opacity: 0
+            transition: 0.2s
             display: inline-block
             height: 40vh
+
+            &.fade-in {
+                opacity: 1
+            }
         }
 
         .label {

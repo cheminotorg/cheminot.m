@@ -139,6 +139,14 @@ export module Promise {
     return Q<void>(null);
   }
 
+  export function withMinimumDelay<T>(promise: Q.Promise<T>, delay: number): Q.Promise<T> {
+    var timeout = Q.defer<T>();
+    setTimeout(() => timeout.resolve(null), delay);
+    return Q.spread([promise, timeout.promise], (result: T) => {
+      return result;
+    }, () => { return promise });
+  }
+
   export function pure<T>(t: T): Q.Promise<T> {
     return Q<T>(t);
   }

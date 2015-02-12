@@ -89,8 +89,16 @@ function render(ctrl: Ctrl) {
     loadingLabel = i18n.fr('trip-not-direct');
   }
 
+  var trainAttrs: Attributes = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(!isUpdate) {
+        el.classList.add('fade-in')
+      }
+    }
+  }
+
   var loading = m("div.empty-loading", { key: 'departures-loading' }, [
-    m('img.train', { src: 'images/cheminot_f4f7f9.gif' }),
+    m('img.train', _.merge({ src: 'images/cheminot_f4f7f9.gif' }, trainAttrs)),
     m('p', {}, m('span.label', {}, loadingLabel))
   ]);
 
@@ -266,20 +274,15 @@ export class Departures implements m.Module<Ctrl> {
 
       isPullUpLoading: Utils.m.prop(false, (isLoading: boolean) => {
         var wrapper = <HTMLElement> scope().querySelector('#wrapper');
-        if(isLoading) {
-          wrapper.classList.add('loading');
-        } else {
-          wrapper.classList.remove('loading');
-        }
+        isLoading ? wrapper.classList.add('loading') : wrapper.classList.remove('loading');
+        if(isLoading && !ctrl.isComputingLongTrip()) {
+          document.body.classList.add('loading')
+        } else document.body.classList.remove('loading');
       }),
 
       isPullUpFlip: Utils.m.prop(false, (isFlip: boolean) => {
         var wrapper = <HTMLElement> scope().querySelector('#wrapper');
-        if(isFlip) {
-          wrapper.classList.add('flip');
-        } else {
-          wrapper.classList.remove('flip');
-        }
+        isFlip ? wrapper.classList.add('flip') : wrapper.classList.remove('flip');
       }),
 
       pullUpProgress: m.prop(0),
@@ -348,7 +351,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<void> {
       return Utils.Promise.done();
     }
   }
-  return step(ctrl, at).fin(() => {
+  return Utils.Promise.withMinimumDelay(step(ctrl, at), 1000).fin(() => {
     ctrl.currentPageSize(0);
     ctrl.isComputationInProgress(false);
     ctrl.isComputingLongTrip(false);
