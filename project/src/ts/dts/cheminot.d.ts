@@ -2,6 +2,12 @@ interface Attributes {
   [index: string]: any;
 }
 
+interface Meta {
+  version: string;
+  createdAt: Date;
+  expiredAt: Date;
+}
+
 interface Station {
   name: string;
   id: string;
@@ -41,7 +47,7 @@ declare module cordova {
     }
 
     module Cheminot {
-      function init(success: (version: string) => void, error: (e: string) => void): void;
+      function init(success: (meta: Meta) => void, error: (e: string) => void): void;
       function lookForBestTrip(start: string, end: string, at: Date, te: Date, max: number, success: (arrivalTime: ArrivalTime[]) => void, error: (e: string) => void): void;
       function lookForBestDirectTrip(start: string, end: string, at: Date, te: Date, success: (result: [boolean, ArrivalTime[]]) => void, error: (e: string) => void): void;
       function abort(success: () => void, error: (e: string) => void): void;
@@ -57,3 +63,12 @@ interface Splashscreen {
 interface Navigator {
   splashscreen: Splashscreen;
 }
+
+interface Settings {
+  bundleId: string;
+  version: string;
+  appName: string;
+  gitVersion: string;
+}
+
+declare var Settings: Settings;

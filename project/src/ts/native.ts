@@ -58,9 +58,9 @@ export module Cheminot {
     return document.querySelector('body').hasAttribute('data-mocked');
   }
 
-  export function init(): Q.Promise<string> {
-    var d = Q.defer<string>();
-    var success = (version: string) => d.resolve(version);
+  export function init(): Q.Promise<Meta> {
+    var d = Q.defer<Meta>();
+    var success = (meta: Meta) => d.resolve(meta);
     var error = (e: string) => d.reject(e);
     if(isMocked()) {
       Mock.init(success, error);

@@ -7,7 +7,17 @@ var Q = require('q'),
     path = require('path'),
     fs = require('fs'),
     chokidar = require('chokidar'),
+    spawn = require('child_process').spawn,
     gulp = require('../../gulpfile.js');
+
+function getGitVersion() {
+  var d = Q.defer();
+  var child = spawn('git', ['describe', '--long', '--always']);
+  child.stdout.on('data', function(chunk) {
+    d.resolve(chunk.toString('utf-8').trim());
+  });
+  return d.promise;
+}
 
 function mapSettings(settings, platform, configurationName) {
   var mapping = require('./mapping');
@@ -42,13 +52,17 @@ module.exports.build = function (platform, settings, configurationName) {
       };
 
   gulp.doneCallback = function() {
-    var settingsContent = "Settings = " + JSON.stringify(mapSettings(settings, platform, configurationName)) + ';';
-    fs.writeFileSync(settingsPath, settingsContent, {"encoding": "utf8"});
-    preprocess.preprocessFileSync(htmlPath.src, htmlPath.dest, {
-      PLATFORM : platform,
-      MOCKED: configurationName == 'default'
+    return getGitVersion().then(function(gitVersion) {
+      settings = mapSettings(settings, platform, configurationName);
+      settings.gitVersion = gitVersion;
+      var settingsContent = "Settings = " + JSON.stringify(settings) + ';';
+      fs.writeFileSync(settingsPath, settingsContent, {"encoding": "utf8"});
+      preprocess.preprocessFileSync(htmlPath.src, htmlPath.dest, {
+        PLATFORM : platform,
+        MOCKED: configurationName == 'default'
+      });
+      d.resolve();
     });
-    d.resolve();
   };
 
   switch(configurationName) {

@@ -20,7 +20,7 @@ import Utils = require('utils');
 import moment = require('moment');
 import locale = require('locale');
 
-Q.all([qstart, Suggestions.init(), native.Cheminot.init()]).then(() => {
+Q.all([qstart, Suggestions.init(), native.Cheminot.init()]).spread((a: any, b: any, meta: Meta) => {
   locale.init();
   m.route.mode = 'hash';
   m.route(document.querySelector('body'), "/", {

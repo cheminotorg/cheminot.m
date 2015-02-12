@@ -2,8 +2,12 @@ import _ = require('lodash');
 import Utils = require('utils');
 import moment = require('moment');
 
-export function init(success: (version: string) => void, error: (err: string) => void): void {
-  success("XXXXXXXX");
+export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
+  success({
+    version: 'xxxxxxx',
+    createdAt: new Date(),
+    expiredAt: new Date()
+  });
 }
 
 export function getTrip(at: Date = new Date()): ArrivalTimes {

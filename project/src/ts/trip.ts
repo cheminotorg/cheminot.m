@@ -4,6 +4,7 @@ import _ = require('lodash');
 import IScroll = require('IScroll');
 import moment = require('moment');
 import native = require('native');
+import i18n = require('i18n');
 
 export interface Ctrl {
   scope: () => HTMLElement;
@@ -42,7 +43,7 @@ function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
           }
         },
         key: arrivalTime.stopId,
-        class: hasChangement ? 'changement' : ''
+        class: hasChangement ? i18n.fr('changement') : ''
       };
 
       return m('li', attrs, [

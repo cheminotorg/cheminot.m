@@ -1,7 +1,7 @@
 {
   "name": "Cheminot",
   "id": "m.cheminot",
-  "description": "Offline train mobile application",
+  "description": "Offline mobile train app",
   "version": "0.1.0",
   "platforms": [
     "browser",
