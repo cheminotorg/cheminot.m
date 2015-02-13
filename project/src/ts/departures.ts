@@ -28,7 +28,7 @@ export interface Ctrl {
   itemHeight: (value?: number) => number;
   lastDepartureTime: (value?: Date) => Date;
   currentPageSize: (value?: number) => number;
-  at: Date;
+  at: (value?: Date) => Date;
   isComputingLongTrip: (value?: boolean) => boolean;
   isScrollingDepartures: (value?: boolean) => boolean;
   isComputationInProgress: (value?: boolean) => boolean;
@@ -163,14 +163,14 @@ function render(ctrl: Ctrl) {
       if(!ctrl.shouldBeHidden()) {
         ctrl.iscroll().refresh();
         if(!isUpdate) {
-          var cached = Cache.getAllTripsFrom(ctrl.startStation, ctrl.endStation, ctrl.at, 0, nextDeparture, departureBound).map((departure) => {
+          var cached = Cache.getAllTripsFrom(ctrl.startStation, ctrl.endStation, ctrl.at(), 0, nextDeparture, departureBound).map((departure) => {
             return tripToDeparture(departure);
           });
           ctrl.cached(cached);
           cached.forEach((departure) =>ctrl.departures().push(departure));
           if(cached.length) ctrl.lastDepartureTime(_.last(cached).startTime);
           ctrl.currentPageSize(cached.length);
-          lookForNextDepartures(ctrl, ctrl.at);
+          lookForNextDepartures(ctrl, ctrl.at());
         } else {
           if(ctrl.cached().length != ctrl.departures().length) {
             ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 0);
@@ -252,7 +252,7 @@ export class Departures implements m.Module<Ctrl> {
 
       endStation: m.route.param("end"),
 
-      at: new Date(at),
+      at: m.prop(new Date(at)),
 
       departures: m.prop([]),
 
