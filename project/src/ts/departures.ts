@@ -188,7 +188,7 @@ function render(ctrl: Ctrl) {
   return [m("div#wrapper", {}, wrapper)];
 }
 
-export class Departures implements m.Module<Ctrl> {
+var departures: m.Module<Ctrl> = {
 
   controller(): Ctrl {
     var at = parseInt(m.route.param("at"), 10);
@@ -314,12 +314,12 @@ export class Departures implements m.Module<Ctrl> {
     });
 
     return ctrl;
-  }
+  },
 
   view(ctrl: Ctrl) {
     return render(ctrl);
   }
-}
+};
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<void> {
   var step = (ctrl: Ctrl, at: Date): Q.Promise<void> => {
@@ -418,8 +418,6 @@ function hideHolo(ctrl: Ctrl): void {
   document.body.classList.remove('loading');
 }
 
-var departures = new Departures();
-
-export function get(): Departures {
+export function get(): m.Module<Ctrl> {
   return departures;
 }

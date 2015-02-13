@@ -79,7 +79,7 @@ function render(ctrl: Ctrl) {
   ];
 }
 
-export class Trip implements m.Module<Ctrl> {
+var trip: m.Module<Ctrl> = {
   controller(): Ctrl {
     var id = m.route.param("id");
     var scope = () => <HTMLElement> document.querySelector('#trip');
@@ -119,15 +119,13 @@ export class Trip implements m.Module<Ctrl> {
     });
 
     return ctrl;
-  }
+  },
 
   view(ctrl: Ctrl) {
     return render(ctrl);
   }
-}
+};
 
-var trip = new Trip();
-
-export function get(): Trip {
+export function get(): m.Module<Ctrl> {
   return trip;
 }

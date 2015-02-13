@@ -9,6 +9,7 @@ import Suggestions = require('suggestions');
 import Routes = require('routes');
 import i18n = require('i18n');
 import native = require('native');
+import DatePicker = require('datepicker');
 
 export interface Ctrl {
   scope: () => HTMLElement;
@@ -249,7 +250,7 @@ function render(ctrl: Ctrl) {
   ];
 }
 
-export class Home implements m.Module<Ctrl> {
+var home: m.Module<Ctrl> = {
 
   controller(): Ctrl {
     var startTerm = m.route.param('start') || '';
@@ -440,12 +441,12 @@ export class Home implements m.Module<Ctrl> {
     });
 
     return ctrl;
-  }
+  },
 
   view(ctrl: Ctrl) {
     return render(ctrl);
   }
-}
+};
 
 /** BACK STAGE */
 
@@ -608,9 +609,6 @@ function isOtherTab(el: HTMLElement): boolean {
   return el.classList.contains('other');
 }
 
-
-var home = new Home();
-
-export function get(): Home {
+export function get(): m.Module<Ctrl> {
   return home;
 }
