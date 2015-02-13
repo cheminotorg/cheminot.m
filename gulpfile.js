@@ -128,10 +128,9 @@ gulp.task('default', ['watch']);
 gulp.task('compile', ['ts', 'styl']);
 
 gulp.task('font', function() {
-  gulp.src(['misc/fonts/svg/iconmonstr/*.svg'])
+  gulp.src(['misc/fonts/svg/cheminot/*.svg'])
     .pipe(iconfont({
-      fontName: 'iconmonstr',
-      appendCodepoints: true
+      fontName: 'cheminot'
     }))
     .on('codepoints', function(codepoints, options) {
       console.log(codepoints, options);

@@ -43,7 +43,7 @@ declare module "mithril" {
         }
 
         interface Module<T> {
-            controller(): T;
+            controller(...args: any[]): T;
             view(ctrl: T): Array<any>;
         }
 

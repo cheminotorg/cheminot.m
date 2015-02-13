@@ -97,6 +97,27 @@
 		<string>AvenirNext-Regular</string>
 		<string>AvenirNext-Regular</string>
 		<string>AvenirNext-Regular</string>
+		<string>Nunito-Regular</string>
+		<string>Nunito-Light</string>
+		<string>Nunito-Light</string>
+		<string>Nunito-Light</string>
+		<string>Nunito-Regular</string>
+		<string>Nunito-Regular</string>
+		<string>Nunito-Regular</string>
+		<string>AvenirNext-Regular</string>
+		<string>AvenirNext-Regular</string>
+		<string>AvenirNext-Regular</string>
+		<string>AvenirNext-Regular</string>
+		<string>AvenirNext-Regular</string>
+		<string>AvenirNext-Regular</string>
+		<string>HelveticaNeue-Medium</string>
+		<string>HelveticaNeue-Medium</string>
+		<string>HelveticaNeue-Medium</string>
+		<string>AvenirNext-DemiBold</string>
+		<string>AvenirNext-Regular</string>
+		<string>AvenirNext-Regular</string>
+		<string>AvenirNext-Regular</string>
+		<string>AvenirNext-Regular</string>
 		<string>AvenirNext-Regular</string>
 		<string>AvenirNext-Regular</string>
 		<string>AvenirNext-Regular</string>
@@ -185,7 +206,7 @@
 		<string>AvenirNext-Regular</string>
 	</array>
 	<key>length</key>
-	<integer>3083189</integer>
+	<integer>3366651</integer>
 	<key>version</key>
 	<integer>18</integer>
 </dict>

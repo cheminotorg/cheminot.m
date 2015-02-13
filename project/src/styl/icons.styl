@@ -66,11 +66,12 @@ icon_monstr(name, color = black) {
     }
 }
 
-icon_cheminot(name, color = black) {
+icon_cheminot(name, color = black, radius = 0) {
     &:before {
         font-family: 'Cheminot'
         color: color
         display: inline-block
+        transform: rotate(radius)
 
         if name is 'arrow-left' {
             content: '\e001'

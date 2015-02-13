@@ -1,0 +1,105 @@
+.modals {
+    background: rgba(0, 0, 0, 0.55);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 4;
+
+    .modal {
+        border-radius: 0.2em
+        display: none
+        position: absolute
+        z-index: 4
+        top: 32vh
+        left: 10vw
+        background: #FFF
+        color: #3CB6E3
+
+        .title {
+            padding: 10px
+            border-bottom: 1px solid #3CB6E3
+        }
+
+        &.fade-in {
+            display: block
+        }
+
+        button {
+            text-transform: uppercase
+            display: inline-block
+            border: none
+            outline: none
+            background: transparent
+            padding: 10px
+            color: #159588
+        }
+
+        .actions {
+            padding: 0 10px 0 10px
+            text-align: center
+            button {
+                font-size: 12px
+            }
+        }
+    }
+
+    .settings {
+        table-layout: fixed
+
+        button.ok {
+            position: absolute
+            bottom: 40%
+            right: 10%
+        }
+
+        td {
+            padding: 6px
+        }
+    }
+
+    .date-picker, .time-picker {
+
+        .controls {
+            padding: 10px 10px 0px 10px
+            text-align: center
+
+            .hour, .minute, .meridiem, .day, .month, .year {
+                display: inline-block
+                width: 32%
+
+                > * {
+                    display: block
+                }
+            }
+
+            .value {
+                line-height: 30px
+                height: 30px
+                display: inline-block
+                color: dark-blue
+                font-size: 14px
+            }
+        }
+
+        .up button, .down button {
+            font-size: 26px
+            width: 100%
+        }
+
+        .up {
+            button {
+                clear-button()
+                icon_cheminot('arrow-left', rgba(#3CB6E3, 0.7), 90deg)
+            }
+        }
+
+        .down {
+            button {
+                clear-button()
+                icon_cheminot('arrow-left', rgba(#3CB6E3, 0.7), -90deg)
+            }
+        }
+    }
+}

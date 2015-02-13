@@ -9,7 +9,6 @@ import Suggestions = require('suggestions');
 import Routes = require('routes');
 import i18n = require('i18n');
 import native = require('native');
-import DatePicker = require('datepicker');
 
 export interface Ctrl {
   scope: () => HTMLElement;
@@ -44,7 +43,7 @@ export interface Ctrl {
 
 /// RENDER TABS
 
-function renderTabs(ctrl: Ctrl) {
+function renderTabs(ctrl: Ctrl): m.VirtualElement {
   var attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if (!isUpdate) {
@@ -85,7 +84,7 @@ function renderTabs(ctrl: Ctrl) {
 
 /// RENDER INPUTS STATION
 
-function renderInputsStation(ctrl: Ctrl) {
+function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
   var inputStationWrapperAttrs = {
     config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
       if (!isUpdate) {
@@ -140,14 +139,12 @@ function renderInputsStation(ctrl: Ctrl) {
              ]),
              m("div", _.merge({ class: "input end"}, inputStationWrapperAttrs), [
                m("input", _.merge({ name: "end", placeholder: i18n.fr('arrival') }, inputStationAttrs(false))),
-               m("button", resetStationAttrs(false))
-             ])
-           ]));
+               m("button", resetStationAttrs(false))])]));
 }
 
 /// RENDER STATION SUGGESTIONS
 
-function renderStations(ctrl: Ctrl) {
+function renderStations(ctrl: Ctrl): m.VirtualElement {
   var term = ctrl.isInputStationEndDisabled() ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
   var stationAttrs = function(index: number) {
     return {
@@ -175,8 +172,7 @@ function renderStations(ctrl: Ctrl) {
     return m('li', _.merge({ "data-id": station.id, "data-name": station.name }, stationAttrs(index)),
              m('div', {}, [
                m('span', { class: 'match' }, _.take(station.name, term.length).join('')),
-               m('span', {}, _.drop(station.name, term.length).join(''))
-             ]));
+               m('span', {}, _.drop(station.name, term.length).join(''))]));
   });
 
   var emptyResult = m('li.empty', {}, i18n.fr('no-result'));
@@ -192,7 +188,7 @@ function renderStations(ctrl: Ctrl) {
 
 /// RENDER DATETIME SELECTOR
 
-function renderDateTime(ctrl: Ctrl) {
+function renderDateTime(ctrl: Ctrl): m.VirtualElement {
   var inputDateTimeAttrs = {
     onchange: _.partial(ctrl.onDateTimeChange, ctrl),
   };
@@ -236,12 +232,10 @@ function renderDateTime(ctrl: Ctrl) {
     ]),
     m("li", submitAttrs, [
       m("span", {}, i18n.fr('search')),
-      m("button", { class: "font go" })
-    ])
-  ]);
+      m("button", { class: "font go" })])]);
 }
 
-function render(ctrl: Ctrl) {
+function render(ctrl: Ctrl): m.VirtualElement[] {
   return [
     renderTabs(ctrl),
     renderInputsStation(ctrl),

@@ -67,7 +67,7 @@ function renderMeta(departure: Departure): m.VirtualElement[] {
   }
 }
 
-function render(ctrl: Ctrl) {
+function render(ctrl: Ctrl): m.VirtualElement[] {
   var pullupAttrs = {
     key: 'departures-pullup',
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {

@@ -18,7 +18,9 @@ var messages: Messages = {
     'trip-not-direct': 'Votre trajet n\'est pas direct! Veuillez patienter...',
     'release-to-refresh': 'Relacher pour actualiser',
     'loading': 'Chargement...',
-    'changement': 'changement'
+    'changement': 'changement',
+    'cancel': 'annuler',
+    'clear': 'effacer'
   }
 };
 

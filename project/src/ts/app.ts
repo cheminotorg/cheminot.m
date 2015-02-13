@@ -6,15 +6,19 @@ import Trip = require('trip');
 import Utils = require('utils');
 import _ = require('lodash');
 import moment = require('moment');
+import DatePicker = require('datepicker');
+import TimePicker = require('timepicker');
 
 export interface Ctrl {
+  timePicker: TimePicker.Ctrl;
+  datePicker: DatePicker.Ctrl;
   header: Header.Ctrl;
   home: Home.Ctrl;
   departures: Departures.Ctrl;
   trip: Trip.Ctrl;
 }
 
-function renderSettings() {
+function renderSettings(): m.VirtualElement {
   var formatDay = (dateTime: Date) => {
     return moment(dateTime).format('dddd D MMMM YYYY');
   }
@@ -31,7 +35,7 @@ function renderSettings() {
     }
   }
 
-  return m('div.settings', {}, [
+  return m('div.settings.modal', {}, [
     m('table', {}, [
       m('tr', {}, [m('td', {}, 'bundleId'), m('td', Settings.bundleId)]),
       m('tr', {}, [m('td', {}, 'version'), m('td', {}, Settings.version)]),
@@ -39,11 +43,19 @@ function renderSettings() {
       m('tr', {}, [m('td', {}, 'db creation'), m('td', {}, formatDay(Settings.db.createdAt))]),
       m('tr', {}, [m('td', {}, 'db expiration'), m('td', {}, formatDay(Settings.db.expiredAt))]),
       m('tr', {}, [m('td', {}, 'db version'), m('td', {}, Settings.db.version)])]),
-    m('button', buttonAttrs, "OK")
+    m('button.ok', buttonAttrs, "OK")
   ]);
 }
 
-function renderHeader(ctrl: Header.Ctrl) {
+function renderModals(dateCtrl: DatePicker.Ctrl, timeCtrl: TimePicker.Ctrl): m.VirtualElement {
+  return m('div.modals', {},[
+    renderSettings(),
+    m('div.date-picker.modal', {}, DatePicker.get().view(dateCtrl)),
+    m('div.date-picker.modal.fade-in', {}, TimePicker.get().view(timeCtrl))
+  ]);
+}
+
+function renderHeader(ctrl: Header.Ctrl): m.VirtualElement {
   var headerAttrs: Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
@@ -57,7 +69,7 @@ function renderHeader(ctrl: Header.Ctrl) {
   return m("header", _.merge({ id: "header" }, headerAttrs), Header.get().view(ctrl));
 }
 
-function renderHome(ctrl: Home.Ctrl) {
+function renderHome(ctrl: Home.Ctrl): m.VirtualElement {
   var attributes: Attributes = {
     'id': 'home',
     'class': 'view hidden'
@@ -73,7 +85,7 @@ function renderHome(ctrl: Home.Ctrl) {
   return m("section", attributes, Home.get().view(ctrl));
 }
 
-function renderDepartures(ctrl: Departures.Ctrl) {
+function renderDepartures(ctrl: Departures.Ctrl): m.VirtualElement {
   var attributes: Attributes = {
     'id': 'departures',
     'class': 'view hidden'
@@ -89,7 +101,7 @@ function renderDepartures(ctrl: Departures.Ctrl) {
   return m("section", attributes, Departures.get().view(ctrl));
 }
 
-function renderTrip(ctrl: Trip.Ctrl) {
+function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement {
 
   var attributes: Attributes = {
     'id': 'trip',
@@ -110,6 +122,8 @@ export class App implements m.Module<Ctrl> {
 
   controller(): Ctrl {
     return {
+      timePicker: TimePicker.get().controller(),
+      datePicker: DatePicker.get().controller(),
       header: Header.get().controller(),
       home: Home.get().controller(),
       departures: Departures.get().controller(),
@@ -126,7 +140,7 @@ export class App implements m.Module<Ctrl> {
       }
     }
     return [m('main#viewport', attributes, [
-      renderSettings(),
+      renderModals(ctrl.datePicker, ctrl.timePicker),
       renderHeader(ctrl.header),
       renderHome(ctrl.home),
       renderDepartures(ctrl.departures),
