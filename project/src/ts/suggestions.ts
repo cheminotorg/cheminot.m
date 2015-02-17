@@ -2,22 +2,17 @@ import m = require('mithril');
 import Q = require('q');
 import _ = require('lodash');
 
-var STATIONS: any[] = null;
-
-export interface Station {
-  name: string;
-  id: string;
-}
+var TREE: any[] = null;
 
 function getStationsTree(): Q.Promise<any> {
   var d = Q.defer<any>();
   var req = new XMLHttpRequest();
-  if(!STATIONS) {
+  if(!TREE) {
     req.onreadystatechange = () => {
       if (req.readyState === 4) {
         if(req.status === 200 || req.status === 0) {
           var stations = JSON.parse(req.responseText);
-          STATIONS = stations;
+          TREE = stations;
           d.resolve(stations);
         } else {
           d.reject('Unable to get stops_ttree.json');
@@ -27,7 +22,7 @@ function getStationsTree(): Q.Promise<any> {
     req.open('GET', 'data/stops_ttree.json', true);
     req.send(null);
   } else {
-    d.resolve(STATIONS);
+    d.resolve(TREE);
   }
   return d.promise;
 }
@@ -75,7 +70,7 @@ export function search(term: string): Station[] {
     }
   }
 
-  var results =  (term.length > 0) ? step(term.toLowerCase(), STATIONS, []) : [];
+  var results = (term.length > 0) ? step(term.toLowerCase(), TREE, []) : [];
   results = _.take(results, 100);
   return results;
 }

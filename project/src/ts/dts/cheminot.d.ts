@@ -1,19 +1,19 @@
-interface Attributes {
+declare type Attributes = {
   [index: string]: any;
 }
 
-interface Station {
+declare type Station = {
   name: string;
   id: string;
 }
 
-interface ArrivalTimes {
+declare type ArrivalTimes = {
   id: string;
   arrivalTimes: ArrivalTime[];
   isDirect: boolean;
 }
 
-interface Departure {
+declare type Departure = {
   startId: string;
   endId: string;
   startTime: Date;
@@ -22,7 +22,7 @@ interface Departure {
   id: string;
 }
 
-interface ArrivalTime {
+declare type ArrivalTime = {
   stopId: string;
   stopName: string;
   arrival: Date;
@@ -30,6 +30,22 @@ interface ArrivalTime {
   tripId: string;
   pos: number;
 }
+
+declare type Meta = {
+  version: string;
+  createdAt: Date;
+  expiredAt: Date;
+}
+
+declare type Settings = {
+  bundleId: string;
+  version: string;
+  appName: string;
+  gitVersion: string;
+  db: Meta;
+}
+
+declare var Settings: Settings;
 
 declare module cordova {
 
@@ -49,7 +65,7 @@ declare module cordova {
   }
 }
 
-interface Splashscreen {
+declare type Splashscreen = {
   hide(): void;
   show(): void;
 }
@@ -59,22 +75,6 @@ interface Navigator {
   vibrate(ms: number): boolean;
 }
 
-interface Meta {
-  version: string;
-  createdAt: Date;
-  expiredAt: Date;
-}
-
-interface Settings {
-  bundleId: string;
-  version: string;
-  appName: string;
-  gitVersion: string;
-  db: Meta;
-}
-
 interface CHTMLElement {
   remove(): void
 }
-
-declare var Settings: Settings;

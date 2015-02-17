@@ -1,14 +1,12 @@
 import m = require('mithril');
 
-export interface Ctrl {
-}
+export type Ctrl = {}
 
-export class Header implements m.Module<Ctrl> {
-
+var header = {
   controller(): Ctrl {
     return {
     };
-  }
+  },
 
   view(ctrl: Ctrl) {
     var loader = m('div.holo', {}, [
@@ -22,8 +20,6 @@ export class Header implements m.Module<Ctrl> {
   }
 }
 
-var header = new Header();
-
-export function get(): Header {
+export function get(): m.Module<Ctrl> {
   return header;
 }

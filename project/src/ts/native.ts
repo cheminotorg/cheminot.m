@@ -3,7 +3,7 @@ import Q = require('q');
 import Cache = require('cache');
 import _ = require('lodash');
 
-export interface BackButtonHandlers {
+type BackButtonHandlers = {
   [index: string]: (e: Event) => void;
 }
 

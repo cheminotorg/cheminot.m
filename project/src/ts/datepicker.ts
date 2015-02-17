@@ -4,7 +4,7 @@ import i18n = require('i18n');
 import _ = require('lodash');
 import Utils = require('utils');
 
-export interface Ctrl {
+export type Ctrl = {
   dateSelected: (value?: Date) => Date;
   onDayChange: (ctrl: Ctrl, e: Event) => void;
   onMonthChange: (ctrl: Ctrl, e: Event) => void;

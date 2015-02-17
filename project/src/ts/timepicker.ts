@@ -4,7 +4,7 @@ import i18n = require('i18n');
 import _ = require('lodash');
 import Utils = require('utils');
 
-export interface Ctrl {
+export type Ctrl = {
   timeSelected: (value?: Date) => Date;
   onHourChange: (ctrl: Ctrl, e: Event) => void;
   onMinuteChange: (ctrl: Ctrl, e: Event) => void;

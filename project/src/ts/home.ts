@@ -10,7 +10,7 @@ import Routes = require('routes');
 import i18n = require('i18n');
 import native = require('native');
 
-export interface Ctrl {
+export type Ctrl = {
   scope: () => HTMLElement;
   shouldBeHidden: () => boolean;
   onTabTouched: (ctrl: Ctrl, e: Event) => void;
@@ -31,7 +31,7 @@ export interface Ctrl {
   isTodayTabSelected: (value?: boolean) => boolean;
   isTomorrowTabSelected: (value?: boolean) => boolean;
   isOtherTabSelected: (value?: boolean) => boolean;
-  stations: (value?: Array<Suggestions.Station>) => Array<Suggestions.Station>;
+  stations: (value?: Array<Station>) => Array<Station>;
   onStationSelected: (ctrl: Ctrl, e: Event) => void;
   inputDateSelected: (value?: string) => string;
   inputTimeSelected: (value?: string) => string;

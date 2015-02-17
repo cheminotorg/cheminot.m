@@ -9,7 +9,7 @@ import moment = require('moment');
 import DatePicker = require('datepicker');
 import TimePicker = require('timepicker');
 
-export interface Ctrl {
+export type Ctrl = {
   timePicker: TimePicker.Ctrl;
   datePicker: DatePicker.Ctrl;
   header: Header.Ctrl;
@@ -102,7 +102,6 @@ function renderDepartures(ctrl: Departures.Ctrl): m.VirtualElement {
 }
 
 function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement {
-
   var attributes: Attributes = {
     'id': 'trip',
     'class': 'view hidden'
@@ -118,8 +117,7 @@ function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement {
   return m("section", attributes, Trip.get().view(ctrl));
 }
 
-export class App implements m.Module<Ctrl> {
-
+var app = {
   controller(): Ctrl {
     return {
       timePicker: TimePicker.get().controller(),
@@ -129,7 +127,7 @@ export class App implements m.Module<Ctrl> {
       departures: Departures.get().controller(),
       trip: Trip.get().controller()
     };
-  }
+  },
 
   view(ctrl: Ctrl) {
     var attributes = {
@@ -149,8 +147,6 @@ export class App implements m.Module<Ctrl> {
   }
 }
 
-var app = new App();
-
-export function get(): App {
+export function get(): m.Module<Ctrl> {
   return app;
 }

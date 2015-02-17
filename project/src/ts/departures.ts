@@ -11,7 +11,7 @@ import Q = require('q');
 import Cache = require('cache');
 import i18n = require('i18n');
 
-export interface Ctrl {
+export type Ctrl = {
   scope: () => HTMLElement;
   shouldBeHidden: () => boolean;
   startStation: string;
