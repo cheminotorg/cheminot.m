@@ -9,6 +9,11 @@ export function viewportSize(): [number, number] {
   ];
 }
 
+export function paddy(n: number, p: number, padchar: string = '0'): string {
+    var pad = new Array(1 + p).join(padchar);
+    return (pad + n).slice(-pad.length);
+}
+
 export module DateTime {
 
   export function diff(from: Date, to: Date): number {
@@ -149,26 +154,6 @@ export module Promise {
 
   export function pure<T>(t: T): Q.Promise<T> {
     return Q<T>(t);
-  }
-
-  export function par<T>(seq: Array<Q.Promise<T>>): Q.Promise<Array<T>> {
-    var d = Q.defer<Array<T>>();
-    var fullfilled = new Array<T>();
-    var toFullFill = seq.length;
-
-    seq.forEach((f, i) => {
-      f.then((t) => {
-        fullfilled[i] = t;
-      }).catch((reason) => {
-        fullfilled[i] = reason;
-      }).fin(() => {
-        toFullFill -= 1;
-        if(toFullFill <= 0) {
-          d.resolve(fullfilled);
-        }
-      });
-    });
-    return d.promise;
   }
 
   export function sequence<T>(seq: Array<T>, f: (t: T) => Q.Promise<T>): Q.Promise<Array<T>> {

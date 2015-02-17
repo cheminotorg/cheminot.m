@@ -9,6 +9,7 @@ import Suggestions = require('suggestions');
 import Routes = require('routes');
 import i18n = require('i18n');
 import native = require('native');
+import DatePicker = require('datepicker');
 
 export type Ctrl = {
   scope: () => HTMLElement;
@@ -189,8 +190,19 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
 /// RENDER DATETIME SELECTOR
 
 function renderDateTime(ctrl: Ctrl): m.VirtualElement {
-  var inputDateTimeAttrs = {
-    onchange: _.partial(ctrl.onDateTimeChange, ctrl),
+  var inputDateAttrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if (!isUpdate) {
+        DatePicker.onchange(el, _.partial(ctrl.onDateTimeChange, ctrl));
+      }
+    }
+  };
+
+  var inputTimeAttrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if (!isUpdate) {
+      }
+    }
   };
 
   var dateSelectorAttrs = Utils.m.handleAttributes({ class: 'date other' }, (name, value) => {
@@ -223,12 +235,12 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement {
     m("li", dateSelectorAttrs, [
       m("span", { class: "label" }, i18n.fr('departure-date')),
       m("span", { class: "value" }, ctrl.inputDateSelected()),
-      m("input", _.merge({ type: "date" }, inputDateTimeAttrs))
+      m("input", _.merge({ type: "date" }, inputDateAttrs))
     ]),
     m("li", { class: "time" }, [
       m("span", { class: "label" }, i18n.fr('departure-time')),
       m("span", { class: "value" }, ctrl.inputTimeSelected()),
-      m("input", _.merge({ type: "time" }, inputDateTimeAttrs))
+      m("input", _.merge({ type: "time" }, inputTimeAttrs))
     ]),
     m("li", submitAttrs, [
       m("span", {}, i18n.fr('search')),

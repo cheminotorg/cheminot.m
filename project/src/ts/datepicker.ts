@@ -9,6 +9,9 @@ export type Ctrl = {
   onDayChange: (ctrl: Ctrl, e: Event) => void;
   onMonthChange: (ctrl: Ctrl, e: Event) => void;
   onYearChange: (ctrl: Ctrl, e: Event) => void;
+  onOkTouched: (ctrl: Ctrl, e: Event) => void;
+  onClearTouched: (ctrl: Ctrl, e: Event) => void;
+  onCancelTouched: (ctrl: Ctrl, e: Event) => void;
 }
 
 function renderTitle(ctrl: Ctrl): m.VirtualElement {
@@ -64,10 +67,24 @@ function renderYear(ctrl: Ctrl): m.VirtualElement {
 }
 
 function renderButtons(ctrl: Ctrl): m.VirtualElement {
+  var getAttrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
+    return {
+      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+        if(!isUpdate) {
+          el.addEventListener('touchend', _.partial(handler, ctrl));
+        }
+      }
+    }
+  };
+
+  var onok = getAttrs(ctrl.onOkTouched);
+  var onclear = getAttrs(ctrl.onClearTouched);
+  var oncancel = getAttrs(ctrl.onCancelTouched);
+
   return m('div.actions', {}, [
-    m('button.ok', {}, 'ok'),
-    m('button.clear', {}, i18n.fr('clear')),
-    m('button.cancel', {}, i18n.fr('cancel'))
+    m('button.ok', onok, 'ok'),
+    m('button.clear', onclear, i18n.fr('clear')),
+    m('button.cancel', oncancel, i18n.fr('cancel'))
   ]);
 }
 
@@ -87,6 +104,18 @@ var datePicker: m.Module<Ctrl> = {
   controller(date?: Date): Ctrl {
     return {
       dateSelected: m.prop(date || new Date()),
+
+      onOkTouched: (ctrl: Ctrl, e: Event) => {
+        console.log('ok')
+      },
+
+      onClearTouched: (ctrl: Ctrl, e: Event) => {
+        console.log('clear')
+      },
+
+      onCancelTouched: (ctrl: Ctrl, e: Event) => {
+        console.log('cancel');
+      },
 
       onDayChange: (ctrl: Ctrl, e: Event) => {
         var button = <HTMLElement> e.currentTarget;
@@ -130,4 +159,11 @@ var datePicker: m.Module<Ctrl> = {
 
 export function get(): m.Module<Ctrl> {
   return datePicker;
+}
+
+export function onchange(el: HTMLElement, h: (e: Event) => void) {
+  el.addEventListener('change', (e) => {
+    e.preventDefault();
+    console.log('onchange');
+  });
 }
