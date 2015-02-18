@@ -290,7 +290,7 @@ var departures: m.Module<Ctrl> = {
         if(pullUpLabel) pullUpLabel.textContent = label;
       }),
 
-      lastDepartureTime: m.prop(null),
+      lastDepartureTime: m.prop(undefined),
 
       isComputingLongTrip: m.prop(false),
 

@@ -7,6 +7,7 @@ import Utils = require('utils');
 import _ = require('lodash');
 import moment = require('moment');
 import Modals = require('modals');
+import About = require('about');
 
 export type Ctrl = {
   modals: Modals.Ctrl;
@@ -21,7 +22,7 @@ function renderHeader(ctrl: Header.Ctrl): m.VirtualElement {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.longtouch(el, 3000, () => {
-          Modals.show('.about');
+          About.show();
         });
       }
     }
