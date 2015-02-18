@@ -13,6 +13,16 @@ input_height=66px
 input_size=18px
 btn_size=22px
 
+modal_width=212px
+modal_title_padding=8px
+modal_title_size=16px
+modal_button_size=12px
+modal_control_height=26px
+modal_control_value_height=26px
+modal_control_value_size=16px
+modal_control_button_size=21px
+timepicker_separator_height=88px
+
 departures_wrapper_width=400px
 departures_pullup_padding=14px
 departures_pullup_size=18px
@@ -36,6 +46,41 @@ trip_time_width=80px
 device(min_width, max_width, factor) {
     portrait = "only screen and (min-device-width : " + min_width + ") and (max-device-width : " + max_width + ")"
     @media portrait {
+        .modal {
+            width: scale(modal_width, factor)
+
+            .title {
+                padding: scale(modal_title_padding, factor)
+                font-size: scale(modal_title_size, factor)
+            }
+
+            .actions button {
+                font-size: scale(modal_button_size, factor)
+            }
+        }
+
+        .date-picker, .time-picker {
+            .controls > div {
+                height: scale(modal_control_height, factor)
+                line-height: scale(modal_control_height, factor)
+
+                .value {
+                    height: scale(modal_control_value_height, factor)
+                    line-height: scale(modal_control_value_height, factor)
+                    font-size: scale(modal_control_value_size, factor)
+                }
+            }
+
+            .up button, .down button {
+                font-size: scale(modal_control_button_size, factor)
+            }
+        }
+
+        .time-picker .separator {
+            height: scale(timepicker_separator_height, factor) !important
+            line-height: scale(timepicker_separator_height, factor) !important
+        }
+
         header {
             height: scale(header_height, factor)
             font-size: scale(header_size, factor)
@@ -128,6 +173,36 @@ device(min_width, max_width, factor) {
 
 // IPHONE 5 (default)
 @media only screen {
+    .modal {
+        width: modal_width
+
+        .title {
+            padding: modal_title_padding
+            font-size: modal_title_size
+        }
+
+        .actions button {
+            font-size: modal_button_size
+        }
+    }
+
+    .date-picker, .time-picker {
+        .controls > div {
+            height: modal_control_height
+            line-height: modal_control_height
+
+            .value {
+                height: modal_control_value_height
+                line-height: modal_control_value_height
+                font-size: modal_control_value_size
+            }
+        }
+
+        .up button, .down button {
+            font-size: modal_control_button_size
+        }
+    }
+
     header {
         height: header_height
         font-size: header_size

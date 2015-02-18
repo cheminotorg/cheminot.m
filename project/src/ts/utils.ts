@@ -20,18 +20,18 @@ export module DateTime {
     return moment(to).diff(moment(from));
   }
 
-  export function setSameTime(from: Date, reference: Date): Date {
-    var h = from.getHours();
-    var m = from.getMinutes();
-    var s = from.getSeconds();
+  export function setSameTime(reference: Date, time: Date): Date {
+    var h = time.getHours();
+    var m = time.getMinutes();
+    var s = time.getSeconds();
     return moment(reference).hours(h).minutes(m).seconds(s).toDate()
   }
 
-  export function setSameDay(from: Date, reference: Date): Date {
-    var date = from.getDate();
-    var month = from.getMonth();
-    var year = from.getFullYear();
-    return moment(reference).date(date).month(month).year(year).toDate()
+  export function setSameDay(reference: Date, date: Date): Date {
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+    return moment(reference).date(d).month(m).year(y).toDate()
   }
 
   export function addMinutes(date: Date, n: number): Date {

@@ -8,18 +8,23 @@
     z-index: 4;
     display: none
 
+    &.fade-in {
+        display: flex
+        align-items: center
+    }
+
     .modal {
         border-radius: 0.2em
         display: none
-        position: absolute
         z-index: 4
-        top: 32vh
-        left: 10vw
         background: #FFF
         color: #3CB6E3
+        top: 50%
+        left: 50%
+        transform: translate(-50%, -50%)
+        position: absolute
 
         .title {
-            padding: 10px
             border-bottom: 1px solid #3CB6E3
         }
 
@@ -38,11 +43,8 @@
         }
 
         .actions {
-            padding: 0 10px 0 10px
+            padding: 4px 10px 0 10px
             text-align: center
-            button {
-                font-size: 12px
-            }
         }
     }
 
@@ -61,12 +63,20 @@
     }
 
     .date-picker, .time-picker {
+        display: none
 
         .controls {
             padding: 10px 10px 0px 10px
             text-align: center
 
-            .hour, .minute, .meridian, .day, .month, .year {
+            .separator {
+                color: #000
+                vertical-align: top
+                width: 24px
+                display: inline-block
+            }
+
+            .hour, .minute, .day, .month, .year {
                 display: inline-block
                 width: 32%
 
@@ -76,16 +86,12 @@
             }
 
             .value {
-                line-height: 30px
-                height: 30px
                 display: inline-block
                 color: dark-blue
-                font-size: 14px
             }
         }
 
         .up button, .down button {
-            font-size: 26px
             width: 100%
         }
 

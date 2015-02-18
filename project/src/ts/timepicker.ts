@@ -2,20 +2,16 @@ import m = require('mithril');
 import moment = require('moment');
 import i18n = require('i18n');
 import _ = require('lodash');
+import Q = require('q');
 import Utils = require('utils');
+import Modals = require('modals');
 
-var Meridian = {
-  AM: 'AM',
-  PM: 'PM'
-}
+var deferred: Q.Deferred<Date>;
 
 export type Ctrl = {
-  hourSelected: (value?: number) => number;
-  minuteSelected: (value?: number) => number;
-  meridianSelected: (value?: string) => string;
+  timeSelected: (value?: Date) => Date;
   onHourChange: (ctrl: Ctrl, e: Event) => void;
   onMinuteChange: (ctrl: Ctrl, e: Event) => void;
-  onMeridianChange: (ctrl: Ctrl, e: Event) => void;
   onOkTouched: (ctrl: Ctrl, e: Event) => void;
   onClearTouched: (ctrl: Ctrl, e: Event) => void;
   onCancelTouched: (ctrl: Ctrl, e: Event) => void;
@@ -36,7 +32,7 @@ function renderHour(ctrl: Ctrl): m.VirtualElement {
 
   return m('div.hour', {} , [
     m('div.up', attrs, m('button')),
-    m('span.value', {}, ctrl.hourSelected()),
+    m('span.value', {}, moment(ctrl.timeSelected()).format('HH')),
     m('div.down', attrs, m('button'))
   ]);
 }
@@ -52,24 +48,8 @@ function renderMinute(ctrl: Ctrl): m.VirtualElement {
 
   return m('div.minute', {}, [
     m('div.up', attrs, m('button')),
-    m('span.value', Utils.paddy(ctrl.minuteSelected(), 2)),
+    m('span.value', moment(ctrl.timeSelected()).format('mm')),
     m('div.down', attrs, m('button'))
-  ]);
-}
-
-function renderMeridian(ctrl: Ctrl): m.VirtualElement {
-  var attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate) {
-        el.addEventListener('touchend', _.partial(ctrl.onMeridianChange, ctrl));
-      }
-    }
-  };
-
-  return m('div.meridian', {}, [
-    m('div.up', attrs, m('button', {}, '')),
-    m('span.value', {}, ctrl.meridianSelected()),
-    m('div.down', attrs,  m('button', {}, ''))
   ]);
 }
 
@@ -97,14 +77,14 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
   return [
-    renderTitle(ctrl),
-    m('div.controls', {}, [
-      renderHour(ctrl),
-      renderMinute(ctrl),
-      renderMeridian(ctrl)
-    ]),
-    renderButtons(ctrl)
-  ];
+    m('div.modal.time-picker', {}, [
+      renderTitle(ctrl),
+      m('div.controls', {}, [
+        renderHour(ctrl),
+        m('div.separator', {}, ':'),
+        renderMinute(ctrl)
+      ]),
+      renderButtons(ctrl)])];
 }
 
 var timePicker: m.Module<Ctrl> = {
@@ -112,53 +92,42 @@ var timePicker: m.Module<Ctrl> = {
     date = date || new Date();
 
     return {
-      hourSelected: m.prop(moment(date).format('hh')),
-
-      minuteSelected: m.prop(moment(date).format('mm')),
-
-      meridianSelected: m.prop(moment(date).format('A')),
+      timeSelected: m.prop(date),
 
       onOkTouched: (ctrl: Ctrl, e: Event) => {
-        console.log('ok')
+        deferred.resolve(ctrl.timeSelected());
+        Modals.hide('.date-picker');
       },
 
       onClearTouched: (ctrl: Ctrl, e: Event) => {
-        console.log('clear')
+        deferred.resolve(null);
+        Modals.hide('.time-picker');
       },
 
       onCancelTouched: (ctrl: Ctrl, e: Event) => {
-        console.log('cancel');
+        deferred.reject('cancel');
+        Modals.hide('.time-picker');
       },
 
       onHourChange: (ctrl: Ctrl, e: Event) => {
         var button = <HTMLElement> e.currentTarget;
-        var hour = ctrl.hourSelected();
+        var date = ctrl.timeSelected();
         if(button.classList.contains('up')) {
-          hour = (hour == 12) ? 1 : ++hour;
+          ctrl.timeSelected(moment(date).add(1, 'hour').toDate());
         } else {
-          hour = (hour == 1) ? 12 : --hour;
+          ctrl.timeSelected(moment(date).subtract(1, 'hour').toDate());
         }
-        ctrl.hourSelected(hour);
         m.redraw();
       },
 
       onMinuteChange: (ctrl: Ctrl, e: Event) => {
         var button = <HTMLElement> e.currentTarget;
-        var minute = ctrl.minuteSelected();
+        var date = ctrl.timeSelected();
         if(button.classList.contains('up')) {
-          minute = (minute == 59) ? 1 : ++minute;
+          ctrl.timeSelected(moment(date).add(1, 'minute').toDate());
         } else {
-          minute = (minute == 1) ? 59 : --minute;
+          ctrl.timeSelected(moment(date).subtract(1, 'minute').toDate());
         }
-        ctrl.minuteSelected(minute);
-        m.redraw();
-      },
-
-      onMeridianChange: (ctrl: Ctrl, e: Event) => {
-        var button = <HTMLElement> e.currentTarget;
-        var meridian = ctrl.meridianSelected();
-        meridian = (meridian == Meridian.PM) ? Meridian.AM : Meridian.PM;
-        ctrl.meridianSelected(meridian);
         m.redraw();
       }
     };
@@ -171,4 +140,10 @@ var timePicker: m.Module<Ctrl> = {
 
 export function get(): m.Module<Ctrl> {
   return timePicker;
+}
+
+export function show(): Q.Promise<Date> {
+  deferred = Q.defer<Date>();
+  Modals.show('.time-picker');
+  return deferred.promise;
 }

@@ -50,8 +50,8 @@ function renderSettings(): m.VirtualElement {
 function renderModals(dateCtrl: DatePicker.Ctrl, timeCtrl: TimePicker.Ctrl): m.VirtualElement {
   return m('div.modals', {},[
     renderSettings(),
-    m('div.date-picker.modal.fade-in', {}, DatePicker.get().view(dateCtrl)),
-    m('div.date-picker.modal', {}, TimePicker.get().view(timeCtrl))
+    DatePicker.get().view(dateCtrl),
+    TimePicker.get().view(timeCtrl)
   ]);
 }
 

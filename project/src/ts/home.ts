@@ -10,6 +10,7 @@ import Routes = require('routes');
 import i18n = require('i18n');
 import native = require('native');
 import DatePicker = require('datepicker');
+import TimePicker = require('timepicker');
 
 export type Ctrl = {
   scope: () => HTMLElement;
@@ -18,7 +19,8 @@ export type Ctrl = {
   onInputStationTouched :(ctrl: Ctrl, e: Event) => void;
   onResetStationTouched: (ctrl: Ctrl, e: Event) => void;
   onSubmitTouched: (ctrl: Ctrl, e: Event) => void;
-  onDateTimeChange: (ctrl: Ctrl, e: Event) => void;
+  onDateTouched: (ctrl: Ctrl, e: Event) => void;
+  onTimeTouched: (ctrl: Ctrl, e: Event) => void;
   onInputStationKeyUp: (ctrl: Ctrl, e: Event) => void;
   onScrollStations: (ctrl: Ctrl, e: Event) => void;
   isScrollingStations: (value?: boolean) => boolean;
@@ -34,12 +36,20 @@ export type Ctrl = {
   isOtherTabSelected: (value?: boolean) => boolean;
   stations: (value?: Array<Station>) => Array<Station>;
   onStationSelected: (ctrl: Ctrl, e: Event) => void;
-  inputDateSelected: (value?: string) => string;
-  inputTimeSelected: (value?: string) => string;
+  inputDateSelected: (value?: Date) => Date;
+  inputTimeSelected: (value?: Date) => Date;
   isSubmitDisabled: (value?: boolean) => boolean;
   iscroll: () => IScroll;
   adaptWrapperTop: (ctrl: Ctrl) => void;
   isViewportUp: (value?: boolean) => boolean;
+}
+
+function formatDate(date: Date) {
+  return date ? moment(date).format('YYYY-MM-DD') : '';
+}
+
+function formatTime(date: Date) {
+  return date ? moment(date).format('HH:mm') : '';
 }
 
 /// RENDER TABS
@@ -190,27 +200,31 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
 /// RENDER DATETIME SELECTOR
 
 function renderDateTime(ctrl: Ctrl): m.VirtualElement {
-  var inputDateAttrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if (!isUpdate) {
-        DatePicker.onchange(el, _.partial(ctrl.onDateTimeChange, ctrl));
-      }
-    }
-  };
 
   var inputTimeAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if (!isUpdate) {
+        el.addEventListener('touchend', _.partial(ctrl.onTimeTouched, ctrl));
       }
     }
   };
 
-  var dateSelectorAttrs = Utils.m.handleAttributes({ class: 'date other' }, (name, value) => {
-    if((name + ':' + value) == 'class:other') {
-      return ctrl.isOtherTabSelected();
-    }
-    return true;
-  });
+  var dateSelectorAttrs = () => {
+    var inputAttrs = {
+      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+        if (!isUpdate) {
+          el.addEventListener('touchend', _.partial(ctrl.onDateTouched, ctrl));
+        }
+      }
+    };
+    var cssAttrs = Utils.m.handleAttributes({ class: 'date other' }, (name, value) => {
+      if((name + ':' + value) == 'class:other') {
+        return ctrl.isOtherTabSelected();
+      }
+      return true;
+    });
+    return _.merge(inputAttrs, cssAttrs);
+  }
 
   var submitAttrs: any = (() => {
     var attrs = Utils.m.handleAttributes({ class: 'submit enabled disabled' }, (name, value) => {
@@ -232,15 +246,13 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement {
   })();
 
   return m("ul", { class: 'list datetime'}, [
-    m("li", dateSelectorAttrs, [
+    m("li", dateSelectorAttrs(), [
       m("span", { class: "label" }, i18n.fr('departure-date')),
-      m("span", { class: "value" }, ctrl.inputDateSelected()),
-      m("input", _.merge({ type: "date" }, inputDateAttrs))
+      m("span", { class: "value" }, formatDate(ctrl.inputDateSelected()))
     ]),
-    m("li", { class: "time" }, [
+    m("li", _.merge({ class: "time" }, inputTimeAttrs), [
       m("span", { class: "label" }, i18n.fr('departure-time')),
-      m("span", { class: "value" }, ctrl.inputTimeSelected()),
-      m("input", _.merge({ type: "time" }, inputTimeAttrs))
+      m("span", { class: "value" }, formatTime(ctrl.inputTimeSelected()))
     ]),
     m("li", submitAttrs, [
       m("span", {}, i18n.fr('search')),
@@ -345,9 +357,23 @@ var home: m.Module<Ctrl> = {
         if(active) currentTab('other');
       }),
 
-      inputDateSelected: m.prop(moment(at).format('YYYY-MM-DD')),
+      onDateTouched: (ctrl: Ctrl, e: Event) => {
+        DatePicker.show().then((date) => {
+          ctrl.inputDateSelected(date);
+          m.redraw();
+        });
+      },
 
-      inputTimeSelected: m.prop(moment(at).format('HH:mm')),
+      onTimeTouched: (ctrl: Ctrl, e: Event) => {
+        TimePicker.show().then((date) => {
+          ctrl.inputTimeSelected(date);
+          m.redraw();
+        });
+      },
+
+      inputDateSelected: m.prop(at),
+
+      inputTimeSelected: m.prop(at),
 
       isViewportUp: m.prop(false),
 
@@ -413,8 +439,8 @@ var home: m.Module<Ctrl> = {
 
       onSubmitTouched: (ctrl: Ctrl, e: Event) => {
         if(canBeSubmitted(ctrl)) {
-          var atDateTime = inputDateTimeSelected(ctrl);
-          var uri = Routes.home(ctrl.currentTab(), ctrl.inputStationStartTerm(), ctrl.inputStationEndTerm(), inputDateTimeSelected(ctrl));
+          var atDateTime = Utils.DateTime.setSameTime(ctrl.inputDateSelected(), ctrl.inputTimeSelected());
+          var uri = Routes.home(ctrl.currentTab(), ctrl.inputStationStartTerm(), ctrl.inputStationEndTerm(), atDateTime);
           window.history.pushState({}, '', '#' + uri);
           m.route(Routes.departures(ctrl.inputStationStartSelected(), ctrl.inputStationEndSelected(), atDateTime));
         }
@@ -426,17 +452,7 @@ var home: m.Module<Ctrl> = {
         inputStationStart.blur();
         inputStationEnd.blur();
         native.Keyboard.close();
-      },
-
-      onDateTimeChange: (ctrl: Ctrl, e: Event) => {
-        var input = <HTMLInputElement> e.currentTarget;
-        var wrapper = input.parentElement;
-        if(wrapper.classList.contains('date')) {
-          ctrl.inputDateSelected(input.value);
-        } else if(wrapper.classList.contains('time')) {
-          ctrl.inputTimeSelected(input.value);
-        }
-      },
+      }
     }
 
     native.onBackButton('home', () => {
@@ -560,9 +576,9 @@ function canBeSubmitted(ctrl: Ctrl): boolean {
 
   if(selectedStart && selectedEnd) {
     if(ctrl.isOtherTabSelected()) {
-      return ctrl.inputDateSelected() != '' && ctrl.inputTimeSelected() != '';
+      return ctrl.inputDateSelected() != null && ctrl.inputTimeSelected() != null;
     } else {
-      return ctrl.inputTimeSelected() != '';
+      return ctrl.inputTimeSelected() != null;
     }
   }
   return false;
@@ -594,13 +610,6 @@ function setInputStationValue(ctrl: Ctrl, input: HTMLElement, value: string): vo
 
 function setInputStationSelected(ctrl: Ctrl, input: HTMLElement, id: string): void {
   isInputStationStart(input) ? ctrl.inputStationStartSelected(id) : ctrl.inputStationEndSelected(id);
-}
-
-function inputDateTimeSelected(ctrl: Ctrl): Date {
-  var atDate = moment(ctrl.inputDateSelected()).toDate();
-  var atTime = moment(ctrl.inputTimeSelected(), 'hh:mm').toDate();
-  var atDateTime = Utils.DateTime.setSameTime(atTime, atDate);
-  return atDateTime;
 }
 
 function isTodayTab(el: HTMLElement): boolean {

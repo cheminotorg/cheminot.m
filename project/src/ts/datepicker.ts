@@ -2,7 +2,11 @@ import m = require('mithril');
 import moment = require('moment');
 import i18n = require('i18n');
 import _ = require('lodash');
+import Q = require('q');
 import Utils = require('utils');
+import Modals = require('modals');
+
+var deferred: Q.Deferred<Date>;
 
 export type Ctrl = {
   dateSelected: (value?: Date) => Date;
@@ -90,14 +94,14 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
   return [
-    renderTitle(ctrl),
-    m('div.controls', {}, [
-      renderDay(ctrl),
-      renderMonth(ctrl),
-      renderYear(ctrl)
-    ]),
-    renderButtons(ctrl)
-  ];
+    m('div.modal.date-picker', {}, [
+      renderTitle(ctrl),
+      m('div.controls', {}, [
+        renderDay(ctrl),
+        renderMonth(ctrl),
+        renderYear(ctrl)
+      ]),
+      renderButtons(ctrl)])];
 }
 
 var datePicker: m.Module<Ctrl> = {
@@ -106,15 +110,18 @@ var datePicker: m.Module<Ctrl> = {
       dateSelected: m.prop(date || new Date()),
 
       onOkTouched: (ctrl: Ctrl, e: Event) => {
-        console.log('ok')
+        deferred.resolve(ctrl.dateSelected());
+        Modals.hide('.date-picker');
       },
 
       onClearTouched: (ctrl: Ctrl, e: Event) => {
-        console.log('clear')
+        deferred.resolve(null);
+        Modals.hide('.date-picker');
       },
 
       onCancelTouched: (ctrl: Ctrl, e: Event) => {
-        console.log('cancel');
+        deferred.reject('cancel');
+        Modals.hide('.date-picker');
       },
 
       onDayChange: (ctrl: Ctrl, e: Event) => {
@@ -161,9 +168,8 @@ export function get(): m.Module<Ctrl> {
   return datePicker;
 }
 
-export function onchange(el: HTMLElement, h: (e: Event) => void) {
-  el.addEventListener('change', (e) => {
-    e.preventDefault();
-    console.log('onchange');
-  });
+export function show(): Q.Promise<Date> {
+  deferred = Q.defer<Date>();
+  Modals.show('.date-picker');
+  return deferred.promise;
 }
