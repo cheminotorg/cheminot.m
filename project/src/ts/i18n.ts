@@ -20,7 +20,8 @@ var messages: Messages = {
     'loading': 'Chargement...',
     'changement': 'changement',
     'cancel': 'annuler',
-    'clear': 'effacer'
+    'clear': 'effacer',
+    'no-trip-matched': 'Impossible de trouver des trajets correspondant à votre recherche'
   }
 };
 

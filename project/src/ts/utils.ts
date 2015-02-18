@@ -189,8 +189,8 @@ export module $ {
     document.body.addEventListener(event, handler);
   }
 
-  export function trigger(event: string): void {
-    document.body.dispatchEvent(new Event(event));
+  export function trigger(event: string, data?: any): void {
+    document.body.dispatchEvent(new CustomEvent(event, { detail: data }));
   }
 
   export function one(el: HTMLElement, event: string, handler: (e: Event) => void): HTMLElement {

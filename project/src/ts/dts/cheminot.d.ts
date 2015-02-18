@@ -75,6 +75,8 @@ interface Navigator {
   vibrate(ms: number): boolean;
 }
 
+/** BROWSER API **/
+
 interface CHTMLElement {
   remove(): void
 }

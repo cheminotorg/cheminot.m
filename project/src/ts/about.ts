@@ -1,13 +1,15 @@
 import m = require('mithril');
-import Modals = require('modals');
 import moment = require('moment');
 import _ = require('lodash');
 import Q = require('q');
+import Utils = require('utils');
 
 var deferred: Q.Deferred<void>;
 
 export type Ctrl = {
   onOkTouched: (ctrl: Ctrl, e: Event) => void;
+  displayed: (value?: boolean) => boolean;
+  onDisplay: (ctrl: Ctrl, e: Event) => void;
 }
 
 function formatDay(dateTime: Date) {
@@ -32,6 +34,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
   var attrs: Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
+        Utils.$.bind('cheminot:about', _.partial(ctrl.onDisplay, ctrl));
         el.addEventListener('touchend', _.partial(ctrl.onOkTouched, ctrl));
       }
     }
@@ -40,8 +43,16 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
 }
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
+
+  var attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
+    if((name + ':' + value) == 'class:fade-in') {
+      return ctrl.displayed();
+    }
+    return true;
+  });
+
   return [
-    m('div.about.modal', {}, [
+    m('div.modal.about', attrs, [
       renderTitle(ctrl),
       renderAbout(ctrl),
       renderButtons(ctrl)])];
@@ -50,10 +61,18 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
 var about: m.Module<Ctrl> = {
   controller(): Ctrl {
     return {
+      displayed: m.prop(false),
+
+      onDisplay: (ctrl: Ctrl, e: any) => {
+        ctrl.displayed(true);
+        m.redraw();
+      },
+
       onOkTouched: (ctrl: Ctrl, e: Event) => {
         deferred.resolve(null);
-        Modals.hide('.about');
-      },
+        ctrl.displayed(false);
+        m.redraw();
+      }
     };
   },
 
@@ -68,6 +87,6 @@ export function get(): m.Module<Ctrl> {
 
 export function show(): Q.Promise<void> {
   deferred = Q.defer<void>();
-  Modals.show('.about');
+  Utils.$.trigger('cheminot:about');
   return deferred.promise;
 }

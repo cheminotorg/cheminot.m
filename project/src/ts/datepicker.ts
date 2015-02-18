@@ -4,7 +4,6 @@ import i18n = require('i18n');
 import _ = require('lodash');
 import Q = require('q');
 import Utils = require('utils');
-import Modals = require('modals');
 
 var deferred: Q.Deferred<Date>;
 
@@ -16,6 +15,8 @@ export type Ctrl = {
   onOkTouched: (ctrl: Ctrl, e: Event) => void;
   onClearTouched: (ctrl: Ctrl, e: Event) => void;
   onCancelTouched: (ctrl: Ctrl, e: Event) => void;
+  displayed: (value?: boolean) => boolean;
+  onDisplay: (ctrl: Ctrl, e: Event) => void;
 }
 
 function renderTitle(ctrl: Ctrl): m.VirtualElement {
@@ -47,7 +48,7 @@ function renderMonth(ctrl: Ctrl): m.VirtualElement {
     }
   };
 
-  return m('div.month', {}, [
+  return m('div.month', attrs, [
     m('div.up', attrs, m('button')),
     m('span.value', moment(ctrl.dateSelected()).format('MM')),
     m('div.down', attrs, m('button'))
@@ -93,8 +94,23 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
 }
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
+  var attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
+    if((name + ':' + value) == 'class:fade-in') {
+      return ctrl.displayed();
+    }
+    return true;
+  });
+
+  var eventAttrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(!isUpdate) {
+        Utils.$.bind('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl));
+      }
+    }
+  };
+
   return [
-    m('div.modal.date-picker', {}, [
+    m('div.modal.date-picker', _.merge(attrs, eventAttrs), [
       renderTitle(ctrl),
       m('div.controls', {}, [
         renderDay(ctrl),
@@ -105,23 +121,35 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
 }
 
 var datePicker: m.Module<Ctrl> = {
-  controller(date?: Date): Ctrl {
+  controller(): Ctrl {
     return {
-      dateSelected: m.prop(date || new Date()),
+      displayed: m.prop(false),
+
+      onDisplay: (ctrl: Ctrl, e: any) => {
+        var date: Date = e.detail.date;
+        ctrl.dateSelected(date);
+        ctrl.displayed(true);
+        m.redraw();
+      },
+
+      dateSelected: m.prop(new Date()),
 
       onOkTouched: (ctrl: Ctrl, e: Event) => {
+        ctrl.displayed(false);
         deferred.resolve(ctrl.dateSelected());
-        Modals.hide('.date-picker');
+        m.redraw();
       },
 
       onClearTouched: (ctrl: Ctrl, e: Event) => {
+        ctrl.displayed(false);
         deferred.resolve(null);
-        Modals.hide('.date-picker');
+        m.redraw();
       },
 
       onCancelTouched: (ctrl: Ctrl, e: Event) => {
+        ctrl.displayed(false);
         deferred.reject('cancel');
-        Modals.hide('.date-picker');
+        m.redraw();
       },
 
       onDayChange: (ctrl: Ctrl, e: Event) => {
@@ -168,8 +196,8 @@ export function get(): m.Module<Ctrl> {
   return datePicker;
 }
 
-export function show(): Q.Promise<Date> {
+export function show(date: Date): Q.Promise<Date> {
   deferred = Q.defer<Date>();
-  Modals.show('.date-picker');
+  Utils.$.trigger('cheminot:datepicker', { date: date });
   return deferred.promise;
 }

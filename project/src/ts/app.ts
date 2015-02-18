@@ -38,7 +38,7 @@ function renderHome(ctrl: Home.Ctrl): m.VirtualElement {
 
   attributes = Utils.m.handleAttributes(attributes, (name, value) => {
     switch (name + ':' + value) {
-      case 'class:hidden': return ctrl.shouldBeHidden();
+      case 'class:hidden': return !ctrl.displayed();
       default: return true;
     }
   });
@@ -54,7 +54,7 @@ function renderDepartures(ctrl: Departures.Ctrl): m.VirtualElement {
 
   attributes = Utils.m.handleAttributes(attributes, (name, value) => {
     switch (name + ':' + value) {
-    case 'class:hidden': return ctrl.shouldBeHidden();
+    case 'class:hidden': return !ctrl.displayed();
       default: return true;
     }
   });
@@ -70,7 +70,7 @@ function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement {
 
   attributes = Utils.m.handleAttributes(attributes, (name, value) => {
     switch (name + ':' + value) {
-    case 'class:hidden': return ctrl.shouldBeHidden();
+    case 'class:hidden': return !ctrl.displayed();
       default: return true;
     }
   });

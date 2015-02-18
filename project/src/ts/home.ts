@@ -14,7 +14,7 @@ import TimePicker = require('timepicker');
 
 export type Ctrl = {
   scope: () => HTMLElement;
-  shouldBeHidden: () => boolean;
+  displayed: () => boolean;
   onTabTouched: (ctrl: Ctrl, e: Event) => void;
   onInputStationTouched :(ctrl: Ctrl, e: Event) => void;
   onResetStationTouched: (ctrl: Ctrl, e: Event) => void;
@@ -287,8 +287,8 @@ var home: m.Module<Ctrl> = {
         return <HTMLElement> document.querySelector('#home');
       },
 
-      shouldBeHidden: () => {
-        return !Routes.matchHome(currentTab(), m.route(), startTerm, endTerm, at);
+      displayed: () => {
+        return Routes.matchHome(currentTab(), m.route(), startTerm, endTerm, at);
       },
 
       onTabTouched: (ctrl: Ctrl, e: Event) => {
@@ -358,14 +358,14 @@ var home: m.Module<Ctrl> = {
       }),
 
       onDateTouched: (ctrl: Ctrl, e: Event) => {
-        DatePicker.show().then((date) => {
+        DatePicker.show(ctrl.inputDateSelected()).then((date) => {
           ctrl.inputDateSelected(date);
           m.redraw();
         });
       },
 
       onTimeTouched: (ctrl: Ctrl, e: Event) => {
-        TimePicker.show().then((date) => {
+        TimePicker.show(ctrl.inputTimeSelected()).then((date) => {
           ctrl.inputTimeSelected(date);
           m.redraw();
         });
@@ -456,7 +456,7 @@ var home: m.Module<Ctrl> = {
     }
 
     native.onBackButton('home', () => {
-      if(!ctrl.shouldBeHidden()) {
+      if(ctrl.displayed()) {
         var input = ctrl.isInputStationStartDisabled() ? getInputStationEnd(ctrl) : getInputStationStart(ctrl);
         resetInputStationsPosition(ctrl, input);
       }

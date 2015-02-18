@@ -10,10 +10,11 @@ import Mock = require('mock');
 import Q = require('q');
 import Cache = require('cache');
 import i18n = require('i18n');
+import Message = require('message');
 
 export type Ctrl = {
   scope: () => HTMLElement;
-  shouldBeHidden: () => boolean;
+  displayed: () => boolean;
   startStation: string;
   endStation: string;
   cached: (value?: Array<Departure>) => Array<Departure>;
@@ -71,7 +72,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
   var pullupAttrs = {
     key: 'departures-pullup',
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!ctrl.shouldBeHidden()) {
+      if(ctrl.displayed()) {
         ctrl.iscroll().refresh();
         if(ctrl.cached().length != ctrl.departures().length) {
           ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 600);
@@ -160,7 +161,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
 
   var departuresAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!ctrl.shouldBeHidden()) {
+      if(ctrl.displayed()) {
         ctrl.iscroll().refresh();
         if(!isUpdate) {
           var cached = Cache.getAllTripsFrom(ctrl.startStation, ctrl.endStation, ctrl.at(), 0, nextDeparture, departureBound).map((departure) => {
@@ -197,8 +198,8 @@ var departures: m.Module<Ctrl> = {
     var ctrl: Ctrl = {
       scope: scope,
 
-      shouldBeHidden: () => {
-        return !Routes.matchDepartures(m.route());
+      displayed: () => {
+        return Routes.matchDepartures(m.route());
       },
 
       iscroll: _.once(function() {
@@ -310,7 +311,7 @@ var departures: m.Module<Ctrl> = {
         ctrl.isComputationInProgress(false);
         native.Cheminot.abort();
       }
-      if(!ctrl.shouldBeHidden()) history.back();
+      if(ctrl.displayed()) history.back();
     });
 
     return ctrl;
@@ -321,8 +322,12 @@ var departures: m.Module<Ctrl> = {
   }
 };
 
-function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<void> {
-  var step = (ctrl: Ctrl, at: Date): Q.Promise<void> => {
+enum StatusCode {
+  OK, NO_MORE
+}
+
+function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
+  var step = (ctrl: Ctrl, at: Date, retries: number = 2): Q.Promise<StatusCode> => {
     if(isMoreItemsNeeded(ctrl)) {
       var te = departureBound(at);
       ctrl.isComputationInProgress(true);
@@ -344,15 +349,27 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<void> {
           ctrl.lastDepartureTime(departure.startTime);
           return step(ctrl, nextDeparture(ctrl.lastDepartureTime()));
         } else {
-          ctrl.lastDepartureTime(te);
-          return step(ctrl, nextDeparture(ctrl.lastDepartureTime()));
+          --retries;
+          if(retries <= 0) {
+            return Utils.Promise.pure(StatusCode.NO_MORE);
+          } else {
+            ctrl.lastDepartureTime(te);
+            return step(ctrl, nextDeparture(ctrl.lastDepartureTime()), retries);
+          }
         }
       });
     } else {
-      return Utils.Promise.done();
+      return Utils.Promise.pure(StatusCode.OK);
     }
   }
-  return step(ctrl, at).fin(() => {
+  return step(ctrl, at).then((statusCode) => {
+    if(statusCode == StatusCode.NO_MORE) {
+      if(!ctrl.departures().length) {
+        Message.info(i18n.fr('no-trip-matched'));
+      }
+    }
+    return statusCode;
+  }).fin(() => {
     ctrl.currentPageSize(0);
     ctrl.isComputationInProgress(false);
     ctrl.isComputingLongTrip(false);
@@ -388,7 +405,7 @@ function isMoreItemsNeeded(ctrl: Ctrl): boolean {
   var screenFull = isScreenFull(ctrl);
   var hasFirstPageNotFull = ctrl.nbItemsPerScreen() == 0 && !screenFull;
   var hasLastPageNotFull = screenFull && ctrl.currentPageSize() < ctrl.nbItemsPerScreen();
-  return (hasFirstPageNotFull || hasLastPageNotFull) && !ctrl.shouldBeHidden();
+  return (hasFirstPageNotFull || hasLastPageNotFull) && ctrl.displayed();
 }
 
 function isScreenFull(ctrl: Ctrl): boolean {

@@ -6,9 +6,9 @@ import moment = require('moment');
 import native = require('native');
 import i18n = require('i18n');
 
-export interface Ctrl {
+export type Ctrl = {
   scope: () => HTMLElement;
-  shouldBeHidden: () => boolean;
+  displayed: () => boolean;
   id: string;
   trip: () => ArrivalTime[];
   iscroll: () => IScroll;
@@ -20,7 +20,7 @@ function formatTime(dateTime: Date): string {
 }
 
 function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
-  if(ctrl.shouldBeHidden()) {
+  if(!ctrl.displayed()) {
     return new Array<m.VirtualElement>();
   } else {
     return ctrl.trip().map((arrivalTime, index) => {
@@ -89,8 +89,8 @@ var trip: m.Module<Ctrl> = {
     var ctrl = {
       scope: scope,
 
-      shouldBeHidden: () => {
-        return !Routes.matchTrip(m.route());
+      displayed: () => {
+        return Routes.matchTrip(m.route());
       },
 
       id: id,
@@ -113,7 +113,7 @@ var trip: m.Module<Ctrl> = {
     };
 
     native.onBackButton('trip', () => {
-      if(!ctrl.shouldBeHidden()) {
+      if(ctrl.displayed()) {
         history.back();
       }
     });

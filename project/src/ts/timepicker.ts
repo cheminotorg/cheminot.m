@@ -4,7 +4,6 @@ import i18n = require('i18n');
 import _ = require('lodash');
 import Q = require('q');
 import Utils = require('utils');
-import Modals = require('modals');
 
 var deferred: Q.Deferred<Date>;
 
@@ -15,6 +14,8 @@ export type Ctrl = {
   onOkTouched: (ctrl: Ctrl, e: Event) => void;
   onClearTouched: (ctrl: Ctrl, e: Event) => void;
   onCancelTouched: (ctrl: Ctrl, e: Event) => void;
+  displayed: (value?: boolean) => boolean;
+  onDisplay: (ctrl: Ctrl, e: Event) => void;
 }
 
 function renderTitle(ctrl: Ctrl): m.VirtualElement {
@@ -76,8 +77,24 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
 }
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
+
+  var attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
+    if((name + ':' + value) == 'class:fade-in') {
+      return ctrl.displayed();
+    }
+    return true;
+  });
+
+  var eventAttrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(!isUpdate) {
+        Utils.$.bind('cheminot:timepicker', _.partial(ctrl.onDisplay, ctrl));
+      }
+    }
+  };
+
   return [
-    m('div.modal.time-picker', {}, [
+    m('div.modal.time-picker', _.merge(attrs, eventAttrs), [
       renderTitle(ctrl),
       m('div.controls', {}, [
         renderHour(ctrl),
@@ -88,25 +105,37 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
 }
 
 var timePicker: m.Module<Ctrl> = {
-  controller(date?: Date): Ctrl {
-    date = date || new Date();
+  controller(): Ctrl {
 
     return {
-      timeSelected: m.prop(date),
+      displayed: m.prop(false),
+
+      onDisplay: (ctrl: Ctrl, e: any) => {
+        var time: Date = e.detail.time;
+        console.log(time);
+        ctrl.timeSelected(time);
+        ctrl.displayed(true);
+        m.redraw();
+      },
+
+      timeSelected: m.prop(new Date()),
 
       onOkTouched: (ctrl: Ctrl, e: Event) => {
         deferred.resolve(ctrl.timeSelected());
-        Modals.hide('.date-picker');
+        ctrl.displayed(false);
+        m.redraw();
       },
 
       onClearTouched: (ctrl: Ctrl, e: Event) => {
         deferred.resolve(null);
-        Modals.hide('.time-picker');
+        ctrl.displayed(false);
+        m.redraw();
       },
 
       onCancelTouched: (ctrl: Ctrl, e: Event) => {
         deferred.reject('cancel');
-        Modals.hide('.time-picker');
+        ctrl.displayed(false);
+        m.redraw();
       },
 
       onHourChange: (ctrl: Ctrl, e: Event) => {
@@ -142,8 +171,8 @@ export function get(): m.Module<Ctrl> {
   return timePicker;
 }
 
-export function show(): Q.Promise<Date> {
+export function show(time: Date): Q.Promise<Date> {
   deferred = Q.defer<Date>();
-  Modals.show('.time-picker');
+  Utils.$.trigger('cheminot:timepicker', { time: time });
   return deferred.promise;
 }
