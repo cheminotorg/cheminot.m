@@ -194,7 +194,7 @@ var departures: m.Module<Ctrl> = {
     var at = parseInt(m.route.param("at"), 10);
     var scope = () => <HTMLElement> document.querySelector('#departures');
 
-    var ctrl = {
+    var ctrl: Ctrl = {
       scope: scope,
 
       shouldBeHidden: () => {
@@ -275,7 +275,7 @@ var departures: m.Module<Ctrl> = {
       isPullUpLoading: Utils.m.prop(false, (isLoading: boolean) => {
         var wrapper = <HTMLElement> scope().querySelector('#wrapper');
         isLoading ? wrapper.classList.add('loading') : wrapper.classList.remove('loading');
-        isLoading ? displayHolo(ctrl) : hideHolo(ctrl);
+        return isLoading ? displayHolo(ctrl) : hideHolo(ctrl);
       }),
 
       isPullUpFlip: Utils.m.prop(false, (isFlip: boolean) => {
@@ -290,7 +290,7 @@ var departures: m.Module<Ctrl> = {
         if(pullUpLabel) pullUpLabel.textContent = label;
       }),
 
-      lastDepartureTime: m.prop(),
+      lastDepartureTime: m.prop(null),
 
       isComputingLongTrip: m.prop(false),
 

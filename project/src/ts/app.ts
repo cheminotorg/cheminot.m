@@ -6,53 +6,14 @@ import Trip = require('trip');
 import Utils = require('utils');
 import _ = require('lodash');
 import moment = require('moment');
-import DatePicker = require('datepicker');
-import TimePicker = require('timepicker');
+import Modals = require('modals');
 
 export type Ctrl = {
-  timePicker: TimePicker.Ctrl;
-  datePicker: DatePicker.Ctrl;
+  modals: Modals.Ctrl;
   header: Header.Ctrl;
   home: Home.Ctrl;
   departures: Departures.Ctrl;
   trip: Trip.Ctrl;
-}
-
-function renderSettings(): m.VirtualElement {
-  var formatDay = (dateTime: Date) => {
-    return moment(dateTime).format('dddd D MMMM YYYY');
-  }
-
-  var buttonAttrs: Attributes = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate) {
-        el.addEventListener('touchend', (e) => {
-          e.preventDefault();
-          var settings = <HTMLElement> document.querySelector('.settings');
-          settings.classList.remove('fade-in');
-        });
-      }
-    }
-  }
-
-  return m('div.settings.modal', {}, [
-    m('table', {}, [
-      m('tr', {}, [m('td', {}, 'bundleId'), m('td', Settings.bundleId)]),
-      m('tr', {}, [m('td', {}, 'version'), m('td', {}, Settings.version)]),
-      m('tr', {}, [m('td', {}, 'git'), m('td', {}, Settings.gitVersion)]),
-      m('tr', {}, [m('td', {}, 'db creation'), m('td', {}, formatDay(Settings.db.createdAt))]),
-      m('tr', {}, [m('td', {}, 'db expiration'), m('td', {}, formatDay(Settings.db.expiredAt))]),
-      m('tr', {}, [m('td', {}, 'db version'), m('td', {}, Settings.db.version)])]),
-    m('button.ok', buttonAttrs, "OK")
-  ]);
-}
-
-function renderModals(dateCtrl: DatePicker.Ctrl, timeCtrl: TimePicker.Ctrl): m.VirtualElement {
-  return m('div.modals', {},[
-    renderSettings(),
-    DatePicker.get().view(dateCtrl),
-    TimePicker.get().view(timeCtrl)
-  ]);
 }
 
 function renderHeader(ctrl: Header.Ctrl): m.VirtualElement {
@@ -60,8 +21,7 @@ function renderHeader(ctrl: Header.Ctrl): m.VirtualElement {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.longtouch(el, 3000, () => {
-          var settings = <HTMLElement> document.querySelector('.settings');
-          settings.classList.add('fade-in');
+          Modals.show('.about');
         });
       }
     }
@@ -120,8 +80,7 @@ function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement {
 var app = {
   controller(): Ctrl {
     return {
-      timePicker: TimePicker.get().controller(),
-      datePicker: DatePicker.get().controller(),
+      modals: Modals.get().controller(),
       header: Header.get().controller(),
       home: Home.get().controller(),
       departures: Departures.get().controller(),
@@ -138,7 +97,7 @@ var app = {
       }
     }
     return [m('main#viewport', attributes, [
-      renderModals(ctrl.datePicker, ctrl.timePicker),
+      Modals.get().view(ctrl.modals),
       renderHeader(ctrl.header),
       renderHome(ctrl.home),
       renderDepartures(ctrl.departures),

@@ -13,7 +13,7 @@ declare module "mithril" {
 
     module m {
 
-        function prop(value?: any): (value?: any) => any;
+        function prop<T>(value?: T): (value?: T) => T;
         function withAttr(property: string, callback: (value: any) => void): (e: Event) => any;
         function module<T>(rootElement: Node, module: m.Module<T>): void;
         function trust(html: string): String;
