@@ -19,6 +19,10 @@ export type Ctrl = {
   onDisplay: (ctrl: Ctrl, e: Event) => void;
 }
 
+function vibrate() {
+  navigator.vibrate(30);
+}
+
 function renderTitle(ctrl: Ctrl): m.VirtualElement {
   return m('div.title', {}, "Définir la date");
 }
@@ -48,9 +52,9 @@ function renderMonth(ctrl: Ctrl): m.VirtualElement {
     }
   };
 
-  return m('div.month', attrs, [
+  return m('div.month', {}, [
     m('div.up', attrs, m('button')),
-    m('span.value', moment(ctrl.dateSelected()).format('MM')),
+    m('span.value', {}, moment(ctrl.dateSelected()).format('MM')),
     m('div.down', attrs, m('button'))
   ]);
 }
@@ -127,7 +131,7 @@ var datePicker: m.Module<Ctrl> = {
 
       onDisplay: (ctrl: Ctrl, e: any) => {
         var date: Date = e.detail.date;
-        ctrl.dateSelected(date);
+        if(date) ctrl.dateSelected(date);
         ctrl.displayed(true);
         m.redraw();
       },
@@ -135,24 +139,28 @@ var datePicker: m.Module<Ctrl> = {
       dateSelected: m.prop(new Date()),
 
       onOkTouched: (ctrl: Ctrl, e: Event) => {
+        vibrate();
         ctrl.displayed(false);
-        deferred.resolve(ctrl.dateSelected());
+        deferred && deferred.resolve(ctrl.dateSelected());
         m.redraw();
       },
 
       onClearTouched: (ctrl: Ctrl, e: Event) => {
+        vibrate();
         ctrl.displayed(false);
-        deferred.resolve(null);
+        deferred && deferred.resolve(null);
         m.redraw();
       },
 
       onCancelTouched: (ctrl: Ctrl, e: Event) => {
+        vibrate();
         ctrl.displayed(false);
-        deferred.reject('cancel');
+        deferred && deferred.reject('cancel');
         m.redraw();
       },
 
       onDayChange: (ctrl: Ctrl, e: Event) => {
+        vibrate();
         var button = <HTMLElement> e.currentTarget;
         var date = ctrl.dateSelected();
         if(button.classList.contains('up')) {
@@ -164,6 +172,7 @@ var datePicker: m.Module<Ctrl> = {
       },
 
       onMonthChange: (ctrl: Ctrl, e: Event) => {
+        vibrate();
         var button = <HTMLElement> e.currentTarget;
         var date = ctrl.dateSelected();
         if(button.classList.contains('up')) {
@@ -175,6 +184,7 @@ var datePicker: m.Module<Ctrl> = {
       },
 
       onYearChange: (ctrl: Ctrl, e: Event) => {
+        vibrate();
         var button = <HTMLElement> e.currentTarget;
         var date = ctrl.dateSelected();
         if(button.classList.contains('up')) {
@@ -196,7 +206,7 @@ export function get(): m.Module<Ctrl> {
   return datePicker;
 }
 
-export function show(date: Date): Q.Promise<Date> {
+export function show(date?: Date): Q.Promise<Date> {
   deferred = Q.defer<Date>();
   Utils.$.trigger('cheminot:datepicker', { date: date });
   return deferred.promise;

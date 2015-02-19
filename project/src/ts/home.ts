@@ -345,7 +345,7 @@ var home: m.Module<Ctrl> = {
 
       currentTab: currentTab,
 
-      isTodayTabSelected: Utils.m.prop(tab == 'today', function(active) {
+      isTodayTabSelected: Utils.m.prop(tab == 'today', (active) => {
         if(active) currentTab('today');
       }),
 
@@ -353,7 +353,7 @@ var home: m.Module<Ctrl> = {
         if(active) currentTab('tomorrow');
       }),
 
-      isOtherTabSelected: Utils.m.prop(tab == 'other', function(active) {
+      isOtherTabSelected: Utils.m.prop(tab == 'other', (active) => {
         if(active) currentTab('other');
       }),
 

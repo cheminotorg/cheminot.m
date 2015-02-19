@@ -13,15 +13,14 @@ input_height=66px
 input_size=18px
 btn_size=22px
 
-modal_width=212px
-modal_title_padding=8px
-modal_title_size=16px
-modal_button_size=12px
+modal_width=258px
+modal_title_padding=10px
+modal_title_size=20px
+modal_button_size=14px
 modal_control_height=26px
 modal_control_value_height=26px
-modal_control_value_size=16px
-modal_control_button_size=21px
-timepicker_separator_height=88px
+modal_control_value_size=18px
+modal_control_button_size=56px
 
 departures_wrapper_width=400px
 departures_pullup_padding=14px
@@ -60,25 +59,15 @@ device(min_width, max_width, factor) {
         }
 
         .date-picker, .time-picker {
-            .controls > div {
-                height: scale(modal_control_height, factor)
-                line-height: scale(modal_control_height, factor)
-
-                .value {
-                    height: scale(modal_control_value_height, factor)
-                    line-height: scale(modal_control_value_height, factor)
-                    font-size: scale(modal_control_value_size, factor)
-                }
+            .controls .value {
+                height: scale(modal_control_value_height, factor)
+                line-height: scale(modal_control_value_height, factor)
+                font-size: scale(modal_control_value_size, factor)
             }
 
             .up button, .down button {
                 font-size: scale(modal_control_button_size, factor)
             }
-        }
-
-        .time-picker .separator {
-            height: scale(timepicker_separator_height, factor) !important
-            line-height: scale(timepicker_separator_height, factor) !important
         }
 
         header {
@@ -187,15 +176,10 @@ device(min_width, max_width, factor) {
     }
 
     .date-picker, .time-picker {
-        .controls > div {
-            height: modal_control_height
-            line-height: modal_control_height
-
-            .value {
-                height: modal_control_value_height
-                line-height: modal_control_value_height
-                font-size: modal_control_value_size
-            }
+        .controls value {
+            height: modal_control_value_height
+            line-height: modal_control_value_height
+            font-size: modal_control_value_size
         }
 
         .up button, .down button {

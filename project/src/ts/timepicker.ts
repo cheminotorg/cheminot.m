@@ -18,6 +18,10 @@ export type Ctrl = {
   onDisplay: (ctrl: Ctrl, e: Event) => void;
 }
 
+function vibrate() {
+  navigator.vibrate(30);
+}
+
 function renderTitle(ctrl: Ctrl): m.VirtualElement {
   return m('div.title', {}, "Définir l'heure");
 }
@@ -98,7 +102,6 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
       renderTitle(ctrl),
       m('div.controls', {}, [
         renderHour(ctrl),
-        m('div.separator', {}, ':'),
         renderMinute(ctrl)
       ]),
       renderButtons(ctrl)])];
@@ -112,8 +115,7 @@ var timePicker: m.Module<Ctrl> = {
 
       onDisplay: (ctrl: Ctrl, e: any) => {
         var time: Date = e.detail.time;
-        console.log(time);
-        ctrl.timeSelected(time);
+        if(time) ctrl.timeSelected(time);
         ctrl.displayed(true);
         m.redraw();
       },
@@ -121,24 +123,28 @@ var timePicker: m.Module<Ctrl> = {
       timeSelected: m.prop(new Date()),
 
       onOkTouched: (ctrl: Ctrl, e: Event) => {
-        deferred.resolve(ctrl.timeSelected());
+        vibrate();
+        deferred && deferred.resolve(ctrl.timeSelected());
         ctrl.displayed(false);
         m.redraw();
       },
 
       onClearTouched: (ctrl: Ctrl, e: Event) => {
-        deferred.resolve(null);
+        vibrate();
+        deferred && deferred.resolve(null);
         ctrl.displayed(false);
         m.redraw();
       },
 
       onCancelTouched: (ctrl: Ctrl, e: Event) => {
-        deferred.reject('cancel');
+        vibrate();
+        deferred && deferred.reject('cancel');
         ctrl.displayed(false);
         m.redraw();
       },
 
       onHourChange: (ctrl: Ctrl, e: Event) => {
+        vibrate();
         var button = <HTMLElement> e.currentTarget;
         var date = ctrl.timeSelected();
         if(button.classList.contains('up')) {
@@ -150,6 +156,7 @@ var timePicker: m.Module<Ctrl> = {
       },
 
       onMinuteChange: (ctrl: Ctrl, e: Event) => {
+        vibrate();
         var button = <HTMLElement> e.currentTarget;
         var date = ctrl.timeSelected();
         if(button.classList.contains('up')) {
@@ -171,7 +178,7 @@ export function get(): m.Module<Ctrl> {
   return timePicker;
 }
 
-export function show(time: Date): Q.Promise<Date> {
+export function show(time?: Date): Q.Promise<Date> {
   deferred = Q.defer<Date>();
   Utils.$.trigger('cheminot:timepicker', { time: time });
   return deferred.promise;

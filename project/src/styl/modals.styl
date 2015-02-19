@@ -1,3 +1,5 @@
+@import 'colors';
+
 .modals {
     background: rgba(0, 0, 0, 0.55);
     position: absolute;
@@ -18,7 +20,7 @@
         display: none
         z-index: 4
         background: #FFF
-        color: #3CB6E3
+        color: android-blue
         top: 50%
         left: 50%
         transform: translate(-50%, -50%)
@@ -39,12 +41,17 @@
             outline: none
             background: transparent
             padding: 10px
-            color: #159588
+            color: android-green
         }
 
         .actions {
+            border-top: 1px solid rgba(android-green, 0.1)
             padding: 4px 10px 0 10px
             text-align: center
+
+            .ok {
+                width: 28%
+            }
         }
     }
 
@@ -65,15 +72,8 @@
         display: none
 
         .controls {
-            padding: 10px 10px 0px 10px
+            padding: 10px
             text-align: center
-
-            .separator {
-                color: #000
-                vertical-align: top
-                width: 24px
-                display: inline-block
-            }
 
             .hour, .minute, .day, .month, .year {
                 display: inline-block
@@ -90,21 +90,19 @@
             }
         }
 
+        .up button {
+            up_button(android-blue)
+        }
+
+        .down button {
+            down_button(android-blue)
+        }
+
         .up button, .down button {
             width: 100%
-        }
 
-        .up {
-            button {
-                clear-button()
-                icon_cheminot('arrow-left', rgba(#3CB6E3, 0.7), 90deg)
-            }
-        }
-
-        .down {
-            button {
-                clear-button()
-                icon_cheminot('arrow-left', rgba(#3CB6E3, 0.7), -90deg)
+            &::before {
+                vertical-align: bottom
             }
         }
     }

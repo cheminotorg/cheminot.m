@@ -71,34 +71,41 @@ icon_cheminot(name, color = black, radius = 0) {
         font-family: 'Cheminot'
         color: color
         display: inline-block
-        transform: rotate(radius)
 
-        if name is 'arrow-left' {
-            content: '\e001'
+        if name is 'down' {
+            content: '\F004'
         }
 
-        if name is 'arrow-right' {
-            content: '\e002'
+        if name is 'up' {
+            content: '\F005'
+        }
+
+        if name is 'left' {
+            content: '\F006'
+        }
+
+        if name is 'right' {
+            content: '\F007'
         }
 
         if name is 'circle' {
-            content: '\e003'
+            content: '\F001'
         }
 
         if name is 'cross' {
-            content: '\e004'
+            content: '\F002'
         }
 
         if name is 'heart' {
-            content: '\e005'
+            content: '\F003'
         }
 
         if name is 'menu' {
-            content: '\e006'
+            content: '\F008'
         }
 
         if name is 'plus' {
-            content: '\e007'
+            content: '\F009'
         }
     }
 }
