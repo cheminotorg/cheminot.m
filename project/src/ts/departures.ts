@@ -365,7 +365,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
   return step(ctrl, at).then((statusCode) => {
     if(statusCode == StatusCode.NO_MORE) {
       if(!ctrl.departures().length) {
-        Message.info(i18n.fr('no-trip-matched'));
+        Message.info(i18n.fr('no-trip-matched')).then(() => history.back());
       }
     }
     return statusCode;
