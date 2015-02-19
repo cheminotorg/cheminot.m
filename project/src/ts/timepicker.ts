@@ -114,8 +114,8 @@ var timePicker: m.Module<Ctrl> = {
       displayed: m.prop(false),
 
       onDisplay: (ctrl: Ctrl, e: any) => {
-        var time: Date = e.detail.time;
-        if(time) ctrl.timeSelected(time);
+        var time: Date = e.detail.time || new Date();
+        ctrl.timeSelected(time);
         ctrl.displayed(true);
         m.redraw();
       },
@@ -158,11 +158,11 @@ var timePicker: m.Module<Ctrl> = {
       onMinuteChange: (ctrl: Ctrl, e: Event) => {
         vibrate();
         var button = <HTMLElement> e.currentTarget;
-        var date = ctrl.timeSelected();
+        var time = ctrl.timeSelected();
         if(button.classList.contains('up')) {
-          ctrl.timeSelected(moment(date).add(1, 'minute').toDate());
+          ctrl.timeSelected(moment(time).add(1, 'minute').toDate());
         } else {
-          ctrl.timeSelected(moment(date).subtract(1, 'minute').toDate());
+          ctrl.timeSelected(moment(time).subtract(1, 'minute').toDate());
         }
         m.redraw();
       }

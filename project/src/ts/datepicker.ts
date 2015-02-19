@@ -130,8 +130,8 @@ var datePicker: m.Module<Ctrl> = {
       displayed: m.prop(false),
 
       onDisplay: (ctrl: Ctrl, e: any) => {
-        var date: Date = e.detail.date;
-        if(date) ctrl.dateSelected(date);
+        var date: Date = e.detail.date || new Date();
+        ctrl.dateSelected(date);
         ctrl.displayed(true);
         m.redraw();
       },
