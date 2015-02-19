@@ -15,7 +15,6 @@
     "gulp-stylus": "latest",
     "gulp-tsc": "latest",
     "nib": "latest",
-    "gulp-sourcemaps": "latest",
     "del": "latest",
     "sre-gulp-rjs": "latest",
     "gulp-browserify": "latest",

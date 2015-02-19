@@ -3,14 +3,12 @@ var gulp = require('gulp'),
     stylus = require('gulp-stylus'),
     gutil = require('gulp-util'),
     nib = require('nib'),
-    sourcemaps = require('gulp-sourcemaps'),
     del = require('del'),
     exec = require('gulp-exec'),
     rjs = require('sre-gulp-rjs'),
     watch = require('gulp-watch'),
     browserify = require('gulp-browserify'),
-    fs = require('fs'),
-    iconfont = require('gulp-iconfont');
+    fs = require('fs');
 
 var Assets = {
   ts: {
@@ -126,17 +124,6 @@ gulp.task('watch', ['compile'], function() {
 gulp.task('default', ['watch']);
 
 gulp.task('compile', ['ts', 'styl']);
-
-gulp.task('font', function() {
-  gulp.src(['misc/fonts/svg/cheminot/*.svg'])
-    .pipe(iconfont({
-      fontName: 'cheminot'
-    }))
-    .on('codepoints', function(codepoints, options) {
-      console.log(codepoints, options);
-    })
-    .pipe(gulp.dest('misc/fonts/generated/'));
-});
 
 gulp.task('compile:prod', ['requirejs', 'styl']);
 
