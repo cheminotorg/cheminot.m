@@ -457,8 +457,13 @@ var home: m.Module<Ctrl> = {
 
     native.onBackButton('home', () => {
       if(ctrl.displayed()) {
-        var input = ctrl.isInputStationStartDisabled() ? getInputStationEnd(ctrl) : getInputStationStart(ctrl);
-        resetInputStationsPosition(ctrl, input);
+        m.startComputation();
+        var inputStation = ctrl.isInputStationStartDisabled() ? getInputStationEnd(ctrl) : getInputStationStart(ctrl);
+        resetInputStationsPosition(ctrl, inputStation);
+        setInputStationValue(ctrl, inputStation, '');
+        setInputStationSelected(ctrl, inputStation, '');
+        ctrl.stations([]);
+        m.endComputation();
       }
     });
 
