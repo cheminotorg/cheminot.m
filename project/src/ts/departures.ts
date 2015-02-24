@@ -85,7 +85,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     m("span.label", {}, i18n.fr('pull-to-refresh'))
   ]);
 
-  var loadingLabel = 'Chargement...';
+  var loadingLabel = i18n.fr('loading');
   if(ctrl.isComputingLongTrip()) {
     loadingLabel = i18n.fr('trip-not-direct');
   }
@@ -211,7 +211,7 @@ var departures: m.Module<Ctrl> = {
         var iscroll = new IScroll(wrapper, { probeType: 1});
 
         iscroll.on('refresh', () => {
-          if(this.isPullUpLoading() && this.currentPageSize() == 0) {
+          if(this.isPullUpLoading() && !this.isComputationInProgress()) {
             this.isPullUpLoading(false);
             this.isPullUpFlip(false);
             this.pullUpLabel(i18n.fr('pull-to-refresh'));
@@ -223,15 +223,17 @@ var departures: m.Module<Ctrl> = {
         });
 
         iscroll.on('scroll', () => {
-          this.pullUpProgress(computePullUpBar(iscroll));
-          if(this.pullUpProgress() >= 100) {
-            this.isPullUpFlip(true);
-            this.pullUpLabel(i18n.fr('release-to-refresh'));
-          } else {
-            this.isPullUpFlip(false);
-            this.pullUpLabel(i18n.fr('pull-to-refresh'));
+          if(!this.isPullUpLoading()) {
+            this.pullUpProgress(computePullUpBar(iscroll));
+            if(this.pullUpProgress() >= 100) {
+              this.isPullUpFlip(true);
+              this.pullUpLabel(i18n.fr('release-to-refresh'));
+            } else {
+              this.isPullUpFlip(false);
+              this.pullUpLabel(i18n.fr('pull-to-refresh'));
+            }
+            this.maxScrollY = this.maxScrollY;
           }
-          this.maxScrollY = this.maxScrollY;
         });
 
         iscroll.on('scrollEnd', () => {
@@ -266,9 +268,11 @@ var departures: m.Module<Ctrl> = {
       currentPageSize: m.prop(0),
 
       onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => {
-        if(ctrl.isComputationInProgress()) native.Cheminot.abort();
-        ctrl.isComputationInProgress(false);
-        if(!ctrl.isScrollingDepartures()) m.route(Routes.trip(departure.id));
+        if(!ctrl.isScrollingDepartures()) {
+          if(ctrl.isComputationInProgress()) native.Cheminot.abort();
+          ctrl.isComputationInProgress(false);
+          m.route(Routes.trip(departure.id));
+        }
       },
 
       isPullUpDisplayed: m.prop(false),
@@ -331,19 +335,25 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
     if(isMoreItemsNeeded(ctrl)) {
       var te = departureBound(at);
       ctrl.isComputationInProgress(true);
-      return native.Cheminot.lookForBestDirectTrip(ctrl.startStation, ctrl.endStation, at, te).then((trip) => {
-        if(!trip.arrivalTimes.length && !trip.isDirect) {
-          ctrl.isComputingLongTrip(true);
-          m.redraw(true);
-          return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1);
-        } else return Q(trip);
-      }).then((trip) => {
+      var eventuallyTrip: Q.Promise<ArrivalTimes>;
+      if(!ctrl.isComputingLongTrip()) {
+        eventuallyTrip = native.Cheminot.lookForBestDirectTrip(ctrl.startStation, ctrl.endStation, at, te).then((trip) => {
+          if(!trip.arrivalTimes.length && !trip.isDirect) {
+            ctrl.isComputingLongTrip(true);
+            m.redraw();
+            return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1);
+          } else return Q(trip);
+        });
+      } else {
+        eventuallyTrip = native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1);
+      }
+      return eventuallyTrip.then((trip) => {
         if(trip.arrivalTimes.length > 0) {
           var departure = tripToDeparture(trip);
           ctrl.departures().push(departure);
           if(ctrl.isComputingLongTrip()) {
             displayHolo(ctrl);
-            m.redraw(true);
+            m.redraw();
           }
           ctrl.currentPageSize(ctrl.currentPageSize() + 1);
           ctrl.lastDepartureTime(departure.startTime);
@@ -373,7 +383,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
     ctrl.currentPageSize(0);
     ctrl.isComputationInProgress(false);
     ctrl.isComputingLongTrip(false);
-    if(!ctrl.isComputingLongTrip()) m.redraw(true);
+    if(!ctrl.isComputingLongTrip()) m.redraw();
     hideHolo(ctrl);
   });
 }
