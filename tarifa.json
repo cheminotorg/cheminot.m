@@ -20,10 +20,7 @@
       "KeyboardShrinksView": true,
       "KeepRunning": true,
       "SplashScreenDelay": 60000
-    },
-    "accessOrigin": [
-      "*"
-    ]
+    }
   },
   "author": {
     "name": "Sébastien Renault",

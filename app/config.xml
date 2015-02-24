@@ -4,7 +4,7 @@
     <description>Offline mobile train app</description>
     <author email="srenault.contact@gmail.com" href="https://github.com/srenault">Sébastien Renault</author>
     <content src="index.html"/>
-    <access origin="*"/>
+    <access origin="mailto:*" launch-external="yes"/>
     <preference name="DisallowOverscroll" value="true"/>
     <preference name="EnableViewportScale" value="false"/>
     <preference name="KeyboardDisplayRequiresUserAction" value="false"/>
