@@ -108,7 +108,7 @@ namespace cheminotc {
 
   Json::Value serializeArrivalTimes(Graph *graph, VerticesCache *verticesCache, std::list<ArrivalTime> arrivalTimes);
 
-  std::shared_ptr<Vertice> getVerticeFromGraph(const tm *dateref, Graph *graph, VerticesCache *verticesCache, std::string id);
+  Vertice getVerticeFromGraph(const tm *dateref, Graph *graph, VerticesCache *verticesCache, std::string id);
 
   Json::Value getMeta(sqlite3 *handle);
 }
