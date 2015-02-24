@@ -137,7 +137,6 @@ var timePicker: m.Module<Ctrl> = {
       },
 
       onCancelTouched: (ctrl: Ctrl, e: Event) => {
-        vibrate();
         deferred && deferred.reject('cancel');
         ctrl.displayed(false);
         m.redraw();

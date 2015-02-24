@@ -153,7 +153,6 @@ var datePicker: m.Module<Ctrl> = {
       },
 
       onCancelTouched: (ctrl: Ctrl, e: Event) => {
-        vibrate();
         ctrl.displayed(false);
         deferred && deferred.reject('cancel');
         m.redraw();
