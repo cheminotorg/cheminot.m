@@ -71,8 +71,8 @@ function render(ctrl: Ctrl) {
     m('div.top-bar.title', {}, [
       m('div', {}, [
         m('span.start', {}, startStopTime ? startStopTime.stopName : ''),
-        m('span.to', {}, endStopTime ? endStopTime.stopName : ''),
-        m('span.end')
+        m('span.to'),
+        m('span.end', {}, endStopTime ? endStopTime.stopName : '')
       ])
     ]),
     m('div#wrapper', {}, m('ul.stops', {}, stopTimesList))

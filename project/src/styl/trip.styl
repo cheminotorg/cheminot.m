@@ -1,12 +1,17 @@
 #trip {
 
     .title {
-        display: flex
-        align-items: center
+        position: relative
 
         > div {
-            margin: 0 auto
-            display: inline-block
+            position: absolute
+            top: 50%
+            left: 50%
+            transform: translate(-50%, -50%)
+
+            > span {
+                white-space: nowrap
+            }
 
             .to {
                 icon_cheminot('right', blue)
@@ -20,15 +25,13 @@
 
     #wrapper {
         position: absolute
+        left: 50%
         bottom: 0
-        width: 100%
         overflow: hidden
+        transform: translateX(-50%)
     }
 
     .stops {
-        position: absolute
-        width: 100%
-        padding: 0 10%
 
         > li {
             display: flex
