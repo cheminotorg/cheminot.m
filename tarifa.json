@@ -1,7 +1,7 @@
 {
   "name": "Cheminot",
   "id": "m.cheminot",
-  "description": "Offline mobile train app",
+  "description": "Consulter les horaires des trains hors ligne.",
   "version": "0.1.0",
   "platforms": [
     "browser",
@@ -20,7 +20,14 @@
       "KeyboardShrinksView": true,
       "KeepRunning": true,
       "SplashScreenDelay": 60000
-    }
+    },
+    "accessOrigin": [
+      "*",
+      {
+        "origin": "mailto:*",
+        "external": true
+      }
+    ]
   },
   "author": {
     "name": "Sébastien Renault",
@@ -40,45 +47,27 @@
     "android": {
       "default": {
         "id": "m.cheminot",
-        "product_name": "Cheminot",
-        "product_file_name": "Cheminot"
+        "product_name": "Cheminot mock",
+        "product_file_name": "cheminot_mock"
       },
       "dev": {
         "id": "m.cheminot.dev",
         "product_name": "Cheminot dev",
-        "product_file_name": "Cheminot-dev"
-      },
-      "stage": {
-        "id": "m.cheminot.stage",
-        "product_name": "Cheminot stage",
-        "product_file_name": "Cheminot-stage"
+        "product_file_name": "cheminot_dev"
       },
       "prod": {
         "id": "m.cheminot.prod",
-        "product_name": "Cheminot prod",
-        "product_file_name": "Cheminot-prod"
+        "product_name": "Cheminot",
+        "product_file_name": "cheminot_prod",
+        "release": true,
+        "sign": "store"
       }
     },
     "browser": {
       "default": {
         "id": "m.cheminot",
-        "product_name": "Cheminot",
-        "product_file_name": "Cheminot"
-      },
-      "dev": {
-        "id": "m.cheminot.dev",
-        "product_name": "Cheminot dev",
-        "product_file_name": "Cheminot-dev"
-      },
-      "stage": {
-        "id": "m.cheminot.stage",
-        "product_name": "Cheminot stage",
-        "product_file_name": "Cheminot-stage"
-      },
-      "prod": {
-        "id": "m.cheminot.prod",
-        "product_name": "Cheminot prod",
-        "product_file_name": "Cheminot-prod"
+        "product_name": "Cheminot mock",
+        "product_file_name": "cheminot_mock"
       }
     }
   }

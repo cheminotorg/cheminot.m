@@ -13,6 +13,7 @@ app/plugins/*.json
 project/src/ts/.gulp*
 generated
 misc/splashscreen
+apk
 #=============#
 # IOS / XCODE #
 #=============#

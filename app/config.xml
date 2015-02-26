@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widget id="m.cheminot" version="0.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Cheminot</name>
-    <description>Offline mobile train app</description>
+    <description>Consulter les horaires des trains hors ligne.</description>
     <author email="srenault.contact@gmail.com" href="https://github.com/srenault">Sébastien Renault</author>
     <content src="index.html"/>
     <access origin="mailto:*" launch-external="yes"/>
+    <access origin="*"/>
     <preference name="DisallowOverscroll" value="true"/>
     <preference name="EnableViewportScale" value="false"/>
     <preference name="KeyboardDisplayRequiresUserAction" value="false"/>
