@@ -31,7 +31,7 @@ Q.all([qstart, Suggestions.init(), native.Cheminot.init()]).spread((a: any, b: a
     "/trip/:id": App.get()
   });
 }).catch((e) => {
-  console.log(e.stack);
+  alert(e);
 });
 
 var now = Date.now();
