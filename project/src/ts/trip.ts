@@ -4,7 +4,7 @@ import _ = require('lodash');
 import IScroll = require('IScroll');
 import moment = require('moment');
 import native = require('native');
-import i18n = require('i18n');
+import Cache = require('cache');
 
 export type Ctrl = {
   scope: () => HTMLElement;
@@ -24,12 +24,11 @@ function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
     return new Array<m.VirtualElement>();
   } else {
     return ctrl.trip().map((arrivalTime, index) => {
-
       var waiting = moment(arrivalTime.departure).diff(moment(arrivalTime.arrival));
       var hasChangement = (() => {
-        var prev = ctrl.trip()[index - 1];
-        if(prev) {
-          return prev.tripId !== arrivalTime.tripId;
+        var next = ctrl.trip()[index + 1];
+        if(next) {
+          return next.tripId !== arrivalTime.tripId;
         } else {
           return false;
         }
@@ -43,19 +42,20 @@ function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
           }
         },
         key: arrivalTime.stopId,
-        class: hasChangement ? i18n.fr('changement') : ''
+        class: hasChangement ? 'changement' : ''
       };
 
       return m('li', attrs, [
-        m('div.time', {}, [
-          m('span.alarm-clock'),
-          m('span.at', {}, formatTime(arrivalTime.departure))
-        ]),
-        m('span.line'),
-        m('div.stop', {}, [
-          m('span.name', {}, arrivalTime.stopName),
-          m('span.waiting', {}, waiting > 0 ? moment.duration(waiting).minutes() + ' min': '')
-        ])
+        m('div.left', {},
+          m('div.time', {}, [
+            m('span.alarm-clock'),
+            m('span.at', {}, formatTime(arrivalTime.departure))
+          ])),
+        m('div.right', {},
+          m('div.stop', {}, [
+            m('span.name', {}, arrivalTime.stopName),
+            m('span.waiting', {}, waiting > 0 ? moment.duration(waiting).asMinutes() + ' min': '')
+          ]))
       ])
     });
   }
@@ -83,7 +83,7 @@ var trip: m.Module<Ctrl> = {
   controller(): Ctrl {
     var id = m.route.param("id");
     var scope = () => <HTMLElement> document.querySelector('#trip');
-    var trip = JSON.parse(sessionStorage.getItem(id));
+    var trip = Cache.getTrip(id);
     var arrivalTimes = trip ? trip.arrivalTimes : [];
 
     var ctrl = {

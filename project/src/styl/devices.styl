@@ -40,7 +40,7 @@ trip_span_size=16px
 trip_item_height=66px
 trip_line_width=4px
 trip_line_size=21.2px
-trip_time_width=80px
+trip_clock_size=12px
 
 device(min_width, max_width, factor) {
     portrait = "only screen and (min-device-width : " + min_width + ") and (max-device-width : " + max_width + ")"
@@ -114,9 +114,9 @@ device(min_width, max_width, factor) {
             }
             li {
                 &:not(.pull-up) {
-                    padding: 0 scale(departures_item_padding, factor) 2% scale(departures_item_padding, factor)
+                    padding: 0 scale(departures_item_padding, factor) 0 scale(departures_item_padding, factor)
                 }
-                &.pull-up {
+                &.pull-up, &.day {
                     padding: scale(departures_pullup_padding, factor) 0 scale(departures_pullup_padding, factor) 0
                     font-size: scale(departures_pullup_size, factor)
                 }
@@ -147,13 +147,15 @@ device(min_width, max_width, factor) {
             height: scale(trip_item_height, factor)
             font-size: scale(trip_span_size, factor)
 
-            .time {
-                width: scale(trip_time_width, factor)
+            .alarm-clock::before {
+                font-size: scale(trip_clock_size, factor)
             }
 
-            .line {
+            .right {
                 border-left: scale(trip_line_width, factor) solid dark-blue
-                font-size: scale(trip_line_size, factor)
+                &::before {
+                    font-size: scale(trip_line_size, factor)
+                }
             }
         }
     }
@@ -231,9 +233,9 @@ device(min_width, max_width, factor) {
         }
         li {
             &:not(.pull-up) {
-                padding: 0 departures_item_padding 2% departures_item_padding
+                padding: 0 departures_item_padding 0 departures_item_padding
             }
-            &.pull-up {
+            &.pull-up, &.day {
                 padding: departures_pullup_padding 0 departures_pullup_padding 0
                 font-size: departures_pullup_size
             }
@@ -264,13 +266,15 @@ device(min_width, max_width, factor) {
         height: trip_item_height
         font-size: trip_span_size
 
-        .time {
-            width: trip_time_width
+        .alarm-clock::before {
+            font-size: trip_clock_size
         }
 
-        .line {
+        .right {
             border-left: trip_line_width solid dark-blue
-            font-size: trip_line_size
+            &::before {
+                font-size: trip_line_size
+            }
         }
     }
 }
@@ -279,7 +283,7 @@ device(min_width, max_width, factor) {
 device(768px, 1024px, 2)
 
 // NEXUS 10
-device(800px, 1280px, 1.5)
+device(800px, 1280px, 1.3)
 
 // NEXUS 5
 device(360px, 640px, 1.125)
