@@ -2,7 +2,7 @@
   "name": "Cheminot",
   "id": "m.cheminot",
   "description": "Consulter les horaires des trains hors ligne.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "platforms": [
     "browser",
     "android"
@@ -50,10 +50,10 @@
         "product_name": "Cheminot mock",
         "product_file_name": "cheminot_mock"
       },
-      "dev": {
-        "id": "m.cheminot.dev",
-        "product_name": "Cheminot dev",
-        "product_file_name": "cheminot_dev"
+      "stage": {
+        "id": "m.cheminot.stage",
+        "product_name": "Cheminot stage",
+        "product_file_name": "cheminot_stage"
       },
       "prod": {
         "id": "m.cheminot.prod",
