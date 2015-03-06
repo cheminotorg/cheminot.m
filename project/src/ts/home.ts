@@ -157,6 +157,7 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
 
 function renderStations(ctrl: Ctrl): m.VirtualElement {
   var term = ctrl.isInputStationEndDisabled() ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
+  term = term.toLowerCase();
   var stationAttrs = function(index: number) {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
@@ -180,10 +181,30 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
   }
 
   var stopsList = ctrl.stations().map((station, index) => {
-    return m('li', _.merge({ "data-id": station.id, "data-name": station.name }, stationAttrs(index)),
-             m('div', {}, [
-               m('span', { class: 'match' }, _.take(station.name, term.length).join('')),
-               m('span', {}, _.drop(station.name, term.length).join(''))]));
+    var name = (() => {
+      var saintMatches = station.name.match(/^Saint[-|\s](.*)$/);
+      var stMatches = station.name.match(/^St[-|\s](.*)$/);
+      var matches = saintMatches || stMatches;
+      if(matches) {
+        var st = term.match(/^st(\s|-)?.*$/);
+        if(st) return "St" + (st[1] || '-') + matches[1];
+        var saint = term.match(/^saint(\s|-)?.*$/);
+        if(saint) return "Saint" + (saint[1] || '-') + matches[1];
+        return station.name;
+      } else {
+        return station.name;
+      }
+    })();
+    var matchedAt = name.indexOf(term.toLowerCase());
+    var left = name.substring(0, matchedAt);
+    var match = name.substring(matchedAt, matchedAt + term.length + 1)
+    var right = name.substring(matchedAt  + term.length + 1)
+    return m('li', _.merge({ "data-id": station.id, "data-name": name }, stationAttrs(index)),
+             m('div', {},
+               m('span', {}, [
+                 left,
+                 m('span', { class: 'match' }, match),
+                 right])))
   });
 
   var emptyResult = m('li.empty', {}, i18n.fr('no-result'));

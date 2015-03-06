@@ -53,7 +53,8 @@
       "stage": {
         "id": "m.cheminot.stage",
         "product_name": "Cheminot stage",
-        "product_file_name": "cheminot_stage"
+        "product_file_name": "cheminot_stage",
+        "hockeyapp_id": "26bff858c8fef358dd0f2ad2b0790369"
       },
       "prod": {
         "id": "m.cheminot.prod",

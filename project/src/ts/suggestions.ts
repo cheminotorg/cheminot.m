@@ -27,13 +27,14 @@ function getStationsTree(): Q.Promise<any> {
   return d.promise;
 }
 
-function suggestions(node: any): any[] {
+function suggestions(found: Attributes, node: any): any[] {
   if(node) {
-    var onLeft = suggestions(node.left);
-    var onRight = suggestions(node.right);
-    var onEq = suggestions(node.eq);
+    var onLeft = suggestions(found, node.left);
+    var onRight = suggestions(found, node.right);
+    var onEq = suggestions(found, node.eq);
     var results = new Array<any>();
-    if(node.isEnd) {
+    if(node.isEnd && !found[node.data.id]) {
+      found[node.data.id] = node.data;
       results.push(node.data);
     }
     return results.concat(onLeft).concat(onRight).concat(onEq);
@@ -43,6 +44,7 @@ function suggestions(node: any): any[] {
 }
 
 export function search(term: string): Station[] {
+  var found: Attributes = {};
   function step(term: string, node: any, results: any[]): any[] {
     if(node) {
       var word = term.split('');
@@ -54,10 +56,11 @@ export function search(term: string): Station[] {
           return step(term, node.right, results);
         } else {
           if(word.length == 0) {
-            if(node.isEnd) {
+            if(node.isEnd && !found[node.data.id]) {
+              found[node.data.id] = node.data;
               results.push(node.data);
             }
-            return results.concat(suggestions(node.eq));
+            return results.concat(suggestions(found, node.eq));
           } else {
             return step(word.join(''), node.eq, results);
           }
