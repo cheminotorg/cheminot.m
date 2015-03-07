@@ -348,7 +348,13 @@ var home: m.Module<Ctrl> = {
       onInputStationKeyUp: (ctrl: Ctrl, e: Event) => {
         var inputStation = <HTMLInputElement> e.currentTarget;
         setInputStationValue(ctrl, inputStation, inputStation.value);
-        ctrl.stations(Suggestions.search(inputStation.value));
+        ctrl.stations(Suggestions.search(inputStation.value, (station: Station) => {
+          if(isInputStationStart(inputStation)) {
+            return station.id != ctrl.inputStationEndSelected();
+          } else {
+            return station.id != ctrl.inputStationStartSelected();
+          }
+        }));
         m.redraw();
       },
 

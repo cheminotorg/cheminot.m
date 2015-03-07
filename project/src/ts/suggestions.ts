@@ -27,13 +27,13 @@ function getStationsTree(): Q.Promise<any> {
   return d.promise;
 }
 
-function suggestions(found: Attributes, node: any): any[] {
+function suggestions(predicat: (station: Station) => boolean, found: Attributes, node: any): any[] {
   if(node) {
-    var onLeft = suggestions(found, node.left);
-    var onRight = suggestions(found, node.right);
-    var onEq = suggestions(found, node.eq);
+    var onLeft = suggestions(predicat, found, node.left);
+    var onRight = suggestions(predicat, found, node.right);
+    var onEq = suggestions(predicat, found, node.eq);
     var results = new Array<any>();
-    var filtered = node.data.filter((station:any) => !found[station.id]);
+    var filtered = node.data.filter((station:any) => !found[station.id] && predicat(station));
     if(node.isEnd && filtered.length) {
       filtered.forEach((station:any) => found[station.id] = station);
       results = results.concat(filtered);
@@ -44,7 +44,7 @@ function suggestions(found: Attributes, node: any): any[] {
   };
 }
 
-export function search(term: string): Station[] {
+export function search(term: string, predicat: (station: Station) => boolean = () => true): Station[] {
   var found: Attributes = {};
   function step(term: string, node: any, results: any[]): any[] {
     if(node) {
@@ -57,12 +57,12 @@ export function search(term: string): Station[] {
           return step(term, node.right, results);
         } else {
           if(word.length == 0) {
-            var filtered = node.data.filter((station:any) => !found[station.id]);
+            var filtered = node.data.filter((station:any) => !found[station.id] && predicat(station));
             if(node.isEnd && filtered.length) {
               filtered.forEach((station:any) => found[station.id] = station);
               results = results.concat(node.data);
             }
-            return results.concat(suggestions(found, node.eq));
+            return results.concat(suggestions(predicat, found, node.eq));
           } else {
             return step(word.join(''), node.eq, results);
           }
