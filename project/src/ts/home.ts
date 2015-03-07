@@ -387,6 +387,7 @@ var home: m.Module<Ctrl> = {
 
       onTimeTouched: (ctrl: Ctrl, e: Event) => {
         TimePicker.show(ctrl.inputTimeSelected()).then((date) => {
+          ctrl.inputDateSelected(new Date());
           ctrl.inputTimeSelected(date);
           m.redraw();
         });
