@@ -195,10 +195,10 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
         return station.name;
       }
     })();
-    var matchedAt = name.indexOf(term.toLowerCase());
+    var matchedAt = name.toLowerCase().indexOf(term.toLowerCase());
     var left = name.substring(0, matchedAt);
-    var match = name.substring(matchedAt, matchedAt + term.length + 1)
-    var right = name.substring(matchedAt  + term.length + 1)
+    var match = name.substring(matchedAt, matchedAt + term.length)
+    var right = name.substring(matchedAt  + term.length)
     return m('li', _.merge({ "data-id": station.id, "data-name": name }, stationAttrs(index)),
              m('div', {},
                m('span', {}, [

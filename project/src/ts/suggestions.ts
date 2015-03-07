@@ -33,9 +33,10 @@ function suggestions(found: Attributes, node: any): any[] {
     var onRight = suggestions(found, node.right);
     var onEq = suggestions(found, node.eq);
     var results = new Array<any>();
-    if(node.isEnd && !found[node.data.id]) {
-      found[node.data.id] = node.data;
-      results.push(node.data);
+    var filtered = node.data.filter((station:any) => !found[station.id]);
+    if(node.isEnd && filtered.length) {
+      filtered.forEach((station:any) => found[station.id] = station);
+      results = results.concat(filtered);
     }
     return results.concat(onLeft).concat(onRight).concat(onEq);
   } else {
@@ -56,9 +57,10 @@ export function search(term: string): Station[] {
           return step(term, node.right, results);
         } else {
           if(word.length == 0) {
-            if(node.isEnd && !found[node.data.id]) {
-              found[node.data.id] = node.data;
-              results.push(node.data);
+            var filtered = node.data.filter((station:any) => !found[station.id]);
+            if(node.isEnd && filtered.length) {
+              filtered.forEach((station:any) => found[station.id] = station);
+              results = results.concat(node.data);
             }
             return results.concat(suggestions(found, node.eq));
           } else {
@@ -75,6 +77,10 @@ export function search(term: string): Station[] {
 
   var results = (term.length > 0) ? step(term.toLowerCase(), TREE, []) : [];
   results = _.take(results, 100);
+  results.sort((a: Station, b: Station) => {
+    var x =  a.name.toLowerCase().indexOf(term) - b.name.toLowerCase().indexOf(term);
+    return (x == 0) ? a.name.length - b.name.length : x;
+  });
   return results;
 }
 
