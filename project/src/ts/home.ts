@@ -331,12 +331,11 @@ var home: m.Module<Ctrl> = {
 
       onInputStationTouched: (ctrl: Ctrl, e: Event) => {
         var station = <HTMLElement> e.currentTarget;
-        var inputStation = <HTMLElement> station.querySelector('input');
+        var inputStation = <HTMLInputElement> station.querySelector('input');
         var hideInput = isInputStationStart(inputStation) ? hideInputStationEnd : hideInputStationStart;
-        isInputStationStart(inputStation) ? ctrl.inputStationStartTerm('') : ctrl.inputStationEndTerm('');
         m.startComputation();
-        setInputStationValue(ctrl, inputStation, '');
         setInputStationSelected(ctrl, inputStation, '');
+        ctrl.stations(Suggestions.search(inputStation.value));
         Q.all([hideInput(ctrl), hideDateTimePanel(ctrl)]).then(() => {
           return moveUpViewport(ctrl).then(() => {
             enableInputStation(ctrl, inputStation);
