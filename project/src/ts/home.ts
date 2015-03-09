@@ -38,7 +38,6 @@ export type Ctrl = {
   onStationSelected: (ctrl: Ctrl, e: Event) => void;
   inputDateSelected: (value?: Date) => Date;
   inputTimeSelected: (value?: Date) => Date;
-  isSubmitDisabled: (value?: boolean) => boolean;
   iscroll: () => IScroll;
   adaptWrapperTop: (ctrl: Ctrl) => void;
   isViewportUp: (value?: boolean) => boolean;
@@ -206,7 +205,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
     var matchedAt = name.toLowerCase().indexOf(term.toLowerCase());
     var left = name.substring(0, matchedAt);
     var match = name.substring(matchedAt, matchedAt + term.length)
-    var right = name.substring(matchedAt  + term.length)
+    var right = name.substring(matchedAt + term.length)
     return m('li', _.merge({ "data-id": station.id, "data-name": name }, stationAttrs(index)),
              m('div', {},
                m('span', {}, [
@@ -355,13 +354,7 @@ var home: m.Module<Ctrl> = {
       onInputStationKeyUp: (ctrl: Ctrl, e: Event) => {
         var inputStation = <HTMLInputElement> e.currentTarget;
         setInputStationValue(ctrl, inputStation, inputStation.value);
-        ctrl.stations(Suggestions.search(inputStation.value, (station: Station) => {
-          if(isInputStationStart(inputStation)) {
-            return station.id != ctrl.inputStationEndSelected();
-          } else {
-            return station.id != ctrl.inputStationStartSelected();
-          }
-        }));
+        ctrl.stations(Suggestions.search(inputStation.value));
         m.redraw();
       },
 
@@ -411,8 +404,6 @@ var home: m.Module<Ctrl> = {
       inputTimeSelected: m.prop(at),
 
       isViewportUp: m.prop(false),
-
-      isSubmitDisabled: m.prop(true),
 
       isScrollingStations: Utils.m.prop(false, (isScrolling) => {
         if(isScrolling) {
@@ -465,7 +456,8 @@ var home: m.Module<Ctrl> = {
         e.stopPropagation();
         var resetButton = <HTMLElement> e.currentTarget;
         var inputStation = <HTMLInputElement> resetButton.previousElementSibling;
-        if(ctrl.isViewportUp()) resetInputStationsPosition(ctrl, inputStation);
+        var term = inputStation.value;
+        if(ctrl.isViewportUp() && !term) resetInputStationsPosition(ctrl, inputStation);
         setInputStationValue(ctrl, inputStation, '');
         setInputStationSelected(ctrl, inputStation, '');
         ctrl.stations([]);
@@ -614,7 +606,7 @@ function canBeSubmitted(ctrl: Ctrl): boolean {
   var selectedStart = ctrl.inputStationStartSelected();
   var selectedEnd = ctrl.inputStationEndSelected();
 
-  if(selectedStart && selectedEnd) {
+  if(selectedStart && selectedEnd && (selectedStart != selectedEnd)) {
     if(ctrl.isOtherTabSelected()) {
       return ctrl.inputDateSelected() != null && ctrl.inputTimeSelected() != null;
     } else {
