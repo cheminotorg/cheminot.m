@@ -483,7 +483,7 @@ var home: m.Module<Ctrl> = {
     }
 
     native.onBackButton('home', () => {
-      if(ctrl.displayed()) {
+      if(ctrl.displayed() && ctrl.isViewportUp()) {
         m.startComputation();
         var inputStation = ctrl.isInputStationStartDisabled() ? getInputStationEnd(ctrl) : getInputStationStart(ctrl);
         resetInputStationsPosition(ctrl, inputStation);
