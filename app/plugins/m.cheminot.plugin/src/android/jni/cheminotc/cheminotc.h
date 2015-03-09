@@ -62,6 +62,12 @@ namespace cheminotc {
 
   typedef std::unordered_map<std::string, std::shared_ptr<Trip>> TripsCache;
 
+  struct Cache {
+    VerticesCache vertices;
+    CalendarDatesCache calendarDates;
+    TripsCache trips;
+  };
+
   tm getNow();
 
   sqlite3* openConnection(std::string path);
@@ -78,11 +84,11 @@ namespace cheminotc {
 
   void parseCalendarDates(std::string content, CalendarDates *calendarDates);
 
-  std::pair<bool, ArrivalTimesFunc> refineArrivalTimes(sqlite3 *handle, Graph *graph, TripsCache *tripsCache, VerticesCache *verticesCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
+  std::pair<bool, ArrivalTimesFunc> refineArrivalTimes(sqlite3 *handle, Graph *graph, Cache *cache, CalendarDates *calendarDates, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
 
-  std::pair<bool, std::list<ArrivalTime>> lookForBestDirectTrip(sqlite3 *handle, Graph *graph, VerticesCache *verticesCache, TripsCache *tripsCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te);
+  std::pair<bool, std::list<ArrivalTime>> lookForBestDirectTrip(sqlite3 *handle, Graph *graph, Cache *cache, CalendarDates *calendarDates, std::string vsId, std::string veId, tm ts, tm te);
 
-  std::pair<bool, std::list<ArrivalTime>> lookForBestTrip(sqlite3 *handle, Graph *graph, TripsCache *tripsCache, VerticesCache *verticesCache, CalendarDates *calendarDates, CalendarDatesCache *calendarDatesCache, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
+  std::pair<bool, std::list<ArrivalTime>> lookForBestTrip(sqlite3 *handle, Graph *graph, Cache *cache, CalendarDates *calendarDates, std::string vsId, std::string veId, tm ts, tm te, int maxStartingTimes);
 
   bool hasSameDateTime(const tm &a, const tm &b);
 
@@ -106,9 +112,9 @@ namespace cheminotc {
 
   tm addHours(tm datetime, int n);
 
-  Json::Value serializeArrivalTimes(Graph *graph, VerticesCache *verticesCache, std::list<ArrivalTime> arrivalTimes);
+  Json::Value serializeArrivalTimes(Graph *graph, Cache *cache, std::list<ArrivalTime> arrivalTimes);
 
-  Vertice getVerticeFromGraph(const tm *dateref, Graph *graph, VerticesCache *verticesCache, std::string id);
+  Vertice getVerticeFromGraph(const tm *dateref, Graph *graph, Cache *cache, std::string id);
 
   Json::Value getMeta(sqlite3 *handle);
 }
