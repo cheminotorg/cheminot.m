@@ -181,7 +181,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
   }
 
   var stopsList = ctrl.stations().map((station, index) => {
-    var name = (() => {
+    var name = (() => { // Saint, St
       var saintMatches = station.name.match(/^Saint[-|\s](.*)$/);
       var stMatches = station.name.match(/^St[-|\s](.*)$/);
       var matches = saintMatches || stMatches;
@@ -191,7 +191,15 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
         var saint = term.match(/^saint(\s|-)?.*$/);
         if(saint) return "Saint" + (saint[1] || '-') + matches[1];
         return station.name;
-      } else {
+      } else { // Compound name
+        var splitBySpace = station.name.split(' ');
+        if(splitBySpace.length > 1 && term.indexOf('-') > -1) {
+          return splitBySpace.join('-');
+        }
+        var splitByDash = station.name.split('-');
+        if(splitByDash.length > 1 && term.indexOf(' ') > -1) {
+          return splitByDash.join(' ');
+        }
         return station.name;
       }
     })();
