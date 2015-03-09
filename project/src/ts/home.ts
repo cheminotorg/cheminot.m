@@ -109,7 +109,8 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
       type: "text",
       value: isStartStation ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm(),
       config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
-        if(!el.getAttribute('disabled')) el.focus();
+        var disabled = isStartStation ? ctrl.isInputStationStartDisabled() : ctrl.isInputStationEndDisabled();
+        if (!disabled) window.setTimeout(() => el.focus(), 100);
         if (!isUpdate) {
           el.addEventListener('input', _.partial(ctrl.onInputStationKeyUp, ctrl))
         }
