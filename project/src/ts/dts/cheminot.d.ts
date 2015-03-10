@@ -42,6 +42,7 @@ declare type Settings = {
   version: string;
   appName: string;
   gitVersion: string;
+  ga_id: string;
   db: Meta;
 }
 
@@ -69,6 +70,18 @@ declare type Splashscreen = {
   hide(): void;
   show(): void;
 }
+
+declare type Analytics = {
+  debugMode(success: () => void, error: (e: string) => void): void;
+  startTrackerWithId(id: string, success: () => void, error: (e: string) => void): void;
+  trackView(screen: string, success: () => void, error: (e: string) => void): void;
+  trackException(description: string, fatal: boolean, success: () => void, error: (e: string) => void): void;
+  trackEvent(category: string, action: string, label: string, value: number, success: () => void, error: (e: string) => void): void;
+  trackTiming(category: string, interval: number, name: string, label: string, success: () => void, error: (e: string) => void): void;
+}
+
+declare var analytics: Analytics
+
 
 interface Navigator {
   splashscreen: Splashscreen;

@@ -194,13 +194,12 @@ var departures: m.Module<Ctrl> = {
   controller(): Ctrl {
     var at = parseInt(m.route.param("at"), 10);
     var scope = () => <HTMLElement> document.querySelector('#departures');
-
+    var displayed = () => Routes.matchDepartures(m.route());
+    if(displayed()) native.GoogleAnalytics.trackView('Departures');
     var ctrl: Ctrl = {
       scope: scope,
 
-      displayed: () => {
-        return Routes.matchDepartures(m.route());
-      },
+      displayed: displayed,
 
       iscroll: _.once(function() {
         var wrapper = <HTMLElement> scope().querySelector('#wrapper');

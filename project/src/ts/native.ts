@@ -113,3 +113,42 @@ export module Cheminot {
     return d.promise;
   }
 }
+
+export module GoogleAnalytics {
+
+  export function debugMode(): Q.Promise<void> {
+    var d = Q.defer<void>();
+    analytics.debugMode(() => d.resolve(null), () => d.reject(null));
+    return d.promise;
+  }
+
+  export function startTrackerWithId(id: string): Q.Promise<void> {
+    var d = Q.defer<void>();
+    analytics.startTrackerWithId(id, () => d.resolve(null), () => d.reject(null));
+    return d.promise;
+  }
+
+  export function trackView(screen: string): Q.Promise<void> {
+    var d = Q.defer<void>();
+    analytics.trackView(screen, () => d.resolve(null), () => d.reject(null));
+    return d.promise;
+  }
+
+  export function trackException(description: string, fatal: boolean): Q.Promise<void> {
+    var d = Q.defer<void>();
+    analytics.trackException(description, fatal, () => d.resolve(null), () => d.reject(null));
+    return d.promise;
+  }
+
+  export function trackEvent(category: string, action: string, label: string, value: number): Q.Promise<void> {
+    var d = Q.defer<void>();
+    analytics.trackEvent(category, action, label, value, () => d.resolve(null), () => d.reject(null));
+    return d.promise;
+  }
+
+  export function trackTiming(category: string, interval: number, name: string, label: string): Q.Promise<void> {
+    var d = Q.defer<void>();
+    analytics.trackTiming(category, interval, name, label, () => d.resolve(null), () => d.reject(null));
+    return d.promise;
+  }
+}

@@ -41,7 +41,8 @@
   },
   "plugins": {
     "org.apache.cordova.splashscreen": "https://github.com/apache/cordova-plugin-splashscreen.git#r0.3.4",
-    "m.cheminot.plugin": "../m.cheminot.plugin"
+    "m.cheminot.plugin": "../m.cheminot.plugin",
+    "com.danielcwilson.plugins.googleanalytics": "com.danielcwilson.plugins.googleanalytics"
   },
   "configurations": {
     "android": {
@@ -54,21 +55,24 @@
         "id": "m.cheminot.stage",
         "product_name": "Cheminot stage",
         "product_file_name": "cheminot_stage",
-        "hockeyapp_id": "26bff858c8fef358dd0f2ad2b0790369"
+        "hockeyapp_id": "26bff858c8fef358dd0f2ad2b0790369",
+        "ga_id": "UA-60596605-2"
       },
       "prod": {
         "id": "m.cheminot.prod",
         "product_name": "Cheminot",
         "product_file_name": "cheminot_prod",
         "release": true,
-        "sign": "store"
+        "sign": "store",
+        "ga_id": "UA-60596605-2"
       }
     },
     "browser": {
       "default": {
         "id": "m.cheminot",
         "product_name": "Cheminot mock",
-        "product_file_name": "cheminot_mock"
+        "product_file_name": "cheminot_mock",
+        "ga_id": "UA-XXXXXXXX-X"
       }
     }
   }

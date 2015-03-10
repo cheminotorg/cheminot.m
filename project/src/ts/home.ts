@@ -291,15 +291,15 @@ var home: m.Module<Ctrl> = {
       var x = parseInt(m.route.param('at'), 10);
       return (x ? new Date(x) : new Date());
     })();
+    var displayed = () => Routes.matchHome(currentTab(), m.route(), startTerm, endTerm, at);
+    if(displayed()) native.GoogleAnalytics.trackView('Home');
 
     var ctrl = {
       scope: () => {
         return <HTMLElement> document.querySelector('#home');
       },
 
-      displayed: () => {
-        return Routes.matchHome(currentTab(), m.route(), startTerm, endTerm, at);
-      },
+      displayed: displayed,
 
       onTabTouched: (ctrl: Ctrl, e: Event) => {
         var tab = <HTMLElement> e.currentTarget;

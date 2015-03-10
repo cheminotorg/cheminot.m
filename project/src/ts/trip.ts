@@ -85,19 +85,17 @@ var trip: m.Module<Ctrl> = {
     var scope = () => <HTMLElement> document.querySelector('#trip');
     var trip = Cache.getTrip(id);
     var arrivalTimes = trip ? trip.arrivalTimes : [];
+    var displayed = () => Routes.matchTrip(m.route());
+    if(displayed()) native.GoogleAnalytics.trackView('Trip');
 
     var ctrl = {
       scope: scope,
 
-      displayed: () => {
-        return Routes.matchTrip(m.route());
-      },
+      displayed: displayed,
 
       id: id,
 
-      trip: () => {
-        return arrivalTimes;
-      },
+      trip: () => arrivalTimes,
 
       iscroll: _.once(function() {
         var wrapper = <HTMLElement> scope().querySelector('#wrapper');
