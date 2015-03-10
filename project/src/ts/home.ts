@@ -181,28 +181,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
   }
 
   var stopsList = ctrl.stations().map((station, index) => {
-    var name = (() => { // Saint, St
-      var saintMatches = station.name.match(/^Saint[-|\s](.*)$/);
-      var stMatches = station.name.match(/^St[-|\s](.*)$/);
-      var matches = saintMatches || stMatches;
-      if(matches) {
-        var st = term.match(/^st(\s|-)?.*$/);
-        if(st) return "St" + (st[1] || '-') + matches[1];
-        var saint = term.match(/^saint(\s|-)?.*$/);
-        if(saint) return "Saint" + (saint[1] || '-') + matches[1];
-        return station.name;
-      } else { // Compound name
-        var splitBySpace = station.name.split(' ');
-        if(splitBySpace.length > 1 && term.indexOf('-') > -1) {
-          return splitBySpace.join('-');
-        }
-        var splitByDash = station.name.split('-');
-        if(splitByDash.length > 1 && term.indexOf(' ') > -1) {
-          return splitByDash.join(' ');
-        }
-        return station.name;
-      }
-    })();
+    var name = Suggestions.adaptSaintWord(term, station) || Suggestions.adaptCompoundWord(term, station) || station.name;
     var matchedAt = name.toLowerCase().indexOf(term.toLowerCase());
     var left = name.substring(0, matchedAt);
     var match = name.substring(matchedAt, matchedAt + term.length)

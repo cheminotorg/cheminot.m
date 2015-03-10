@@ -79,7 +79,7 @@ export function search(term: string, predicat: (station: Station) => boolean = (
   results = _.take(results, 100);
   results.sort((a: Station, b: Station) => {
     var x =  a.name.toLowerCase().indexOf(term) - b.name.toLowerCase().indexOf(term);
-    return (x == 0) ? a.name.length - b.name.length : x;
+    return (x == 0) ? ((a.name < b.name) ? -1 : 1) : x;
   });
   return results;
 }
@@ -91,6 +91,57 @@ export function getStationByTerm(term: string): Station {
   } else {
     return null;
   }
+}
+
+export function adaptSaintWord(term: string, station: Station): string {
+  var stationSaintMatches = station.name.match(/^Saint[-|\s](.*)$/);
+  var stationStMatches = station.name.match(/^St[-|\s](.*)$/);
+  var stationMatches = stationStMatches || stationSaintMatches;
+  if(stationMatches) {
+    var termStMatches = term.match(/^st(\s|-)?.*$/);
+    if(termStMatches) return "St" + (termStMatches[1] || '-') + stationMatches[1];
+    var termSaintMatches = term.match(/^saint(\s|-)?.*$/);
+    if(termSaintMatches) return "Saint" + (termSaintMatches[1] || '-') + stationMatches[1];
+    return station.name;
+  } else {
+    return null;
+  }
+}
+
+export function adaptCompoundWord(term: string, station: Station): string {
+  var termSpaceIndex = term.indexOf(' ');
+  var termDashIndex = term.indexOf('-');
+  var termSep = (() => {
+    if(termSpaceIndex > -1 && termDashIndex > -1) {
+      var a = (termSpaceIndex < 0 ? term.length : termSpaceIndex);
+      var b = (termDashIndex < 0 ? term.length : termDashIndex);
+      return a < b ? " " : "-";
+    } else if(termSpaceIndex > -1) {
+      return " ";
+    } else if(termDashIndex > -1) {
+      return "-";
+    }
+  })();
+  if(termSep!=null) {
+    var stationSpaceIndex = station.name.indexOf(' ');
+    var stationDashIndex = station.name.indexOf('-');
+    var [stationSep, stationNewsep] = (() => {
+      var a = (stationSpaceIndex < 0 ? station.name.length : stationSpaceIndex);
+      var b = (stationDashIndex < 0 ? station.name.length : stationDashIndex);
+      return a < b ? [" ", "-"] : ["-", " "];
+    })();
+    if(stationSep != termSep) {
+      if(stationSpaceIndex > -1 && stationDashIndex >-1) {
+        var split = station.name.split(stationNewsep);
+        var h = split[0].replace(new RegExp(stationSep, 'g'), stationNewsep);
+        var t = split.splice(1);
+        return h + stationNewsep + t.join(stationNewsep);
+      } else {
+        return station.name.replace(new RegExp(stationSep, 'g'), stationNewsep);
+      }
+    }
+  }
+  return station.name;
 }
 
 export function init(): Q.Promise<any> {
