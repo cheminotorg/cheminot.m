@@ -110,7 +110,9 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
       value: isStartStation ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm(),
       config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
         var disabled = isStartStation ? ctrl.isInputStationStartDisabled() : ctrl.isInputStationEndDisabled();
-        if (!disabled) window.setTimeout(() => el.focus(), 100);
+        if(!disabled && !ctrl.isScrollingStations()) window.setTimeout(() => {
+          if(!ctrl.isScrollingStations()) el.focus();
+        }, 100);
         if (!isUpdate) {
           el.addEventListener('input', _.partial(ctrl.onInputStationKeyUp, ctrl))
         }
