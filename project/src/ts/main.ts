@@ -19,11 +19,17 @@ import native = require('native');
 import Utils = require('utils');
 import moment = require('moment');
 import Locale = require('locale');
+import i18n = require('i18n');
+import Alert = require('alert');
 
 function handleError(event: any, source?: string, fileno?: number, columnNumber?: number) {
   var description = `${event} at ${source} [${fileno}, ${columnNumber}]`;
   console.error(event.stack ? event.stack : event);
   native.GoogleAnalytics.trackException(description, true);
+  Alert.error(i18n.fr('unexpected-error')).fin(() => {
+    window.location.hash="#";
+    window.location.reload();
+  });
 }
 
 window.onerror = handleError;
@@ -33,7 +39,7 @@ Q.all([native.Cheminot.init(), qstart, Suggestions.init()]).spread((meta: Meta) 
   return native.GoogleAnalytics.startTrackerWithId(Settings.ga_id).fin(() => {
     Settings.db = meta;
     m.route.mode = 'hash';
-    m.route(document.querySelector('body'), "/", {
+    m.route(document.body, "/", {
       "/": App.get(),
       "/query/:tab/:start/:end/:at": App.get(),
       "/departures/:start/:end/:at": App.get(),

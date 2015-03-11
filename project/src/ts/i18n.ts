@@ -21,10 +21,11 @@ var messages: Messages = {
     'changement': 'changement',
     'cancel': 'annuler',
     'clear': 'effacer',
-    'no-trip-matched': 'Impossible de trouver des trajets correspondant à votre recherche'
+    'no-trip-matched': 'Impossible de trouver des trajets correspondant à votre recherche',
+    'unexpected-error': 'Une erreur inattendue est survenue. Un rapport d\'erreur vient d\'être envoyé.'
   }
 };
 
 export function fr(key: string): string {
-  return messages['fr'][key];
+  return messages['fr'][key] || '???';
 }

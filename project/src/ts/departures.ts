@@ -10,7 +10,7 @@ import Mock = require('mock');
 import Q = require('q');
 import Cache = require('cache');
 import i18n = require('i18n');
-import Message = require('message');
+import Alert = require('alert');
 
 export type Ctrl = {
   scope: () => HTMLElement;
@@ -196,6 +196,7 @@ var departures: m.Module<Ctrl> = {
     var scope = () => <HTMLElement> document.querySelector('#departures');
     var displayed = () => Routes.matchDepartures(m.route());
     if(displayed()) native.GoogleAnalytics.trackView('Departures');
+
     var ctrl: Ctrl = {
       scope: scope,
 
@@ -374,7 +375,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
   return step(ctrl, at).then((statusCode) => {
     if(statusCode == StatusCode.NO_MORE) {
       if(!ctrl.departures().length) {
-        Message.info(i18n.fr('no-trip-matched')).then(() => history.back());
+        Alert.info(i18n.fr('no-trip-matched')).then(() => history.back());
       }
     }
     return statusCode;
