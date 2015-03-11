@@ -20,9 +20,17 @@ import Utils = require('utils');
 import moment = require('moment');
 import Locale = require('locale');
 
+function handleError(event: any, source?: string, fileno?: number, columnNumber?: number) {
+  var description = `${event} at ${source} [${fileno}, ${columnNumber}]`;
+  console.error(event.stack ? event.stack : event);
+  native.GoogleAnalytics.trackException(description, true);
+}
+
+window.onerror = handleError;
+
 Q.all([native.Cheminot.init(), qstart, Suggestions.init()]).spread((meta: Meta) => {
   Locale.init();
-  return native.GoogleAnalytics.startTrackerWithId(Settings.ga_id).then(() => {
+  return native.GoogleAnalytics.startTrackerWithId(Settings.ga_id).fin(() => {
     Settings.db = meta;
     m.route.mode = 'hash';
     m.route(document.querySelector('body'), "/", {
@@ -32,9 +40,7 @@ Q.all([native.Cheminot.init(), qstart, Suggestions.init()]).spread((meta: Meta) 
       "/trip/:id": App.get()
     });
   });
-}).catch((e) => {
-  alert(e);
-});
+}).catch((e) => handleError(e));
 
 var now = Date.now();
 Utils.$.bind('cheminot:ready', () => {

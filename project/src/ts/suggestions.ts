@@ -15,7 +15,7 @@ function getStationsTree(): Q.Promise<any> {
           TREE = stations;
           d.resolve(stations);
         } else {
-          d.reject('Unable to get stops_ttree.json');
+          throw new Error('Unable to get stops_ttree.json');
         }
       }
     };

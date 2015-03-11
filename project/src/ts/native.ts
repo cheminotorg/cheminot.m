@@ -2,6 +2,7 @@ import Mock = require('mock');
 import Q = require('q');
 import Cache = require('cache');
 import _ = require('lodash');
+import Utils = require('utils');
 
 type BackButtonHandlers = {
   [index: string]: (e: Event) => void;
@@ -17,16 +18,19 @@ export function onBackButton(key: string, f: (e: Event) => void) {
 
 export module Keyboard {
 
+  var timeout = 2000;
+
   export function show(): Q.Promise<void> {
     var d = Q.defer<void>();
     cordova.plugins.Keyboard.show();
     var start = Date.now();
     var intervalId = setInterval(() => {
-      if(cordova.plugins.Keyboard.isVisible) {
+      if(cordova.plugins.Keyboard.isVisible || Cheminot.isMocked()) {
         clearInterval(intervalId);
         d.resolve(null);
-      } else if((Date.now() > start + 2000) || Cheminot.isMocked()) {
-        d.reject(null);
+      } else if((Date.now() > start + timeout) || Cheminot.isMocked()) {
+        clearInterval(intervalId);
+        throw new Error("Unable to show keyboard");
       }
     }, 75);
     return d.promise;
@@ -44,8 +48,9 @@ export module Keyboard {
       if(!cordova.plugins.Keyboard.isVisible) {
         clearInterval(intervalId);
         d.resolve(null);
-      } else if(Date.now() > start + 2000) {
-        d.reject(null);
+      } else if(Date.now() > start + timeout) {
+        clearInterval(intervalId);
+        throw new Error("Unable to close keyboard");
       }
     }, 75);
     return d.promise;
@@ -58,10 +63,14 @@ export module Cheminot {
     return document.querySelector('body').hasAttribute('data-mocked');
   }
 
+  export function isProd(): boolean {
+    return Settings.bundleId.indexOf('prod') > -1;
+  }
+
   export function init(): Q.Promise<Meta> {
     var d = Q.defer<Meta>();
     var success = (meta: Meta) => d.resolve(meta);
-    var error = (e: string) => d.reject(e);
+    var error = (e: string) => { throw new Error(e) };
     if(isMocked()) {
       Mock.init(success, error);
     } else  {
@@ -79,7 +88,7 @@ export module Cheminot {
         var trip = { id: key, arrivalTimes: arrivalTimes, isDirect: hasDirect };
         d.resolve(trip);
       }
-      var error = (e: string) => d.reject(e);
+      var error = (e: string) => { throw new Error(e) };
       if(isMocked()) {
         Mock.lookForBestDirectTrip(vsId, veId, at, te, 0, success, error);
       } else {
@@ -97,7 +106,7 @@ export module Cheminot {
         var trip = { id: key, arrivalTimes: arrivalTimes, isDirect: false };
         d.resolve(trip);
       }
-      var error = (e: string) => d.reject(e);
+      var error = (e: string) => { throw new Error(e) };
       if(isMocked()) {
         Mock.lookForBestTrip(vsId, veId, at, te, max, success, error);
       } else {
@@ -109,7 +118,8 @@ export module Cheminot {
 
   export function abort(): Q.Promise<void> {
     var d = Q.defer<void>();
-    cordova.plugins.Cheminot.abort(() => d.resolve(null), () => d.reject(null));
+    var error = (e: string) => { throw new Error(e) };
+    cordova.plugins.Cheminot.abort(() => d.resolve(null), error);
     return d.promise;
   }
 }
@@ -118,37 +128,42 @@ export module GoogleAnalytics {
 
   export function debugMode(): Q.Promise<void> {
     var d = Q.defer<void>();
-    analytics.debugMode(() => d.resolve(null), () => d.reject(null));
+    analytics.debugMode(() => d.resolve(null), (e) => d.reject(e));
     return d.promise;
   }
 
   export function startTrackerWithId(id: string): Q.Promise<void> {
     var d = Q.defer<void>();
-    analytics.startTrackerWithId(id, () => d.resolve(null), () => d.reject(null));
+    if(!Cheminot.isMocked()) {
+      var debug = (!Cheminot.isProd()) ? debugMode() : Utils.Promise.done();
+      debug.fin(() => analytics.startTrackerWithId(id, () => d.resolve(null), (e) => d.reject(e)));
+    } else {
+      d.resolve(null);
+    }
     return d.promise;
   }
 
   export function trackView(screen: string): Q.Promise<void> {
     var d = Q.defer<void>();
-    analytics.trackView(screen, () => d.resolve(null), () => d.reject(null));
+    analytics.trackView(screen, () => d.resolve(null), (e) => d.reject(e));
     return d.promise;
   }
 
   export function trackException(description: string, fatal: boolean): Q.Promise<void> {
     var d = Q.defer<void>();
-    analytics.trackException(description, fatal, () => d.resolve(null), () => d.reject(null));
+    analytics.trackException(description, fatal, () => d.resolve(null), (e) => d.reject(e));
     return d.promise;
   }
 
   export function trackEvent(category: string, action: string, label: string, value: number): Q.Promise<void> {
     var d = Q.defer<void>();
-    analytics.trackEvent(category, action, label, value, () => d.resolve(null), () => d.reject(null));
+    analytics.trackEvent(category, action, label, value, () => d.resolve(null), (e) => d.reject(e));
     return d.promise;
   }
 
   export function trackTiming(category: string, interval: number, name: string, label: string): Q.Promise<void> {
     var d = Q.defer<void>();
-    analytics.trackTiming(category, interval, name, label, () => d.resolve(null), () => d.reject(null));
+    analytics.trackTiming(category, interval, name, label, () => d.resolve(null), (e) => d.reject(e));
     return d.promise;
   }
 }
