@@ -34,7 +34,7 @@ function handleError(event: any, source?: string, fileno?: number, columnNumber?
 
 window.onerror = handleError;
 
-Q.all([native.Cheminot.init(), qstart, Suggestions.init()]).spread((meta: Meta) => {
+Q.all([native.Cheminot.init().then((x) => { console.log("init"); return x;}), qstart, Suggestions.init().then((x) => { console.log("suggestions"); return x;})]).spread((meta: Meta) => {
   Locale.init();
   return native.GoogleAnalytics.startTrackerWithId(Settings.ga_id).fin(() => {
     Settings.db = meta;
@@ -48,10 +48,6 @@ Q.all([native.Cheminot.init(), qstart, Suggestions.init()]).spread((meta: Meta) 
   });
 }).catch((e) => handleError(e));
 
-var now = Date.now();
 Utils.$.bind('cheminot:ready', () => {
-  var min = 2000;
-  var spent = now - Date.now();
-  var t = spent < min ? (min - spent) : 0;
-  window.setTimeout(() => navigator.splashscreen.hide(), t);
+  navigator.splashscreen.hide()
 });
