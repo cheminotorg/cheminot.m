@@ -76,7 +76,8 @@ gulp.task('ts', ['clean:js'], function() {
     .pipe(ts({
       module: 'amd',
       noImplicitAny: true,
-      safe: true
+      safe: true,
+      target: 'ES5'
     }))
     .on('error', function (err) {
       console.log(err);

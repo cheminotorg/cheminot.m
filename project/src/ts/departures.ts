@@ -327,7 +327,7 @@ var departures: m.Module<Ctrl> = {
 };
 
 enum StatusCode {
-  OK, NO_MORE
+  OK, NO_MORE, ERROR
 }
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
@@ -379,7 +379,10 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
       }
     }
     return statusCode;
-  }).fin(() => {
+  }).catch((error) => {
+    Utils.handleError(error);
+    return StatusCode.ERROR;
+  }).finally(() => {
     ctrl.currentPageSize(0);
     ctrl.isComputationInProgress(false);
     ctrl.isComputingLongTrip(false);

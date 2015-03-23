@@ -32,7 +32,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
 }
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
-  var attrs = Utils.m.handleAttributes({ class: 'fade-in error'}, (name, value) => {
+  var attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
     if((name + ':' + value) == 'class:fade-in') {
       return ctrl.displayed();
     }
@@ -97,7 +97,7 @@ function bodyElement(text: string): m.VirtualElement {
 
 export function info(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<void> {
   deferred = Q.defer<void>();
-  var body = (content instanceof String) ? bodyElement(content) : content;
+  var body = (typeof content === "string") ? bodyElement(content) : content;
   Utils.$.trigger('cheminot:alert', { body: body, classList: classList });
   return deferred.promise;
 }

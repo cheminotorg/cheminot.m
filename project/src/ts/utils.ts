@@ -1,6 +1,9 @@
 import moment = require('moment');
 import Q = require('q');
 import _ = require('lodash');
+import native = require('native');
+import Alert = require('alert');
+import i18n = require('i18n');
 
 export function viewportSize(): [number, number] {
   return [
@@ -12,6 +15,16 @@ export function viewportSize(): [number, number] {
 export function paddy(n: number, p: number, padchar: string = '0'): string {
     var pad = new Array(1 + p).join(padchar);
     return (pad + n).slice(-pad.length);
+}
+
+export function handleError(event: any, source?: string, fileno?: number, columnNumber?: number) {
+  const description = `${event} at ${source} [${fileno}, ${columnNumber}]`;
+  console.error(event.stack ? event.stack : event);
+  native.GoogleAnalytics.trackException(description, true);
+  Alert.error(i18n.fr('unexpected-error')).fin(() => {
+    window.location.hash="#";
+    window.location.reload();
+  });
 }
 
 export module DateTime {

@@ -19,20 +19,8 @@ import native = require('native');
 import Utils = require('utils');
 import moment = require('moment');
 import Locale = require('locale');
-import i18n = require('i18n');
-import Alert = require('alert');
 
-function handleError(event: any, source?: string, fileno?: number, columnNumber?: number) {
-  var description = `${event} at ${source} [${fileno}, ${columnNumber}]`;
-  console.error(event.stack ? event.stack : event);
-  native.GoogleAnalytics.trackException(description, true);
-  Alert.error(i18n.fr('unexpected-error')).fin(() => {
-    window.location.hash="#";
-    window.location.reload();
-  });
-}
-
-window.onerror = handleError;
+window.onerror = Utils.handleError;
 
 Q.all([native.Cheminot.init().then((x) => { console.log("init"); return x;}), qstart, Suggestions.init().then((x) => { console.log("suggestions"); return x;})]).spread((meta: Meta) => {
   Locale.init();
@@ -46,7 +34,7 @@ Q.all([native.Cheminot.init().then((x) => { console.log("init"); return x;}), qs
       "/trip/:id": App.get()
     });
   });
-}).catch((e) => handleError(e));
+}).catch((e) => Utils.handleError(e));
 
 Utils.$.bind('cheminot:ready', () => {
   navigator.splashscreen.hide()
