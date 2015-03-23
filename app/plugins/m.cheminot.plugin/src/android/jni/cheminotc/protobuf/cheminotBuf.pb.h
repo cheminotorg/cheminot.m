@@ -109,12 +109,12 @@ class Graph : public ::google::protobuf::Message {
   // accessors -------------------------------------------------------
 
   // map<string, .m.cheminot.data.Vertice> vertices = 1;
-  inline int vertices_size() const;
-  inline void clear_vertices();
+  int vertices_size() const;
+  void clear_vertices();
   static const int kVerticesFieldNumber = 1;
-  inline const ::google::protobuf::Map< ::std::string, ::m::cheminot::data::Vertice >&
+  const ::google::protobuf::Map< ::std::string, ::m::cheminot::data::Vertice >&
       vertices() const;
-  inline ::google::protobuf::Map< ::std::string, ::m::cheminot::data::Vertice >*
+  ::google::protobuf::Map< ::std::string, ::m::cheminot::data::Vertice >*
       mutable_vertices();
 
   // @@protoc_insertion_point(class_scope:m.cheminot.data.Graph)
@@ -122,12 +122,17 @@ class Graph : public ::google::protobuf::Message {
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  typedef ::google::protobuf::internal::MapEntry<
+  typedef ::google::protobuf::internal::MapEntryLite<
       ::std::string, ::m::cheminot::data::Vertice,
-      ::google::protobuf::FieldDescriptor::TYPE_STRING,
-      ::google::protobuf::FieldDescriptor::TYPE_MESSAGE, 0>
+      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+      ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
+      0 >
       Graph_VerticesEntry;
-  ::google::protobuf::internal::MapField< ::std::string, ::m::cheminot::data::Vertice,::google::protobuf::FieldDescriptor::TYPE_STRING, ::google::protobuf::FieldDescriptor::TYPE_MESSAGE, 0 > vertices_;
+  ::google::protobuf::internal::MapField<
+      ::std::string, ::m::cheminot::data::Vertice,
+      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+      ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
+      0 > vertices_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_cheminotBuf_2eproto();
   friend void protobuf_AssignDesc_cheminotBuf_2eproto();
@@ -195,53 +200,53 @@ class Vertice : public ::google::protobuf::Message {
   // accessors -------------------------------------------------------
 
   // optional string id = 1;
-  inline void clear_id();
+  void clear_id();
   static const int kIdFieldNumber = 1;
-  inline const ::std::string& id() const;
-  inline void set_id(const ::std::string& value);
-  inline void set_id(const char* value);
-  inline void set_id(const char* value, size_t size);
-  inline ::std::string* mutable_id();
-  inline ::std::string* release_id();
-  inline void set_allocated_id(::std::string* id);
+  const ::std::string& id() const;
+  void set_id(const ::std::string& value);
+  void set_id(const char* value);
+  void set_id(const char* value, size_t size);
+  ::std::string* mutable_id();
+  ::std::string* release_id();
+  void set_allocated_id(::std::string* id);
 
   // optional string name = 2;
-  inline void clear_name();
+  void clear_name();
   static const int kNameFieldNumber = 2;
-  inline const ::std::string& name() const;
-  inline void set_name(const ::std::string& value);
-  inline void set_name(const char* value);
-  inline void set_name(const char* value, size_t size);
-  inline ::std::string* mutable_name();
-  inline ::std::string* release_name();
-  inline void set_allocated_name(::std::string* name);
+  const ::std::string& name() const;
+  void set_name(const ::std::string& value);
+  void set_name(const char* value);
+  void set_name(const char* value, size_t size);
+  ::std::string* mutable_name();
+  ::std::string* release_name();
+  void set_allocated_name(::std::string* name);
 
   // repeated string edges = 3;
-  inline int edges_size() const;
-  inline void clear_edges();
+  int edges_size() const;
+  void clear_edges();
   static const int kEdgesFieldNumber = 3;
-  inline const ::std::string& edges(int index) const;
-  inline ::std::string* mutable_edges(int index);
-  inline void set_edges(int index, const ::std::string& value);
-  inline void set_edges(int index, const char* value);
-  inline void set_edges(int index, const char* value, size_t size);
-  inline ::std::string* add_edges();
-  inline void add_edges(const ::std::string& value);
-  inline void add_edges(const char* value);
-  inline void add_edges(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& edges() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_edges();
+  const ::std::string& edges(int index) const;
+  ::std::string* mutable_edges(int index);
+  void set_edges(int index, const ::std::string& value);
+  void set_edges(int index, const char* value);
+  void set_edges(int index, const char* value, size_t size);
+  ::std::string* add_edges();
+  void add_edges(const ::std::string& value);
+  void add_edges(const char* value);
+  void add_edges(const char* value, size_t size);
+  const ::google::protobuf::RepeatedPtrField< ::std::string>& edges() const;
+  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_edges();
 
   // repeated .m.cheminot.data.StopTime stopTimes = 4;
-  inline int stoptimes_size() const;
-  inline void clear_stoptimes();
+  int stoptimes_size() const;
+  void clear_stoptimes();
   static const int kStopTimesFieldNumber = 4;
-  inline const ::m::cheminot::data::StopTime& stoptimes(int index) const;
-  inline ::m::cheminot::data::StopTime* mutable_stoptimes(int index);
-  inline ::m::cheminot::data::StopTime* add_stoptimes();
-  inline const ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::StopTime >&
+  const ::m::cheminot::data::StopTime& stoptimes(int index) const;
+  ::m::cheminot::data::StopTime* mutable_stoptimes(int index);
+  ::m::cheminot::data::StopTime* add_stoptimes();
+  const ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::StopTime >&
       stoptimes() const;
-  inline ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::StopTime >*
+  ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::StopTime >*
       mutable_stoptimes();
 
   // @@protoc_insertion_point(class_scope:m.cheminot.data.Vertice)
@@ -320,54 +325,54 @@ class StopTime : public ::google::protobuf::Message {
   // accessors -------------------------------------------------------
 
   // optional string tripId = 1;
-  inline void clear_tripid();
+  void clear_tripid();
   static const int kTripIdFieldNumber = 1;
-  inline const ::std::string& tripid() const;
-  inline void set_tripid(const ::std::string& value);
-  inline void set_tripid(const char* value);
-  inline void set_tripid(const char* value, size_t size);
-  inline ::std::string* mutable_tripid();
-  inline ::std::string* release_tripid();
-  inline void set_allocated_tripid(::std::string* tripid);
+  const ::std::string& tripid() const;
+  void set_tripid(const ::std::string& value);
+  void set_tripid(const char* value);
+  void set_tripid(const char* value, size_t size);
+  ::std::string* mutable_tripid();
+  ::std::string* release_tripid();
+  void set_allocated_tripid(::std::string* tripid);
 
   // optional string arrival = 2;
-  inline void clear_arrival();
+  void clear_arrival();
   static const int kArrivalFieldNumber = 2;
-  inline const ::std::string& arrival() const;
-  inline void set_arrival(const ::std::string& value);
-  inline void set_arrival(const char* value);
-  inline void set_arrival(const char* value, size_t size);
-  inline ::std::string* mutable_arrival();
-  inline ::std::string* release_arrival();
-  inline void set_allocated_arrival(::std::string* arrival);
+  const ::std::string& arrival() const;
+  void set_arrival(const ::std::string& value);
+  void set_arrival(const char* value);
+  void set_arrival(const char* value, size_t size);
+  ::std::string* mutable_arrival();
+  ::std::string* release_arrival();
+  void set_allocated_arrival(::std::string* arrival);
 
   // optional string departure = 3;
-  inline void clear_departure();
+  void clear_departure();
   static const int kDepartureFieldNumber = 3;
-  inline const ::std::string& departure() const;
-  inline void set_departure(const ::std::string& value);
-  inline void set_departure(const char* value);
-  inline void set_departure(const char* value, size_t size);
-  inline ::std::string* mutable_departure();
-  inline ::std::string* release_departure();
-  inline void set_allocated_departure(::std::string* departure);
+  const ::std::string& departure() const;
+  void set_departure(const ::std::string& value);
+  void set_departure(const char* value);
+  void set_departure(const char* value, size_t size);
+  ::std::string* mutable_departure();
+  ::std::string* release_departure();
+  void set_allocated_departure(::std::string* departure);
 
   // optional string stopId = 4;
-  inline void clear_stopid();
+  void clear_stopid();
   static const int kStopIdFieldNumber = 4;
-  inline const ::std::string& stopid() const;
-  inline void set_stopid(const ::std::string& value);
-  inline void set_stopid(const char* value);
-  inline void set_stopid(const char* value, size_t size);
-  inline ::std::string* mutable_stopid();
-  inline ::std::string* release_stopid();
-  inline void set_allocated_stopid(::std::string* stopid);
+  const ::std::string& stopid() const;
+  void set_stopid(const ::std::string& value);
+  void set_stopid(const char* value);
+  void set_stopid(const char* value, size_t size);
+  ::std::string* mutable_stopid();
+  ::std::string* release_stopid();
+  void set_allocated_stopid(::std::string* stopid);
 
   // optional int32 pos = 5;
-  inline void clear_pos();
+  void clear_pos();
   static const int kPosFieldNumber = 5;
-  inline ::google::protobuf::int32 pos() const;
-  inline void set_pos(::google::protobuf::int32 value);
+  ::google::protobuf::int32 pos() const;
+  void set_pos(::google::protobuf::int32 value);
 
   // @@protoc_insertion_point(class_scope:m.cheminot.data.StopTime)
  private:
@@ -447,12 +452,12 @@ class CalendarDates : public ::google::protobuf::Message {
   // accessors -------------------------------------------------------
 
   // map<string, .m.cheminot.data.CalendarExceptions> exceptionsByServiceId = 1;
-  inline int exceptionsbyserviceid_size() const;
-  inline void clear_exceptionsbyserviceid();
+  int exceptionsbyserviceid_size() const;
+  void clear_exceptionsbyserviceid();
   static const int kExceptionsByServiceIdFieldNumber = 1;
-  inline const ::google::protobuf::Map< ::std::string, ::m::cheminot::data::CalendarExceptions >&
+  const ::google::protobuf::Map< ::std::string, ::m::cheminot::data::CalendarExceptions >&
       exceptionsbyserviceid() const;
-  inline ::google::protobuf::Map< ::std::string, ::m::cheminot::data::CalendarExceptions >*
+  ::google::protobuf::Map< ::std::string, ::m::cheminot::data::CalendarExceptions >*
       mutable_exceptionsbyserviceid();
 
   // @@protoc_insertion_point(class_scope:m.cheminot.data.CalendarDates)
@@ -460,12 +465,17 @@ class CalendarDates : public ::google::protobuf::Message {
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   bool _is_default_instance_;
-  typedef ::google::protobuf::internal::MapEntry<
+  typedef ::google::protobuf::internal::MapEntryLite<
       ::std::string, ::m::cheminot::data::CalendarExceptions,
-      ::google::protobuf::FieldDescriptor::TYPE_STRING,
-      ::google::protobuf::FieldDescriptor::TYPE_MESSAGE, 0>
+      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+      ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
+      0 >
       CalendarDates_ExceptionsByServiceIdEntry;
-  ::google::protobuf::internal::MapField< ::std::string, ::m::cheminot::data::CalendarExceptions,::google::protobuf::FieldDescriptor::TYPE_STRING, ::google::protobuf::FieldDescriptor::TYPE_MESSAGE, 0 > exceptionsbyserviceid_;
+  ::google::protobuf::internal::MapField<
+      ::std::string, ::m::cheminot::data::CalendarExceptions,
+      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+      ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
+      0 > exceptionsbyserviceid_;
   mutable int _cached_size_;
   friend void  protobuf_AddDesc_cheminotBuf_2eproto();
   friend void protobuf_AssignDesc_cheminotBuf_2eproto();
@@ -533,15 +543,15 @@ class CalendarExceptions : public ::google::protobuf::Message {
   // accessors -------------------------------------------------------
 
   // repeated .m.cheminot.data.CalendarDate calendarDates = 1;
-  inline int calendardates_size() const;
-  inline void clear_calendardates();
+  int calendardates_size() const;
+  void clear_calendardates();
   static const int kCalendarDatesFieldNumber = 1;
-  inline const ::m::cheminot::data::CalendarDate& calendardates(int index) const;
-  inline ::m::cheminot::data::CalendarDate* mutable_calendardates(int index);
-  inline ::m::cheminot::data::CalendarDate* add_calendardates();
-  inline const ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::CalendarDate >&
+  const ::m::cheminot::data::CalendarDate& calendardates(int index) const;
+  ::m::cheminot::data::CalendarDate* mutable_calendardates(int index);
+  ::m::cheminot::data::CalendarDate* add_calendardates();
+  const ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::CalendarDate >&
       calendardates() const;
-  inline ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::CalendarDate >*
+  ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::CalendarDate >*
       mutable_calendardates();
 
   // @@protoc_insertion_point(class_scope:m.cheminot.data.CalendarExceptions)
@@ -617,32 +627,32 @@ class CalendarDate : public ::google::protobuf::Message {
   // accessors -------------------------------------------------------
 
   // optional string serviceId = 1;
-  inline void clear_serviceid();
+  void clear_serviceid();
   static const int kServiceIdFieldNumber = 1;
-  inline const ::std::string& serviceid() const;
-  inline void set_serviceid(const ::std::string& value);
-  inline void set_serviceid(const char* value);
-  inline void set_serviceid(const char* value, size_t size);
-  inline ::std::string* mutable_serviceid();
-  inline ::std::string* release_serviceid();
-  inline void set_allocated_serviceid(::std::string* serviceid);
+  const ::std::string& serviceid() const;
+  void set_serviceid(const ::std::string& value);
+  void set_serviceid(const char* value);
+  void set_serviceid(const char* value, size_t size);
+  ::std::string* mutable_serviceid();
+  ::std::string* release_serviceid();
+  void set_allocated_serviceid(::std::string* serviceid);
 
   // optional string date = 2;
-  inline void clear_date();
+  void clear_date();
   static const int kDateFieldNumber = 2;
-  inline const ::std::string& date() const;
-  inline void set_date(const ::std::string& value);
-  inline void set_date(const char* value);
-  inline void set_date(const char* value, size_t size);
-  inline ::std::string* mutable_date();
-  inline ::std::string* release_date();
-  inline void set_allocated_date(::std::string* date);
+  const ::std::string& date() const;
+  void set_date(const ::std::string& value);
+  void set_date(const char* value);
+  void set_date(const char* value, size_t size);
+  ::std::string* mutable_date();
+  ::std::string* release_date();
+  void set_allocated_date(::std::string* date);
 
   // optional int32 exceptionType = 3;
-  inline void clear_exceptiontype();
+  void clear_exceptiontype();
   static const int kExceptionTypeFieldNumber = 3;
-  inline ::google::protobuf::int32 exceptiontype() const;
-  inline void set_exceptiontype(::google::protobuf::int32 value);
+  ::google::protobuf::int32 exceptiontype() const;
+  void set_exceptiontype(::google::protobuf::int32 value);
 
   // @@protoc_insertion_point(class_scope:m.cheminot.data.CalendarDate)
  private:
@@ -719,114 +729,114 @@ class Calendar : public ::google::protobuf::Message {
   // accessors -------------------------------------------------------
 
   // optional string serviceId = 1;
-  inline void clear_serviceid();
+  void clear_serviceid();
   static const int kServiceIdFieldNumber = 1;
-  inline const ::std::string& serviceid() const;
-  inline void set_serviceid(const ::std::string& value);
-  inline void set_serviceid(const char* value);
-  inline void set_serviceid(const char* value, size_t size);
-  inline ::std::string* mutable_serviceid();
-  inline ::std::string* release_serviceid();
-  inline void set_allocated_serviceid(::std::string* serviceid);
+  const ::std::string& serviceid() const;
+  void set_serviceid(const ::std::string& value);
+  void set_serviceid(const char* value);
+  void set_serviceid(const char* value, size_t size);
+  ::std::string* mutable_serviceid();
+  ::std::string* release_serviceid();
+  void set_allocated_serviceid(::std::string* serviceid);
 
   // optional string monday = 2;
-  inline void clear_monday();
+  void clear_monday();
   static const int kMondayFieldNumber = 2;
-  inline const ::std::string& monday() const;
-  inline void set_monday(const ::std::string& value);
-  inline void set_monday(const char* value);
-  inline void set_monday(const char* value, size_t size);
-  inline ::std::string* mutable_monday();
-  inline ::std::string* release_monday();
-  inline void set_allocated_monday(::std::string* monday);
+  const ::std::string& monday() const;
+  void set_monday(const ::std::string& value);
+  void set_monday(const char* value);
+  void set_monday(const char* value, size_t size);
+  ::std::string* mutable_monday();
+  ::std::string* release_monday();
+  void set_allocated_monday(::std::string* monday);
 
   // optional string tuesday = 3;
-  inline void clear_tuesday();
+  void clear_tuesday();
   static const int kTuesdayFieldNumber = 3;
-  inline const ::std::string& tuesday() const;
-  inline void set_tuesday(const ::std::string& value);
-  inline void set_tuesday(const char* value);
-  inline void set_tuesday(const char* value, size_t size);
-  inline ::std::string* mutable_tuesday();
-  inline ::std::string* release_tuesday();
-  inline void set_allocated_tuesday(::std::string* tuesday);
+  const ::std::string& tuesday() const;
+  void set_tuesday(const ::std::string& value);
+  void set_tuesday(const char* value);
+  void set_tuesday(const char* value, size_t size);
+  ::std::string* mutable_tuesday();
+  ::std::string* release_tuesday();
+  void set_allocated_tuesday(::std::string* tuesday);
 
   // optional string wednesday = 4;
-  inline void clear_wednesday();
+  void clear_wednesday();
   static const int kWednesdayFieldNumber = 4;
-  inline const ::std::string& wednesday() const;
-  inline void set_wednesday(const ::std::string& value);
-  inline void set_wednesday(const char* value);
-  inline void set_wednesday(const char* value, size_t size);
-  inline ::std::string* mutable_wednesday();
-  inline ::std::string* release_wednesday();
-  inline void set_allocated_wednesday(::std::string* wednesday);
+  const ::std::string& wednesday() const;
+  void set_wednesday(const ::std::string& value);
+  void set_wednesday(const char* value);
+  void set_wednesday(const char* value, size_t size);
+  ::std::string* mutable_wednesday();
+  ::std::string* release_wednesday();
+  void set_allocated_wednesday(::std::string* wednesday);
 
   // optional string thursday = 5;
-  inline void clear_thursday();
+  void clear_thursday();
   static const int kThursdayFieldNumber = 5;
-  inline const ::std::string& thursday() const;
-  inline void set_thursday(const ::std::string& value);
-  inline void set_thursday(const char* value);
-  inline void set_thursday(const char* value, size_t size);
-  inline ::std::string* mutable_thursday();
-  inline ::std::string* release_thursday();
-  inline void set_allocated_thursday(::std::string* thursday);
+  const ::std::string& thursday() const;
+  void set_thursday(const ::std::string& value);
+  void set_thursday(const char* value);
+  void set_thursday(const char* value, size_t size);
+  ::std::string* mutable_thursday();
+  ::std::string* release_thursday();
+  void set_allocated_thursday(::std::string* thursday);
 
   // optional string friday = 6;
-  inline void clear_friday();
+  void clear_friday();
   static const int kFridayFieldNumber = 6;
-  inline const ::std::string& friday() const;
-  inline void set_friday(const ::std::string& value);
-  inline void set_friday(const char* value);
-  inline void set_friday(const char* value, size_t size);
-  inline ::std::string* mutable_friday();
-  inline ::std::string* release_friday();
-  inline void set_allocated_friday(::std::string* friday);
+  const ::std::string& friday() const;
+  void set_friday(const ::std::string& value);
+  void set_friday(const char* value);
+  void set_friday(const char* value, size_t size);
+  ::std::string* mutable_friday();
+  ::std::string* release_friday();
+  void set_allocated_friday(::std::string* friday);
 
   // optional string saturday = 7;
-  inline void clear_saturday();
+  void clear_saturday();
   static const int kSaturdayFieldNumber = 7;
-  inline const ::std::string& saturday() const;
-  inline void set_saturday(const ::std::string& value);
-  inline void set_saturday(const char* value);
-  inline void set_saturday(const char* value, size_t size);
-  inline ::std::string* mutable_saturday();
-  inline ::std::string* release_saturday();
-  inline void set_allocated_saturday(::std::string* saturday);
+  const ::std::string& saturday() const;
+  void set_saturday(const ::std::string& value);
+  void set_saturday(const char* value);
+  void set_saturday(const char* value, size_t size);
+  ::std::string* mutable_saturday();
+  ::std::string* release_saturday();
+  void set_allocated_saturday(::std::string* saturday);
 
   // optional string sunday = 8;
-  inline void clear_sunday();
+  void clear_sunday();
   static const int kSundayFieldNumber = 8;
-  inline const ::std::string& sunday() const;
-  inline void set_sunday(const ::std::string& value);
-  inline void set_sunday(const char* value);
-  inline void set_sunday(const char* value, size_t size);
-  inline ::std::string* mutable_sunday();
-  inline ::std::string* release_sunday();
-  inline void set_allocated_sunday(::std::string* sunday);
+  const ::std::string& sunday() const;
+  void set_sunday(const ::std::string& value);
+  void set_sunday(const char* value);
+  void set_sunday(const char* value, size_t size);
+  ::std::string* mutable_sunday();
+  ::std::string* release_sunday();
+  void set_allocated_sunday(::std::string* sunday);
 
   // optional string startDate = 9;
-  inline void clear_startdate();
+  void clear_startdate();
   static const int kStartDateFieldNumber = 9;
-  inline const ::std::string& startdate() const;
-  inline void set_startdate(const ::std::string& value);
-  inline void set_startdate(const char* value);
-  inline void set_startdate(const char* value, size_t size);
-  inline ::std::string* mutable_startdate();
-  inline ::std::string* release_startdate();
-  inline void set_allocated_startdate(::std::string* startdate);
+  const ::std::string& startdate() const;
+  void set_startdate(const ::std::string& value);
+  void set_startdate(const char* value);
+  void set_startdate(const char* value, size_t size);
+  ::std::string* mutable_startdate();
+  ::std::string* release_startdate();
+  void set_allocated_startdate(::std::string* startdate);
 
   // optional string endDate = 10;
-  inline void clear_enddate();
+  void clear_enddate();
   static const int kEndDateFieldNumber = 10;
-  inline const ::std::string& enddate() const;
-  inline void set_enddate(const ::std::string& value);
-  inline void set_enddate(const char* value);
-  inline void set_enddate(const char* value, size_t size);
-  inline ::std::string* mutable_enddate();
-  inline ::std::string* release_enddate();
-  inline void set_allocated_enddate(::std::string* enddate);
+  const ::std::string& enddate() const;
+  void set_enddate(const ::std::string& value);
+  void set_enddate(const char* value);
+  void set_enddate(const char* value, size_t size);
+  ::std::string* mutable_enddate();
+  ::std::string* release_enddate();
+  void set_allocated_enddate(::std::string* enddate);
 
   // @@protoc_insertion_point(class_scope:m.cheminot.data.Calendar)
  private:
@@ -910,20 +920,20 @@ class TripStopIds : public ::google::protobuf::Message {
   // accessors -------------------------------------------------------
 
   // repeated string stopIds = 1;
-  inline int stopids_size() const;
-  inline void clear_stopids();
+  int stopids_size() const;
+  void clear_stopids();
   static const int kStopIdsFieldNumber = 1;
-  inline const ::std::string& stopids(int index) const;
-  inline ::std::string* mutable_stopids(int index);
-  inline void set_stopids(int index, const ::std::string& value);
-  inline void set_stopids(int index, const char* value);
-  inline void set_stopids(int index, const char* value, size_t size);
-  inline ::std::string* add_stopids();
-  inline void add_stopids(const ::std::string& value);
-  inline void add_stopids(const char* value);
-  inline void add_stopids(const char* value, size_t size);
-  inline const ::google::protobuf::RepeatedPtrField< ::std::string>& stopids() const;
-  inline ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_stopids();
+  const ::std::string& stopids(int index) const;
+  ::std::string* mutable_stopids(int index);
+  void set_stopids(int index, const ::std::string& value);
+  void set_stopids(int index, const char* value);
+  void set_stopids(int index, const char* value, size_t size);
+  ::std::string* add_stopids();
+  void add_stopids(const ::std::string& value);
+  void add_stopids(const char* value);
+  void add_stopids(const char* value, size_t size);
+  const ::google::protobuf::RepeatedPtrField< ::std::string>& stopids() const;
+  ::google::protobuf::RepeatedPtrField< ::std::string>* mutable_stopids();
 
   // @@protoc_insertion_point(class_scope:m.cheminot.data.TripStopIds)
  private:
@@ -944,6 +954,7 @@ class TripStopIds : public ::google::protobuf::Message {
 
 // ===================================================================
 
+#if !PROTOBUF_INLINE_NOT_IN_HEADERS
 // Graph
 
 // map<string, .m.cheminot.data.Vertice> vertices = 1;
@@ -1980,21 +1991,13 @@ TripStopIds::mutable_stopids() {
   return &stopids_;
 }
 
+#endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace data
 }  // namespace cheminot
 }  // namespace m
-
-#ifndef SWIG
-namespace google {
-namespace protobuf {
-
-
-}  // namespace protobuf
-}  // namespace google
-#endif  // SWIG
 
 // @@protoc_insertion_point(global_scope)
 

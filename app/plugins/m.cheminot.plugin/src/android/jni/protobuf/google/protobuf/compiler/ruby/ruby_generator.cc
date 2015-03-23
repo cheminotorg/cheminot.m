@@ -47,7 +47,7 @@ namespace compiler {
 namespace ruby {
 
 // Forward decls.
-std::string IntToString(uint32_t value);
+std::string IntToString(uint32 value);
 std::string StripDotProto(const std::string& proto_file);
 std::string LabelForField(google::protobuf::FieldDescriptor* field);
 std::string TypeName(google::protobuf::FieldDescriptor* field);
@@ -64,7 +64,7 @@ void GenerateEnumAssignment(
     const google::protobuf::EnumDescriptor* en,
     google::protobuf::io::Printer* printer);
 
-std::string IntToString(uint32_t value) {
+std::string IntToString(uint32 value) {
   std::ostringstream os;
   os << value;
   return os.str();
@@ -100,15 +100,35 @@ std::string TypeName(const google::protobuf::FieldDescriptor* field) {
   }
 }
 
-void GenerateMessage(const google::protobuf::Descriptor* message,
-                     google::protobuf::io::Printer* printer) {
-  printer->Print(
-    "add_message \"$name$\" do\n",
-    "name", message->full_name());
-  printer->Indent();
+void GenerateField(const google::protobuf::FieldDescriptor* field,
+                   google::protobuf::io::Printer* printer) {
 
-  for (int i = 0; i < message->field_count(); i++) {
-    const FieldDescriptor* field = message->field(i);
+  if (field->is_map()) {
+    const FieldDescriptor* key_field =
+        field->message_type()->FindFieldByNumber(1);
+    const FieldDescriptor* value_field =
+        field->message_type()->FindFieldByNumber(2);
+
+    printer->Print(
+      "map :$name$, :$key_type$, :$value_type$, $number$",
+      "name", field->name(),
+      "key_type", TypeName(key_field),
+      "value_type", TypeName(value_field),
+      "number", IntToString(field->number()));
+
+    if (value_field->cpp_type() == FieldDescriptor::CPPTYPE_MESSAGE) {
+      printer->Print(
+        ", \"$subtype$\"\n",
+        "subtype", value_field->message_type()->full_name());
+    } else if (value_field->cpp_type() == FieldDescriptor::CPPTYPE_ENUM) {
+      printer->Print(
+        ", \"$subtype$\"\n",
+        "subtype", value_field->enum_type()->full_name());
+    } else {
+      printer->Print("\n");
+    }
+  } else {
+
     printer->Print(
       "$label$ :$name$, ",
       "label", LabelForField(field),
@@ -117,6 +137,7 @@ void GenerateMessage(const google::protobuf::Descriptor* message,
       ":$type$, $number$",
       "type", TypeName(field),
       "number", IntToString(field->number()));
+
     if (field->cpp_type() == FieldDescriptor::CPPTYPE_MESSAGE) {
       printer->Print(
         ", \"$subtype$\"\n",
@@ -128,6 +149,49 @@ void GenerateMessage(const google::protobuf::Descriptor* message,
     } else {
       printer->Print("\n");
     }
+  }
+}
+
+void GenerateOneof(const google::protobuf::OneofDescriptor* oneof,
+                   google::protobuf::io::Printer* printer) {
+  printer->Print(
+      "oneof :$name$ do\n",
+      "name", oneof->name());
+  printer->Indent();
+
+  for (int i = 0; i < oneof->field_count(); i++) {
+    const FieldDescriptor* field = oneof->field(i);
+    GenerateField(field, printer);
+  }
+
+  printer->Outdent();
+  printer->Print("end\n");
+}
+
+void GenerateMessage(const google::protobuf::Descriptor* message,
+                     google::protobuf::io::Printer* printer) {
+
+  // Don't generate MapEntry messages -- we use the Ruby extension's native
+  // support for map fields instead.
+  if (message->options().map_entry()) {
+    return;
+  }
+
+  printer->Print(
+    "add_message \"$name$\" do\n",
+    "name", message->full_name());
+  printer->Indent();
+
+  for (int i = 0; i < message->field_count(); i++) {
+    const FieldDescriptor* field = message->field(i);
+    if (!field->containing_oneof()) {
+      GenerateField(field, printer);
+    }
+  }
+
+  for (int i = 0; i < message->oneof_decl_count(); i++) {
+    const OneofDescriptor* oneof = message->oneof_decl(i);
+    GenerateOneof(oneof, printer);
   }
 
   printer->Outdent();
@@ -185,6 +249,13 @@ void GenerateMessageAssignment(
     const std::string& prefix,
     const google::protobuf::Descriptor* message,
     google::protobuf::io::Printer* printer) {
+
+  // Don't generate MapEntry messages -- we use the Ruby extension's native
+  // support for map fields instead.
+  if (message->options().map_entry()) {
+    return;
+  }
+
   printer->Print(
     "$prefix$$name$ = ",
     "prefix", prefix,
@@ -307,7 +378,8 @@ bool Generator::Generate(
 
   std::string filename =
       StripDotProto(file->name()) + ".rb";
-  scoped_ptr<io::ZeroCopyOutputStream> output(generator_context->Open(filename));
+  scoped_ptr<io::ZeroCopyOutputStream> output(
+      generator_context->Open(filename));
   io::Printer printer(output.get(), '$');
 
   GenerateFile(file, &printer);

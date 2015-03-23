@@ -217,8 +217,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
         ::google::protobuf::internal::MapEntry<
             ::std::string,
             ::m::cheminot::data::Vertice,
-            ::google::protobuf::FieldDescriptor::TYPE_STRING,
-            ::google::protobuf::FieldDescriptor::TYPE_MESSAGE,
+            ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+            ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
             0>::CreateDefaultInstance(
                 Graph_VerticesEntry_descriptor_));
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -232,8 +232,8 @@ void protobuf_RegisterTypes(const ::std::string&) {
         ::google::protobuf::internal::MapEntry<
             ::std::string,
             ::m::cheminot::data::CalendarExceptions,
-            ::google::protobuf::FieldDescriptor::TYPE_STRING,
-            ::google::protobuf::FieldDescriptor::TYPE_MESSAGE,
+            ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
+            ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
             0>::CreateDefaultInstance(
                 CalendarDates_ExceptionsByServiceIdEntry_descriptor_));
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
@@ -297,7 +297,7 @@ void protobuf_AddDesc_cheminotBuf_2eproto() {
     "y\030\004 \001(\t\022\020\n\010thursday\030\005 \001(\t\022\016\n\006friday\030\006 \001("
     "\t\022\020\n\010saturday\030\007 \001(\t\022\016\n\006sunday\030\010 \001(\t\022\021\n\ts"
     "tartDate\030\t \001(\t\022\017\n\007endDate\030\n \001(\t\"\036\n\013TripS"
-    "topIds\022\017\n\007stopIds\030\001 \003(\tb\006proto3", 951);
+    "topIds\022\017\n\007stopIds\030\001 \003(\tB\002H\001b\006proto3", 955);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "cheminotBuf.proto", &protobuf_RegisterTypes);
   Graph::default_instance_ = new Graph();
@@ -564,6 +564,28 @@ void Graph::InternalSwap(Graph* other) {
   return metadata;
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Graph
+
+// map<string, .m.cheminot.data.Vertice> vertices = 1;
+ int Graph::vertices_size() const {
+  return vertices_.size();
+}
+ void Graph::clear_vertices() {
+  vertices_.Clear();
+}
+ const ::google::protobuf::Map< ::std::string, ::m::cheminot::data::Vertice >&
+Graph::vertices() const {
+  // @@protoc_insertion_point(field_map:m.cheminot.data.Graph.vertices)
+  return vertices_.GetMap();
+}
+ ::google::protobuf::Map< ::std::string, ::m::cheminot::data::Vertice >*
+Graph::mutable_vertices() {
+  // @@protoc_insertion_point(field_mutable_map:m.cheminot.data.Graph.vertices)
+  return vertices_.MutableMap();
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
@@ -931,6 +953,180 @@ void Vertice::InternalSwap(Vertice* other) {
   return metadata;
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Vertice
+
+// optional string id = 1;
+ void Vertice::clear_id() {
+  id_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Vertice::id() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Vertice.id)
+  return id_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Vertice::set_id(const ::std::string& value) {
+  
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Vertice.id)
+}
+ void Vertice::set_id(const char* value) {
+  
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Vertice.id)
+}
+ void Vertice::set_id(const char* value, size_t size) {
+  
+  id_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Vertice.id)
+}
+ ::std::string* Vertice::mutable_id() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Vertice.id)
+  return id_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Vertice::release_id() {
+  
+  return id_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Vertice::set_allocated_id(::std::string* id) {
+  if (id != NULL) {
+    
+  } else {
+    
+  }
+  id_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), id);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Vertice.id)
+}
+
+// optional string name = 2;
+ void Vertice::clear_name() {
+  name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Vertice::name() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Vertice.name)
+  return name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Vertice::set_name(const ::std::string& value) {
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Vertice.name)
+}
+ void Vertice::set_name(const char* value) {
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Vertice.name)
+}
+ void Vertice::set_name(const char* value, size_t size) {
+  
+  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Vertice.name)
+}
+ ::std::string* Vertice::mutable_name() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Vertice.name)
+  return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Vertice::release_name() {
+  
+  return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Vertice::set_allocated_name(::std::string* name) {
+  if (name != NULL) {
+    
+  } else {
+    
+  }
+  name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Vertice.name)
+}
+
+// repeated string edges = 3;
+ int Vertice::edges_size() const {
+  return edges_.size();
+}
+ void Vertice::clear_edges() {
+  edges_.Clear();
+}
+ const ::std::string& Vertice::edges(int index) const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Vertice.edges)
+  return edges_.Get(index);
+}
+ ::std::string* Vertice::mutable_edges(int index) {
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Vertice.edges)
+  return edges_.Mutable(index);
+}
+ void Vertice::set_edges(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Vertice.edges)
+  edges_.Mutable(index)->assign(value);
+}
+ void Vertice::set_edges(int index, const char* value) {
+  edges_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Vertice.edges)
+}
+ void Vertice::set_edges(int index, const char* value, size_t size) {
+  edges_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Vertice.edges)
+}
+ ::std::string* Vertice::add_edges() {
+  return edges_.Add();
+}
+ void Vertice::add_edges(const ::std::string& value) {
+  edges_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:m.cheminot.data.Vertice.edges)
+}
+ void Vertice::add_edges(const char* value) {
+  edges_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:m.cheminot.data.Vertice.edges)
+}
+ void Vertice::add_edges(const char* value, size_t size) {
+  edges_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:m.cheminot.data.Vertice.edges)
+}
+ const ::google::protobuf::RepeatedPtrField< ::std::string>&
+Vertice::edges() const {
+  // @@protoc_insertion_point(field_list:m.cheminot.data.Vertice.edges)
+  return edges_;
+}
+ ::google::protobuf::RepeatedPtrField< ::std::string>*
+Vertice::mutable_edges() {
+  // @@protoc_insertion_point(field_mutable_list:m.cheminot.data.Vertice.edges)
+  return &edges_;
+}
+
+// repeated .m.cheminot.data.StopTime stopTimes = 4;
+ int Vertice::stoptimes_size() const {
+  return stoptimes_.size();
+}
+ void Vertice::clear_stoptimes() {
+  stoptimes_.Clear();
+}
+ const ::m::cheminot::data::StopTime& Vertice::stoptimes(int index) const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Vertice.stopTimes)
+  return stoptimes_.Get(index);
+}
+ ::m::cheminot::data::StopTime* Vertice::mutable_stoptimes(int index) {
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Vertice.stopTimes)
+  return stoptimes_.Mutable(index);
+}
+ ::m::cheminot::data::StopTime* Vertice::add_stoptimes() {
+  // @@protoc_insertion_point(field_add:m.cheminot.data.Vertice.stopTimes)
+  return stoptimes_.Add();
+}
+ const ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::StopTime >&
+Vertice::stoptimes() const {
+  // @@protoc_insertion_point(field_list:m.cheminot.data.Vertice.stopTimes)
+  return stoptimes_;
+}
+ ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::StopTime >*
+Vertice::mutable_stoptimes() {
+  // @@protoc_insertion_point(field_mutable_list:m.cheminot.data.Vertice.stopTimes)
+  return &stoptimes_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
@@ -1356,6 +1552,196 @@ void StopTime::InternalSwap(StopTime* other) {
   return metadata;
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// StopTime
+
+// optional string tripId = 1;
+ void StopTime::clear_tripid() {
+  tripid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& StopTime::tripid() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.StopTime.tripId)
+  return tripid_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void StopTime::set_tripid(const ::std::string& value) {
+  
+  tripid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.StopTime.tripId)
+}
+ void StopTime::set_tripid(const char* value) {
+  
+  tripid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.StopTime.tripId)
+}
+ void StopTime::set_tripid(const char* value, size_t size) {
+  
+  tripid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.StopTime.tripId)
+}
+ ::std::string* StopTime::mutable_tripid() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.StopTime.tripId)
+  return tripid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* StopTime::release_tripid() {
+  
+  return tripid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void StopTime::set_allocated_tripid(::std::string* tripid) {
+  if (tripid != NULL) {
+    
+  } else {
+    
+  }
+  tripid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), tripid);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.StopTime.tripId)
+}
+
+// optional string arrival = 2;
+ void StopTime::clear_arrival() {
+  arrival_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& StopTime::arrival() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.StopTime.arrival)
+  return arrival_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void StopTime::set_arrival(const ::std::string& value) {
+  
+  arrival_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.StopTime.arrival)
+}
+ void StopTime::set_arrival(const char* value) {
+  
+  arrival_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.StopTime.arrival)
+}
+ void StopTime::set_arrival(const char* value, size_t size) {
+  
+  arrival_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.StopTime.arrival)
+}
+ ::std::string* StopTime::mutable_arrival() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.StopTime.arrival)
+  return arrival_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* StopTime::release_arrival() {
+  
+  return arrival_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void StopTime::set_allocated_arrival(::std::string* arrival) {
+  if (arrival != NULL) {
+    
+  } else {
+    
+  }
+  arrival_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), arrival);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.StopTime.arrival)
+}
+
+// optional string departure = 3;
+ void StopTime::clear_departure() {
+  departure_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& StopTime::departure() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.StopTime.departure)
+  return departure_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void StopTime::set_departure(const ::std::string& value) {
+  
+  departure_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.StopTime.departure)
+}
+ void StopTime::set_departure(const char* value) {
+  
+  departure_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.StopTime.departure)
+}
+ void StopTime::set_departure(const char* value, size_t size) {
+  
+  departure_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.StopTime.departure)
+}
+ ::std::string* StopTime::mutable_departure() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.StopTime.departure)
+  return departure_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* StopTime::release_departure() {
+  
+  return departure_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void StopTime::set_allocated_departure(::std::string* departure) {
+  if (departure != NULL) {
+    
+  } else {
+    
+  }
+  departure_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), departure);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.StopTime.departure)
+}
+
+// optional string stopId = 4;
+ void StopTime::clear_stopid() {
+  stopid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& StopTime::stopid() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.StopTime.stopId)
+  return stopid_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void StopTime::set_stopid(const ::std::string& value) {
+  
+  stopid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.StopTime.stopId)
+}
+ void StopTime::set_stopid(const char* value) {
+  
+  stopid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.StopTime.stopId)
+}
+ void StopTime::set_stopid(const char* value, size_t size) {
+  
+  stopid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.StopTime.stopId)
+}
+ ::std::string* StopTime::mutable_stopid() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.StopTime.stopId)
+  return stopid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* StopTime::release_stopid() {
+  
+  return stopid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void StopTime::set_allocated_stopid(::std::string* stopid) {
+  if (stopid != NULL) {
+    
+  } else {
+    
+  }
+  stopid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), stopid);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.StopTime.stopId)
+}
+
+// optional int32 pos = 5;
+ void StopTime::clear_pos() {
+  pos_ = 0;
+}
+ ::google::protobuf::int32 StopTime::pos() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.StopTime.pos)
+  return pos_;
+}
+ void StopTime::set_pos(::google::protobuf::int32 value) {
+  
+  pos_ = value;
+  // @@protoc_insertion_point(field_set:m.cheminot.data.StopTime.pos)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
@@ -1585,6 +1971,28 @@ void CalendarDates::InternalSwap(CalendarDates* other) {
   return metadata;
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CalendarDates
+
+// map<string, .m.cheminot.data.CalendarExceptions> exceptionsByServiceId = 1;
+ int CalendarDates::exceptionsbyserviceid_size() const {
+  return exceptionsbyserviceid_.size();
+}
+ void CalendarDates::clear_exceptionsbyserviceid() {
+  exceptionsbyserviceid_.Clear();
+}
+ const ::google::protobuf::Map< ::std::string, ::m::cheminot::data::CalendarExceptions >&
+CalendarDates::exceptionsbyserviceid() const {
+  // @@protoc_insertion_point(field_map:m.cheminot.data.CalendarDates.exceptionsByServiceId)
+  return exceptionsbyserviceid_.GetMap();
+}
+ ::google::protobuf::Map< ::std::string, ::m::cheminot::data::CalendarExceptions >*
+CalendarDates::mutable_exceptionsbyserviceid() {
+  // @@protoc_insertion_point(field_mutable_map:m.cheminot.data.CalendarDates.exceptionsByServiceId)
+  return exceptionsbyserviceid_.MutableMap();
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
@@ -1794,6 +2202,40 @@ void CalendarExceptions::InternalSwap(CalendarExceptions* other) {
   return metadata;
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CalendarExceptions
+
+// repeated .m.cheminot.data.CalendarDate calendarDates = 1;
+ int CalendarExceptions::calendardates_size() const {
+  return calendardates_.size();
+}
+ void CalendarExceptions::clear_calendardates() {
+  calendardates_.Clear();
+}
+ const ::m::cheminot::data::CalendarDate& CalendarExceptions::calendardates(int index) const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.CalendarExceptions.calendarDates)
+  return calendardates_.Get(index);
+}
+ ::m::cheminot::data::CalendarDate* CalendarExceptions::mutable_calendardates(int index) {
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.CalendarExceptions.calendarDates)
+  return calendardates_.Mutable(index);
+}
+ ::m::cheminot::data::CalendarDate* CalendarExceptions::add_calendardates() {
+  // @@protoc_insertion_point(field_add:m.cheminot.data.CalendarExceptions.calendarDates)
+  return calendardates_.Add();
+}
+ const ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::CalendarDate >&
+CalendarExceptions::calendardates() const {
+  // @@protoc_insertion_point(field_list:m.cheminot.data.CalendarExceptions.calendarDates)
+  return calendardates_;
+}
+ ::google::protobuf::RepeatedPtrField< ::m::cheminot::data::CalendarDate >*
+CalendarExceptions::mutable_calendardates() {
+  // @@protoc_insertion_point(field_mutable_list:m.cheminot.data.CalendarExceptions.calendarDates)
+  return &calendardates_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
@@ -2111,6 +2553,110 @@ void CalendarDate::InternalSwap(CalendarDate* other) {
   return metadata;
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// CalendarDate
+
+// optional string serviceId = 1;
+ void CalendarDate::clear_serviceid() {
+  serviceid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CalendarDate::serviceid() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.CalendarDate.serviceId)
+  return serviceid_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CalendarDate::set_serviceid(const ::std::string& value) {
+  
+  serviceid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.CalendarDate.serviceId)
+}
+ void CalendarDate::set_serviceid(const char* value) {
+  
+  serviceid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.CalendarDate.serviceId)
+}
+ void CalendarDate::set_serviceid(const char* value, size_t size) {
+  
+  serviceid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.CalendarDate.serviceId)
+}
+ ::std::string* CalendarDate::mutable_serviceid() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.CalendarDate.serviceId)
+  return serviceid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CalendarDate::release_serviceid() {
+  
+  return serviceid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CalendarDate::set_allocated_serviceid(::std::string* serviceid) {
+  if (serviceid != NULL) {
+    
+  } else {
+    
+  }
+  serviceid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), serviceid);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.CalendarDate.serviceId)
+}
+
+// optional string date = 2;
+ void CalendarDate::clear_date() {
+  date_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& CalendarDate::date() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.CalendarDate.date)
+  return date_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CalendarDate::set_date(const ::std::string& value) {
+  
+  date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.CalendarDate.date)
+}
+ void CalendarDate::set_date(const char* value) {
+  
+  date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.CalendarDate.date)
+}
+ void CalendarDate::set_date(const char* value, size_t size) {
+  
+  date_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.CalendarDate.date)
+}
+ ::std::string* CalendarDate::mutable_date() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.CalendarDate.date)
+  return date_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* CalendarDate::release_date() {
+  
+  return date_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void CalendarDate::set_allocated_date(::std::string* date) {
+  if (date != NULL) {
+    
+  } else {
+    
+  }
+  date_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), date);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.CalendarDate.date)
+}
+
+// optional int32 exceptionType = 3;
+ void CalendarDate::clear_exceptiontype() {
+  exceptiontype_ = 0;
+}
+ ::google::protobuf::int32 CalendarDate::exceptiontype() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.CalendarDate.exceptionType)
+  return exceptiontype_;
+}
+ void CalendarDate::set_exceptiontype(::google::protobuf::int32 value) {
+  
+  exceptiontype_ = value;
+  // @@protoc_insertion_point(field_set:m.cheminot.data.CalendarDate.exceptionType)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
@@ -2821,6 +3367,440 @@ void Calendar::InternalSwap(Calendar* other) {
   return metadata;
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// Calendar
+
+// optional string serviceId = 1;
+ void Calendar::clear_serviceid() {
+  serviceid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Calendar::serviceid() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Calendar.serviceId)
+  return serviceid_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_serviceid(const ::std::string& value) {
+  
+  serviceid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Calendar.serviceId)
+}
+ void Calendar::set_serviceid(const char* value) {
+  
+  serviceid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Calendar.serviceId)
+}
+ void Calendar::set_serviceid(const char* value, size_t size) {
+  
+  serviceid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Calendar.serviceId)
+}
+ ::std::string* Calendar::mutable_serviceid() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Calendar.serviceId)
+  return serviceid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Calendar::release_serviceid() {
+  
+  return serviceid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_allocated_serviceid(::std::string* serviceid) {
+  if (serviceid != NULL) {
+    
+  } else {
+    
+  }
+  serviceid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), serviceid);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Calendar.serviceId)
+}
+
+// optional string monday = 2;
+ void Calendar::clear_monday() {
+  monday_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Calendar::monday() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Calendar.monday)
+  return monday_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_monday(const ::std::string& value) {
+  
+  monday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Calendar.monday)
+}
+ void Calendar::set_monday(const char* value) {
+  
+  monday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Calendar.monday)
+}
+ void Calendar::set_monday(const char* value, size_t size) {
+  
+  monday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Calendar.monday)
+}
+ ::std::string* Calendar::mutable_monday() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Calendar.monday)
+  return monday_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Calendar::release_monday() {
+  
+  return monday_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_allocated_monday(::std::string* monday) {
+  if (monday != NULL) {
+    
+  } else {
+    
+  }
+  monday_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), monday);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Calendar.monday)
+}
+
+// optional string tuesday = 3;
+ void Calendar::clear_tuesday() {
+  tuesday_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Calendar::tuesday() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Calendar.tuesday)
+  return tuesday_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_tuesday(const ::std::string& value) {
+  
+  tuesday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Calendar.tuesday)
+}
+ void Calendar::set_tuesday(const char* value) {
+  
+  tuesday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Calendar.tuesday)
+}
+ void Calendar::set_tuesday(const char* value, size_t size) {
+  
+  tuesday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Calendar.tuesday)
+}
+ ::std::string* Calendar::mutable_tuesday() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Calendar.tuesday)
+  return tuesday_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Calendar::release_tuesday() {
+  
+  return tuesday_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_allocated_tuesday(::std::string* tuesday) {
+  if (tuesday != NULL) {
+    
+  } else {
+    
+  }
+  tuesday_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), tuesday);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Calendar.tuesday)
+}
+
+// optional string wednesday = 4;
+ void Calendar::clear_wednesday() {
+  wednesday_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Calendar::wednesday() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Calendar.wednesday)
+  return wednesday_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_wednesday(const ::std::string& value) {
+  
+  wednesday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Calendar.wednesday)
+}
+ void Calendar::set_wednesday(const char* value) {
+  
+  wednesday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Calendar.wednesday)
+}
+ void Calendar::set_wednesday(const char* value, size_t size) {
+  
+  wednesday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Calendar.wednesday)
+}
+ ::std::string* Calendar::mutable_wednesday() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Calendar.wednesday)
+  return wednesday_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Calendar::release_wednesday() {
+  
+  return wednesday_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_allocated_wednesday(::std::string* wednesday) {
+  if (wednesday != NULL) {
+    
+  } else {
+    
+  }
+  wednesday_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), wednesday);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Calendar.wednesday)
+}
+
+// optional string thursday = 5;
+ void Calendar::clear_thursday() {
+  thursday_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Calendar::thursday() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Calendar.thursday)
+  return thursday_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_thursday(const ::std::string& value) {
+  
+  thursday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Calendar.thursday)
+}
+ void Calendar::set_thursday(const char* value) {
+  
+  thursday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Calendar.thursday)
+}
+ void Calendar::set_thursday(const char* value, size_t size) {
+  
+  thursday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Calendar.thursday)
+}
+ ::std::string* Calendar::mutable_thursday() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Calendar.thursday)
+  return thursday_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Calendar::release_thursday() {
+  
+  return thursday_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_allocated_thursday(::std::string* thursday) {
+  if (thursday != NULL) {
+    
+  } else {
+    
+  }
+  thursday_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), thursday);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Calendar.thursday)
+}
+
+// optional string friday = 6;
+ void Calendar::clear_friday() {
+  friday_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Calendar::friday() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Calendar.friday)
+  return friday_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_friday(const ::std::string& value) {
+  
+  friday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Calendar.friday)
+}
+ void Calendar::set_friday(const char* value) {
+  
+  friday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Calendar.friday)
+}
+ void Calendar::set_friday(const char* value, size_t size) {
+  
+  friday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Calendar.friday)
+}
+ ::std::string* Calendar::mutable_friday() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Calendar.friday)
+  return friday_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Calendar::release_friday() {
+  
+  return friday_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_allocated_friday(::std::string* friday) {
+  if (friday != NULL) {
+    
+  } else {
+    
+  }
+  friday_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), friday);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Calendar.friday)
+}
+
+// optional string saturday = 7;
+ void Calendar::clear_saturday() {
+  saturday_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Calendar::saturday() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Calendar.saturday)
+  return saturday_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_saturday(const ::std::string& value) {
+  
+  saturday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Calendar.saturday)
+}
+ void Calendar::set_saturday(const char* value) {
+  
+  saturday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Calendar.saturday)
+}
+ void Calendar::set_saturday(const char* value, size_t size) {
+  
+  saturday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Calendar.saturday)
+}
+ ::std::string* Calendar::mutable_saturday() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Calendar.saturday)
+  return saturday_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Calendar::release_saturday() {
+  
+  return saturday_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_allocated_saturday(::std::string* saturday) {
+  if (saturday != NULL) {
+    
+  } else {
+    
+  }
+  saturday_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), saturday);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Calendar.saturday)
+}
+
+// optional string sunday = 8;
+ void Calendar::clear_sunday() {
+  sunday_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Calendar::sunday() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Calendar.sunday)
+  return sunday_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_sunday(const ::std::string& value) {
+  
+  sunday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Calendar.sunday)
+}
+ void Calendar::set_sunday(const char* value) {
+  
+  sunday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Calendar.sunday)
+}
+ void Calendar::set_sunday(const char* value, size_t size) {
+  
+  sunday_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Calendar.sunday)
+}
+ ::std::string* Calendar::mutable_sunday() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Calendar.sunday)
+  return sunday_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Calendar::release_sunday() {
+  
+  return sunday_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_allocated_sunday(::std::string* sunday) {
+  if (sunday != NULL) {
+    
+  } else {
+    
+  }
+  sunday_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), sunday);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Calendar.sunday)
+}
+
+// optional string startDate = 9;
+ void Calendar::clear_startdate() {
+  startdate_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Calendar::startdate() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Calendar.startDate)
+  return startdate_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_startdate(const ::std::string& value) {
+  
+  startdate_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Calendar.startDate)
+}
+ void Calendar::set_startdate(const char* value) {
+  
+  startdate_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Calendar.startDate)
+}
+ void Calendar::set_startdate(const char* value, size_t size) {
+  
+  startdate_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Calendar.startDate)
+}
+ ::std::string* Calendar::mutable_startdate() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Calendar.startDate)
+  return startdate_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Calendar::release_startdate() {
+  
+  return startdate_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_allocated_startdate(::std::string* startdate) {
+  if (startdate != NULL) {
+    
+  } else {
+    
+  }
+  startdate_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), startdate);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Calendar.startDate)
+}
+
+// optional string endDate = 10;
+ void Calendar::clear_enddate() {
+  enddate_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ const ::std::string& Calendar::enddate() const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.Calendar.endDate)
+  return enddate_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_enddate(const ::std::string& value) {
+  
+  enddate_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:m.cheminot.data.Calendar.endDate)
+}
+ void Calendar::set_enddate(const char* value) {
+  
+  enddate_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.Calendar.endDate)
+}
+ void Calendar::set_enddate(const char* value, size_t size) {
+  
+  enddate_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.Calendar.endDate)
+}
+ ::std::string* Calendar::mutable_enddate() {
+  
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.Calendar.endDate)
+  return enddate_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ ::std::string* Calendar::release_enddate() {
+  
+  return enddate_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+ void Calendar::set_allocated_enddate(::std::string* enddate) {
+  if (enddate != NULL) {
+    
+  } else {
+    
+  }
+  enddate_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), enddate);
+  // @@protoc_insertion_point(field_set_allocated:m.cheminot.data.Calendar.endDate)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
 
@@ -3042,6 +4022,64 @@ void TripStopIds::InternalSwap(TripStopIds* other) {
   return metadata;
 }
 
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// TripStopIds
+
+// repeated string stopIds = 1;
+ int TripStopIds::stopids_size() const {
+  return stopids_.size();
+}
+ void TripStopIds::clear_stopids() {
+  stopids_.Clear();
+}
+ const ::std::string& TripStopIds::stopids(int index) const {
+  // @@protoc_insertion_point(field_get:m.cheminot.data.TripStopIds.stopIds)
+  return stopids_.Get(index);
+}
+ ::std::string* TripStopIds::mutable_stopids(int index) {
+  // @@protoc_insertion_point(field_mutable:m.cheminot.data.TripStopIds.stopIds)
+  return stopids_.Mutable(index);
+}
+ void TripStopIds::set_stopids(int index, const ::std::string& value) {
+  // @@protoc_insertion_point(field_set:m.cheminot.data.TripStopIds.stopIds)
+  stopids_.Mutable(index)->assign(value);
+}
+ void TripStopIds::set_stopids(int index, const char* value) {
+  stopids_.Mutable(index)->assign(value);
+  // @@protoc_insertion_point(field_set_char:m.cheminot.data.TripStopIds.stopIds)
+}
+ void TripStopIds::set_stopids(int index, const char* value, size_t size) {
+  stopids_.Mutable(index)->assign(
+    reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_set_pointer:m.cheminot.data.TripStopIds.stopIds)
+}
+ ::std::string* TripStopIds::add_stopids() {
+  return stopids_.Add();
+}
+ void TripStopIds::add_stopids(const ::std::string& value) {
+  stopids_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add:m.cheminot.data.TripStopIds.stopIds)
+}
+ void TripStopIds::add_stopids(const char* value) {
+  stopids_.Add()->assign(value);
+  // @@protoc_insertion_point(field_add_char:m.cheminot.data.TripStopIds.stopIds)
+}
+ void TripStopIds::add_stopids(const char* value, size_t size) {
+  stopids_.Add()->assign(reinterpret_cast<const char*>(value), size);
+  // @@protoc_insertion_point(field_add_pointer:m.cheminot.data.TripStopIds.stopIds)
+}
+ const ::google::protobuf::RepeatedPtrField< ::std::string>&
+TripStopIds::stopids() const {
+  // @@protoc_insertion_point(field_list:m.cheminot.data.TripStopIds.stopIds)
+  return stopids_;
+}
+ ::google::protobuf::RepeatedPtrField< ::std::string>*
+TripStopIds::mutable_stopids() {
+  // @@protoc_insertion_point(field_mutable_list:m.cheminot.data.TripStopIds.stopIds)
+  return &stopids_;
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // @@protoc_insertion_point(namespace_scope)
 

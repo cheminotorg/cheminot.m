@@ -24,6 +24,7 @@ import org.json.JSONException;
 import android.app.Activity;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.util.Log;
 
 public class Cheminot extends CordovaPlugin {
 
@@ -124,9 +125,9 @@ public class Cheminot extends CordovaPlugin {
           try {
             final CheminotDB cheminotDB = getMostRecentDB(activity);
             if(cheminotDB != null) {
-              File dbFile = copyFromAssets(activity, cheminotDB.getDb());
-              File graphFile = copyFromAssets(activity, cheminotDB.getGraph());
-              File calendarDatesFile = copyFromAssets(activity, cheminotDB.getCalendarDates());
+              File dbFile = copyFromAssets(activity, cheminotDB.getDb(), 4096);
+              File graphFile = copyFromAssets(activity, cheminotDB.getGraph(), 4096);
+              File calendarDatesFile = copyFromAssets(activity, cheminotDB.getCalendarDates(), 1024);
               cleanDbDirectory(new File(dbFile.getParent()), cheminotDB);
               cbc.success(CheminotLib.init(dbFile.getAbsolutePath(), graphFile.getAbsolutePath(), calendarDatesFile.getAbsolutePath()));
             } else {
@@ -139,14 +140,14 @@ public class Cheminot extends CordovaPlugin {
       });
   }
 
-  private static File copyFromAssets(Activity activity, String file) throws IOException {
+  private static File copyFromAssets(Activity activity, String file, int bufsize) throws IOException {
     File dbFile = activity.getDatabasePath(file);
     if(!dbFile.exists()) {
       File dbDirectory = new File(dbFile.getParent());
       dbDirectory.mkdirs();
       InputStream in = activity.getApplicationContext().getAssets().open(file);
       OutputStream out = new FileOutputStream(dbFile);
-      byte[] buf = new byte[1024];
+      byte[] buf = new byte[bufsize];
       int len;
       while ((len = in.read(buf)) > 0) {
         out.write(buf, 0, len);
@@ -232,7 +233,7 @@ public class Cheminot extends CordovaPlugin {
               int max = args.getInt(4);
               cbc.success(CheminotLib.lookForBestTrip(vsId, veId, at, te, max));
             } catch (JSONException e) {
-              cbc.error(e.getMessage());
+              cbc.error("Unable to perform `lookForBestTrip`: " + e.getMessage());
             }
           }
       });
@@ -248,7 +249,7 @@ public class Cheminot extends CordovaPlugin {
               int te = args.getInt(3);
               cbc.success(CheminotLib.lookForBestDirectTrip(vsId, veId, at, te));
             } catch (JSONException e) {
-              cbc.error(e.getMessage());
+              cbc.error("Unable to perform `lookForBestDirectTrip`: " + e.getMessage());
             }
           }
       });

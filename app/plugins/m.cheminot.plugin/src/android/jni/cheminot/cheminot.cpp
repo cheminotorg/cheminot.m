@@ -14,10 +14,7 @@ static cheminotc::Graph graph;
 static cheminotc::CalendarDates calendarDates;
 static sqlite3* connection = NULL;
 
-//Cache
-static cheminotc::VerticesCache verticesCache;
-static cheminotc::TripsCache tripsCache;
-static cheminotc::CalendarDatesCache calendarDatesCache;
+static cheminotc::Cache cache;
 
 extern "C" {
   JNIEXPORT jstring JNICALL Java_m_cheminot_plugin_jni_CheminotLib_init(JNIEnv *env, jclass clazz, jstring jdbPath, jstring jgraphPath, jstring jcalendarDatesPath);
@@ -62,7 +59,7 @@ JNIEXPORT jstring JNICALL Java_m_cheminot_plugin_jni_CheminotLib_lookForBestTrip
   LOGD("###> lookForBestTrip %s %s %s %s", vsId, veId, cheminotc::formatDateTime(at).c_str(), cheminotc::formatDateTime(te).c_str());
 
   cheminotc::unlock(connection);
-  auto result = cheminotc::lookForBestTrip(connection, &graph, &tripsCache, &verticesCache, &calendarDates, &calendarDatesCache, vsId, veId, at, te, max);
+  auto result = cheminotc::lookForBestTrip(connection, &graph, &cache, &calendarDates, vsId, veId, at, te, max);
   std::list<cheminotc::ArrivalTime> arrivalTimes = result.second;
   bool locked = result.first;
 
@@ -73,7 +70,7 @@ JNIEXPORT jstring JNICALL Java_m_cheminot_plugin_jni_CheminotLib_lookForBestTrip
   env->ReleaseStringUTFChars(jveId, veId);
 
   if(!locked) {
-    Json::Value serialized = cheminotc::serializeArrivalTimes(&graph, &verticesCache, arrivalTimes);
+    Json::Value serialized = cheminotc::serializeArrivalTimes(&graph, &cache, arrivalTimes);
     Json::FastWriter* writer = new Json::FastWriter();
     return env->NewStringUTF(writer->write(serialized).c_str());
   } else {
@@ -92,7 +89,7 @@ JNIEXPORT jstring JNICALL Java_m_cheminot_plugin_jni_CheminotLib_lookForBestDire
   LOGD("###> lookForBestDirectTrip %s %s %s %s", vsId, veId, cheminotc::formatDateTime(at).c_str(), cheminotc::formatDateTime(te).c_str());
 
   cheminotc::unlock(connection);
-  std::pair<bool, std::list<cheminotc::ArrivalTime>> result = lookForBestDirectTrip(connection, &graph, &verticesCache, &tripsCache, &calendarDates, &calendarDatesCache, vsId, veId, at, te);
+  std::pair<bool, std::list<cheminotc::ArrivalTime>> result = lookForBestDirectTrip(connection, &graph, &cache, &calendarDates, vsId, veId, at, te);
   std::list<cheminotc::ArrivalTime> arrivalTimes = result.second;
 
   long unsigned int c = arrivalTimes.size();
@@ -101,7 +98,7 @@ JNIEXPORT jstring JNICALL Java_m_cheminot_plugin_jni_CheminotLib_lookForBestDire
   env->ReleaseStringUTFChars(jvsId, vsId);
   env->ReleaseStringUTFChars(jveId, veId);
 
-  Json::Value serialized = cheminotc::serializeArrivalTimes(&graph, &verticesCache, arrivalTimes);
+  Json::Value serialized = cheminotc::serializeArrivalTimes(&graph, &cache, arrivalTimes);
   Json::Value json;
   json["arrivalTimes"] = serialized;
   json["hasDirect"] = result.first;
