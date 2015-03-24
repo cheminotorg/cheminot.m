@@ -70,7 +70,7 @@ export module Cheminot {
   export function init(): Q.Promise<Meta> {
     var d = Q.defer<Meta>();
     var success = (meta: Meta) => d.resolve(meta);
-    var error = (e: string) => { throw new Error(e) };
+    var error = (e: string) => d.reject(e);
     if(isMocked()) {
       Mock.init(success, error);
     } else  {
@@ -88,7 +88,7 @@ export module Cheminot {
         var trip = { id: key, arrivalTimes: arrivalTimes, isDirect: hasDirect };
         d.resolve(trip);
       }
-      var error = (e: string) => { throw new Error(e) };
+      var error = (e: string) => d.reject(e);
       if(isMocked()) {
         Mock.lookForBestDirectTrip(vsId, veId, at, te, 0, success, error);
       } else {
@@ -106,7 +106,7 @@ export module Cheminot {
         var trip = { id: key, arrivalTimes: arrivalTimes, isDirect: false };
         d.resolve(trip);
       }
-      var error = (e: string) => { throw new Error(e) };
+      var error = (e: string) => d.reject(e);
       if(isMocked()) {
         Mock.lookForBestTrip(vsId, veId, at, te, max, success, error);
       } else {
@@ -118,7 +118,7 @@ export module Cheminot {
 
   export function abort(): Q.Promise<void> {
     var d = Q.defer<void>();
-    var error = (e: string) => { throw new Error(e) };
+    var error = (e: string) => d.reject(e);
     cordova.plugins.Cheminot.abort(() => d.resolve(null), error);
     return d.promise;
   }

@@ -380,7 +380,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
     }
     return statusCode;
   }).catch((error) => {
-    Utils.handleError(error);
+    if(error != "aborted") Utils.handleError(error);
     return StatusCode.ERROR;
   }).finally(() => {
     ctrl.currentPageSize(0);

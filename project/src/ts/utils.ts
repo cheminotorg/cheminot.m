@@ -12,11 +12,6 @@ export function viewportSize(): [number, number] {
   ];
 }
 
-export function paddy(n: number, p: number, padchar: string = '0'): string {
-    var pad = new Array(1 + p).join(padchar);
-    return (pad + n).slice(-pad.length);
-}
-
 export function handleError(event: any, source?: string, fileno?: number, columnNumber?: number) {
   const description = `${event} at ${source} [${fileno}, ${columnNumber}]`;
   console.error(event.stack ? event.stack : event);

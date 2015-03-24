@@ -22,7 +22,7 @@ import Locale = require('locale');
 
 window.onerror = Utils.handleError;
 
-Q.all([native.Cheminot.init().then((x) => { console.log("init"); return x;}), qstart, Suggestions.init().then((x) => { console.log("suggestions"); return x;})]).spread((meta: Meta) => {
+Q.all([native.Cheminot.init(), qstart, Suggestions.init()]).spread((meta: Meta) => {
   Locale.init();
   return native.GoogleAnalytics.startTrackerWithId(Settings.ga_id).fin(() => {
     Settings.db = meta;
