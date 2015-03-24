@@ -104,15 +104,19 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
   };
 
   var inputStationAttrs = (isStartStation: boolean) => {
+    var value = isStartStation ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
     var attrs: Attributes = {
       disabled: "true",
       type: "text",
-      value: isStartStation ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm(),
+      value: value,
       config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
         var disabled = isStartStation ? ctrl.isInputStationStartDisabled() : ctrl.isInputStationEndDisabled();
-        if(!disabled && !ctrl.isScrollingStations()) window.setTimeout(() => {
-          if(!ctrl.isScrollingStations()) el.focus();
-        }, 100);
+        if(!disabled) {
+          window.setTimeout(() => {
+            el.focus();
+            if(!native.Keyboard.isVisible()) native.Keyboard.show();
+          }, 100)
+        }
         if (!isUpdate) {
           el.addEventListener('input', _.partial(ctrl.onInputStationKeyUp, ctrl))
         }
@@ -335,9 +339,12 @@ var home: m.Module<Ctrl> = {
 
       onInputStationKeyUp: (ctrl: Ctrl, e: Event) => {
         var inputStation = <HTMLInputElement> e.currentTarget;
-        setInputStationValue(ctrl, inputStation, inputStation.value);
-        ctrl.stations(Suggestions.search(inputStation.value));
-        m.redraw();
+        var value = isInputStationStart(inputStation) ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
+        if(value != inputStation.value) {
+          setInputStationValue(ctrl, inputStation, inputStation.value);
+          ctrl.stations(Suggestions.search(inputStation.value));
+          m.redraw();
+        }
       },
 
       inputStationStartTerm: m.prop(startTerm),
@@ -435,7 +442,6 @@ var home: m.Module<Ctrl> = {
       },
 
       onResetStationTouched: (ctrl: Ctrl, e: Event) => {
-        e.stopPropagation();
         var resetButton = <HTMLElement> e.currentTarget;
         var inputStation = <HTMLInputElement> resetButton.previousElementSibling;
         var term = inputStation.value;
