@@ -74,7 +74,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(ctrl.displayed()) {
         ctrl.iscroll().refresh();
-        if(ctrl.cached().length != ctrl.departures().length) {
+        if(ctrl.isComputingLongTrip()) {
           ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 600);
         }
       }
@@ -173,7 +173,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
           ctrl.currentPageSize(cached.length);
           lookForNextDepartures(ctrl, ctrl.at());
         } else {
-          if(ctrl.cached().length != ctrl.departures().length) {
+          if(ctrl.isComputingLongTrip()) {
             ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 0);
           }
         }
