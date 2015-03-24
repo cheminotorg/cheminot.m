@@ -1,6 +1,7 @@
 #include <time.h>
 
-namespace fastmktime {
+namespace fastmktime
+{
 
-  time_t mk(struct tm *tm);
+    time_t mk(struct tm *tm);
 }
