@@ -442,6 +442,7 @@ var home: m.Module<Ctrl> = {
       },
 
       onResetStationTouched: (ctrl: Ctrl, e: Event) => {
+        e.stopPropagation();
         var resetButton = <HTMLElement> e.currentTarget;
         var inputStation = <HTMLInputElement> resetButton.previousElementSibling;
         var term = inputStation.value;
