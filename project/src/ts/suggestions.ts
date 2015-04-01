@@ -77,7 +77,7 @@ export function search(term: string, predicat: (station: Station) => boolean = (
 
   term = term.toLowerCase();
   var results = (term.length > 0) ? step(term, TREE, []) : [];
-  results = _.take(results, 100);
+  results = _.take(results, 50);
   results.sort((a: Station, b: Station) => {
     var x =  a.name.toLowerCase().indexOf(term) - b.name.toLowerCase().indexOf(term);
     return (x == 0) ? ((a.name < b.name) ? -1 : 1) : x;
