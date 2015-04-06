@@ -1,9 +1,0 @@
-{
-    "lib": {
-        "www": {
-            "id": "tarifa",
-            "version": "0.0.0",
-            "uri": "/usr/local/lib/node_modules/tarifa/template/empty"
-        }
-    }
-}

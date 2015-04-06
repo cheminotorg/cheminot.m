@@ -6,14 +6,18 @@ node_modules
 project/www/css
 project/www/js
 project/www/index.html
+project/target
 src/ts/**/*.js
-*.log
-app/platforms
-app/plugins/*.json
+app/platforms/browser
+app/platforms/android
+!app/platforms/android/AndroidManifest.xml
+app/plugins
 project/src/ts/.gulp*
 generated
 misc/splashscreen
 apk
+*.log
+
 #=============#
 # IOS / XCODE #
 #=============#

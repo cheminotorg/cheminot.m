@@ -26,11 +26,6 @@ else
     ln -s $TYPESCRIPT typescript
 
     echo "\n------------------------------"
-    echo "Patching gulp-tsc file"
-    echo "------------------------------"
-    patch "${ROOT}/node_modules/gulp-tsc/lib/tsc.js" < "${ROOT}/setup/tsc.patch"
-
-    echo "\n------------------------------"
     echo "Building vendors"
     echo "------------------------------"
     "${ROOT}/node_modules/gulp/bin/gulp.js" vendors
@@ -38,15 +33,11 @@ else
     echo "\n------------------------------"
     echo "Setup platforms"
     echo "------------------------------"
-    mkdir "${ROOT}/app/platforms"
-    ln -s "${ROOT}/project/www" "${ROOT}/app/www"
-    tarifa check
+    cd $ROOT
+    tarifa check --force
+    cp "${ROOT}/setup/AndroidManifest.xml" "${ROOT}/app/platforms/android/"
     patch "${ROOT}/app/platforms/android/build.gradle" < "${ROOT}/setup/build.gradle.patch"
     android update project --target android-16 --name Cheminot --path "${ROOT}/app/platforms/android" --subprojects
-    echo "\n------------------------------"
-    echo "Patching AndroidManifest.xml"
-    echo "------------------------------"
-    patch "${ROOT}/app/platforms/android/AndroidManifest.xml" < "${ROOT}/setup/AndroidManifest.xml.patch"
     ndk-build -C "${ROOT}/app/platforms/android"
     tarifa build android
 

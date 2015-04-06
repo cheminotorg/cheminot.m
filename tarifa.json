@@ -4,8 +4,8 @@
   "description": "Consulter les horaires des trains hors ligne.",
   "version": "0.1.1",
   "platforms": [
-    "browser",
-    "android"
+    "android",
+    "browser@3.6.0"
   ],
   "cordova": {
     "preferences": {
@@ -41,7 +41,7 @@
   },
   "plugins": {
     "org.apache.cordova.splashscreen": "https://github.com/apache/cordova-plugin-splashscreen.git#r0.3.4",
-    "m.cheminot.plugin": "../m.cheminot.plugin",
+    "m.cheminot.plugin": "https://github.com/srenault/m.cheminot.plugin.git",
     "com.danielcwilson.plugins.googleanalytics": "com.danielcwilson.plugins.googleanalytics"
   },
   "configurations": {
