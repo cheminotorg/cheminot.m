@@ -17,7 +17,7 @@ generated
 misc/splashscreen
 apk
 *.log
-
+app/www
 #=============#
 # IOS / XCODE #
 #=============#

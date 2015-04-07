@@ -1,2 +1,3 @@
-module.exports = function (tarifa) {
+module.exports = function (msg) {
+    return msg;
 };
