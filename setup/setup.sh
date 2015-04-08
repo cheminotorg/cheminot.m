@@ -37,7 +37,6 @@ else
     tarifa check --force
     cp "${ROOT}/setup/AndroidManifest.xml" "${ROOT}/app/platforms/android/"
     patch "${ROOT}/app/platforms/android/build.gradle" < "${ROOT}/setup/build.gradle.patch"
-    android update project --target android-16 --name Cheminot --path "${ROOT}/app/platforms/android" --subprojects
     ndk-build -C "${ROOT}/app/platforms/android"
     tarifa build android
 
