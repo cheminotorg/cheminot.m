@@ -122,6 +122,13 @@ export module Cheminot {
     cordova.plugins.Cheminot.abort(() => d.resolve(null), error);
     return d.promise;
   }
+
+  export function trace(): Q.Promise<string[]> {
+    var d = Q.defer<string[]>();
+    var error = (e: string) => d.reject(e);
+    cordova.plugins.Cheminot.trace((trace) => d.resolve(trace), error);
+    return d.promise;
+  }
 }
 
 export module GoogleAnalytics {

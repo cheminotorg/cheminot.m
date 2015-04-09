@@ -330,6 +330,33 @@ enum StatusCode {
   OK, NO_MORE, ERROR
 }
 
+function listenLongTrip(ctrl: Ctrl) {
+  var queue: string[] = [];
+  var lastProducerSpeed = 0;
+  var minInterval = 400;
+
+  (function consummer(interval: number) {
+    if(ctrl.isComputationInProgress()) {
+      var h = queue.shift();
+      var el = document.querySelector('#departures .empty-loading .trace');
+      if(el) el.textContent = h;
+      var producerSpeed = lastProducerSpeed;
+      setTimeout(() => consummer(producerSpeed), producerSpeed);
+    }
+  })(1000);
+
+  (function producer(interval: number) {
+    if(ctrl.isComputationInProgress()) {
+      native.Cheminot.trace().then(function(trace) {
+        queue = queue.concat(trace);
+        lastProducerSpeed = trace.length ? (interval / trace.length) : (interval + (interval / 2));
+        lastProducerSpeed = lastProducerSpeed < minInterval ? minInterval : lastProducerSpeed;
+        setTimeout(() => producer(lastProducerSpeed), lastProducerSpeed);
+      });
+    }
+  })(1000);
+}
+
 function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
   var step = (ctrl: Ctrl, at: Date, retries: number = 2): Q.Promise<StatusCode> => {
     if(isMoreItemsNeeded(ctrl)) {
