@@ -49,7 +49,9 @@ function formatTime(dateTime: Date): string {
 }
 
 function formatDuration(duration: number): string {
-  return moment.utc(duration).format('HH:mm');
+  var hours = parseInt((duration / 3600000).toString().split('.')[0], 10);
+  var minutes = Math.round((duration - (hours * 3600000)) / 1000 / 60);
+  return Utils.pad(hours, 2) + ':' + Utils.pad(minutes, 2);
 }
 
 function renderMeta(departure: Departure): m.VirtualElement[] {

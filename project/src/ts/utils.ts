@@ -22,6 +22,11 @@ export function handleError(event: any, source?: string, fileno?: number, column
   });
 }
 
+export function pad(n: number, width: number): string {
+  var sn = n + '';
+  return sn.length >= width ? sn : new Array(width - sn.length + 1).join('0') + sn;
+}
+
 export module DateTime {
 
   export function diff(from: Date, to: Date): number {
