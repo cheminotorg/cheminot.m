@@ -16,8 +16,9 @@ export type Ctrl = {
   scope: () => HTMLElement;
   displayed: () => boolean;
   onTabTouched: (ctrl: Ctrl, e: Event) => void;
-  onInputStationTouched :(ctrl: Ctrl, e: Event) => void;
+  onInputStationTouched: (ctrl: Ctrl, e: Event) => void;
   onResetStationTouched: (ctrl: Ctrl, e: Event) => void;
+  onInputStationSubmit: (ctrl: Ctrl, e: Event) => void;
   onSubmitTouched: (ctrl: Ctrl, e: Event) => void;
   onDateTouched: (ctrl: Ctrl, e: Event) => void;
   onTimeTouched: (ctrl: Ctrl, e: Event) => void;
@@ -148,14 +149,23 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
     });
   };
 
+  var formAttrs = {
+    config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
+      if (!isUpdate) {
+        el.addEventListener('submit', _.partial(ctrl.onInputStationSubmit, ctrl));
+      }
+    }
+  };
+
   return m("div", { class: "start-end" },
-           m("form", {}, [
+           m("form", formAttrs, [
              m("div", _.merge({ class: "input start" }, inputStationWrapperAttrs), [
-               m("input", _.merge({ name: "start", placeholder: i18n.fr('departure') }, inputStationAttrs(true))),
+               m("input", _.merge({ name: "start", autocomplete: "off", placeholder: i18n.fr('departure') }, inputStationAttrs(true))),
                m("button", resetStationAttrs(true))
              ]),
+             m('input.submit', { type: 'submit' }),
              m("div", _.merge({ class: "input end"}, inputStationWrapperAttrs), [
-               m("input", _.merge({ name: "end", placeholder: i18n.fr('arrival') }, inputStationAttrs(false))),
+               m("input", _.merge({ name: "end", autocomplete: "off", placeholder: i18n.fr('arrival') }, inputStationAttrs(false))),
                m("button", resetStationAttrs(false))])]));
 }
 
@@ -438,6 +448,18 @@ var home: m.Module<Ctrl> = {
           setInputStationSelected(ctrl, inputStation, id);
           resetInputStationsPosition(ctrl, inputStation);
           m.redraw();
+        }
+      },
+
+      onInputStationSubmit: (ctrl: Ctrl, e: Event) => {
+        e.preventDefault();
+        var station = ctrl.stations()[0];
+        if(station) {
+          var inputStation = currentInputStation(ctrl);
+          ctrl.stations([]);
+          setInputStationValue(ctrl, inputStation, station.name);
+          setInputStationSelected(ctrl, inputStation, station.id);
+          resetInputStationsPosition(ctrl, inputStation);
         }
       },
 
