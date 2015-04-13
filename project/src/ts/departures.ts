@@ -11,12 +11,14 @@ import Q = require('q');
 import Cache = require('cache');
 import i18n = require('i18n');
 import Alert = require('alert');
+import Zanimo = require('Zanimo');
+import Suggestions = require('suggestions');
 
 export type Ctrl = {
   scope: () => HTMLElement;
   displayed: () => boolean;
-  startStation: string;
-  endStation: string;
+  startStationId: (value?: string) => string;
+  endStationId: (value?: string) => string;
   cached: (value?: Array<Departure>) => Array<Departure>;
   departures: (value?: Array<Departure>) => Array<Departure>;
   onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => void;
@@ -71,6 +73,7 @@ function renderMeta(departure: Departure): m.VirtualElement[] {
 }
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
+
   var pullupAttrs = {
     key: 'departures-pullup',
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
@@ -83,7 +86,8 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     }
   };
 
-  var pullUp = m("li.pull-up", pullupAttrs, [
+  var pullUp = m("li.pull-up.trace", pullupAttrs, [
+    m('span.pin'),
     m("span.label", {}, i18n.fr('pull-to-refresh'))
   ]);
 
@@ -166,11 +170,11 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
       if(ctrl.displayed()) {
         ctrl.iscroll().refresh();
         if(!isUpdate) {
-          var cached = Cache.getAllTripsFrom(ctrl.startStation, ctrl.endStation, ctrl.at(), 0, nextDeparture, departureBound).map((departure) => {
+          var cached = Cache.getAllTripsFrom(ctrl.startStationId(), ctrl.endStationId(), ctrl.at(), 0, nextDeparture, departureBound).map((departure) => {
             return tripToDeparture(departure);
           });
           ctrl.cached(cached);
-          cached.forEach((departure) =>ctrl.departures().push(departure));
+          cached.forEach((departure) => ctrl.departures().push(departure));
           if(cached.length) ctrl.lastDepartureTime(_.last(cached).startTime);
           ctrl.currentPageSize(cached.length);
           lookForNextDepartures(ctrl, ctrl.at());
@@ -183,12 +187,26 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     }
   };
 
+  var traceAttrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(ctrl.displayed()) {
+        ctrl.iscroll().refresh();
+        if(!isUpdate) {
+          el.style.bottom = '-' + el.clientHeight + 'px';
+        }
+      }
+    }
+  };
+
   var wrapper = [m("ul.departures", departuresAttrs, departures.elements)]
   if(ctrl.departures().length == 0) {
     wrapper.push(loading);
   }
 
-  return [m("div#wrapper", {}, wrapper)];
+  return [m("div#wrapper", {}, wrapper),
+          m('div.trace', traceAttrs, [
+            m('span.pin'),
+            m('span.label', {}, i18n.fr('loading'))])];
 }
 
 var departures: m.Module<Ctrl> = {
@@ -253,9 +271,9 @@ var departures: m.Module<Ctrl> = {
         return iscroll;
       }),
 
-      startStation: m.route.param("start"),
+      startStationId: m.prop(m.route.param("start")),
 
-      endStation: m.route.param("end"),
+      endStationId: m.prop(m.route.param("end")),
 
       at: m.prop(new Date(at)),
 
@@ -332,17 +350,17 @@ enum StatusCode {
   OK, NO_MORE, ERROR
 }
 
-function listenLongTrip(ctrl: Ctrl) {
+function traceLongTrip(ctrl: Ctrl) {
   var queue: string[] = [];
   var lastProducerSpeed = 0;
-  var minInterval = 400;
+  var minInterval = 100;
 
   (function consummer(interval: number) {
     if(ctrl.isComputationInProgress()) {
       var h = queue.shift();
-      var el = document.querySelector('#departures .empty-loading .trace');
-      if(el) el.textContent = h;
-      var producerSpeed = lastProducerSpeed;
+      var el = ctrl.scope().querySelector('.trace .label');
+      if(el && h) el.textContent = h;
+      var producerSpeed = queue.length > 1 ? lastProducerSpeed / queue.length : lastProducerSpeed;
       setTimeout(() => consummer(producerSpeed), producerSpeed);
     }
   })(1000);
@@ -351,8 +369,7 @@ function listenLongTrip(ctrl: Ctrl) {
     if(ctrl.isComputationInProgress()) {
       native.Cheminot.trace().then(function(trace) {
         queue = queue.concat(trace);
-        lastProducerSpeed = trace.length ? (interval / trace.length) : (interval + (interval / 2));
-        lastProducerSpeed = lastProducerSpeed < minInterval ? minInterval : lastProducerSpeed;
+        lastProducerSpeed = (trace.length > 2) ? (interval / trace.length) : (interval * 2);
         setTimeout(() => producer(lastProducerSpeed), lastProducerSpeed);
       });
     }
@@ -366,15 +383,19 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
       ctrl.isComputationInProgress(true);
       var eventuallyTrip: Q.Promise<ArrivalTimes>;
       if(!ctrl.isComputingLongTrip()) {
-        eventuallyTrip = native.Cheminot.lookForBestDirectTrip(ctrl.startStation, ctrl.endStation, at, te).then((trip) => {
+        eventuallyTrip = native.Cheminot.lookForBestDirectTrip(ctrl.startStationId(), ctrl.endStationId(), at, te).then((trip) => {
           if(!trip.arrivalTimes.length && !trip.isDirect) {
             ctrl.isComputingLongTrip(true);
+            if(!ctrl.isPullUpDisplayed()) showTrace(ctrl);
             m.redraw();
-            return native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1);
+            traceLongTrip(ctrl);
+            return native.Cheminot.lookForBestTrip(ctrl.startStationId(), ctrl.endStationId(), at, te, 1).then((x) => {
+              return x;
+            });
           } else return Q(trip);
         });
       } else {
-        eventuallyTrip = native.Cheminot.lookForBestTrip(ctrl.startStation, ctrl.endStation, at, te, 1);
+        eventuallyTrip = native.Cheminot.lookForBestTrip(ctrl.startStationId(), ctrl.endStationId(), at, te, 1);
       }
       return eventuallyTrip.then((trip) => {
         if(trip.arrivalTimes.length > 0) {
@@ -398,6 +419,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
         }
       });
     } else {
+      hideTrace(ctrl);
       return Utils.Promise.pure(StatusCode.OK);
     }
   }
@@ -475,6 +497,16 @@ function displayHolo(ctrl: Ctrl): void {
 
 function hideHolo(ctrl: Ctrl): void {
   document.body.classList.remove('loading');
+}
+
+function hideTrace(ctrl: Ctrl): Q.Promise<HTMLElement> {
+  var el = <HTMLElement> ctrl.scope().querySelector('.trace');
+  return Zanimo(el, 'transform', 'translate3d(0, 0, 0)', 100);
+}
+
+function showTrace(ctrl: Ctrl): Q.Promise<HTMLElement> {
+  var el = <HTMLElement> ctrl.scope().querySelector('.trace');
+  return Zanimo(el, 'transform', 'translate3d(0, -' + el.clientHeight + 'px, 0)', 400, 'cubic-bezier(0.025, 0.970, 0.395, 1.000)');
 }
 
 export function get(): m.Module<Ctrl> {

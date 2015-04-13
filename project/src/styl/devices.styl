@@ -23,8 +23,8 @@ modal_control_value_size=18px
 modal_control_button_size=50px
 
 departures_wrapper_width=400px
-departures_pullup_padding=14px
-departures_pullup_size=18px
+departures_pullup_padding=16px
+departures_pullup_size=20px
 departures_loading_size=18px
 departures_longtrip_width=230px
 departures_item_padding=14px
@@ -35,6 +35,8 @@ departures_item_startend_padding=8px
 departures_item_start_width=140px
 departures_item_clock_size=23px
 departures_item_to_size=21px
+departures_item_day_padding=12px
+departures_item_day_size=16px
 
 trip_span_size=16px
 trip_item_height=66px
@@ -43,7 +45,9 @@ trip_line_size=21.2px
 trip_clock_size=12px
 
 device(min_width, max_width, factor) {
+
     portrait = "only screen and (min-device-width : " + min_width + ") and (max-device-width : " + max_width + ")"
+
     @media portrait {
         .modal {
             width: scale(modal_width, factor)
@@ -106,45 +110,67 @@ device(min_width, max_width, factor) {
         }
 
         #departures {
-            .empty-loading .label {
-                width: scale(departures_longtrip_width, factor)
+
+            .trace {
+                padding: scale(departures_pullup_padding, factor) 0 scale(departures_pullup_padding, factor) 0
+                font-size: scale(departures_pullup_size, factor)
             }
+
+            .empty-loading {
+                width: scale(departures_longtrip_width, factor)
+
+                .label {
+                    font-size: scale(departures_loading_size, factor)
+                }
+            }
+
             .wrapper {
                 max-width: departures_wrapper_width
             }
+
             li {
                 &:not(.pull-up) {
                     padding: 0 scale(departures_item_padding, factor) 0 scale(departures_item_padding, factor)
                 }
-                &.pull-up, &.day {
+
+                &.pull-up {
                     padding: scale(departures_pullup_padding, factor) 0 scale(departures_pullup_padding, factor) 0
                     font-size: scale(departures_pullup_size, factor)
                 }
+
+                &.day {
+                    padding: scale(departures_item_day_padding, factor) 0 scale(departures_item_day_padding, factor) 0
+                    font-size: scale(departures_item_day_size, factor)
+                }
+
                 .meta {
                     font-size: scale(departures_item_meta_size, factor)
                     padding: scale(departures_item_meta_padding, factor) 0 scale(departures_item_meta_padding, factor) 0
                 }
+
                 .start-end {
                     font-size: scale(departures_item_startend_size, factor)
                     padding: 0 0 scale(departures_item_startend_padding, factor) 0
                 }
+
                 .alarm-clock:before {
                     font-size: scale(departures_item_clock_size, factor)
                 }
+
                 .to {
                     font-size: scale(departures_item_to_size, factor)
                 }
+
                 .start {
                     width: scale(departures_item_start_width, factor)
                 }
             }
-            .empty-loading {
-                font-size: scale(departures_loading_size, factor)
-            }
         }
 
         #trip .stops li {
+
             height: scale(trip_item_height, factor)
+
             font-size: scale(trip_span_size, factor)
 
             .alarm-clock::before {
@@ -164,6 +190,7 @@ device(min_width, max_width, factor) {
 
 // IPHONE 5 (default)
 @media only screen {
+
     .modal {
         width: modal_width
 
@@ -178,6 +205,7 @@ device(min_width, max_width, factor) {
     }
 
     .date-picker, .time-picker {
+
         .controls value {
             height: modal_control_value_height
             line-height: modal_control_value_height
@@ -225,44 +253,66 @@ device(min_width, max_width, factor) {
     }
 
     #departures {
-        .empty-loading .label {
-            width: departures_longtrip_width
+
+        .trace {
+            padding: departures_pullup_padding 0 departures_pullup_padding 0
+            font-size: departures_pullup_size
         }
+
+        .empty-loading {
+            font-size: departures_loading_size
+
+            .label {
+                width: departures_longtrip_width
+            }
+        }
+
         .wrapper {
             max-width: departures_wrapper_width
         }
+
         li {
+
             &:not(.pull-up) {
                 padding: 0 departures_item_padding 0 departures_item_padding
             }
-            &.pull-up, &.day {
+
+            &.pull-up {
                 padding: departures_pullup_padding 0 departures_pullup_padding 0
                 font-size: departures_pullup_size
             }
+
+            &.day {
+                padding: departures_item_day_padding 0 departures_item_day_padding 0
+                font-size: departures_item_day_size
+            }
+
             .meta {
                 font-size: departures_item_meta_size
                 padding: departures_item_meta_padding 0 departures_item_meta_padding 0
             }
+
             .start-end {
                 padding: 0 0 departures_item_startend_padding 0
                 font-size: departures_item_startend_size
             }
+
             .alarm-clock:before {
                 font-size: departures_item_clock_size
             }
+
             .to {
                 font-size: departures_item_to_size
             }
+
             .start {
                 width: departures_item_start_width
             }
         }
-        .empty-loading {
-            font-size: departures_loading_size
-        }
     }
 
     #trip .stops li {
+
         height: trip_item_height
         font-size: trip_span_size
 
@@ -271,7 +321,9 @@ device(min_width, max_width, factor) {
         }
 
         .right {
+
             border-left: trip_line_width solid dark-blue
+
             &::before {
                 font-size: trip_line_size
             }

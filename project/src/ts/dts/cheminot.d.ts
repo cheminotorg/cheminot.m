@@ -34,7 +34,6 @@ declare type ArrivalTime = {
 declare type Meta = {
   version: string;
   createdAt: Date;
-  expiredAt: Date;
 }
 
 declare type Settings = {

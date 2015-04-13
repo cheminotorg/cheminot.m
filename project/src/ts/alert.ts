@@ -85,7 +85,6 @@ export function about(classList: string[] = []): Q.Promise<void> {
     m('tr', {}, [m('td', {}, 'version'), m('td', {}, Settings.version)]),
     m('tr', {}, [m('td', {}, 'git'), m('td', {}, Settings.gitVersion)]),
     m('tr', {}, [m('td', {}, 'db creation'), m('td', {}, formatDay(Settings.db.createdAt))]),
-    m('tr', {}, [m('td', {}, 'db expiration'), m('td', {}, formatDay(Settings.db.expiredAt))]),
     m('tr', {}, [m('td', {}, 'db version'), m('td', {}, Settings.db.version)])]);
 
   return info(body, classList.concat(['about']));

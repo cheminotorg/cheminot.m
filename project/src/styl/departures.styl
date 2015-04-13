@@ -1,4 +1,61 @@
+pin() {
+    .pin {
+        position: absolute
+        top: 0
+        bottom: 0
+        left: 0
+        width: 10%
+        background: #FFF
+        padding: 10px
+
+        icon_cheminot('pin', #FFF)
+
+        &::before {
+            font-size: 40px
+            color: green
+            position: absolute
+            top: 50%
+            left: 50%
+            transform: translate(-50%, -50%)
+        }
+    }
+}
+
 #departures {
+
+    > .trace {
+        position: fixed
+        bottom: 0
+        width: 100%
+        text-align: center
+        background: green
+        color: white
+        box-shadow: 0 -1px 1px rgba(0,0,0,0.1)
+        z-index: 2
+
+        &.end {
+            background: blue
+
+            .pin::before {
+
+                color: blue
+            }
+        }
+
+        > span {
+            display: inline-block
+        }
+
+        .label {
+            width: 250px
+            white-space: nowrap
+            overflow: hidden
+            text-overflow: ellipsis
+            position: relative
+        }
+
+        pin()
+    }
 
     .empty-loading {
         z-index: 1
@@ -41,6 +98,8 @@
 
             .pull-up {
                 color: white
+
+                pin()
             }
         }
 
