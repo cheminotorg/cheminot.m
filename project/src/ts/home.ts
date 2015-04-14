@@ -57,8 +57,8 @@ function formatTime(date: Date) {
 function renderTabs(ctrl: Ctrl): m.VirtualElement {
   var attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if (!isUpdate) {
-        el.addEventListener('touchend', _.partial(ctrl.onTabTouched, ctrl));
+      if(!isUpdate) {
+        Utils.$.touchend(el, _.partial(ctrl.onTabTouched, ctrl));
       }
     }
   }
@@ -98,8 +98,8 @@ function renderTabs(ctrl: Ctrl): m.VirtualElement {
 function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
   var inputStationWrapperAttrs = {
     config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
-      if (!isUpdate) {
-        Utils.$.one(el, 'touchend', _.partial(ctrl.onInputStationTouched, ctrl));
+      if(!isUpdate) {
+        Utils.$.touchendOne(el, _.partial(ctrl.onInputStationTouched, ctrl));
       }
     }
   };
@@ -118,7 +118,7 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
             if(!native.Keyboard.isVisible()) native.Keyboard.show();
           }, 100)
         }
-        if (!isUpdate) {
+        if(!isUpdate) {
           el.addEventListener('input', _.partial(ctrl.onInputStationKeyUp, ctrl))
         }
       }
@@ -135,8 +135,8 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
       class: 'font reset focus',
       type: 'button',
       config: (el: HTMLElement, isUpdate: boolean, context: any) => {
-        if (!isUpdate) {
-          el.addEventListener('touchend', _.partial(ctrl.onResetStationTouched, ctrl));
+        if(!isUpdate) {
+          Utils.$.touchend(el, _.partial(ctrl.onResetStationTouched, ctrl));
         }
       }
     }, (name, value) => {
@@ -151,7 +151,7 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
 
   var formAttrs = {
     config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
-      if (!isUpdate) {
+      if(!isUpdate) {
         el.addEventListener('submit', _.partial(ctrl.onInputStationSubmit, ctrl));
       }
     }
@@ -177,8 +177,8 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
   var stationAttrs = function(index: number) {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-        if (!isUpdate) {
-          el.addEventListener('touchend', _.partial(ctrl.onStationSelected, ctrl));
+        if(!isUpdate) {
+          Utils.$.touchend(el, _.partial(ctrl.onStationSelected, ctrl));
         }
         if((index + 1) === ctrl.stations().length) {
           ctrl.adaptWrapperTop(ctrl);
@@ -190,8 +190,8 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
 
   var suggestionsAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if (!isUpdate) {
-        el.addEventListener('touchstart', _.partial(ctrl.onScrollStations, ctrl));
+      if(!isUpdate) {
+        Utils.$.touchstart(el, _.partial(ctrl.onScrollStations, ctrl));
       }
     }
   }
@@ -227,8 +227,8 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement {
 
   var inputTimeAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if (!isUpdate) {
-        el.addEventListener('touchend', _.partial(ctrl.onTimeTouched, ctrl));
+      if(!isUpdate) {
+        Utils.$.touchend(el, _.partial(ctrl.onTimeTouched, ctrl));
       }
     }
   };
@@ -236,8 +236,8 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement {
   var dateSelectorAttrs = () => {
     var inputAttrs = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-        if (!isUpdate) {
-          el.addEventListener('touchend', _.partial(ctrl.onDateTouched, ctrl));
+        if(!isUpdate) {
+          Utils.$.touchend(el, _.partial(ctrl.onDateTouched, ctrl));
         }
       }
     };
@@ -262,8 +262,8 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement {
 
     return _.merge(attrs, {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-        if (!isUpdate) {
-          el.addEventListener('touchend', _.partial(ctrl.onSubmitTouched, ctrl));
+        if(!isUpdate) {
+          Utils.$.touchend(el, _.partial(ctrl.onSubmitTouched, ctrl));
         }
       }
     });
@@ -601,7 +601,7 @@ function resetInputStationsPosition(ctrl: Ctrl, inputStation: HTMLInputElement):
     moveDownViewport(ctrl).then(() => {
       showInput(ctrl).then(() => {
         showDateTimePanel(ctrl).then(() => {
-          Utils.$.one(resetButton.parentElement, 'touchend', _.partial(ctrl.onInputStationTouched, ctrl));
+          Utils.$.touchendOne(resetButton.parentElement, _.partial(ctrl.onInputStationTouched, ctrl));
         });
       });
     });

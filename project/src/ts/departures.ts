@@ -126,7 +126,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     var attrs: Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          el.addEventListener('touchend', _.partial(ctrl.onDepartureSelected, ctrl, departure));
+          Utils.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
         }
       },
       key: departure.id

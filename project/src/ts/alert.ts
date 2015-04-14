@@ -24,7 +24,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.bind('cheminot:alert', _.partial(ctrl.onDisplay, ctrl));
-        el.addEventListener('touchend', _.partial(ctrl.onOkTouched, ctrl));
+        Utils.$.touchend(el, _.partial(ctrl.onOkTouched, ctrl));
       }
     }
   }

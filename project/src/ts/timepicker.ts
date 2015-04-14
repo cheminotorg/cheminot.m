@@ -30,7 +30,7 @@ function renderHour(ctrl: Ctrl): m.VirtualElement {
   var attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        el.addEventListener('touchend', _.partial(ctrl.onHourChange, ctrl));
+        Utils.$.touchend(el, _.partial(ctrl.onHourChange, ctrl));
       }
     }
   };
@@ -46,7 +46,7 @@ function renderMinute(ctrl: Ctrl): m.VirtualElement {
   var attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        el.addEventListener('touchend', _.partial(ctrl.onMinuteChange, ctrl));
+        Utils.$.touchend(el, _.partial(ctrl.onMinuteChange, ctrl));
       }
     }
   };
@@ -63,7 +63,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          el.addEventListener('touchend', _.partial(handler, ctrl));
+          Utils.$.touchend(el, _.partial(handler, ctrl));
         }
       }
     }

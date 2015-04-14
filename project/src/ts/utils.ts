@@ -198,6 +198,30 @@ export module Transition {
 
 export module $ {
 
+  export function touchstart(el: HTMLElement, handler: (e: Event) => void): void {
+    if(Detectizr.isMobile()) {
+      el.addEventListener('touchstart', handler);
+    } else {
+      el.addEventListener('click', handler);
+    }
+  }
+
+  export function touchend(el: HTMLElement, handler: (e: Event) => void): void {
+    if(Detectizr.isMobile()) {
+      el.addEventListener('touchend', handler);
+    } else {
+      el.addEventListener('click', handler);
+    }
+  }
+
+  export function touchendOne(el: HTMLElement, handler: (e: Event) => void): void {
+    if(Detectizr.isMobile()) {
+      one(el, 'touchend', handler);
+    } else {
+      one(el, 'click', handler);
+    }
+  }
+
   export function bind(event: string, handler: (e: Event) => void): void {
     document.body.addEventListener(event, handler);
   }

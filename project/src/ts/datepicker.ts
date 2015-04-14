@@ -31,7 +31,7 @@ function renderDay(ctrl: Ctrl): m.VirtualElement {
   var attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        el.addEventListener('touchend', _.partial(ctrl.onDayChange, ctrl));
+        Utils.$.touchend(el, _.partial(ctrl.onDayChange, ctrl));
       }
     }
   };
@@ -47,7 +47,7 @@ function renderMonth(ctrl: Ctrl): m.VirtualElement {
   var attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        el.addEventListener('touchend', _.partial(ctrl.onMonthChange, ctrl));
+        Utils.$.touchend(el, _.partial(ctrl.onMonthChange, ctrl));
       }
     }
   };
@@ -63,7 +63,7 @@ function renderYear(ctrl: Ctrl): m.VirtualElement {
   var attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        el.addEventListener('touchend', _.partial(ctrl.onYearChange, ctrl));
+        Utils.$.touchend(el, _.partial(ctrl.onYearChange, ctrl));
       }
     }
   };
@@ -80,7 +80,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          el.addEventListener('touchend', _.partial(handler, ctrl));
+          Utils.$.touchend(el, _.partial(handler, ctrl));
         }
       }
     }
