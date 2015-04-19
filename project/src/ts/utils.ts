@@ -71,23 +71,6 @@ export module m {
     return _prop(value, f, scope);
   }
 
-  export function propMap<T>(values: Array<[string, T]>): (key: string, value?: T) => T {
-    var _prop = (map?: Map<string, T>) => {
-      var prop = (key: string, value?: T) => {
-        if (value !== undefined) map.set(key, value);
-        return map.get(key);
-      }
-      return prop;
-    }
-
-    var map = values.reduce((acc, pair) => {
-      acc.set(pair[0], pair[1]);
-      return acc;
-    }, new Map<string, T>());
-
-    return _prop(map);
-  }
-
   export function handleAttributes(attributes: Attributes, validate: (name: string, value: string) => boolean): Attributes {
     for(var key in attributes) {
       var attributeValue = attributes[key];
