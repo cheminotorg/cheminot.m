@@ -17,6 +17,12 @@ body:not(.scrolling) .touching {
     }
 }
 
+body[data-demo] {
+  * {
+    cursor: url("../images/touch-cursor.png"), pointer;
+  }
+}
+
 input {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
     -webkit-appearance: none

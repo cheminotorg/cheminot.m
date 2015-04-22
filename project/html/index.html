@@ -10,12 +10,7 @@
     <script data-main="js/main.js" src="js/vendors/require.js"></script>
     <link rel="stylesheet" href="css/main.css">
   </head>
-  <!-- @if MOCKED -->
-  <body data-mocked>
-  <!-- @endif -->
-  <!-- @if !MOCKED -->
-  <body>
-  <!-- @endif -->
+  <body <!-- @if MOCKED --> data-mocked <!-- @endif --> <!-- @if DEMO --> data-demo <!-- @endif -->>
     <main id="viewport">
     </main>
     <script src="cordova.js"></script>
@@ -29,7 +24,8 @@
           'IScroll': 'vendors/iscroll-probe',
           'moment': 'vendors/moment',
           'lodash': 'vendors/lodash',
-          'qstart': 'vendors/qstart'
+          'qstart': 'vendors/qstart',
+          'qajax': 'vendors/qajax'
         }
       });
     </script>

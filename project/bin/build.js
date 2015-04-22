@@ -59,7 +59,8 @@ module.exports.build = function (platform, settings, configurationName) {
       fs.writeFileSync(settingsPath, settingsContent, {"encoding": "utf8"});
       preprocess.preprocessFileSync(htmlPath.src, htmlPath.dest, {
         PLATFORM : platform,
-        MOCKED: configurationName == 'default'
+        MOCKED: configurationName == 'default',
+        DEMO: configurationName == 'demo'
       });
       d.resolve();
     });

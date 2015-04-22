@@ -74,6 +74,11 @@
         "product_name": "Cheminot mock",
         "product_file_name": "cheminot_mock",
         "ga_id": "UA-XXXXXXXX-X"
+      },
+      "demo": {
+        "id": "m.cheminot",
+        "product_name": "Cheminot demo",
+        "product_file_name": "cheminot_demo"
       }
     }
   }

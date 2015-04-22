@@ -5,6 +5,7 @@
 /// <reference path='dts/Zanimo.d.ts'/>
 /// <reference path='dts/lodash.d.ts'/>
 /// <reference path='dts/qstart.d.ts'/>
+/// <reference path='dts/qajax.d.ts'/>
 /// <reference path='dts/cheminot.d.ts'/>
 
 'use strict';

@@ -41,7 +41,8 @@ var Assets = {
       IScroll: 'project/node_modules/iscroll/build/iscroll-probe.js',
       moment: 'project/node_modules/moment/moment.js',
       lodash: 'project/node_modules/lodash/lodash.js',
-      qstart: 'project/node_modules/qstart/qstart.js'
+      qstart: 'project/node_modules/qstart/qstart.js',
+      qajax: 'project/node_modules/qajax/src/browser.js'
     },
     dest: 'project/www/js/vendors/'
   }

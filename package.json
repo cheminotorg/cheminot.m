@@ -10,8 +10,6 @@
   "devDependencies": {
     "gulp": "latest",
     "gulp-util": "latest",
-    "latest": "latest",
-    "stylus": "latest",
     "gulp-stylus": "latest",
     "gulp-tsc": "latest",
     "nib": "latest",

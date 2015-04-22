@@ -14,7 +14,8 @@
     "moment": "2.8.3",
     "requirejs": "2.1.15",
     "lodash": "2.4.1",
-    "qstart": "0.2.0"
+    "qstart": "0.2.0",
+    "qajax": "1.0.2"
   },
   "devDependencies": {
     "preprocess": "latest",

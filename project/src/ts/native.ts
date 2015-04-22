@@ -1,4 +1,5 @@
 import Mock = require('mock');
+import Demo = require('demo');
 import Q = require('q');
 import Cache = require('cache');
 import _ = require('lodash');
@@ -60,7 +61,11 @@ export module Keyboard {
 export module Cheminot {
 
   export function isMocked(): boolean {
-    return document.querySelector('body').hasAttribute('data-mocked');
+    return document.querySelector('body').hasAttribute('data-mocked') || isDemo();
+  }
+
+  export function isDemo(): boolean {
+    return document.querySelector('body').hasAttribute('data-demo');
   }
 
   export function isProd(): boolean {
@@ -71,7 +76,9 @@ export module Cheminot {
     var d = Q.defer<Meta>();
     var success = (meta: Meta) => d.resolve(meta);
     var error = (e: string) => d.reject(e);
-    if(isMocked()) {
+    if(isDemo()) {
+      Demo.init(success, error);
+    } else if(isMocked()) {
       Mock.init(success, error);
     } else  {
       cordova.plugins.Cheminot.init(success, error);
@@ -89,8 +96,10 @@ export module Cheminot {
         d.resolve(trip);
       }
       var error = (e: string) => d.reject(e);
-      if(isMocked()) {
-        Mock.lookForBestDirectTrip(vsId, veId, at, te, 0, success, error);
+      if(isDemo()) {
+        Demo.lookForBestDirectTrip(vsId, veId, at, te, success, error);
+      } else if(isMocked()) {
+        Mock.lookForBestDirectTrip(vsId, veId, at, te, success, error);
       } else {
         cordova.plugins.Cheminot.lookForBestDirectTrip(vsId, veId, at, te, success, error);
       }
@@ -107,7 +116,9 @@ export module Cheminot {
         d.resolve(trip);
       }
       var error = (e: string) => d.reject(e);
-      if(isMocked()) {
+      if(isDemo()) {
+        Demo.lookForBestTrip(vsId, veId, at, te, max, success, error);
+      } else if(isMocked()) {
         Mock.lookForBestTrip(vsId, veId, at, te, max, success, error);
       } else {
         cordova.plugins.Cheminot.lookForBestTrip(vsId, veId, at, te, max, success, error);
@@ -119,14 +130,22 @@ export module Cheminot {
   export function abort(): Q.Promise<void> {
     var d = Q.defer<void>();
     var error = (e: string) => d.reject(e);
-    cordova.plugins.Cheminot.abort(() => d.resolve(null), error);
+    if(isDemo()) {
+      Demo.abort(() => d.resolve(null), error);
+    } else {
+      cordova.plugins.Cheminot.abort(() => d.resolve(null), error);
+    }
     return d.promise;
   }
 
   export function trace(): Q.Promise<string[]> {
     var d = Q.defer<string[]>();
     var error = (e: string) => d.reject(e);
-    cordova.plugins.Cheminot.trace((trace) => d.resolve(trace), error);
+    if(isDemo()) {
+      Demo.trace(trace => d.resolve(trace), error);
+    } else {
+      cordova.plugins.Cheminot.trace(trace => d.resolve(trace), error);
+    }
     return d.promise;
   }
 }
