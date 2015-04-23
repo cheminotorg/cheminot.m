@@ -10,7 +10,7 @@ type DemoArrivalTime = {
   pos: number;
 }
 
-const baseURL = 'http://localhost:9000';
+const baseURL = 'http://cheminot.org';
 
 export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
   const endpoint = baseURL + '/cheminotm/init';
@@ -40,6 +40,7 @@ export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, 
   }).then(Qajax.filterSuccess)
     .then(response => {
       let trip: DemoArrivalTime[] = JSON.parse(response.responseText);
+      if(trip) {
       success(trip.map(function(arrivalTime) {
         return {
           stopId: arrivalTime.stopId,
@@ -50,6 +51,9 @@ export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, 
           departure: new Date(arrivalTime.departure * 1000)
         };
       }));
+      } else {
+        error('aborted');
+      }
     })
     .catch(e => error(e));
 }
@@ -96,7 +100,29 @@ export function abort(success: () => void, error: (err: string) => void): void {
     .catch(e => error(e));
 }
 
-export function trace(success: (trace: string[]) => void, error: (err: string) => void): void {
+var stream: EventSource;
+var queue: string[] = [];
+
+function Stream(): EventSource {
   const endpoint = baseURL + '/cheminotm/trace';
-  //TODO
+
+  var stream = new EventSource(baseURL + '/cheminotm/trace');
+
+  stream.onmessage = (msg) => {
+    var data: string[] = JSON.parse(msg.data);
+    queue = queue.concat(data);
+  };
+
+  stream.onerror = (event: any) => {
+    console.log(event);
+  };
+
+  return stream;
+}
+
+export function trace(success: (trace: string[]) => void, error: (err: string) => void): void {
+  if(!stream) stream = Stream();
+  console.log(queue.length);
+  success(queue);
+  queue = [];
 }

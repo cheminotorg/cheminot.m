@@ -93,3 +93,12 @@ interface Navigator {
 interface CHTMLElement {
   remove(): void
 }
+
+declare type EventSource = {
+  onmessage: (e: MessageEvent) => void;
+  onerror: ErrorEventHandler;
+}
+
+declare var EventSource: {
+  new(uri: string): EventSource;
+}
