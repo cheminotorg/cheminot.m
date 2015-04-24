@@ -2,9 +2,16 @@ declare type Attributes = {
   [index: string]: any;
 }
 
-declare type Station = {
-  name: string;
+declare type SuggestedStation = {
   id: string;
+  name: string;
+}
+
+declare type Station = {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
 }
 
 declare type ArrivalTimes = {
@@ -61,7 +68,7 @@ declare module cordova {
       function lookForBestTrip(start: string, end: string, at: Date, te: Date, max: number, success: (arrivalTime: ArrivalTime[]) => void, error: (e: string) => void): void;
       function lookForBestDirectTrip(start: string, end: string, at: Date, te: Date, success: (result: [boolean, ArrivalTime[]]) => void, error: (e: string) => void): void;
       function abort(success: () => void, error: (e: string) => void): void;
-      function trace(success: (trace: string[]) => void, error: (e: string) => void): void;
+      function trace(success: (trace: Station[]) => void, error: (e: string) => void): void;
     }
   }
 }

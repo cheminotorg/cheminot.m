@@ -10,7 +10,8 @@ type DemoArrivalTime = {
   pos: number;
 }
 
-const baseURL = 'http://cheminot.org';
+//const baseURL = 'http://cheminot.org';
+const baseURL = 'http://localhost:9000';
 
 export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
   const endpoint = baseURL + '/cheminotm/init';
@@ -101,7 +102,7 @@ export function abort(success: () => void, error: (err: string) => void): void {
 }
 
 var stream: EventSource;
-var queue: string[] = [];
+var queue: Station[] = [];
 
 function Stream(): EventSource {
   const endpoint = baseURL + '/cheminotm/trace';
@@ -109,7 +110,7 @@ function Stream(): EventSource {
   var stream = new EventSource(baseURL + '/cheminotm/trace');
 
   stream.onmessage = (msg) => {
-    var data: string[] = JSON.parse(msg.data);
+    var data: Station[] = JSON.parse(msg.data);
     queue = queue.concat(data);
   };
 
@@ -120,9 +121,8 @@ function Stream(): EventSource {
   return stream;
 }
 
-export function trace(success: (trace: string[]) => void, error: (err: string) => void): void {
+export function trace(success: (trace: Station[]) => void, error: (err: string) => void): void {
   if(!stream) stream = Stream();
-  console.log(queue.length);
   success(queue);
   queue = [];
 }

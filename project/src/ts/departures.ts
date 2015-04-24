@@ -351,7 +351,7 @@ enum StatusCode {
 }
 
 function traceLongTrip(ctrl: Ctrl) {
-  var queue: string[] = [];
+  var queue: Station[] = [];
   var lastProducerSpeed = 0;
   var minInterval = 100;
 
@@ -359,7 +359,7 @@ function traceLongTrip(ctrl: Ctrl) {
     if(ctrl.isComputationInProgress()) {
       var h = queue.shift();
       var el = ctrl.scope().querySelector('.trace .label');
-      if(el && h) el.textContent = h;
+      if(el && h) el.textContent = h.name;
       var producerSpeed = queue.length > 1 ? lastProducerSpeed / queue.length : lastProducerSpeed;
       setTimeout(() => consummer(producerSpeed), producerSpeed);
     }

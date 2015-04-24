@@ -10,11 +10,17 @@ type BackButtonHandlers = {
 }
 
 var handlers: BackButtonHandlers = {};
+
 export function onBackButton(key: string, f: (e: Event) => void) {
   var h = handlers[key];
   if(h) document.removeEventListener('backbutton', h);
   handlers[key] = f;
   document.addEventListener('backbutton', f, false);
+  window.addEventListener("message", (message: MessageEvent) => {
+    if(message.data == "cheminotm.backbutton" && message.origin == window.location.origin) {
+      f(message);
+    }
+  }, false);
 };
 
 export module Keyboard {
@@ -138,8 +144,8 @@ export module Cheminot {
     return d.promise;
   }
 
-  export function trace(): Q.Promise<string[]> {
-    var d = Q.defer<string[]>();
+  export function trace(): Q.Promise<Station[]> {
+    var d = Q.defer<Station[]>();
     var error = (e: string) => d.reject(e);
     if(isDemo()) {
       Demo.trace(trace => d.resolve(trace), error);

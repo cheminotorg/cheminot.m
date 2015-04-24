@@ -27,7 +27,7 @@ function getStationsTree(): Q.Promise<any> {
   return d.promise;
 }
 
-function suggestions(predicat: (station: Station) => boolean, found: Attributes, node: any): any[] {
+function suggestions(predicat: (station: SuggestedStation) => boolean, found: Attributes, node: any): any[] {
   if(node) {
     var onLeft = suggestions(predicat, found, node.left);
     var onRight = suggestions(predicat, found, node.right);
@@ -44,7 +44,7 @@ function suggestions(predicat: (station: Station) => boolean, found: Attributes,
   };
 }
 
-export function search(term: string, predicat: (station: Station) => boolean = () => true): Station[] {
+export function search(term: string, predicat: (station: SuggestedStation) => boolean = () => true): SuggestedStation[] {
   var found: Attributes = {};
   function step(term: string, node: any, results: any[]): any[] {
     if(node) {
@@ -78,14 +78,14 @@ export function search(term: string, predicat: (station: Station) => boolean = (
   term = term.toLowerCase();
   var results = (term.length > 0) ? step(term, TREE, []) : [];
   results = _.take(results, 50);
-  results.sort((a: Station, b: Station) => {
+  results.sort((a: SuggestedStation, b: SuggestedStation) => {
     var x =  a.name.toLowerCase().indexOf(term) - b.name.toLowerCase().indexOf(term);
     return (x == 0) ? ((a.name < b.name) ? -1 : 1) : x;
   });
   return results;
 }
 
-export function getStationByTerm(term: string): Station {
+export function getStationByTerm(term: string): SuggestedStation {
   var results = search(term);
   if(results.length > 0) {
     return _.head(results);
@@ -94,7 +94,7 @@ export function getStationByTerm(term: string): Station {
   }
 }
 
-export function adaptSaintWord(term: string, station: Station): string {
+export function adaptSaintWord(term: string, station: SuggestedStation): string {
   var stationSaintMatches = station.name.match(/^Saint[-|\s](.*)$/);
   var stationStMatches = station.name.match(/^St[-|\s](.*)$/);
   var stationMatches = stationStMatches || stationSaintMatches;
@@ -109,7 +109,7 @@ export function adaptSaintWord(term: string, station: Station): string {
   }
 }
 
-export function adaptCompoundWord(term: string, station: Station): string {
+export function adaptCompoundWord(term: string, station: SuggestedStation): string {
   var termSpaceIndex = term.indexOf(' ');
   var termDashIndex = term.indexOf('-');
   var termSep = (() => {
