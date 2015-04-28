@@ -8,16 +8,29 @@
             top: 50%
             left: 50%
             transform: translate(-50%, -50%)
+            width: 100%
 
-            > span {
+            .start, .end {
                 white-space: nowrap
+                width: 40%
+                display: inline-block
+                text-overflow: ellipsis
+                overflow: hidden
+            }
+
+            .start {
+              text-align: right
+            }
+
+            .end {
+              text-align: left
             }
 
             .to {
                 icon_cheminot('right', blue)
 
                 &::before {
-                    padding: 10px
+                    vertical-align: top
                 }
             }
         }
