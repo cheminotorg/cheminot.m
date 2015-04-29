@@ -93,7 +93,10 @@ var app = {
     var attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if (!isUpdate) {
-          setTimeout(() => Utils.$.trigger('cheminot:ready'), 200);
+          setTimeout(() => {
+            window.parent.postMessage('cheminot:ready', window.location.origin);
+            Utils.$.trigger('cheminot:ready')
+          }, 200);
         }
       }
     }
