@@ -338,6 +338,12 @@ var departures: m.Module<Ctrl> = {
       if(ctrl.displayed()) history.back();
     });
 
+    window.onbeforeunload = () => {
+      if(ctrl.isComputationInProgress()) {
+        native.Cheminot.abort();
+      }
+    }
+
     return ctrl;
   },
 
