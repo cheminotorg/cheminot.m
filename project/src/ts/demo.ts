@@ -16,6 +16,17 @@ const baseURL = 'http://localhost:9000';
 export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
   const endpoint = baseURL + '/cheminotm/init';
   Qajax(endpoint)
+      .then((response) => {
+        var result: any;
+        try { result = JSON.parse(response.responseText); } catch(e) {};
+        if(response.status == 400 && result && result.error) {
+          window.parent.postMessage({
+            event: 'cheminot:init',
+            error: result.error
+          }, window.location.origin);
+        }
+        return response;
+      })
       .then(Qajax.filterSuccess)
       .then(response => Qajax.toJSON<Meta>(response))
       .then(result => success(result))
@@ -41,6 +52,10 @@ export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, 
   }).then(Qajax.filterSuccess)
     .then(response => {
       let trip: DemoArrivalTime[] = JSON.parse(response.responseText);
+      window.parent.postMessage({
+        event: 'cheminot:lookforbesttrip',
+        trip: trip
+      }, window.location.origin);
       if(trip) {
       success(trip.map(function(arrivalTime) {
         return {
@@ -77,6 +92,10 @@ export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: 
   }).then(Qajax.filterSuccess)
     .then(response => {
       let result: {hasDirect: boolean, arrivalTimes: DemoArrivalTime[]} = JSON.parse(response.responseText);
+      window.parent.postMessage({
+        event: 'cheminot:lookforbestdirecttrip',
+        trip: result.arrivalTimes
+      }, window.location.origin);
       success([result.hasDirect, result.arrivalTimes.map(function(arrivalTime) {
         return {
           stopId: arrivalTime.stopId,

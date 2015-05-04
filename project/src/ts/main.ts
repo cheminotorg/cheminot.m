@@ -35,7 +35,9 @@ Q.all([native.Cheminot.init(), qstart, Suggestions.init()]).spread((meta: Meta) 
       "/trip/:id": App.get()
     });
   });
-}).catch((e) => Utils.handleError(e));
+}).catch((e) => {
+  Utils.handleError(e)
+});
 
 Utils.$.bind('cheminot:ready', () => {
   navigator.splashscreen.hide()

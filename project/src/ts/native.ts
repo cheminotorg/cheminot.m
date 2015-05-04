@@ -17,7 +17,7 @@ export function onBackButton(key: string, f: (e: Event) => void) {
   handlers[key] = f;
   document.addEventListener('backbutton', f, false);
   window.addEventListener("message", (message: MessageEvent) => {
-    if(message.data == "cheminot:back" && message.origin == window.location.origin) {
+    if(message.data && message.data.event == "cheminot:back" && message.origin == window.location.origin) {
       f(message);
     }
   }, false);

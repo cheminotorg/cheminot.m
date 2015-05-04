@@ -94,7 +94,7 @@ var app = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if (!isUpdate) {
           setTimeout(() => {
-            window.parent.postMessage('cheminot:ready', window.location.origin);
+            window.parent.postMessage({ event: 'cheminot:ready' }, window.location.origin);
             Utils.$.trigger('cheminot:ready')
           }, 200);
         }
