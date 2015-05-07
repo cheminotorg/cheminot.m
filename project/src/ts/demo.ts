@@ -8,6 +8,8 @@ type DemoArrivalTime = {
   departure: number;
   tripId: string;
   pos: number;
+  lat: number;
+  lng: number;
 }
 
 //const baseURL = 'http://cheminot.org';
@@ -64,7 +66,9 @@ export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, 
           tripId: arrivalTime.tripId,
           pos: arrivalTime.pos,
           arrival: new Date(arrivalTime.arrival * 1000),
-          departure: new Date(arrivalTime.departure * 1000)
+          departure: new Date(arrivalTime.departure * 1000),
+          lat: arrivalTime.lat,
+          lng: arrivalTime.lng
         };
       }));
       } else {
@@ -97,13 +101,16 @@ export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: 
         trip: result.arrivalTimes
       }, window.location.origin);
       success([result.hasDirect, result.arrivalTimes.map(function(arrivalTime) {
+
         return {
           stopId: arrivalTime.stopId,
           stopName: arrivalTime.stopName,
           tripId: arrivalTime.tripId,
           pos: arrivalTime.pos,
           arrival: new Date(arrivalTime.arrival * 1000),
-          departure: new Date(arrivalTime.departure * 1000)
+          departure: new Date(arrivalTime.departure * 1000),
+          lat: arrivalTime.lat,
+          lng: arrivalTime.lng
         };
       })]);
     })

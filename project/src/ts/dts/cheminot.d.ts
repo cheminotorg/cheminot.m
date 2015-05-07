@@ -36,6 +36,8 @@ declare type ArrivalTime = {
   departure: Date;
   tripId: string;
   pos: number;
+  lat: number;
+  lng: number;
 }
 
 declare type Meta = {

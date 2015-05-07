@@ -39,7 +39,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 0
+      pos: 0,
+      lat: 48.79556635,
+      lng: 2.13546496
     },
     {
       stopId: 'StopPoint:OCETrain TER-87396309',
@@ -47,7 +49,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 1
+      pos: 1,
+      lat: 48.79556635,
+      lng: 2.13546496
     },
     {
       stopId: 'StopPoint:OCETrain TER-87396325',
@@ -55,7 +59,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 2
+      pos: 2,
+      lat: 48.79556635,
+      lng: 2.13546496
     },
     {
       stopId: 'StopPoint:OCETrain TER-87394296',
@@ -63,7 +69,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 3
+      pos: 3,
+      lat: 48.79556635,
+      lng: 2.13546496
     },
     {
       stopId: 'StopPoint:OCETrain TER-87394254',
@@ -71,7 +79,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 4
+      pos: 4,
+      lat: 48.79556635,
+      lng: 2.13546496
     },
     {
       stopId: 'StopPoint:OCETrain TER-87394221',
@@ -79,7 +89,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 5
+      pos: 5,
+      lat: 48.79556635,
+      lng: 2.13546496
     },
     {
       stopId: 'StopPoint:OCETrain TER-87394007',
@@ -87,7 +99,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 6
+      pos: 6,
+      lat: 48.79556635,
+      lng: 2.13546496
     },
     {
       stopId: 'StopPoint:OCETrain TER-87394130',
@@ -95,7 +109,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 7
+      pos: 7,
+      lat: 48.79556635,
+      lng: 2.13546496
     },
     {
       stopId: 'StopPoint:OCETrain TER-87394114',
@@ -103,7 +119,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 8
+      pos: 8,
+      lat: 48.79556635,
+      lng: 2.13546496
     },
     {
       stopId: 'StopPoint:OCETrain TER-87393314',
@@ -111,7 +129,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 9
+      pos: 9,
+      lat: 48.79556635,
+      lng: 2.13546496
     },
     {
       stopId: 'StopPoint:OCETrain TER-87393009',
@@ -119,7 +139,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 10
+      pos: 10,
+      lat: 48.79556635,
+      lng: 2.13546496
     },
     {
       stopId: 'StopPoint:OCETrain TER-87391003',
@@ -127,7 +149,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
       arrival: time(),
       departure: time(),
       tripId: 'OCESN016756F0100230477',
-      pos: 11
+      pos: 11,
+      lat: 48.79556635,
+      lng: 2.13546496
     }
   ];
   return leMansParis;

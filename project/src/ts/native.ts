@@ -13,15 +13,17 @@ var handlers: BackButtonHandlers = {};
 
 export function onBackButton(key: string, f: (e: Event) => void) {
   var h = handlers[key];
-  if(h) document.removeEventListener('backbutton', h);
-  handlers[key] = f;
-  document.addEventListener('backbutton', f, false);
-  window.addEventListener("message", (message: MessageEvent) => {
-    if(message.data && message.data.event == "cheminot:back" && message.origin == window.location.origin) {
-      f(message);
-    }
-  }, false);
+  if(!h) {
+    handlers[key] = f;
+    document.addEventListener('backbutton', f, false);
+  }
 };
+
+window.addEventListener("message", (message: MessageEvent) => {
+  if(message.data && message.data.event == "cheminot:back" && message.origin == window.location.origin) {
+    if(window.location.hash != '#/') history.back();
+  }
+}, false);
 
 export module Keyboard {
 

@@ -86,7 +86,16 @@ var trip: m.Module<Ctrl> = {
     var trip = Cache.getTrip(id);
     var arrivalTimes = trip ? trip.arrivalTimes : [];
     var displayed = () => Routes.matchTrip(m.route());
-    if(displayed()) native.GoogleAnalytics.trackView('Trip');
+
+    if(displayed()) {
+
+      native.GoogleAnalytics.trackView('Trip');
+
+      window.parent.postMessage({
+        event: 'cheminot:selecttrip',
+        trip: trip.arrivalTimes
+      }, window.location.origin);
+    }
 
     var ctrl = {
       scope: scope,
