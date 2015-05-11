@@ -6,12 +6,12 @@ import _ = require('lodash');
 import Utils = require('utils');
 
 type BackButtonHandlers = {
-  [index: string]: (e: Event) => void;
+  [index: string]: () => void;
 }
 
 var handlers: BackButtonHandlers = {};
 
-export function onBackButton(key: string, f: (e: Event) => void) {
+export function onBackButton(key: string, f: () => void) {
   var h = handlers[key];
   if(!h) {
     handlers[key] = f;
@@ -21,7 +21,12 @@ export function onBackButton(key: string, f: (e: Event) => void) {
 
 window.addEventListener("message", (message: MessageEvent) => {
   if(message.data && message.data.event == "cheminot:back" && message.origin == window.location.origin) {
-    if(window.location.hash != '#/') history.back();
+    if(window.location.hash != '#/') {
+      Object.keys(handlers).forEach(key => {
+        var h = handlers[key];
+        h && h();
+      });
+    }
   }
 }, false);
 

@@ -93,7 +93,8 @@ var trip: m.Module<Ctrl> = {
 
       window.parent.postMessage({
         event: 'cheminot:selecttrip',
-        trip: trip.arrivalTimes
+        trip: trip.arrivalTimes,
+        tdsp: id
       }, window.location.origin);
     }
 
