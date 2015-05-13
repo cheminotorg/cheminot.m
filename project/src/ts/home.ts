@@ -447,6 +447,10 @@ var home: m.Module<Ctrl> = {
           setInputStationValue(ctrl, inputStation, name);
           setInputStationSelected(ctrl, inputStation, id);
           resetInputStationsPosition(ctrl, inputStation);
+          window.parent.postMessage({
+            event: 'cheminot:selectstop',
+            stopId: id
+          }, window.location.origin);
           m.redraw();
         }
       },
@@ -460,6 +464,10 @@ var home: m.Module<Ctrl> = {
           setInputStationValue(ctrl, inputStation, station.name);
           setInputStationSelected(ctrl, inputStation, station.id);
           resetInputStationsPosition(ctrl, inputStation);
+          window.parent.postMessage({
+            event: 'cheminot:selectstop',
+            stopId: station.id
+          }, window.location.origin);
         }
       },
 
@@ -469,6 +477,10 @@ var home: m.Module<Ctrl> = {
         var inputStation = <HTMLInputElement> resetButton.previousElementSibling;
         var term = inputStation.value;
         if(ctrl.isViewportUp() && !term) resetInputStationsPosition(ctrl, inputStation);
+        window.parent.postMessage({
+          event: 'cheminot:resetstop',
+          stopId: isInputStationStart(inputStation) ? ctrl.inputStationStartSelected() : ctrl.inputStationEndSelected()
+        }, window.location.origin);
         setInputStationValue(ctrl, inputStation, '');
         setInputStationSelected(ctrl, inputStation, '');
         ctrl.stations([]);
