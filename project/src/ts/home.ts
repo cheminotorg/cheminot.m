@@ -337,6 +337,11 @@ var home: m.Module<Ctrl> = {
         var inputStation = <HTMLInputElement> station.querySelector('input');
         var hideInput = isInputStationStart(inputStation) ? hideInputStationEnd : hideInputStationStart;
         m.startComputation();
+        var selected = isInputStationStart(inputStation) ? ctrl.inputStationStartSelected() : ctrl.inputStationEndSelected();
+        window.parent.postMessage({
+          event: 'cheminot:resetstop',
+          stopId: selected
+        }, window.location.origin);
         setInputStationSelected(ctrl, inputStation, '');
         ctrl.stations(Suggestions.search(inputStation.value));
         Q.all([hideInput(ctrl), hideDateTimePanel(ctrl)]).then(() => {
@@ -477,9 +482,10 @@ var home: m.Module<Ctrl> = {
         var inputStation = <HTMLInputElement> resetButton.previousElementSibling;
         var term = inputStation.value;
         if(ctrl.isViewportUp() && !term) resetInputStationsPosition(ctrl, inputStation);
+        var selected = isInputStationStart(inputStation) ? ctrl.inputStationStartSelected() : ctrl.inputStationEndSelected();
         window.parent.postMessage({
           event: 'cheminot:resetstop',
-          stopId: isInputStationStart(inputStation) ? ctrl.inputStationStartSelected() : ctrl.inputStationEndSelected()
+          stopId: selected
         }, window.location.origin);
         setInputStationValue(ctrl, inputStation, '');
         setInputStationSelected(ctrl, inputStation, '');

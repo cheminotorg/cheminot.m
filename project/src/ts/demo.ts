@@ -12,8 +12,7 @@ type DemoArrivalTime = {
   lng: number;
 }
 
-//const baseURL = 'http://cheminot.org';
-const baseURL = 'http://localhost:9000';
+const baseURL = '';
 
 export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
   const endpoint = baseURL + '/cheminotm/init';
