@@ -173,7 +173,7 @@ export module GoogleAnalytics {
 
   export function startTrackerWithId(id: string): Q.Promise<void> {
     var d = Q.defer<void>();
-    if(!Cheminot.isMocked()) {
+    if(!Cheminot.isMocked() && !Cheminot.isDemo()) {
       var debug = (!Cheminot.isProd()) ? debugMode() : Utils.Promise.done();
       debug.fin(() => analytics.startTrackerWithId(id, () => d.resolve(null), (e) => d.reject(e)));
     } else {
@@ -184,25 +184,41 @@ export module GoogleAnalytics {
 
   export function trackView(screen: string): Q.Promise<void> {
     var d = Q.defer<void>();
-    analytics.trackView(screen, () => d.resolve(null), (e) => d.reject(e));
+    if(!Cheminot.isMocked() && !Cheminot.isDemo()) {
+      analytics.trackView(screen, () => d.resolve(null), (e) => d.reject(e));
+    } else {
+      d.resolve(null);
+    }
     return d.promise;
   }
 
   export function trackException(description: string, fatal: boolean): Q.Promise<void> {
     var d = Q.defer<void>();
-    analytics.trackException(description, fatal, () => d.resolve(null), (e) => d.reject(e));
+    if(!Cheminot.isMocked() && !Cheminot.isDemo()) {
+      analytics.trackException(description, fatal, () => d.resolve(null), (e) => d.reject(e));
+    } else {
+      d.resolve(null);
+    }
     return d.promise;
   }
 
   export function trackEvent(category: string, action: string, label: string, value: number): Q.Promise<void> {
     var d = Q.defer<void>();
-    analytics.trackEvent(category, action, label, value, () => d.resolve(null), (e) => d.reject(e));
+    if(!Cheminot.isMocked() && !Cheminot.isDemo()) {
+      analytics.trackEvent(category, action, label, value, () => d.resolve(null), (e) => d.reject(e));
+    } else {
+      d.resolve(null);
+    }
     return d.promise;
   }
 
   export function trackTiming(category: string, interval: number, name: string, label: string): Q.Promise<void> {
     var d = Q.defer<void>();
-    analytics.trackTiming(category, interval, name, label, () => d.resolve(null), (e) => d.reject(e));
+    if(!Cheminot.isMocked() && !Cheminot.isDemo()) {
+      analytics.trackTiming(category, interval, name, label, () => d.resolve(null), (e) => d.reject(e));
+    } else {
+      d.resolve(null);
+    }
     return d.promise;
   }
 }
