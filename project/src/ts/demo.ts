@@ -122,6 +122,11 @@ export function abort(success: () => void, error: (err: string) => void): void {
     url: endpoint,
     method: 'POST'
   }).then(Qajax.filterSuccess)
+    .then(() => {
+      window.parent.postMessage({
+        event: 'cheminot:abort'
+      }, window.location.origin);
+    })
     .then(response => success())
     .catch(e => error(e));
 }
