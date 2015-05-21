@@ -2,6 +2,7 @@
 
     .title {
         position: relative
+        text-align: center
 
         > div {
             position: absolute
@@ -12,17 +13,19 @@
 
             .start, .end {
                 white-space: nowrap
-                width: 40%
                 display: inline-block
                 text-overflow: ellipsis
                 overflow: hidden
+                max-width: 40%
             }
 
             .start {
+              padding: 0 4px 0 10px
               text-align: right
             }
 
             .end {
+              padding-left: 4px
               text-align: left
             }
 
