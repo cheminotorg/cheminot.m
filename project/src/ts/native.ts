@@ -173,7 +173,7 @@ export module GoogleAnalytics {
 
   export function startTrackerWithId(id: string): Q.Promise<void> {
     var d = Q.defer<void>();
-    if(!Cheminot.isMocked() && !Cheminot.isDemo()) {
+    if(!Cheminot.isMocked()) {
       var debug = (!Cheminot.isProd()) ? debugMode() : Utils.Promise.done();
       debug.fin(() => analytics.startTrackerWithId(id, () => d.resolve(null), (e) => d.reject(e)));
     } else {
@@ -184,7 +184,7 @@ export module GoogleAnalytics {
 
   export function trackView(screen: string): Q.Promise<void> {
     var d = Q.defer<void>();
-    if(!Cheminot.isMocked() && !Cheminot.isDemo()) {
+    if(!Cheminot.isMocked()) {
       analytics.trackView(screen, () => d.resolve(null), (e) => d.reject(e));
     } else {
       d.resolve(null);
@@ -194,7 +194,7 @@ export module GoogleAnalytics {
 
   export function trackException(description: string, fatal: boolean): Q.Promise<void> {
     var d = Q.defer<void>();
-    if(!Cheminot.isMocked() && !Cheminot.isDemo()) {
+    if(!Cheminot.isMocked()) {
       analytics.trackException(description, fatal, () => d.resolve(null), (e) => d.reject(e));
     } else {
       d.resolve(null);
@@ -204,7 +204,7 @@ export module GoogleAnalytics {
 
   export function trackEvent(category: string, action: string, label: string, value: number): Q.Promise<void> {
     var d = Q.defer<void>();
-    if(!Cheminot.isMocked() && !Cheminot.isDemo()) {
+    if(!Cheminot.isMocked()) {
       analytics.trackEvent(category, action, label, value, () => d.resolve(null), (e) => d.reject(e));
     } else {
       d.resolve(null);
@@ -214,7 +214,7 @@ export module GoogleAnalytics {
 
   export function trackTiming(category: string, interval: number, name: string, label: string): Q.Promise<void> {
     var d = Q.defer<void>();
-    if(!Cheminot.isMocked() && !Cheminot.isDemo()) {
+    if(!Cheminot.isMocked()) {
       analytics.trackTiming(category, interval, name, label, () => d.resolve(null), (e) => d.reject(e));
     } else {
       d.resolve(null);

@@ -78,7 +78,8 @@
       "demo": {
         "id": "m.cheminot",
         "product_name": "Cheminot demo",
-        "product_file_name": "cheminot_demo"
+        "product_file_name": "cheminot_demo",
+        "ga_id": "UA-60596605-3"
       }
     }
   }
