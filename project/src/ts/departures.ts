@@ -74,7 +74,7 @@ function renderMeta(departure: Departure): m.VirtualElement[] {
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
 
-  var pullupAttrs = {
+  var pullupAttrsConfig = {
     key: 'departures-pullup',
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(ctrl.displayed()) {
@@ -86,7 +86,14 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     }
   };
 
-  var pullUp = m("li.pull-up.trace", pullupAttrs, [
+  var pullupAttrs = Utils.m.handleAttributes({ class: 'pullup trace'}, (name, value) => {
+    if((name + ':' + value) == 'class:trace') {
+      return ctrl.isComputingLongTrip();
+    }
+    return true;
+  });
+
+  var pullUp = m("li.pull-up", _.merge(pullupAttrs, pullupAttrsConfig), [
     m('span.pin'),
     m("span.label", {}, i18n.fr('pull-to-refresh'))
   ]);
