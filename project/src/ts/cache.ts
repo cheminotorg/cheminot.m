@@ -3,6 +3,8 @@ import Utils = require('utils');
 import _ = require('lodash');
 
 export function key(vs: string, ve: string, at: Date, te: Date, max: number = 0): string {
+  at.setMilliseconds(0);
+  te.setMilliseconds(0);
   return [vs, ve, at.getTime(), te.getTime(), max].join('|');
 }
 
