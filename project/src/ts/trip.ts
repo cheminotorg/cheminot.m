@@ -122,6 +122,9 @@ var trip: m.Module<Ctrl> = {
 
     native.onBackButton('trip', () => {
       if(ctrl.displayed()) {
+        window.parent.postMessage({
+          event: 'cheminot:unselecttrip'
+        }, window.location.origin);
         history.back();
       }
     });
