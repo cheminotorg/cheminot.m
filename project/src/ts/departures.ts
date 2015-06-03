@@ -12,7 +12,6 @@ import Cache = require('cache');
 import i18n = require('i18n');
 import Alert = require('alert');
 import Zanimo = require('Zanimo');
-import Suggestions = require('suggestions');
 
 export type Ctrl = {
   scope: () => HTMLElement;
@@ -51,8 +50,8 @@ function formatTime(dateTime: Date): string {
 }
 
 function formatDuration(duration: number): string {
-  var hours = parseInt((duration / 3600000).toString().split('.')[0], 10);
-  var minutes = Math.round((duration - (hours * 3600000)) / 1000 / 60);
+  var hours = Utils.Number.trunc(duration / 3600000);
+  var minutes = Utils.Number.trunc((duration - (hours * 3600000)) / 1000 / 60);
   return Utils.pad(hours, 2) + ':' + Utils.pad(minutes, 2);
 }
 

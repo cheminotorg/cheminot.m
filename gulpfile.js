@@ -42,7 +42,7 @@ var Assets = {
       moment: 'project/node_modules/moment/moment.js',
       lodash: 'project/node_modules/lodash/lodash.js',
       qstart: 'project/node_modules/qstart/qstart.js',
-      qajax: 'project/node_modules/qajax/src/browser.js'
+      qajax: 'project/node_modules/qajax/src/qajax.js'
     },
     dest: 'project/www/js/vendors/'
   }
@@ -62,7 +62,7 @@ gulp.task('vendors', ['clean:vendors'], function() {
   gulp.src(Assets.vendors.src.requirejs).pipe(gulp.dest(Assets.vendors.dest));
 
   Object.keys(Assets.vendors.src).forEach(function(vendor) {
-    if(!['requirejs'].some(function(v) { return v == vendor;})) {
+    if(vendor != 'requirejs') {
       browserifyVendor(Assets.vendors.src[vendor], vendor);
     }
   });
@@ -112,7 +112,8 @@ gulp.task('requirejs', ['ts'], function() {
         'Zanimo': 'vendors/Zanimo',
         'IScroll': 'vendors/iscroll-probe',
         'moment': 'vendors/moment',
-        'lodash': 'vendors/lodash'
+        'lodash': 'vendors/lodash',
+        'qajax': 'vendors/qajax'
       },
       optimize: 'none'
     }));

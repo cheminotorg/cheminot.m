@@ -27,6 +27,13 @@ export function pad(n: number, width: number): string {
   return sn.length >= width ? sn : new Array(width - sn.length + 1).join('0') + sn;
 }
 
+export module Number {
+
+  export function trunc(n: number): number {
+    return n < 0 ? Math.ceil(n) : Math.floor(n);
+  }
+}
+
 export module DateTime {
 
   export function diff(from: Date, to: Date): number {
