@@ -13,7 +13,7 @@ export function viewportSize(): [number, number] {
 }
 
 export function handleError(event: any, source?: string, fileno?: number, columnNumber?: number) {
-  const description = `${event} at ${source} [${fileno}, ${columnNumber}]`;
+  const description = `[${Settings.gitVersion}] ${event} at ${source} [${fileno}, ${columnNumber}]`;
   console.error(event.stack ? event.stack : event);
   native.GoogleAnalytics.trackException(description, true);
   Alert.error(i18n.fr('unexpected-error')).fin(() => {
