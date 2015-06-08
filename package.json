@@ -18,6 +18,7 @@
     "gulp-browserify": "latest",
     "gulp-exec": "latest",
     "gulp-watch": "latest",
-    "gulp-iconfont": "latest"
+    "gulp-iconfont": "latest",
+    "gulp-rename": "latest"
   }
 }

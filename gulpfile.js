@@ -7,6 +7,7 @@ var gulp = require('gulp'),
     exec = require('gulp-exec'),
     rjs = require('sre-gulp-rjs'),
     watch = require('gulp-watch'),
+    rename = require('gulp-rename'),
     browserify = require('gulp-browserify'),
     fs = require('fs');
 
@@ -42,7 +43,7 @@ var Assets = {
       moment: 'project/node_modules/moment/moment.js',
       lodash: 'project/node_modules/lodash/lodash.js',
       qstart: 'project/node_modules/qstart/qstart.js',
-      qajax: 'project/node_modules/qajax/src/qajax.js'
+      qajax: 'project/node_modules/qajax/src/browser.js'
     },
     dest: 'project/www/js/vendors/'
   }
@@ -56,6 +57,12 @@ gulp.task('vendors', ['clean:vendors'], function() {
   function browserifyVendor(path, name) {
     return gulp.src(path)
       .pipe(browserify({ "standalone": name }))
+      .pipe(rename(function(path) {
+        if(path.basename == 'browser') {
+          path.basename = 'qajax';
+        }
+        return path;
+      }))
       .pipe(gulp.dest(Assets.vendors.dest));
   }
 
