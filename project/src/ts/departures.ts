@@ -172,6 +172,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
   }
 
   var departuresAttrs = {
+    key: 'departures-list',
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(ctrl.displayed()) {
         ctrl.iscroll().refresh();
