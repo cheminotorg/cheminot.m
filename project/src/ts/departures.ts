@@ -183,7 +183,9 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
           cached.forEach((departure) => ctrl.departures().push(departure));
           if(cached.length) ctrl.lastDepartureTime(_.last(cached).startTime);
           ctrl.currentPageSize(cached.length);
-          lookForNextDepartures(ctrl, ctrl.at());
+          if(!ctrl.isComputationInProgress()) {
+            lookForNextDepartures(ctrl, ctrl.at());
+          }
         } else {
           if(ctrl.isComputingLongTrip()) {
             ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 0);
@@ -401,9 +403,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
             if(!ctrl.isPullUpDisplayed()) showTrace(ctrl);
             m.redraw();
             traceLongTrip(ctrl);
-            return native.Cheminot.lookForBestTrip(ctrl.startStationId(), ctrl.endStationId(), at, te, 1).then((x) => {
-              return x;
-            });
+            return native.Cheminot.lookForBestTrip(ctrl.startStationId(), ctrl.endStationId(), at, te, 1);
           } else return Q(trip);
         });
       } else {
