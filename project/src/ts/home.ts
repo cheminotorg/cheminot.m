@@ -159,12 +159,14 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
 
   return m("div", { class: "start-end" },
            m("form", formAttrs, [
-             m("div", _.merge({ class: "input start" }, inputStationWrapperAttrs), [
+             m("div", { class: "input start" }, [
+               m("div.above", inputStationWrapperAttrs),
                m("input", _.merge({ name: "start", autocomplete: "off", placeholder: i18n.fr('departure') }, inputStationAttrs(true))),
                m("button", resetStationAttrs(true))
              ]),
              m('input.submit', { type: 'submit' }),
-             m("div", _.merge({ class: "input end"}, inputStationWrapperAttrs), [
+             m("div", { class: "input end"}, [
+               m("div.above", inputStationWrapperAttrs),
                m("input", _.merge({ name: "end", autocomplete: "off", placeholder: i18n.fr('arrival') }, inputStationAttrs(false))),
                m("button", resetStationAttrs(false))])]));
 }
@@ -334,7 +336,7 @@ var home: m.Module<Ctrl> = {
 
       onInputStationTouched: (ctrl: Ctrl, e: Event) => {
         var station = <HTMLElement> e.currentTarget;
-        var inputStation = <HTMLInputElement> station.querySelector('input');
+        var inputStation = <HTMLInputElement> station.nextElementSibling;
         var hideInput = isInputStationStart(inputStation) ? hideInputStationEnd : hideInputStationStart;
         m.startComputation();
         var selected = isInputStationStart(inputStation) ? ctrl.inputStationStartSelected() : ctrl.inputStationEndSelected();
@@ -619,7 +621,9 @@ function resetInputStationsPosition(ctrl: Ctrl, inputStation: HTMLInputElement):
     moveDownViewport(ctrl).then(() => {
       showInput(ctrl).then(() => {
         showDateTimePanel(ctrl).then(() => {
-          Utils.$.touchendOne(resetButton.parentElement, _.partial(ctrl.onInputStationTouched, ctrl));
+          var inputWrapper = <HTMLElement> resetButton.parentElement;
+          var above = <HTMLElement> inputWrapper.querySelector('.above');
+          Utils.$.touchendOne(above, _.partial(ctrl.onInputStationTouched, ctrl));
         });
       });
     });

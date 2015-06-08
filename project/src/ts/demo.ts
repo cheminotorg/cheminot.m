@@ -1,4 +1,3 @@
-import Q = require('q');
 import Qajax = require('qajax');
 
 type DemoArrivalTime = {
