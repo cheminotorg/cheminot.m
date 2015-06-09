@@ -346,7 +346,7 @@ var home: m.Module<Ctrl> = {
         }, window.location.origin);
         setInputStationSelected(ctrl, inputStation, '');
         ctrl.stations(Suggestions.search(inputStation.value));
-        Q.all([hideInput(ctrl), hideDateTimePanel(ctrl)]).then(() => {
+        Q.all([hideInput(ctrl), hideDateTimePanel(ctrl), Q.delay(80)]).then(() => {
           return moveUpViewport(ctrl).then(() => {
             enableInputStation(ctrl, inputStation);
             native.Keyboard.show().fin(() => m.endComputation())
