@@ -2,13 +2,14 @@ var gulp = require('gulp'),
     ts = require('gulp-tsc'),
     stylus = require('gulp-stylus'),
     gutil = require('gulp-util'),
-    nib = require('nib'),
     del = require('del'),
     exec = require('gulp-exec'),
     rjs = require('sre-gulp-rjs'),
     watch = require('gulp-watch'),
     rename = require('gulp-rename'),
     browserify = require('gulp-browserify'),
+    streamify = require('gulp-streamify'),
+    autoprefixer = require('gulp-autoprefixer'),
     fs = require('fs');
 
 var Assets = {
@@ -99,10 +100,8 @@ gulp.task('clean:css', function(cb) {
 
 gulp.task('styl', ['clean:css'], function() {
   return gulp.src(Assets.styl.src.files)
-    .pipe(stylus({
-      use: nib(),
-      compress: true
-    }))
+    .pipe(stylus())
+    .pipe(streamify(autoprefixer()))
     .pipe(gulp.dest(Assets.styl.dest.dir));
 });
 
