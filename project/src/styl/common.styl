@@ -1,5 +1,9 @@
 global-reset()
 
+size(n) {
+    n / 16 rem;
+}
+
 /* INPUT */
 
 * {
@@ -43,6 +47,11 @@ input {
     }
 }
 
+input[type=text] {
+    height: size(66px)
+    font-size: size(18px)
+}
+
 input::-webkit-input-placeholder {
     color: grey
     font-family-light()
@@ -68,6 +77,7 @@ input:-ms-input-placeholder {
 html {
     height: 100%
     overflow: hidden
+    font-size: 100%
 }
 
 body {
@@ -78,6 +88,7 @@ body {
     -webkit-font-smoothing: antialiased
     text-rendering: optimizeLegibility
     font-family-light()
+    font-size: 1em
 }
 
 h1 {
@@ -92,11 +103,6 @@ h1 {
     }
 }
 
-.top-bar {
-    background: dark-blue
-    color: #FFF
-}
-
 .container {
     padding: 8px
 }
@@ -104,13 +110,19 @@ h1 {
 .list {
     li {
         color: grey
-        padding: 0 8px 0 8px
+        padding: 0 size(8px) 0 size(8px)
         border-bottom: 2px solid grey-blue
         box-sizing: border-box
         width: 100%
         display: flex
         align-items: center
+        height: size(66px)
+        font-size: size(18px)
     }
+}
+
+.font::before {
+    font-size: size(24px);
 }
 
 global-margin-right=4%

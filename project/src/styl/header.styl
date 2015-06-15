@@ -1,3 +1,5 @@
+header_height=size(54px)
+
 #header {
     position: relative
     z-index: 2
@@ -6,6 +8,8 @@
     box-sizing: border-box
     transition: .2s
     transition-property: height
+    height: header_height
+    font-size: size(20px)
 
     &.fold {
         height: 0
@@ -23,5 +27,17 @@
         display: none
         backward_button()
         padding: 2%
+        width: size(24px);
+    }
+}
+
+.top-bar {
+    background: dark-blue
+    color: #FFF
+    height: header_height
+    font-size: size(18px)
+
+    .label {
+        font-size: size(16px)
     }
 }

@@ -85,7 +85,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     }
   };
 
-  var pullupAttrs = Utils.m.handleAttributes({ class: 'pullup trace'}, (name, value) => {
+  var pullupAttrs = Utils.m.handleAttributes({ class: 'pull-up trace'}, (name, value) => {
     if((name + ':' + value) == 'class:trace') {
       return ctrl.isComputingLongTrip();
     }

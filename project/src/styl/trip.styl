@@ -50,6 +50,8 @@
         width: 100%
 
         > li {
+            height: size(66px)
+            font-size: size(16px)
             position: relative
 
             .waiting {
@@ -84,6 +86,7 @@
 
             .right {
                 icon_cheminot('circle', blue)
+                border-left: size(4px) solid dark-blue
 
                 &::before {
                     position: absolute
@@ -92,6 +95,7 @@
                     transform: translateY(-50%)
                     color: grey
                     background: #FFF
+                    font-size: size(21px)
                 }
             }
 
@@ -100,6 +104,10 @@
 
                 .alarm-clock {
                     icon_cheminot('clock', grey-dark)
+
+                    &::before {
+                        font-size: size(23px)
+                    }
                 }
 
                 .at {

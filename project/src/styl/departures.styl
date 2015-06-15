@@ -32,6 +32,8 @@ pin() {
         color: white
         box-shadow: 0 -1px 1px rgba(0,0,0,0.1)
         z-index: 2
+        padding: size(16px) 0
+        font-size: size(20px)
 
         &.end {
             background: blue
@@ -64,7 +66,9 @@ pin() {
         top: 15vh
         color: blue
         text-align: center
-        width: 100%
+        width: size(230px)
+        transform: translateX(-50%)
+        left: 50%
 
         .train {
             opacity: 0
@@ -82,6 +86,7 @@ pin() {
             position: relative
             display: inline-block
             line-height: 1.2
+            font-size: size(18px)
         }
     }
 
@@ -133,6 +138,7 @@ pin() {
                 transform: translate3d(0,0,0)
 
                 .wrapper {
+                    max-width: size(400px)
                     margin: auto
                 }
 
@@ -144,10 +150,14 @@ pin() {
                     text-align: center
                     background: grey-blue
                     color: dark-blue
+                    padding: size(12px) 0
+                    font-size: size(16px)
                 }
 
                 .meta {
                     position: relative
+                    font-size: size(18px)
+                    padding: size(10px) 0
 
                     .changements {
                         padding: 0 4px
@@ -169,16 +179,20 @@ pin() {
 
                 .start-end {
                     position: relative
+                    font-size: size(32px)
+                    padding: 0 0 size(8px) 0
 
                     .start {
                         display: inline-block
                         padding-left: 5%
+                        width: size(140px)
                     }
                 }
 
                 .alarm-clock {
                     min-width: 25px
                     display: inline-block
+                    font-size: size(23px)
                     icon_cheminot('clock', grey-light)
                 }
 
@@ -186,13 +200,20 @@ pin() {
                     icon_cheminot('right', blue)
                     margin: 0 5px 0 5px
                     vertical-align: 2px
+                    font-size: size(21px)
                 }
-            }
 
-            .pull-up {
-                text-align: center
-                background: transparent
-                border-bottom: none
+                &:not(.pull-up):not(.day) {
+                    padding: 0 size(14px)
+                }
+
+                &.pull-up {
+                    text-align: center
+                    background: transparent
+                    border-bottom: none
+                    padding: size(16px) 0
+                    font-size: size(20px)
+                }
             }
         }
     }

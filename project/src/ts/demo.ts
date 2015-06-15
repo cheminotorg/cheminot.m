@@ -73,7 +73,7 @@ export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, 
         error('aborted');
       }
     })
-    .catch(e => error(e));
+    .catch(e => { console.log(e); error(e)});
 }
 
 export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: Date, success: (result: [boolean, ArrivalTime[]]) => void, error: (err: string) => void): void {
