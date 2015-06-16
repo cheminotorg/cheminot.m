@@ -6,12 +6,12 @@ pin() {
         left: 0
         width: 10%
         background: #FFF
-        padding: 10px
+        padding: size(10px)
 
         icon_cheminot('pin', #FFF)
 
         &::before {
-            font-size: 40px
+            font-size: size(40px)
             color: green
             position: absolute
             top: 50%
@@ -50,7 +50,7 @@ pin() {
 
         .label {
             margin-left: 10%
-            width: 200px
+            width: size(200px)
             white-space: nowrap
             overflow: hidden
             text-overflow: ellipsis
@@ -82,7 +82,7 @@ pin() {
         }
 
         .label {
-            margin-top: 30px
+            margin-top: size(30px)
             position: relative
             display: inline-block
             line-height: 1.2
@@ -130,8 +130,8 @@ pin() {
             z-index: 2
 
             > li {
-                margin: -1px
-                border-bottom: 2px solid grey-blue
+                margin: size(-1px)
+                border-bottom: size(2px) solid grey-blue
                 box-sizing: border-box
                 color: dark-blue
                 background: #FFF
@@ -160,7 +160,7 @@ pin() {
                     padding: size(10px) 0
 
                     .changements {
-                        padding: 0 4px
+                        padding: 0 size(4px)
                         color: grey-light
                         icon_cheminot('split', grey-light)
                     }
@@ -171,7 +171,7 @@ pin() {
                         position: absolute
 
                         .egg-timer {
-                            vertical-align: -2px
+                            vertical-align: size(-2px)
                             icon_cheminot('duration', grey-light)
                         }
                     }
@@ -190,7 +190,7 @@ pin() {
                 }
 
                 .alarm-clock {
-                    min-width: 25px
+                    min-width: size(25px)
                     display: inline-block
                     font-size: size(23px)
                     icon_cheminot('clock', grey-light)
@@ -198,8 +198,8 @@ pin() {
 
                 .to {
                     icon_cheminot('right', blue)
-                    margin: 0 5px 0 5px
-                    vertical-align: 2px
+                    margin: 0 size(5px) 0 size(5px)
+                    vertical-align: size(2px)
                     font-size: size(21px)
                 }
 

@@ -26,8 +26,8 @@ header {
     .holo {
         display: none
         position: absolute
-        width: 30px
-        height: 30px
+        width: size(30px)
+        height: size(30px)
         right: 6%
         top: 50%
         transform: translateY(-50%)
@@ -71,13 +71,13 @@ header {
     .outer:before, .inner:before {
         left: 0
         right: 50%
-        border-radius: 72px 0 0 72px
+        border-radius: size(72px) 0 0 size(72px)
     }
 
     .outer:after, .inner:after {
         left: 50%
         right: 0
-        border-radius: 0 72px 72px 0
+        border-radius: 0 size(72px) size(72px) 0
     }
 
     .outer:before {
