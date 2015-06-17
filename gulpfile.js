@@ -106,23 +106,36 @@ gulp.task('styl', ['clean:css'], function() {
 });
 
 gulp.task('requirejs', ['ts'], function() {
-  return gulp.src(Assets.ts.dest.files)
-    .pipe(gulp.dest(Assets.ts.dest.dir))
-    .pipe(rjs({
-      baseUrl: Assets.ts.dest.dir,
-      out: Assets.ts.dest.dir + 'main.js',
-      name: 'main',
-      paths: {
-        'mithril': 'vendors/mithril',
-        'q': 'vendors/q',
-        'Zanimo': 'vendors/Zanimo',
-        'IScroll': 'vendors/iscroll-probe',
-        'moment': 'vendors/moment',
-        'lodash': 'vendors/lodash',
-        'qajax': 'vendors/qajax'
-      },
-      optimize: 'none'
-    }));
+
+  function flatten(obj, prefix) {
+    return Object.keys(obj).reduce(function(acc, key) {
+      var param = (prefix ? prefix + '.' : '') + key + '="' + obj[key] + '"';
+      return acc + ' ' + param;
+    }, '');
+  };
+
+  var main = {
+    baseUrl: Assets.ts.dest.dir,
+    out: Assets.ts.dest.dir + "main.js",
+    name: 'main'
+  };
+
+  var paths = {
+    'mithril': 'vendors/mithril',
+    'q': 'vendors/q',
+    'Zanimo': 'vendors/Zanimo',
+    'IScroll': 'vendors/iscroll-probe',
+    'moment': 'vendors/moment',
+    'lodash': 'vendors/lodash',
+    'qajax': 'vendors/qajax',
+    'qstart': 'vendors/qstart'
+  };
+
+  var params = '-o' + flatten(main) + ' ' + flatten(paths, 'paths');
+
+  return gulp.src('.')
+    .pipe(exec('node_modules/requirejs/bin/r.js ' + params))
+    .pipe(exec.reporter());
 });
 
 gulp.task('watch', ['compile'], function() {
@@ -134,7 +147,9 @@ gulp.task('default', ['watch']);
 
 gulp.task('compile', ['ts', 'styl']);
 
-gulp.task('compile:prod', ['requirejs', 'styl']);
+gulp.task('compile:demo', ['requirejs', 'styl'], function(cb) {
+  del(Assets.ts.dest.files.concat(['!project/www/js/main.js']), cb);
+});
 
 gulp.task('build', function() {
   return gulp.src('.')

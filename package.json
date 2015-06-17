@@ -13,13 +13,13 @@
     "gulp-stylus": "latest",
     "gulp-tsc": "latest",
     "del": "latest",
-    "sre-gulp-rjs": "latest",
     "gulp-browserify": "latest",
     "gulp-exec": "latest",
     "gulp-watch": "latest",
     "gulp-iconfont": "latest",
     "gulp-rename": "latest",
     "gulp-streamify": "latest",
-    "gulp-autoprefixer": "latest"
+    "gulp-autoprefixer": "latest",
+    "requirejs": "latest"
   }
 }

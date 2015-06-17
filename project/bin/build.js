@@ -67,6 +67,7 @@ module.exports.build = function (platform, settings, configurationName) {
   };
 
   switch(configurationName) {
+  case 'demo': gulp.start.apply(gulp, ['compile:demo']); break;
   default: gulp.start.apply(gulp, ['compile']);
   }
 
