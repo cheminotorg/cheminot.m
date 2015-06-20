@@ -22,6 +22,7 @@ var messages: Messages = {
     'cancel': 'annuler',
     'clear': 'effacer',
     'no-trip-matched': 'Impossible de trouver des trajets correspondant à votre recherche',
+    'demo-try-later-busy': "Le serveur semble surchargé. Reessayer plus tard.",
     'unexpected-error': 'Une erreur inattendue est survenue. Un rapport d\'erreur vient d\'être envoyé.'
   }
 };

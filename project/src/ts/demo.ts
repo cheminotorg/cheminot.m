@@ -52,28 +52,26 @@ export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, 
   }).then(Qajax.filterSuccess)
     .then(response => {
       let trip: DemoArrivalTime[] = JSON.parse(response.responseText);
-      window.parent.postMessage({
-        event: 'cheminot:lookforbesttrip',
-        trip: trip
-      }, window.location.origin);
       if(trip) {
-      success(trip.map(function(arrivalTime) {
-        return {
-          stopId: arrivalTime.stopId,
-          stopName: arrivalTime.stopName,
-          tripId: arrivalTime.tripId,
-          pos: arrivalTime.pos,
-          arrival: new Date(arrivalTime.arrival * 1000),
-          departure: new Date(arrivalTime.departure * 1000),
-          lat: arrivalTime.lat,
-          lng: arrivalTime.lng
-        };
-      }));
+        success(trip.map(function(arrivalTime) {
+          return {
+            stopId: arrivalTime.stopId,
+            stopName: arrivalTime.stopName,
+            tripId: arrivalTime.tripId,
+            pos: arrivalTime.pos,
+            arrival: new Date(arrivalTime.arrival * 1000),
+            departure: new Date(arrivalTime.departure * 1000),
+            lat: arrivalTime.lat,
+            lng: arrivalTime.lng
+          };
+        }));
       } else {
         error('aborted');
       }
-    })
-    .catch(e => { console.log(e); error(e)});
+    }).catch(response => {
+      var r = JSON.parse(response.responseText);
+      error(r.error);
+    });
 }
 
 export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: Date, success: (result: [boolean, ArrivalTime[]]) => void, error: (err: string) => void): void {
@@ -94,12 +92,7 @@ export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: 
   }).then(Qajax.filterSuccess)
     .then(response => {
       let result: {hasDirect: boolean, arrivalTimes: DemoArrivalTime[]} = JSON.parse(response.responseText);
-      window.parent.postMessage({
-        event: 'cheminot:lookforbestdirecttrip',
-        trip: result.arrivalTimes
-      }, window.location.origin);
       success([result.hasDirect, result.arrivalTimes.map(function(arrivalTime) {
-
         return {
           stopId: arrivalTime.stopId,
           stopName: arrivalTime.stopName,
