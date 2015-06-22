@@ -1,4 +1,5 @@
 import Utils = require('utils');
+import native = require('native');
 
 var ticking = false;
 
@@ -24,8 +25,10 @@ function onResize() {
 
 export function init() {
 
-  window.addEventListener('resize', onResize, false);
+  if(native.Cheminot.isDemo()) {
 
-  onResize();
+    window.addEventListener('resize', onResize, false);
 
+    onResize();
+  }
 }
