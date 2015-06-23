@@ -10,6 +10,8 @@ var gulp = require('gulp'),
     browserify = require('gulp-browserify'),
     streamify = require('gulp-streamify'),
     autoprefixer = require('gulp-autoprefixer'),
+    runSequence = require('run-sequence'),
+    gzip = require('gulp-gzip'),
     fs = require('fs');
 
 var Assets = {
@@ -147,8 +149,24 @@ gulp.task('default', ['watch']);
 
 gulp.task('compile', ['ts', 'styl']);
 
-gulp.task('compile:demo', ['requirejs', 'styl'], function(cb) {
+gulp.task('compress:demo:js', function() {
+  gulp.src(['project/www/js/main.js'])
+    .pipe(gzip())
+    .pipe(gulp.dest('project/www/js/'))
+});
+
+gulp.task('compress:demo:data', function() {
+  gulp.src(['project/www/data/*.json'])
+    .pipe(gzip())
+    .pipe(gulp.dest('project/www/data/'))
+});
+
+gulp.task('clean:demo', function(cb) {
   del(Assets.ts.dest.files.concat(['!project/www/js/main.js']), cb);
+});
+
+gulp.task('compile:demo', function(cb) {
+  runSequence(['requirejs', 'styl'], ['compress:demo:data', 'compress:demo:js'], 'clean:demo', cb);
 });
 
 gulp.task('build', function() {

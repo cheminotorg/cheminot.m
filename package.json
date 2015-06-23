@@ -20,6 +20,8 @@
     "gulp-rename": "latest",
     "gulp-streamify": "latest",
     "gulp-autoprefixer": "latest",
-    "requirejs": "latest"
+    "requirejs": "latest",
+    "gulp-gzip": "latest",
+    "run-sequence": "latest"
   }
 }
