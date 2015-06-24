@@ -1,6 +1,6 @@
 #!/bin/bash
 
-tarifa build browser demo
+tarifa build browser demo --mode=prod
 cd app/platforms/browser/
 zip -r cheminotm.zip www/
 dropbox_uploader.sh -p upload cheminotm.zip cheminotm-latest.zip

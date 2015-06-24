@@ -11,8 +11,16 @@ var gulp = require('gulp'),
     streamify = require('gulp-streamify'),
     autoprefixer = require('gulp-autoprefixer'),
     runSequence = require('run-sequence'),
+    minifyCss = require('gulp-minify-css'),
     gzip = require('gulp-gzip'),
+    minimist = require('minimist'),
     fs = require('fs');
+
+var minimistOptions = {
+  string: ['env', 'mode']
+};
+
+var options = minimist(process.argv.slice(2), minimistOptions);
 
 var Assets = {
   ts: {
@@ -22,14 +30,15 @@ var Assets = {
       dir: 'project/src/ts/'
     },
     dest: {
-      files : ['project/www/js/**/*.js', '!project/www/js/vendors/**/*.js', '!project/www/js/settings.js'],
+      files : ['project/www/js/**/*.js', '!project/www/js/vendors/**/*.js', '!project/www/js/settings.js', 'project/www/js/**/*.gz'],
       dir: 'project/www/js/'
     }
   },
   styl: {
     src: {
       files: ['project/src/styl/**/*.styl'],
-      dir: 'project/src/styl/'
+      dir: 'project/src/styl/',
+      main: ['project/src/styl/main.styl']
     },
     dest: {
       files: ['project/www/css/**/*.css'],
@@ -101,9 +110,10 @@ gulp.task('clean:css', function(cb) {
 });
 
 gulp.task('styl', ['clean:css'], function() {
-  return gulp.src(Assets.styl.src.files)
+  return gulp.src(Assets.styl.src.main)
     .pipe(stylus())
     .pipe(streamify(autoprefixer()))
+    .pipe(minifyCss())
     .pipe(gulp.dest(Assets.styl.dest.dir));
 });
 
@@ -152,13 +162,13 @@ gulp.task('compile', ['ts', 'styl']);
 gulp.task('compress:demo:js', function() {
   gulp.src(['project/www/js/main.js'])
     .pipe(gzip())
-    .pipe(gulp.dest('project/www/js/'))
+    .pipe(gulp.dest('project/www/js/'));
 });
 
 gulp.task('compress:demo:data', function() {
   gulp.src(['project/www/data/*.json'])
     .pipe(gzip())
-    .pipe(gulp.dest('project/www/data/'))
+    .pipe(gulp.dest('project/www/data/'));
 });
 
 gulp.task('clean:demo', function(cb) {
@@ -166,7 +176,11 @@ gulp.task('clean:demo', function(cb) {
 });
 
 gulp.task('compile:demo', function(cb) {
-  runSequence(['requirejs', 'styl'], ['compress:demo:data', 'compress:demo:js'], 'clean:demo', cb);
+  if(options.mode == 'prod') {
+    runSequence(['requirejs', 'styl'], ['compress:demo:data', 'compress:demo:js'], 'clean:demo', cb);
+  } else {
+    runSequence('compile', cb);
+  }
 });
 
 gulp.task('build', function() {

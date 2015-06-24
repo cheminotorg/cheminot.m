@@ -22,6 +22,8 @@
     "gulp-autoprefixer": "latest",
     "requirejs": "latest",
     "gulp-gzip": "latest",
-    "run-sequence": "latest"
+    "run-sequence": "latest",
+    "minimist": "latest",
+    "gulp-minify-css": "latest"
   }
 }
