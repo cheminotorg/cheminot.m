@@ -25,7 +25,7 @@ function onResize() {
 
 export function init() {
 
-  if(native.Cheminot.isDemo()) {
+  if(native.Cheminot.isDemo() && !Utils.Detectizr.isMobile()) {
 
     window.addEventListener('resize', onResize, false);
 
