@@ -328,7 +328,7 @@ var departures: m.Module<Ctrl> = {
 
       isComputingLongTrip: m.prop(false),
 
-      isComputationInProgress: Utils.m.prop(false),
+      isComputationInProgress: m.prop(false),
 
       isScrollingDepartures: Utils.m.prop(false, (isScrolling) => {
         if(isScrolling) {
@@ -339,18 +339,14 @@ var departures: m.Module<Ctrl> = {
       })
     };
 
-    native.onBackButton('departures', () => {
-      if(ctrl.isComputationInProgress()) {
-        ctrl.isComputationInProgress(false);
-        native.Cheminot.abort();
-      }
-      if(ctrl.displayed()) history.back();
-    });
-
-    window.onbeforeunload = () => {
-      if(ctrl.isComputationInProgress()) {
-        native.Cheminot.abort();
-      }
+    if(ctrl.displayed()) {
+      native.onBackButton('departures', () => {
+        if(ctrl.isComputationInProgress()) {
+          ctrl.isComputationInProgress(false);
+          native.Cheminot.abort();
+        }
+        if(ctrl.displayed()) history.back();
+      });
     }
 
     return ctrl;
@@ -392,10 +388,10 @@ function traceLongTrip(ctrl: Ctrl) {
 }
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
+  ctrl.isComputationInProgress(true);
   var step = (ctrl: Ctrl, at: Date, retries: number = 2): Q.Promise<StatusCode> => {
     if(isMoreItemsNeeded(ctrl)) {
       var te = departureBound(at);
-      ctrl.isComputationInProgress(true);
       var eventuallyTrip: Q.Promise<ArrivalTimes>;
       if(!ctrl.isComputingLongTrip()) {
         eventuallyTrip = native.Cheminot.lookForBestDirectTrip(ctrl.startStationId(), ctrl.endStationId(), at, te).then((trip) => {
