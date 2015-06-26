@@ -326,8 +326,10 @@ var home: m.Module<Ctrl> = {
 
         if(isTodayTab(tab)) {
           ctrl.isTodayTabSelected(true)
+          ctrl.inputDateSelected(new Date());
         } else if(isTomorrowTab(tab)) {
           ctrl.isTomorrowTabSelected(true);
+          ctrl.inputDateSelected(Utils.DateTime.addDays(new Date(), 1));
         } else if(isOtherTab(tab)) {
           ctrl.isOtherTabSelected(true);
         }
@@ -399,7 +401,6 @@ var home: m.Module<Ctrl> = {
 
       onTimeTouched: (ctrl: Ctrl, e: Event) => {
         TimePicker.show(ctrl.inputTimeSelected()).then((date) => {
-          ctrl.inputDateSelected(new Date());
           ctrl.inputTimeSelected(date);
           m.redraw();
         });

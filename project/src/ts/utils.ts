@@ -61,6 +61,10 @@ export module DateTime {
   export function addHours(date: Date, n: number): Date {
     return moment(date).add(n, 'hours').toDate();
   }
+
+  export function addDays(date: Date, n: number): Date {
+    return moment(date).add(n, 'days').toDate();
+  }
 }
 
 export module m {
