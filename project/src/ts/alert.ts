@@ -83,7 +83,8 @@ export function about(classList: string[] = []): Q.Promise<void> {
   var body = m('table', {}, [
     m('tr', {}, [m('td', {}, 'bundleId'), m('td', Settings.bundleId)]),
     m('tr', {}, [m('td', {}, 'version'), m('td', {}, Settings.version)]),
-    m('tr', {}, [m('td', {}, 'git'), m('td', {}, Settings.gitVersion)]),
+    m('tr', {}, [m('td', {}, 'cheminotc'), m('td', {}, Settings.cheminotcVersion)]),
+    m('tr', {}, [m('td', {}, 'cheminotm'), m('td', {}, Settings.gitVersion)]),
     m('tr', {}, [m('td', {}, 'db creation'), m('td', {}, formatDay(Settings.db.createdAt))]),
     m('tr', {}, [m('td', {}, 'db version'), m('td', {}, Settings.db.version)])]);
 

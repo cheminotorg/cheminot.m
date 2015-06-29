@@ -85,6 +85,20 @@ export module Cheminot {
     return Settings.bundleId.indexOf('prod') > -1;
   }
 
+  export function gitVersion(): Q.Promise<string> {
+    var d = Q.defer<string>();
+    var success = (sha: string) => d.resolve(sha);
+    var error = (e: string) => d.reject(e);
+    if(isDemo()) {
+      Demo.gitVersion(success, error);
+    } else if(isMocked()) {
+      Mock.gitVersion(success, error);
+    } else {
+      cordova.plugins.Cheminot.gitVersion(success, error);
+    }
+    return d.promise
+  }
+
   export function init(): Q.Promise<Meta> {
     var d = Q.defer<Meta>();
     var success = (meta: Meta) => d.resolve(meta);

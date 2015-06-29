@@ -4,6 +4,10 @@ import moment = require('moment');
 
 var CHARTRES = 'StopPoint:OCETrain TER-87394007';
 
+export function gitVersion(success: (sha: string) => void, error: (err: string) => void): void {
+  success('xxxxxxx');
+}
+
 export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
   success({
     version: 'xxxxxxx',

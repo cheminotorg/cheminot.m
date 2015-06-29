@@ -50,6 +50,7 @@ declare type Settings = {
   version: string;
   appName: string;
   gitVersion: string;
+  cheminotcVersion: string;
   ga_id: string;
   db: Meta;
 }
@@ -66,6 +67,7 @@ declare module cordova {
     }
 
     module Cheminot {
+      function gitVersion(success: (sha: string) => void, error: (e: string) => void): void;
       function init(success: (meta: Meta) => void, error: (e: string) => void): void;
       function lookForBestTrip(start: string, end: string, at: Date, te: Date, max: number, success: (arrivalTime: ArrivalTime[]) => void, error: (e: string) => void): void;
       function lookForBestDirectTrip(start: string, end: string, at: Date, te: Date, success: (result: [boolean, ArrivalTime[]]) => void, error: (e: string) => void): void;

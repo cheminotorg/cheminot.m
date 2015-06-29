@@ -26,10 +26,11 @@ window.onerror = Utils.handleError;
 
 Responsive.init();
 
-Q.all([native.Cheminot.init(), qstart, Suggestions.init()]).spread((meta: Meta) => {
+Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions.init()]).spread((meta: Meta, cheminotcVersion: string) => {
   Locale.init();
   return native.GoogleAnalytics.startTrackerWithId(Settings.ga_id).fin(() => {
     Settings.db = meta;
+    Settings.cheminotcVersion = cheminotcVersion;
     m.route.mode = 'hash';
     m.route(document.body, "/", {
       "/": App.get(),

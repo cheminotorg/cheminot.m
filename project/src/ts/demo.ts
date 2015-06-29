@@ -13,6 +13,15 @@ type DemoArrivalTime = {
 
 const baseURL = '';
 
+export function gitVersion(success: (sha: string) => void, error: (err: string) => void): void {
+  const endpoint = baseURL + '/about';
+  Qajax(endpoint)
+      .then(Qajax.filterSuccess)
+      .then(response => Qajax.toJSON<{cheminotc: string}>(response))
+      .then(result => success(result.cheminotc))
+      .catch(e => error(e));
+}
+
 export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
   const endpoint = baseURL + '/cheminotm/init';
   Qajax(endpoint)
