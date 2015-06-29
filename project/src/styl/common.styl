@@ -11,6 +11,7 @@ size(n) {
     -webkit-user-select: none
 }
 
+
 body:not(.scrolling) .touching {
     transition: 0.4s
     background: blue !important
@@ -97,9 +98,14 @@ h1 {
 
 #viewport {
     width: 100%
+    background-color: blue
 
     .view.hidden {
         display: none
+    }
+
+    &.ready {
+        background-color: #FFF
     }
 }
 
