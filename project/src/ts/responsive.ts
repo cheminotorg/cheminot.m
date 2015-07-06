@@ -29,6 +29,7 @@ export function init() {
 
     window.addEventListener('resize', onResize, false);
 
-    onResize();
   }
+
+  onResize();
 }

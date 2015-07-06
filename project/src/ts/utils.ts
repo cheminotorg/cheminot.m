@@ -122,26 +122,26 @@ export module Log {
 
 export module Detectizr {
 
-  export function isMobile() {
+  export function isMobile(): boolean {
     return isAndroid() ||
       isIOS() ||
-      navigator.userAgent.match(/webOS/i) ||
-      navigator.userAgent.match(/BlackBerry/i) ||
-      navigator.userAgent.match(/Windows Phone/i);
+      /webOS/i.test(navigator.userAgent) ||
+      /BlackBerry/i.test(navigator.userAgent) ||
+      /Windows Phone/i.test(navigator.userAgent);
   }
 
-  export function isAndroid() {
-    return navigator.userAgent.match(/Android/i);
+  export function isAndroid(): boolean {
+    return /Android/i.test(navigator.userAgent);
   }
 
-  export function isIOS() {
-    return navigator.userAgent.match(/iPhone/i) ||
-        navigator.userAgent.match(/iPad/i) ||
-        navigator.userAgent.match(/iPod/i);
+  export function isIOS(): boolean {
+    return /iPhone/i.test(navigator.userAgent) ||
+        /iPad/i.test(navigator.userAgent) ||
+        /iPod/i.test(navigator.userAgent);
   }
 
-  export function isIOS7() {
-    return isIOS() && navigator.userAgent.match(/OS 7/);
+  export function isIOS7(): boolean {
+    return isIOS() && /OS 7/i.test(navigator.userAgent);
   }
 }
 
