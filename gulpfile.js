@@ -30,7 +30,7 @@ var Assets = {
       dir: 'project/src/ts/'
     },
     dest: {
-      files : ['project/www/js/**/*.js', '!project/www/js/vendors/**/*.js', '!project/www/js/settings.js', 'project/www/js/**/*.gz'],
+      files : ['project/www/js/**/*.js', '!project/www/js/vendors/**/*.js', '!project/www/js/settings.js', 'project/www/js/**/*.gz', 'project/www/data/**/*.gz'],
       dir: 'project/www/js/'
     }
   },
