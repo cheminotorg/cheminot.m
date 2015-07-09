@@ -8,17 +8,13 @@ project/www/js
 project/www/index.html
 project/target
 src/ts/**/*.js
-app/platforms/browser
-app/platforms/android
-!app/platforms/android/AndroidManifest.xml
-app/plugins
 project/src/ts/.gulp*
 generated
 misc/splashscreen
 apk
 *.log
 *.gz
-app/www
+app
 #=============#
 # IOS / XCODE #
 #=============#

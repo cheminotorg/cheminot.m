@@ -5,7 +5,7 @@
   "version": "0.1.1",
   "platforms": [
     "browser@3.6.0",
-    "android@3.7.1"
+    "android@3.7.2"
   ],
   "cordova": {
     "preferences": {
@@ -35,7 +35,6 @@
     "href": "https://github.com/srenault"
   },
   "check": {
-    "ios": "./project/bin/check_ios.js",
     "android": "./project/bin/check_android.js",
     "browser": "./project/bin/check_browser.js"
   },
