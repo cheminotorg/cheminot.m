@@ -203,6 +203,13 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
         if(!isUpdate) {
           el.style.bottom = '-' + el.clientHeight + 'px';
         }
+
+        context.onunload = () => {
+          if(ctrl.isComputationInProgress()) {
+            ctrl.isComputationInProgress(false);
+            native.Cheminot.abort();
+          }
+        }
       }
     }
   };
@@ -341,10 +348,6 @@ var departures: m.Module<Ctrl> = {
 
     if(ctrl.displayed()) {
       native.onBackButton('departures', () => {
-        if(ctrl.isComputationInProgress()) {
-          ctrl.isComputationInProgress(false);
-          native.Cheminot.abort();
-        }
         if(ctrl.displayed()) history.back();
       });
     }
@@ -353,7 +356,7 @@ var departures: m.Module<Ctrl> = {
   },
 
   view(ctrl: Ctrl) {
-    return render(ctrl);
+    return render(ctrl)
   }
 };
 
