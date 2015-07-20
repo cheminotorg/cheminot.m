@@ -208,6 +208,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
           if(ctrl.isComputationInProgress()) {
             ctrl.isComputationInProgress(false);
             native.Cheminot.abort();
+            hideHolo(ctrl);
           }
         }
       }
@@ -305,7 +306,10 @@ var departures: m.Module<Ctrl> = {
 
       onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => {
         if(!ctrl.isScrollingDepartures()) {
-          if(ctrl.isComputationInProgress()) native.Cheminot.abort();
+          if(ctrl.isComputationInProgress()) {
+            native.Cheminot.abort();
+            hideHolo(ctrl);
+          }
           ctrl.isComputationInProgress(false);
           m.route(Routes.trip(departure.id));
         }
