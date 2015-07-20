@@ -12,10 +12,11 @@ type DemoArrivalTime = {
 }
 
 const baseURL = '';
+const defaultTimeout = 30 * 1000;
 
 export function gitVersion(success: (sha: string) => void, error: (err: string) => void): void {
   const endpoint = baseURL + '/about';
-  Qajax(endpoint)
+  Qajax({ url: endpoint, timeout: defaultTimeout })
       .then(Qajax.filterSuccess)
       .then(response => Qajax.toJSON<{cheminotc: string}>(response))
       .then(result => success(result.cheminotc))
@@ -24,7 +25,7 @@ export function gitVersion(success: (sha: string) => void, error: (err: string) 
 
 export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
   const endpoint = baseURL + '/cheminotm/init';
-  Qajax(endpoint)
+  Qajax({ url: endpoint, timeout: defaultTimeout })
       .then((response) => {
         var result: any;
         try { result = JSON.parse(response.responseText); } catch(e) {};
@@ -51,6 +52,7 @@ export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, 
   Qajax({
     url: endpoint,
     method: 'POST',
+    timeout: 3600 * 1000,
     data: {
       vsId: vsId,
       veId: veId,
@@ -92,6 +94,7 @@ export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: 
   Qajax({
     url: endpoint,
     method: 'POST',
+    timeout: defaultTimeout,
     data: {
       vsId: vsId,
       veId: veId,
@@ -121,7 +124,8 @@ export function abort(success: () => void, error: (err: string) => void): void {
   const endpoint = baseURL + '/cheminotm/abort';
   Qajax({
     url: endpoint,
-    method: 'POST'
+    method: 'POST',
+    timeout: defaultTimeout
   }).then(Qajax.filterSuccess)
     .then(() => {
       window.parent.postMessage({

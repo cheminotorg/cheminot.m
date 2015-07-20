@@ -4,8 +4,9 @@ declare module 'qajax' {
 
   type QajaxOptions = {
     url: string;
-    method: string;
+    method?: string;
     data?: any;
+    timeout?: number;
   }
 
   function qajax(url: String): Q.Promise<XMLHttpRequest>;
