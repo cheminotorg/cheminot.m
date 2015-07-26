@@ -8,6 +8,11 @@ export function key(vs: string, ve: string, at: Date, te: Date, max: number = 0)
   return [vs, ve, at.getTime(), te.getTime(), max].join('|');
 }
 
+export function decomposeKey(id: string): [string, string, number, number, number] {
+  let [vs, ve, at, te, max] = id.split('|');
+  return [vs, ve, parseInt(at, 10), parseInt(te, 10), parseInt(max, 10)];
+}
+
 export function setTrip(key: string, trip: ArrivalTimes): void {
   sessionStorage.setItem(key, JSON.stringify(trip));
 }
