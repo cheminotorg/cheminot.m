@@ -159,17 +159,23 @@ export module Promise {
     }, () => { return promise });
   }
 
-  export function pure<T>(t: T): Q.Promise<T> {
-    return Q<T>(t);
+  export function foldLeftSequentially<A, B>(seq: Array<A>, z: B, f: (x: B, y: A) => Q.Promise<B>): Q.Promise<B> {
+    if(seq.length === 0) {
+      return Q(z);
+    } else {
+      let h = seq[0];
+      let t = seq.slice(1);
+      return f(z, h).then((acc) => foldLeftSequentially(t, acc, f));
+    }
   }
 
-  export function sequence<T>(seq: Array<T>, f: (t: T) => Q.Promise<T>): Q.Promise<Array<T>> {
+  export function sequence<T, U>(seq: Array<T>, f: (t: T) => Q.Promise<U>): Q.Promise<Array<U>> {
     if(seq.length === 0) {
       return Q([]);
     } else {
       var h = seq[0];
       var t = seq.slice(1);
-      return f(h).then<Array<T>>((t1) => {
+      return f(h).then<Array<U>>((t1) => {
         return sequence(t, f).then((t2) => {
           return [t1].concat(t2)
         });

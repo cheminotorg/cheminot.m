@@ -31,5 +31,7 @@ export function init() {
 
   }
 
+  window.addEventListener('orientationchange', () => onResize());
+
   onResize();
 }

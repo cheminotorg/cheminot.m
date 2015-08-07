@@ -68,7 +68,7 @@ function render(ctrl: Ctrl) {
   var endStopTime = _.last(ctrl.trip());
 
   return [
-    m('div.top-bar.title', {}, [
+    m('div.top-bar', {}, [
       m('div', {}, [
         m('span.start', {}, startStopTime ? startStopTime.stopName : ''),
         m('span.to'),
@@ -114,8 +114,8 @@ var trip: m.Module<Ctrl> = {
 
       adaptWrapperTop: (ctrl: Ctrl) => {
         var wrapper = <HTMLElement> ctrl.scope().querySelector('#wrapper');
-        var title = <HTMLElement> scope().querySelector('.title');
-        var top = title.offsetTop + title.offsetHeight;
+        var topBar = <HTMLElement> scope().querySelector('.top-bar');
+        var top = topBar.offsetTop + topBar.offsetHeight;
         wrapper.style.top = top + 'px';
       }
     };

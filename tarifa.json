@@ -21,6 +21,14 @@
       "KeepRunning": true,
       "SplashScreenDelay": 60000
     },
+    "android": {
+      "manifest": {
+        "uses-permission": [
+          { "$": { "android:name":"android.permission.VIBRATE" } },
+          { "$": { "android:name":"android.permission.SEND_SMS" } }
+        ]
+      }
+    },
     "accessOrigin": [
       "*",
       {

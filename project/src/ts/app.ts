@@ -3,6 +3,7 @@ import Header = require('header');
 import Home = require('home');
 import Departures = require('departures');
 import Trip = require('trip');
+import Now = require('now');
 import Utils = require('utils');
 import _ = require('lodash');
 import moment = require('moment');
@@ -13,6 +14,7 @@ export type Ctrl = {
   modals: Modals.Ctrl;
   header: Header.Ctrl;
   home: Home.Ctrl;
+  now: Now.Ctrl;
   departures: Departures.Ctrl;
   trip: Trip.Ctrl;
 }
@@ -44,6 +46,22 @@ function renderHome(ctrl: Home.Ctrl): m.VirtualElement {
   });
 
   return m("section", attributes, Home.get().view(ctrl));
+}
+
+function renderNow(ctrl: Now.Ctrl): m.VirtualElement {
+  var attributes: Attributes = {
+    'id': 'now',
+    'class': 'view hidden'
+  };
+
+  attributes = Utils.m.handleAttributes(attributes, (name, value) => {
+    switch (name + ':' + value) {
+      case 'class:hidden': return !ctrl.displayed();
+      default: return true;
+    }
+  });
+
+  return m("section", attributes, Now.get().view(ctrl));
 }
 
 function renderDepartures(ctrl: Departures.Ctrl): m.VirtualElement {
@@ -83,6 +101,7 @@ var app = {
     return {
       modals: Modals.get().controller(),
       header: Header.get().controller(),
+      now: Now.get().controller(),
       home: Home.get().controller(),
       departures: Departures.get().controller(),
       trip: Trip.get().controller()
@@ -105,6 +124,7 @@ var app = {
       Modals.get().view(ctrl.modals),
       renderHeader(ctrl.header),
       renderHome(ctrl.home),
+      renderNow(ctrl.now),
       renderDepartures(ctrl.departures),
       renderTrip(ctrl.trip)
     ])];

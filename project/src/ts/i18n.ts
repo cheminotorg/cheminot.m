@@ -2,7 +2,7 @@ type Messages = {
   [index: string]: any;
 }
 
-var messages: Messages = {
+const messages: Messages = {
   'fr': {
     'today': "Aujourd'hui",
     'tomorrow': 'Demain',
@@ -14,7 +14,7 @@ var messages: Messages = {
     'departure-time': 'Heure de départ',
     'search': 'Rechercher',
     'direct': 'Direct',
-    'pull-to-refresh': 'Tirer pour actualiser',
+    'pull-to-refresh': 'Tirer pour les horaires suivant',
     'trip-not-direct': 'Votre trajet n\'est pas direct! Veuillez patienter...',
     'release-to-refresh': 'Relacher pour actualiser',
     'loading': 'Chargement...',
@@ -23,7 +23,8 @@ var messages: Messages = {
     'clear': 'effacer',
     'no-trip-matched': 'Impossible de trouver des trajets correspondant à votre recherche',
     'demo-try-later-busy': "Le serveur semble surchargé. Reessayer plus tard.",
-    'unexpected-error': 'Une erreur inattendue est survenue. Un rapport d\'erreur vient d\'être envoyé.'
+    'unexpected-error': 'Une erreur inattendue est survenue. Un rapport d\'erreur vient d\'être envoyé.',
+    'your-departures': 'Vos prochains départs'
   }
 };
 

@@ -22,9 +22,11 @@ declare type ArrivalTimes = {
 
 declare type Departure = {
   startId: string;
+  startName: string;
   endId: string;
   startTime: Date;
   endTime: Date;
+  endName: string;
   nbSteps: number;
   id: string;
 }
@@ -69,6 +71,7 @@ declare module cordova {
     module Cheminot {
       function gitVersion(success: (sha: string) => void, error: (e: string) => void): void;
       function init(success: (meta: Meta) => void, error: (e: string) => void): void;
+      function getStop(stopId: string, success: (station: Station) => void, error: (e: string) => void): void;
       function lookForBestTrip(start: string, end: string, at: Date, te: Date, max: number, success: (arrivalTime: ArrivalTime[]) => void, error: (e: string) => void): void;
       function lookForBestDirectTrip(start: string, end: string, at: Date, te: Date, success: (result: [boolean, ArrivalTime[]]) => void, error: (e: string) => void): void;
       function abort(success: () => void, error: (e: string) => void): void;

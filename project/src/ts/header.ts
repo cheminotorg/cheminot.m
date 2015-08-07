@@ -7,29 +7,41 @@ import Preferences = require('preferences');
 
 export type Ctrl = {
   starred: (value?: boolean) => boolean;
+  vs: (value?: string) => string;
+  ve: (value?: string) => string;
   onStarred: (ctrl: Ctrl, e: Event) => void;
+  onNow: (ctrl: Ctrl, e: Event) => void;
+  onSearch: (ctrl: Ctrl, e: Event) => void;
   isTripView: () => boolean;
-  tripId: (id?: string) => string;
+  isDepartureView: () => boolean;
+  isNowView: () => boolean;
 }
 
 var header = {
   controller(): Ctrl {
 
-    let isStarred = false;
-    let tripId: string = null;
+    const vs = m.route.param('start');
+    const ve = m.route.param('end');
 
-    if(Routes.matchTrip(m.route())) {
-      tripId = m.route.param("id");
-      let [vs, ve] = Cache.decomposeKey(tripId);
+    let isStarred = false;
+    if(Routes.matchDepartures(m.route())) {
       isStarred = Preferences.isStarred(vs, ve);
     }
 
     return {
+      isDepartureView: () => Routes.matchDepartures(m.route()),
       isTripView: () => Routes.matchTrip(m.route()),
+      isNowView: () => Routes.matchNow(m.route()),
       starred: m.prop(isStarred),
-      tripId: m.prop(tripId),
+      vs: m.prop(vs),
+      ve: m.prop(ve),
+      onSearch: (ctrl: Ctrl, e: Event) => {
+        m.route('/');
+      },
+      onNow: (ctrl: Ctrl, e: Event) => {
+        m.route('/now');
+      },
       onStarred: (ctrl: Ctrl, e: Event) => {
-        let [vs, ve] = Cache.decomposeKey(ctrl.tripId());
         if(ctrl.starred()) {
           ctrl.starred(false);
           Preferences.unstars(vs, ve);
@@ -44,26 +56,47 @@ var header = {
 
   view(ctrl: Ctrl) {
 
-    var loader = m('div.holo', {}, [
+    const loader = m('div.holo', {}, [
       m('div.outer', {}),
       m('div.inner', {})
     ]);
 
-    let v = [
+    const v = [
       m("h1", {}, "Cheminot"),
       loader
     ];
 
-    if(ctrl.isTripView()) {
-
+    if(ctrl.isNowView()) {
       var attrs: Attributes = {
+        config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
+          if(!isUpdate) {
+            Utils.$.touchend(el, _.partial(ctrl.onSearch, ctrl));
+          }
+        }
+      };
+      v.push(m('button.search', attrs));
+    }
+
+    if(ctrl.isDepartureView()) {
+      const starsAttrs: Attributes = {
         config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
           if(!isUpdate) {
             Utils.$.touchend(el, _.partial(ctrl.onStarred, ctrl));
           }
         }
       };
-      v.push(m('button.stars' + (ctrl.starred() ? '.starred' : ''), attrs));
+      v.push(m('button.stars' + (ctrl.starred() ? '.starred' : ''), starsAttrs));
+    }
+
+    if(!ctrl.isNowView()) {
+      const homeAttrs: Attributes = {
+        config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
+          if(!isUpdate) {
+            Utils.$.touchend(el, _.partial(ctrl.onNow, ctrl));
+          }
+        }
+      };
+      v.push(m('button.home', homeAttrs));
     }
 
     return v;

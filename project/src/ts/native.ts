@@ -113,8 +113,20 @@ export module Cheminot {
     return d.promise;
   }
 
+  export function getStop(stopId: string): Q.Promise<Station> {
+    var d = Q.defer<Station>();
+    var success = (station: Station) => d.resolve(station);
+    var error = (e: string) => d.reject(e);
+    if(isMocked()) {
+      Mock.getStop(stopId, success, error);
+    } else  {
+      cordova.plugins.Cheminot.getStop(stopId, success, error);
+    }
+    return d.promise;
+  }
+
   export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: Date): Q.Promise<ArrivalTimes> {
-    var key = Cache.key(vsId, veId, at, te);
+    var key = Cache.tripKey(vsId, veId, at, te);
     return Cache.getOrSetTrip(key, () => {
       var d = Q.defer<ArrivalTimes>();
       var success = (result: [boolean, ArrivalTime[]]) => {
@@ -135,7 +147,7 @@ export module Cheminot {
   }
 
   export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number): Q.Promise<ArrivalTimes> {
-    var key = Cache.key(vsId, veId, at, te, max);
+    var key = Cache.tripKey(vsId, veId, at, te, max);
     return Cache.getOrSetTrip(key, () => {
       var d = Q.defer<ArrivalTimes>();
       var success = (arrivalTimes: ArrivalTime[]) => {

@@ -32,8 +32,9 @@ Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions
     Settings.db = meta;
     Settings.cheminotcVersion = cheminotcVersion;
     m.route.mode = 'hash';
-    m.route(document.body, "/", {
+    m.route(document.body, '/now', {
       "/": App.get(),
+      "/now": App.get(),
       "/query/:tab/:start/:end/:at": App.get(),
       "/departures/:start/:end/:at": App.get(),
       "/trip/:id": App.get()

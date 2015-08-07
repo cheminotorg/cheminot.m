@@ -220,7 +220,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
 
   return m("div", { class: "stations" },
            m("div", { id: "wrapper" },
-             m("ul", _.merge({ class: "suggestions list" }, suggestionsAttrs), items)));
+             m("ul", _.merge({ class: "suggestions" }, suggestionsAttrs), items)));
 }
 
 /// RENDER DATETIME SELECTOR
@@ -271,18 +271,21 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement {
     });
   })();
 
-  return m("ul", { class: 'list datetime'}, [
+  return m("ul", { class: 'datetime'}, [
     m("li", dateSelectorAttrs(), [
-      m("span", { class: "label" }, i18n.fr('departure-date')),
-      m("span", { class: "value" }, formatDate(ctrl.inputDateSelected()))
-    ]),
+      m('div', {}, [
+        m("span", { class: "label" }, i18n.fr('departure-date')),
+        m("span", { class: "value" }, formatDate(ctrl.inputDateSelected()))
+      ])]),
     m("li", _.merge({ class: "time" }, inputTimeAttrs), [
-      m("span", { class: "label" }, i18n.fr('departure-time')),
-      m("span", { class: "value" }, formatTime(ctrl.inputTimeSelected()))
-    ]),
+      m('div', {}, [
+        m("span", { class: "label" }, i18n.fr('departure-time')),
+        m("span", { class: "value" }, formatTime(ctrl.inputTimeSelected()))
+      ])]),
     m("li", submitAttrs, [
+      m('div', {}, [
       m("span", {}, i18n.fr('search')),
-      m("button", { class: "font go" })])]);
+        m("button", { class: "font go" })])])]);
 }
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
@@ -569,13 +572,13 @@ function showInputStationEnd(ctrl: Ctrl): Q.Promise<HTMLElement> {
 function hideInputStationStart(ctrl: Ctrl): Q.Promise<HTMLElement> {
   var stationStart = <HTMLElement> ctrl.scope().querySelector('.input.start');
   stationStart.style.display = 'none';
-  return Utils.Promise.pure(stationStart);
+  return Q(stationStart);
 }
 
 function showInputStationStart(ctrl: Ctrl): Q.Promise<HTMLElement> {
   var stationStart = <HTMLElement> ctrl.scope().querySelector('.input.start');
   stationStart.style.display = 'block';
-  return Utils.Promise.pure(stationStart);
+  return Q(stationStart);
 }
 
 function moveUpViewport(ctrl: Ctrl): Q.Promise<HTMLElement> {
@@ -604,13 +607,13 @@ function moveDownViewport(ctrl: Ctrl): Q.Promise<HTMLElement> {
 function hideDateTimePanel(ctrl: Ctrl): Q.Promise<HTMLElement> {
   var datetime = <HTMLElement> ctrl.scope().querySelector('.datetime');
   datetime.style.display = 'none';
-  return Utils.Promise.pure(datetime);
+  return Q(datetime);
 }
 
 function showDateTimePanel(ctrl: Ctrl): Q.Promise<HTMLElement> {
   var datetime = <HTMLElement> ctrl.scope().querySelector('.datetime');
   datetime.style.display = 'block';
-  return Utils.Promise.pure(datetime);
+  return Q(datetime);
 }
 
 function resetInputStationsPosition(ctrl: Ctrl, inputStation: HTMLInputElement): Q.Promise<void> {

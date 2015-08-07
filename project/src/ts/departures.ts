@@ -5,6 +5,7 @@ import IScroll = require('IScroll');
 import moment = require('moment');
 import locale = require('locale');
 import Utils = require('utils');
+import Common = require('common');
 import native = require('native');
 import Mock = require('mock');
 import Q = require('q');
@@ -18,8 +19,7 @@ export type Ctrl = {
   displayed: () => boolean;
   startStationId: (value?: string) => string;
   endStationId: (value?: string) => string;
-  cached: (value?: Array<Departure>) => Array<Departure>;
-  departures: (value?: Array<Departure>) => Array<Departure>;
+  departures: (value?: Departure[]) => Departure[];
   onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => void;
   isPullUpDisplayed: (value?: boolean) => boolean;
   isPullUpLoading: (value?: boolean) => boolean;
@@ -37,28 +37,11 @@ export type Ctrl = {
   iscroll: () => IScroll;
 }
 
-function formatDay(dateTime: Date): string {
-  return moment(dateTime).format('dddd D MMMM YYYY');
-}
-
-function formatDateTime(dateTime: Date): string {
-  return moment(dateTime).format('d/MM/YYYY HH:mm');
-}
-
-function formatTime(dateTime: Date): string {
-  return moment(dateTime).format('HH:mm');
-}
-
-function formatDuration(duration: number): string {
-  var hours = Utils.Number.trunc(duration / 3600000);
-  var minutes = Utils.Number.trunc((duration - (hours * 3600000)) / 1000 / 60);
-  return Utils.pad(hours, 2) + ':' + Utils.pad(minutes, 2);
-}
-
 function renderMeta(departure: Departure): m.VirtualElement[] {
+  let value = Utils.DateTime.diff(departure.startTime, departure.endTime)
   var duration = m('div.duration', {}, [
     m('span.egg-timer'),
-    m('span.value', {}, formatDuration(Utils.DateTime.diff(departure.startTime, departure.endTime)))
+    m('span.value', {}, Common.Departure.formatDuration(value))
   ]);
 
   if(departure.nbSteps <= 1) {
@@ -121,8 +104,8 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
         m('div.meta', {}, renderMeta(departure)),
         m('div.start-end', {}, [
           m('span.alarm-clock'),
-          m('span.start', {}, formatTime(departure.startTime)),
-          m('span.end', {}, formatTime(departure.endTime))
+          m('span.start', {}, Common.Departure.formatTime(departure.startTime)),
+          m('span.end', {}, Common.Departure.formatTime(departure.endTime))
         ])
       ])
     ]);
@@ -143,10 +126,9 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
 
   var zipped = _.zip<Departure, m.VirtualElement>(ctrl.departures(), departuresList);
   var departures = _.reduce(zipped, (acc, d) => {
-    var model = d[0];
-    var dom = d[1];
+    let [model, dom] = d;
     if(!moment(acc.lastDay).isSame(model.startTime, 'day')) {
-      var dayEl = m('li.day', { key: model.startTime }, formatDay(model.startTime));
+      var dayEl = m('li.day', { key: model.startTime }, Common.Departure.formatDay(model.startTime));
       acc.lastDay = model.startTime;
       acc.elements.push(dayEl);
     }
@@ -159,12 +141,12 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
   }
 
   if(!departures.elements.length) {
-    var departure = tripToDeparture(Mock.getTrip());
+    var departure = Common.tripToDeparture(Mock.getTrip());
     var attrs: Attributes = {
       'class': 'fake',
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          ctrl.itemHeight(el.clientHeight);
+          ctrl.itemHeight(el.offsetHeight);
         }
       }
     };
@@ -177,10 +159,9 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
       if(ctrl.displayed()) {
         ctrl.iscroll().refresh();
         if(!isUpdate) {
-          var cached = Cache.getAllTripsFrom(ctrl.startStationId(), ctrl.endStationId(), ctrl.at(), 0, nextDeparture, departureBound).map((departure) => {
-            return tripToDeparture(departure);
+          let cached = Cache.getAllTripsFrom(ctrl.startStationId(), ctrl.endStationId(), ctrl.at(), 0, nextDeparture, departureBound).map((departure) => {
+            return Common.tripToDeparture(departure);
           });
-          ctrl.cached(cached);
           cached.forEach((departure) => ctrl.departures().push(departure));
           if(cached.length) ctrl.lastDepartureTime(_.last(cached).startTime);
           ctrl.currentPageSize(cached.length);
@@ -295,8 +276,6 @@ var departures: m.Module<Ctrl> = {
       at: m.prop(new Date(at)),
 
       departures: m.prop([]),
-
-      cached: m.prop([]),
 
       nbItemsPerScreen: m.prop(0),
 
@@ -415,7 +394,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
       }
       return eventuallyTrip.then((trip) => {
         if(trip.arrivalTimes.length > 0) {
-          var departure = tripToDeparture(trip);
+          var departure = Common.tripToDeparture(trip);
           ctrl.departures().push(departure);
           if(ctrl.isComputingLongTrip()) {
             displayHolo(ctrl);
@@ -427,7 +406,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
         } else {
           --retries;
           if(retries <= 0) {
-            return Utils.Promise.pure(StatusCode.NO_MORE);
+            return Q(StatusCode.NO_MORE);
           } else {
             ctrl.lastDepartureTime(te);
             return step(ctrl, nextDeparture(ctrl.lastDepartureTime()), retries);
@@ -436,7 +415,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
       });
     } else {
       hideTrace(ctrl);
-      return Utils.Promise.pure(StatusCode.OK);
+      return Q(StatusCode.OK);
     }
   }
   return step(ctrl, at).then((statusCode) => {
@@ -470,21 +449,6 @@ function departureBound(departure: Date): Date {
   return Utils.DateTime.addHours(departure, 12);
 }
 
-function tripToDeparture(trip: ArrivalTimes): Departure {
-  var start = _.head(trip.arrivalTimes);
-  var end = _.last(trip.arrivalTimes);
-  var nbSteps = Object.keys(_.groupBy(trip.arrivalTimes, arrivalTime => arrivalTime.tripId)).length;
-
-  return {
-    startId: start.stopId,
-    endId: end.stopId,
-    startTime: start.departure,
-    endTime: end.arrival,
-    nbSteps: nbSteps,
-    id: trip.id
-  };
-}
-
 function isMoreItemsNeeded(ctrl: Ctrl): boolean {
   var screenFull = isScreenFull(ctrl);
   var hasFirstPageNotFull = ctrl.nbItemsPerScreen() == 0 && !screenFull;
@@ -493,10 +457,10 @@ function isMoreItemsNeeded(ctrl: Ctrl): boolean {
 }
 
 function isScreenFull(ctrl: Ctrl): boolean {
-  var header = <HTMLElement> document.querySelector('#header');
-  var viewportSize = Utils.viewportSize();
-  var height = Math.max(viewportSize[0], viewportSize[1]);
-  var isFull = (header.offsetHeight + (ctrl.itemHeight() * ctrl.departures().length)) >= height;
+  let header = <HTMLElement> document.querySelector('#header');
+  let [viewportHeight, viewportWidth] = Utils.viewportSize();
+  let height = Math.max(viewportHeight, viewportWidth);
+  let isFull = (header.offsetHeight + (ctrl.itemHeight() * ctrl.departures().length)) >= height;
   if(isFull && ctrl.nbItemsPerScreen() == 0) {
     ctrl.nbItemsPerScreen(ctrl.departures().length);
   }

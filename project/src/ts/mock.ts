@@ -11,8 +11,15 @@ export function gitVersion(success: (sha: string) => void, error: (err: string) 
 export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
   success({
     version: 'xxxxxxx',
-    createdAt: new Date(),
-    expiredAt: new Date()
+    createdAt: new Date()
+  });
+}
+export function getStop(stopId: string, success: (station: Station) => void, error: (err: string) => void): void {
+  success({
+    id: stopId,
+    name: 'Paris',
+    lat: 0.22312312,
+    lng: 44.9213123
   });
 }
 

@@ -1,0 +1,99 @@
+#now {
+
+    .top-bar {
+        position: relative
+        text-align: center
+
+        > div {
+            position: absolute
+            top: 50%
+            left: 50%
+            transform: translate(-50%, -50%)
+            width: 100%
+        }
+
+    }
+
+    .nothing {
+        position: absolute
+        top: 50%
+        left: 50%
+        transform: translate(-50%)
+        width: 80%
+        line-height: 30px
+        text-align: center
+        color: blue
+        font-size: size(18px)
+
+        button.stars {
+            text-transform: uppercase
+            display: inline-block
+            border: none
+            outline: none
+            background: transparent
+            padding: size(10px)
+            color: android-green
+            font-size: size(13px)
+            margin-top: size(80px)
+            border: 1px solid
+        }
+    }
+
+    li {
+        height: size(66px)
+        font-size: size(18px)
+        position: relative
+        padding: 0 size(14px)
+        box-sizing: border-box
+        color: dark-blue
+
+        &:nth-child(even) {
+            background: grey-blue
+        }
+
+        .trip, .timing {
+            display: inline-block
+            white-space: nowrap
+            text-overflow: ellipsis
+            overflow: hidden
+            position: absolute
+            top: 50%
+            transform: translateY(-50%)
+        }
+
+        .start {
+            margin-bottom: 4px
+        }
+
+        .start, .end {
+            display: block
+        }
+
+        .trip {
+            max-width: 70%
+        }
+
+        .timing {
+            position: absolute
+            right: size(8px)
+            width: size(80px)
+            text-align: left
+
+            .at, .remaining {
+                display: block
+            }
+
+            .at {
+                margin-bottom: size(4px);
+            }
+
+            .remaining {
+                font-size: size(12px)
+            }
+        }
+
+        &.fake {
+            visibility: hidden
+        }
+    }
+}

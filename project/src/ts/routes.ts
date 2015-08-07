@@ -22,3 +22,7 @@ export function matchDepartures(route: string) {
 export function matchTrip(route: string) {
   return /\/trip\/.+/.test(route);
 }
+
+export function matchNow(route: string) {
+  return /\/now/.test(route);
+}
