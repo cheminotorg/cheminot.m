@@ -11,8 +11,7 @@ export function gitVersion(success: (sha: string) => void, error: (err: string) 
 export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
   success({
     version: 'xxxxxxx',
-    createdAt: new Date(),
-    expiredAt: new Date()
+    createdAt: new Date()
   });
 }
 
