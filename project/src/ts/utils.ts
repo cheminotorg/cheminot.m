@@ -240,7 +240,7 @@ export module $ {
         t = setTimeout(() => {
           el.classList.add('press-done');
           if(el.classList.contains('press')) {
-            navigator.vibrate(300);
+            navigator.vibrate && navigator.vibrate(300);
           }
         }, ms);
       }

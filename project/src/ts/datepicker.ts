@@ -20,7 +20,7 @@ export type Ctrl = {
 }
 
 function vibrate() {
-  navigator.vibrate(30);
+  navigator.vibrate && navigator.vibrate(30);
 }
 
 function renderTitle(ctrl: Ctrl): m.VirtualElement {
