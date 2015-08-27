@@ -21,24 +21,17 @@ backward_button() {
     icon_cheminot('left', white)
 }
 
-up_button(color = white) {
+up_button(color=white) {
     clear-button()
     icon_cheminot('up', color)
 }
 
-down_button(color = white) {
+down_button(color=white) {
     clear-button()
     icon_cheminot('down', color)
 }
 
-forward_button(enabled) {
+forward_button(color=grey) {
     clear-button()
-
-    if enabled {
-        icon_cheminot('right', blue, 180deg)
-    }
-
-    if (!enabled) {
-        icon_cheminot('right', grey-light, 180deg)
-    }
+    icon_cheminot('right', color, 180deg)
 }

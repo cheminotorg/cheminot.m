@@ -212,7 +212,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
                  right])))
   });
 
-  var emptyResult = m('li.empty', {}, i18n.fr('no-result'));
+  var emptyResult = m('li.empty', {}, m('div', {}, i18n.fr('no-result')));
 
   var inputDisabled = ctrl.isInputStationStartDisabled() && ctrl.isInputStationEndDisabled();
 

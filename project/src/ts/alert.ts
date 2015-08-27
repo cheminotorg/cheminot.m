@@ -4,10 +4,16 @@ import Utils = require('utils');
 import _ = require('lodash');
 import moment = require('moment');
 
-var deferred: Q.Deferred<void>;
+export enum Response {
+  OK, CANCEL
+}
+
+let deferred: Q.Deferred<Response>;
 
 export type Ctrl = {
   onOkTouched: (ctrl: Ctrl, e: Event) => void;
+  onCancelTouched: (ctrl: Ctrl, e: Event) => void;
+  isPromptAlert: (value?: boolean) => boolean;
   body: (value?: m.VirtualElement) => m.VirtualElement;
   title: (value?: string) => string;
   onDisplay: (ctrl: Ctrl, e: Event) => void;
@@ -20,7 +26,7 @@ function renderTitle(ctrl: Ctrl): m.VirtualElement {
 }
 
 function renderButtons(ctrl: Ctrl): m.VirtualElement {
-  var attrs: Attributes = {
+  const okAttrs: Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.bind('cheminot:alert', _.partial(ctrl.onDisplay, ctrl));
@@ -28,11 +34,25 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
       }
     }
   }
-  return m('div.actions', {}, m('button.ok', attrs, "OK"));
+
+  const buttons = [m('button.ok', okAttrs, "OK")];
+
+  if(ctrl.isPromptAlert()) {
+    const cancelAttrs: Attributes = {
+      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+        if(!isUpdate) {
+          Utils.$.touchend(el, _.partial(ctrl.onCancelTouched, ctrl));
+        }
+      }
+    }
+    buttons.push(m('button.cancel', cancelAttrs, "ANNULER"));
+  }
+
+  return m('div.actions', {}, buttons);
 }
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
-  var attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
+  const attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
     if((name + ':' + value) == 'class:fade-in') {
       return ctrl.displayed();
     }
@@ -46,7 +66,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
       renderButtons(ctrl)])];
 }
 
-var alert: m.Module<Ctrl> = {
+const alert: m.Module<Ctrl> = {
   controller(): Ctrl {
     return {
       title: m.prop('Cheminot'),
@@ -55,12 +75,19 @@ var alert: m.Module<Ctrl> = {
       displayed: m.prop(false),
       onOkTouched: (ctrl: Ctrl, e: Event) => {
         ctrl.displayed(false);
-        deferred.resolve(null);
+        deferred.resolve(Response.OK);
         m.redraw();
       },
+      onCancelTouched: (ctrl: Ctrl, e: Event) => {
+        ctrl.displayed(false);
+        deferred.resolve(Response.CANCEL);
+        m.redraw();
+      },
+      isPromptAlert: m.prop(false),
       onDisplay: (ctrl: Ctrl, e: any) => {
         ctrl.displayed(true);
         if(e.detail.title) ctrl.title(e.detail.title);
+        ctrl.isPromptAlert(e.detail.isPromptAlert);
         ctrl.body(e.detail.body);
         ctrl.classList(e.detail.classList);
         m.redraw.strategy("diff");
@@ -78,9 +105,9 @@ export function get(): m.Module<Ctrl> {
   return alert;
 }
 
-export function about(classList: string[] = []): Q.Promise<void> {
-  var formatDay = (dateTime: Date) => moment(dateTime).format('dddd D MMMM YYYY');
-  var body = m('table', {}, [
+export function about(classList: string[] = []): Q.Promise<Response> {
+  const formatDay = (dateTime: Date) => moment(dateTime).format('dddd D MMMM YYYY');
+  const body = m('table', {}, [
     m('tr', {}, [m('td', {}, 'bundleId'), m('td', Settings.bundleId)]),
     m('tr', {}, [m('td', {}, 'version'), m('td', {}, Settings.version)]),
     m('tr', {}, [m('td', {}, 'cheminotc'), m('td', {}, Settings.cheminotcVersion)]),
@@ -95,16 +122,23 @@ function bodyElement(text: string): m.VirtualElement {
   return m('p.body', {}, text);
 }
 
-export function info(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<void> {
-  deferred = Q.defer<void>();
-  var body = (typeof content === "string") ? bodyElement(content) : content;
+export function info(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<Response> {
+  deferred = Q.defer<Response>();
+  const body = (typeof content === "string") ? bodyElement(content) : content;
   Utils.$.trigger('cheminot:alert', { body: body, classList: classList });
   return deferred.promise;
 }
 
-export function error(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<void> {
-  deferred = Q.defer<void>();
-  var body = (typeof content === "string") ? bodyElement(content) : content;
+export function error(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<Response> {
+  deferred = Q.defer<Response>();
+  const body = (typeof content === "string") ? bodyElement(content) : content;
   Utils.$.trigger('cheminot:alert', { body: body, classList: classList.concat(['error']) });
+  return deferred.promise;
+}
+
+export function prompt(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<Response> {
+  deferred = Q.defer<Response>();
+  const body = (typeof content === "string") ? bodyElement(content) : content;
+  Utils.$.trigger('cheminot:alert', { body: body, classList: classList, isPromptAlert: true });
   return deferred.promise;
 }

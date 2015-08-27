@@ -106,7 +106,7 @@ function renderNothing(ctrl: Ctrl): m.VirtualElement[] {
     },
   };
   return [m('div.nothing', {}, [
-    m('p', {}, 'Il semblerait que vous n\'avez encore mis aucun trajet en favoris!'),
+    m('p', {}, 'Il semblerait que vous n\'allez encore aucun trajets en favoris!'),
     m('button.stars', buttonAttrs, 'Ajouter un trajet maintenant')
   ])];
 }

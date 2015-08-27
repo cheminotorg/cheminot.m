@@ -24,9 +24,9 @@ function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
     return new Array<m.VirtualElement>();
   } else {
     return ctrl.trip().map((arrivalTime, index) => {
-      var waiting = moment(arrivalTime.departure).diff(moment(arrivalTime.arrival));
-      var hasChangement = (() => {
-        var next = ctrl.trip()[index + 1];
+      const waiting = moment(arrivalTime.departure).diff(moment(arrivalTime.arrival));
+      const hasChangement = (() => {
+        const next = ctrl.trip()[index + 1];
         if(next) {
           return next.tripId !== arrivalTime.tripId;
         } else {
@@ -34,7 +34,7 @@ function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
         }
       })();
 
-      var attrs: Attributes = {
+      const attrs: Attributes = {
         config: function(el: HTMLElement, isUpdate: boolean, context: any) {
           if((index + 1) === ctrl.trip().length) {
             ctrl.adaptWrapperTop(ctrl);
@@ -63,9 +63,9 @@ function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
 
 function render(ctrl: Ctrl) {
 
-  var stopTimesList = renderStopTimes(ctrl);
-  var startStopTime = _.head(ctrl.trip());
-  var endStopTime = _.last(ctrl.trip());
+  const stopTimesList = renderStopTimes(ctrl);
+  const startStopTime = _.head(ctrl.trip());
+  const endStopTime = _.last(ctrl.trip());
 
   return [
     m('div.top-bar', {}, [
@@ -79,26 +79,26 @@ function render(ctrl: Ctrl) {
   ];
 }
 
-var trip: m.Module<Ctrl> = {
+const trip: m.Module<Ctrl> = {
+
   controller(): Ctrl {
-    var id = m.route.param("id");
-    var scope = () => <HTMLElement> document.querySelector('#trip');
-    var trip = Cache.getTrip(id);
-    var arrivalTimes = trip ? trip.arrivalTimes : [];
-    var displayed = () => Routes.matchTrip(m.route());
+
+    const id = m.route.param("id");
+    const scope = () => <HTMLElement> document.querySelector('#trip');
+    const trip = Cache.getTrip(id);
+    const arrivalTimes = trip ? trip.arrivalTimes : [];
+    const displayed = () => Routes.matchTrip(m.route());
 
     if(displayed()) {
-
       native.GoogleAnalytics.trackView('Trip');
-
       window.parent.postMessage({
         event: 'cheminot:selecttrip',
-        trip: trip.arrivalTimes,
+        trip: arrivalTimes,
         tdsp: id
       }, window.location.origin);
     }
 
-    var ctrl = {
+    const ctrl = {
       scope: scope,
 
       displayed: displayed,
@@ -108,14 +108,14 @@ var trip: m.Module<Ctrl> = {
       trip: () => arrivalTimes,
 
       iscroll: _.once(function() {
-        var wrapper = <HTMLElement> scope().querySelector('#wrapper');
+        const wrapper = <HTMLElement> scope().querySelector('#wrapper');
         return new IScroll(wrapper, { bounce: false });
       }),
 
       adaptWrapperTop: (ctrl: Ctrl) => {
-        var wrapper = <HTMLElement> ctrl.scope().querySelector('#wrapper');
-        var topBar = <HTMLElement> scope().querySelector('.top-bar');
-        var top = topBar.offsetTop + topBar.offsetHeight;
+        const wrapper = <HTMLElement> ctrl.scope().querySelector('#wrapper');
+        const topBar = <HTMLElement> scope().querySelector('.top-bar');
+        const top = topBar.offsetTop + topBar.offsetHeight;
         wrapper.style.top = top + 'px';
       }
     };

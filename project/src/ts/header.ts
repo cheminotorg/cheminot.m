@@ -4,6 +4,7 @@ import Routes = require('routes');
 import Utils = require('utils');
 import Cache = require('cache');
 import Preferences = require('preferences');
+import Alert = require('alert');
 
 export type Ctrl = {
   starred: (value?: boolean) => boolean;
@@ -45,9 +46,23 @@ var header = {
         if(ctrl.starred()) {
           ctrl.starred(false);
           Preferences.unstars(vs, ve);
+          if(Preferences.isStarred(ve, vs)) {
+            Alert.prompt('Voulez-vous également retirer le trajet retour des favoris ?').then((response) => {
+              if(response == Alert.Response.OK) {
+                Preferences.unstars(ve, vs);
+              }
+            });
+          }
         } else {
           ctrl.starred(true);
           Preferences.stars(vs, ve);
+          if(!Preferences.isStarred(ve, vs)) {
+            Alert.prompt('Voulez-vous également mettre le trajet retour en favoris ?').then((response) => {
+              if(response == Alert.Response.OK) {
+                Preferences.stars(ve, vs);
+              }
+            });
+          }
         }
         m.redraw();
       }
