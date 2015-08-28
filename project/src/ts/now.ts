@@ -97,15 +97,29 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement[] {
   return [m('ul.departures.list', attrs, departureItems)];
 }
 
+function renderNothing(ctrl: Ctrl): m.VirtualElement[] {
+  const buttonAttrs: Attributes = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(!isUpdate) {
+        Utils.$.touchend(el, _.partial(ctrl.onGoToSearchTouched, ctrl));
+      }
+    },
+  };
+  return [m('div.nothing', {}, [
+    m('p', {}, i18n.get('stars-empty')),
+    m('button.stars', buttonAttrs, i18n.get('add-starts'))
+  ])];
+}
+
 function render(ctrl: Ctrl) {
   if(!ctrl.displayed()) {
     return new Array<m.VirtualElement>();
   } else {
     return [
       m('div.top-bar.title', {}, [
-        m('div', {}, i18n.fr('your-departures'))
+        m('div', {}, i18n.get('your-departures'))
       ]),
-      renderDeparturesList(ctrl)
+      Preferences.hasStars() ? renderDeparturesList(ctrl) : renderNothing(ctrl)
     ];
   }
 }

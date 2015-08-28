@@ -24,10 +24,16 @@ const messages: Messages = {
     'no-trip-matched': 'Impossible de trouver des trajets correspondant à votre recherche',
     'demo-try-later-busy': "Le serveur semble surchargé. Reessayer plus tard.",
     'unexpected-error': 'Une erreur inattendue est survenue. Un rapport d\'erreur vient d\'être envoyé.',
-    'your-departures': 'Vos prochains départs'
+    'your-departures': 'Vos prochains départs',
+    'stars-empty': 'Il semblerait que vous n\'allez encore aucun trajets en favoris!',
+    'add-stars': 'Ajouter un trajet maintenant'
   }
 };
 
-export function fr(key: string): string {
+export function get(key: string): string {
+  return fr(key);
+}
+
+function fr(key: string): string {
   return messages['fr'][key] || '???';
 }

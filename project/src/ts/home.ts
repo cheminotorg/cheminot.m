@@ -87,9 +87,9 @@ function renderTabs(ctrl: Ctrl): m.VirtualElement {
   var hint = m("div", { class: "hint" });
 
   return m('ul', { class: 'top-bar tabs'}, [
-    m('li', _.merge(todayAttrs, attributes), [m('span.label', {}, i18n.fr('today')), hint]),
-    m('li', _.merge(tomorrowAttrs, attributes), [m('span.label', {}, i18n.fr('tomorrow')), hint]),
-    m('li', _.merge(otherAttrs, attributes), [m('span.label', {}, i18n.fr('other')), hint])
+    m('li', _.merge(todayAttrs, attributes), [m('span.label', {}, i18n.get('today')), hint]),
+    m('li', _.merge(tomorrowAttrs, attributes), [m('span.label', {}, i18n.get('tomorrow')), hint]),
+    m('li', _.merge(otherAttrs, attributes), [m('span.label', {}, i18n.get('other')), hint])
   ])
 }
 
@@ -161,13 +161,13 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
            m("form", formAttrs, [
              m("div", { class: "input start" }, [
                m("div.above", inputStationWrapperAttrs),
-               m("input", _.merge({ name: "start", autocomplete: "off", placeholder: i18n.fr('departure') }, inputStationAttrs(true))),
+               m("input", _.merge({ name: "start", autocomplete: "off", placeholder: i18n.get('departure') }, inputStationAttrs(true))),
                m("button", resetStationAttrs(true))
              ]),
              m('input.submit', { type: 'submit' }),
              m("div", { class: "input end"}, [
                m("div.above", inputStationWrapperAttrs),
-               m("input", _.merge({ name: "end", autocomplete: "off", placeholder: i18n.fr('arrival') }, inputStationAttrs(false))),
+               m("input", _.merge({ name: "end", autocomplete: "off", placeholder: i18n.get('arrival') }, inputStationAttrs(false))),
                m("button", resetStationAttrs(false))])]));
 }
 
@@ -212,7 +212,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
                  right])))
   });
 
-  var emptyResult = m('li.empty', {}, m('div', {}, i18n.fr('no-result')));
+  var emptyResult = m('li.empty', {}, m('div', {}, i18n.get('no-result')));
 
   var inputDisabled = ctrl.isInputStationStartDisabled() && ctrl.isInputStationEndDisabled();
 
@@ -274,17 +274,17 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement {
   return m("ul", { class: 'datetime'}, [
     m("li", dateSelectorAttrs(), [
       m('div', {}, [
-        m("span", { class: "label" }, i18n.fr('departure-date')),
+        m("span", { class: "label" }, i18n.get('departure-date')),
         m("span", { class: "value" }, formatDate(ctrl.inputDateSelected()))
       ])]),
     m("li", _.merge({ class: "time" }, inputTimeAttrs), [
       m('div', {}, [
-        m("span", { class: "label" }, i18n.fr('departure-time')),
+        m("span", { class: "label" }, i18n.get('departure-time')),
         m("span", { class: "value" }, formatTime(ctrl.inputTimeSelected()))
       ])]),
     m("li", submitAttrs, [
       m('div', {}, [
-      m("span", {}, i18n.fr('search')),
+      m("span", {}, i18n.get('search')),
         m("button", { class: "font go" })])])]);
 }
 

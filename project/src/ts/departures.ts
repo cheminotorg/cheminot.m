@@ -45,7 +45,7 @@ function renderMeta(departure: Departure): m.VirtualElement[] {
   ]);
 
   if(departure.nbSteps <= 1) {
-    return [m("span.steps", {}, i18n.fr('direct')), duration];
+    return [m("span.steps", {}, i18n.get('direct')), duration];
   } else {
     return [m("span.steps", {}, [
       m("span.value", {}, departure.nbSteps),
@@ -77,12 +77,12 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
 
   var pullUp = m("li.pull-up", _.merge(pullupAttrs, pullupAttrsConfig), [
     m('span.pin'),
-    m("span.label", {}, i18n.fr('pull-to-refresh'))
+    m("span.label", {}, i18n.get('pull-to-refresh'))
   ]);
 
-  var loadingLabel = i18n.fr('loading');
+  var loadingLabel = i18n.get('loading');
   if(ctrl.isComputingLongTrip()) {
-    loadingLabel = i18n.fr('trip-not-direct');
+    loadingLabel = i18n.get('trip-not-direct');
   }
 
   var trainAttrs: Attributes = {
@@ -204,7 +204,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
   return [m("div#wrapper", {}, wrapper),
           m('div.trace', traceAttrs, [
             m('span.pin'),
-            m('span.label', {}, i18n.fr('loading'))])];
+            m('span.label', {}, i18n.get('loading'))])];
 }
 
 var departures: m.Module<Ctrl> = {
@@ -232,7 +232,7 @@ var departures: m.Module<Ctrl> = {
           if(this.isPullUpLoading() && !this.isComputationInProgress()) {
             this.isPullUpLoading(false);
             this.isPullUpFlip(false);
-            this.pullUpLabel(i18n.fr('pull-to-refresh'));
+            this.pullUpLabel(i18n.get('pull-to-refresh'));
           }
         });
 
@@ -245,10 +245,10 @@ var departures: m.Module<Ctrl> = {
             this.pullUpProgress(computePullUpBar(iscroll));
             if(this.pullUpProgress() >= 100) {
               this.isPullUpFlip(true);
-              this.pullUpLabel(i18n.fr('release-to-refresh'));
+              this.pullUpLabel(i18n.get('release-to-refresh'));
             } else {
               this.isPullUpFlip(false);
-              this.pullUpLabel(i18n.fr('pull-to-refresh'));
+              this.pullUpLabel(i18n.get('pull-to-refresh'));
             }
             this.maxScrollY = this.maxScrollY;
           }
@@ -258,7 +258,7 @@ var departures: m.Module<Ctrl> = {
           this.isScrollingDepartures(false);
           if(this.isPullUpFlip() && !this.isPullUpLoading()) {
             this.isPullUpLoading(true);
-            this.pullUpLabel(i18n.fr('loading'));
+            this.pullUpLabel(i18n.get('loading'));
             lookForNextDepartures(this, Utils.DateTime.addMinutes(this.lastDepartureTime(), 1));
           } else {
             this.pullUpProgress(0);
@@ -309,7 +309,7 @@ var departures: m.Module<Ctrl> = {
 
       pullUpProgress: m.prop(0),
 
-      pullUpLabel: Utils.m.prop(i18n.fr('pull-to-refresh'), (label: string) => {
+      pullUpLabel: Utils.m.prop(i18n.get('pull-to-refresh'), (label: string) => {
         var pullUpLabel = scope().querySelector('.pull-up .label')
         if(pullUpLabel) pullUpLabel.textContent = label;
       }),
@@ -421,13 +421,13 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
   return step(ctrl, at).then((statusCode) => {
     if(statusCode == StatusCode.NO_MORE) {
       if(!ctrl.departures().length) {
-        Alert.info(i18n.fr('no-trip-matched')).then(() => history.back());
+        Alert.info(i18n.get('no-trip-matched')).then(() => history.back());
       }
     }
     return statusCode;
   }).catch((error) => {
     if(error == 'busy') {
-      Alert.info(i18n.fr('demo-try-later-busy')).then(() => history.back());
+      Alert.info(i18n.get('demo-try-later-busy')).then(() => history.back());
     } else if(error != 'aborted') {
       Utils.handleError(error);
     }

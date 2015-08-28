@@ -92,8 +92,8 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
 
   return m('div.actions', {}, [
     m('button.ok', onok, 'ok'),
-    m('button.clear', onclear, i18n.fr('clear')),
-    m('button.cancel', oncancel, i18n.fr('cancel'))
+    m('button.clear', onclear, i18n.get('clear')),
+    m('button.cancel', oncancel, i18n.get('cancel'))
   ]);
 }
 
