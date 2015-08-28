@@ -222,8 +222,13 @@ export module $ {
     }
   }
 
+  const bindHandlers: KeysValues<EventHandler> = {};
+
   export function bind(event: string, handler: (e: Event) => void): void {
+    const h = bindHandlers[event];
+    if(h) document.body.removeEventListener(event, h);
     document.body.addEventListener(event, handler);
+    bindHandlers[event] = handler;
   }
 
   export function trigger(event: string, data?: any): void {

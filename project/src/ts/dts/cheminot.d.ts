@@ -1,6 +1,10 @@
-declare type Attributes = {
-  [index: string]: any;
+declare type EventHandler = (e: Event) => void;
+
+declare type KeysValues<V> = {
+  [index: string]: V;
 }
+
+declare type Attributes = KeysValues<any>;
 
 declare type SuggestedStation = {
   id: string;

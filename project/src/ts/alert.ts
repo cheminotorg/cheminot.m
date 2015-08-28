@@ -4,17 +4,12 @@ import Utils = require('utils');
 import _ = require('lodash');
 import moment = require('moment');
 
-export enum Response {
-  OK, CANCEL
-}
-
-let deferred: Q.Deferred<Response>;
+let deferred: Q.Deferred<string>;
 
 export type Ctrl = {
-  onOkTouched: (ctrl: Ctrl, e: Event) => void;
-  onCancelTouched: (ctrl: Ctrl, e: Event) => void;
-  isPromptAlert: (value?: boolean) => boolean;
+  onButtonTouched: (ctrl: Ctrl, key: string, e: Event) => void;
   body: (value?: m.VirtualElement) => m.VirtualElement;
+  buttons: (value?: m.VirtualElement[]) => m.VirtualElement[];
   title: (value?: string) => string;
   onDisplay: (ctrl: Ctrl, e: Event) => void;
   displayed: (value?: boolean) => boolean;
@@ -26,41 +21,26 @@ function renderTitle(ctrl: Ctrl): m.VirtualElement {
 }
 
 function renderButtons(ctrl: Ctrl): m.VirtualElement {
-  const okAttrs: Attributes = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate) {
-        Utils.$.bind('cheminot:alert', _.partial(ctrl.onDisplay, ctrl));
-        Utils.$.touchend(el, _.partial(ctrl.onOkTouched, ctrl));
-      }
-    }
-  }
-
-  const buttons = [m('button.ok', okAttrs, "OK")];
-
-  if(ctrl.isPromptAlert()) {
-    const cancelAttrs: Attributes = {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-        if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(ctrl.onCancelTouched, ctrl));
-        }
-      }
-    }
-    buttons.push(m('button.cancel', cancelAttrs, "ANNULER"));
-  }
-
-  return m('div.actions', {}, buttons);
+  return m('div.actions', {}, ctrl.buttons());
 }
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
-  const attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
-    if((name + ':' + value) == 'class:fade-in') {
-      return ctrl.displayed();
+  const attrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(!isUpdate) {
+        Utils.$.bind('cheminot:alert:display', _.partial(ctrl.onDisplay, ctrl));
+        Utils.$.bind('cheminot:alert:button', (e: any) => {
+          ctrl.onButtonTouched(ctrl, e.key, e.event);
+        });
+      }
     }
-    return true;
-  });
+  }
+
+  const fadeInClass = (ctrl.displayed() ? '.fade-in' : '');
+  const classList = ctrl.classList().length ? ('.' + ctrl.classList().join('.') + fadeInClass) : fadeInClass;
 
   return [
-    m(`div.modal.alert${'.' + ctrl.classList().join('.')}`, attrs, [
+    m('div.modal.alert' + classList, attrs, [
       renderTitle(ctrl),
       ctrl.body(),
       renderButtons(ctrl)])];
@@ -72,22 +52,16 @@ const alert: m.Module<Ctrl> = {
       title: m.prop('Cheminot'),
       classList: m.prop([]),
       body: m.prop(m('div.body')),
+      buttons: m.prop([Buttons.OK]),
       displayed: m.prop(false),
-      onOkTouched: (ctrl: Ctrl, e: Event) => {
+      onButtonTouched: (ctrl: Ctrl, key: string, e: Event) => {
         ctrl.displayed(false);
-        deferred.resolve(Response.OK);
+        deferred.resolve(key);
         m.redraw();
       },
-      onCancelTouched: (ctrl: Ctrl, e: Event) => {
-        ctrl.displayed(false);
-        deferred.resolve(Response.CANCEL);
-        m.redraw();
-      },
-      isPromptAlert: m.prop(false),
       onDisplay: (ctrl: Ctrl, e: any) => {
         ctrl.displayed(true);
         if(e.detail.title) ctrl.title(e.detail.title);
-        ctrl.isPromptAlert(e.detail.isPromptAlert);
         ctrl.body(e.detail.body);
         ctrl.classList(e.detail.classList);
         m.redraw.strategy("diff");
@@ -105,7 +79,7 @@ export function get(): m.Module<Ctrl> {
   return alert;
 }
 
-export function about(classList: string[] = []): Q.Promise<Response> {
+export function about(classList: string[] = []): Q.Promise<string> {
   const formatDay = (dateTime: Date) => moment(dateTime).format('dddd D MMMM YYYY');
   const body = m('table', {}, [
     m('tr', {}, [m('td', {}, 'bundleId'), m('td', Settings.bundleId)]),
@@ -122,23 +96,53 @@ function bodyElement(text: string): m.VirtualElement {
   return m('p.body', {}, text);
 }
 
-export function info(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<Response> {
-  deferred = Q.defer<Response>();
+export function info(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<string> {
+  deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
-  Utils.$.trigger('cheminot:alert', { body: body, classList: classList });
+  Utils.$.trigger('cheminot:alert:display', { body: body, classList: classList });
   return deferred.promise;
 }
 
-export function error(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<Response> {
-  deferred = Q.defer<Response>();
+export function error(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<string> {
+  deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
-  Utils.$.trigger('cheminot:alert', { body: body, classList: classList.concat(['error']) });
+  Utils.$.trigger('cheminot:alert:display', { body: body, classList: classList.concat(['error']) });
   return deferred.promise;
 }
 
-export function prompt(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<Response> {
-  deferred = Q.defer<Response>();
+export function prompt(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<string> {
+  deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
-  Utils.$.trigger('cheminot:alert', { body: body, classList: classList, isPromptAlert: true });
+  const buttons = [Buttons.YES, Buttons.NO];
+  Utils.$.trigger('cheminot:alert:display', { body: body, classList: classList, buttons: buttons});
   return deferred.promise;
+}
+
+/// BUTTONS
+
+export function createButton(key: string, label: string, classList: string[] = []): m.VirtualElement {
+  const attrs: Attributes = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(!isUpdate) {
+        Utils.$.touchendOne(el, (e) => {
+          Utils.$.trigger('cheminot:alert:button', { key: key, event: e });
+        });
+      }
+    }
+  }
+  return m(`button.${classList.join('.')}`, attrs, label)
+}
+
+export module Result {
+  export const OK = 'ok';
+  export const CANCEL = 'cancel';
+  export const YES = 'yes';
+  export const NO = 'no';
+}
+
+export module Buttons {
+  export const OK = createButton(Result.OK, 'OK', ['ok']);
+  export const CANCEL = createButton(Result.CANCEL, 'ANNULER', ['cancel']);
+  export const YES = createButton(Result.YES, 'YES', ['yes']);
+  export const NO = createButton(Result.NO, 'NO', ['no']);
 }

@@ -48,7 +48,7 @@ var header = {
           Preferences.unstars(vs, ve);
           if(Preferences.isStarred(ve, vs)) {
             Alert.prompt('Voulez-vous également retirer le trajet retour des favoris ?').then((response) => {
-              if(response == Alert.Response.OK) {
+              if(response == Alert.Result.YES) {
                 Preferences.unstars(ve, vs);
               }
             });
@@ -58,7 +58,7 @@ var header = {
           Preferences.stars(vs, ve);
           if(!Preferences.isStarred(ve, vs)) {
             Alert.prompt('Voulez-vous également mettre le trajet retour en favoris ?').then((response) => {
-              if(response == Alert.Response.OK) {
+              if(response == Alert.Result.NO) {
                 Preferences.stars(ve, vs);
               }
             });
@@ -101,17 +101,6 @@ var header = {
         }
       };
       v.push(m('button.stars' + (ctrl.starred() ? '.starred' : ''), starsAttrs));
-    }
-
-    if(!ctrl.isNowView()) {
-      const homeAttrs: Attributes = {
-        config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
-          if(!isUpdate) {
-            Utils.$.touchend(el, _.partial(ctrl.onNow, ctrl));
-          }
-        }
-      };
-      v.push(m('button.home', homeAttrs));
     }
 
     return v;

@@ -97,20 +97,6 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement[] {
   return [m('ul.departures.list', attrs, departureItems)];
 }
 
-function renderNothing(ctrl: Ctrl): m.VirtualElement[] {
-  const buttonAttrs: Attributes = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onGoToSearchTouched, ctrl));
-      }
-    },
-  };
-  return [m('div.nothing', {}, [
-    m('p', {}, 'Il semblerait que vous n\'allez encore aucun trajets en favoris!'),
-    m('button.stars', buttonAttrs, 'Ajouter un trajet maintenant')
-  ])];
-}
-
 function render(ctrl: Ctrl) {
   if(!ctrl.displayed()) {
     return new Array<m.VirtualElement>();
@@ -119,7 +105,7 @@ function render(ctrl: Ctrl) {
       m('div.top-bar.title', {}, [
         m('div', {}, i18n.fr('your-departures'))
       ]),
-      Preferences.hasStars() ? renderDeparturesList(ctrl) : renderNothing(ctrl)
+      renderDeparturesList(ctrl)
     ];
   }
 }
