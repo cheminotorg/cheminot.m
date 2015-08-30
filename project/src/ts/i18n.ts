@@ -25,8 +25,10 @@ const messages: Messages = {
     'demo-try-later-busy': "Le serveur semble surchargé. Reessayer plus tard.",
     'unexpected-error': 'Une erreur inattendue est survenue. Un rapport d\'erreur vient d\'être envoyé.',
     'your-departures': 'Vos prochains départs',
-    'stars-empty': 'Il semblerait que vous n\'allez encore aucun trajets en favoris!',
-    'add-stars': 'Ajouter un trajet maintenant'
+    'stars-empty': 'Aucun trajet en favoris',
+    'add-star': 'Ajouter un trajet',
+    'unstar-trip-back': 'Voulez-vous également retirer le trajet retour des favoris ?',
+    'star-trip-back': 'Voulez-vous également mettre le trajet retour en favoris ?'
   }
 };
 

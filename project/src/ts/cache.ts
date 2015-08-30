@@ -103,3 +103,8 @@ export function setNextDepartures(departures: Departure[]) {
   sessionStorage.setItem(key, JSON.stringify(departures));
   scheduleGarbage(key);
 }
+
+
+export function clearNextDepartures() {
+  sessionStorage.removeItem('now');
+}

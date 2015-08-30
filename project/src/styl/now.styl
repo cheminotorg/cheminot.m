@@ -1,6 +1,5 @@
 #now {
     height: 100%
-    position: relative
 
     .top-bar {
         position: relative
@@ -18,26 +17,34 @@
 
     .nothing {
         position: absolute
-        top: 50%
+        top: 53%
         left: 50%
         transform: translate(-50%, -50%)
         width: 80%
-        line-height: 30px
+        line-height: size(30px)
         text-align: center
-        color: blue
         font-size: size(18px)
 
-        button.stars {
+        .description {
+            color: grey
+            icon_cheminot('stars', android-green, size(90px))
+
+            > p {
+                margin: size(5px) 0 size(30px) 0
+            }
+        }
+
+        button.add-star {
             text-transform: uppercase
             display: inline-block
             border: none
             outline: none
             background: transparent
-            padding: size(10px)
+            padding: size(12px)
             color: android-green
-            font-size: size(13px)
-            margin-top: size(80px)
+            font-size: size(14px)
             border: 1px solid
+            margin-top: size(18px)
         }
     }
 

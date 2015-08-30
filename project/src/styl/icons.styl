@@ -1,8 +1,12 @@
-icon_cheminot(name, color = black, radius = 0) {
+icon_cheminot(name, color = black, size = null) {
     &:before {
         font-family: 'Cheminot'
         color: color
         display: inline-block
+
+        if size {
+            font-size: size
+        }
 
         if name is 'plus' {
             content: '\F001'
@@ -70,6 +74,14 @@ icon_cheminot(name, color = black, radius = 0) {
 
         if name is 'home' {
             content: '\F016'
+        }
+
+        if name is 'star' {
+            content: '\F017'
+        }
+
+        if name is 'stars' {
+            content: '\F018'
         }
     }
 }

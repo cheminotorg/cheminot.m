@@ -63,6 +63,7 @@ const alert: m.Module<Ctrl> = {
         ctrl.displayed(true);
         if(e.detail.title) ctrl.title(e.detail.title);
         ctrl.body(e.detail.body);
+        ctrl.buttons(e.detail.buttons);
         ctrl.classList(e.detail.classList);
         m.redraw.strategy("diff");
         m.redraw();
@@ -110,11 +111,11 @@ export function error(content: string | m.VirtualElement, classList: string[] = 
   return deferred.promise;
 }
 
-export function prompt(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<string> {
+export function prompt(content: string | m.VirtualElement, buttons: m.VirtualElement[] = [], classList: string[] = []): Q.Promise<string> {
   deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
-  const buttons = [Buttons.YES, Buttons.NO];
-  Utils.$.trigger('cheminot:alert:display', { body: body, classList: classList, buttons: buttons});
+  const btns = buttons.length ? buttons : [Buttons.YES, Buttons.NO];
+  Utils.$.trigger('cheminot:alert:display', { body: body, classList: classList, buttons: btns});
   return deferred.promise;
 }
 

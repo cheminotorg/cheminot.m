@@ -106,8 +106,8 @@ function renderNothing(ctrl: Ctrl): m.VirtualElement[] {
     },
   };
   return [m('div.nothing', {}, [
-    m('p', {}, i18n.get('stars-empty')),
-    m('button.stars', buttonAttrs, i18n.get('add-starts'))
+    m('div.description', {}, m('p', {}, i18n.get('stars-empty'))),
+    m('button.add-star', buttonAttrs, i18n.get('add-star'))
   ])];
 }
 
@@ -115,12 +115,13 @@ function render(ctrl: Ctrl) {
   if(!ctrl.displayed()) {
     return new Array<m.VirtualElement>();
   } else {
-    return [
-      m('div.top-bar.title', {}, [
-        m('div', {}, i18n.get('your-departures'))
-      ]),
+    const topBar = m('div.top-bar.title', {}, [
+      m('div', {}, i18n.get('your-departures'))
+    ]);
+    const dom = Preferences.hasStars() ? [topBar] : [];
+    return dom.concat(
       Preferences.hasStars() ? renderDeparturesList(ctrl) : renderNothing(ctrl)
-    ];
+    );
   }
 }
 

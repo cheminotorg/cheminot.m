@@ -5,6 +5,7 @@ import Utils = require('utils');
 import Cache = require('cache');
 import Preferences = require('preferences');
 import Alert = require('alert');
+import i18n = require('i18n');
 
 export type Ctrl = {
   starred: (value?: boolean) => boolean;
@@ -47,9 +48,10 @@ var header = {
           ctrl.starred(false);
           Preferences.unstars(vs, ve);
           if(Preferences.isStarred(ve, vs)) {
-            Alert.prompt('Voulez-vous également retirer le trajet retour des favoris ?').then((response) => {
+            Alert.prompt(i18n.get('unstar-trip-back')).then((response) => {
               if(response == Alert.Result.YES) {
                 Preferences.unstars(ve, vs);
+                Cache.clearNextDepartures();
               }
             });
           }
@@ -57,9 +59,10 @@ var header = {
           ctrl.starred(true);
           Preferences.stars(vs, ve);
           if(!Preferences.isStarred(ve, vs)) {
-            Alert.prompt('Voulez-vous également mettre le trajet retour en favoris ?').then((response) => {
+            Alert.prompt(i18n.get('star-trip-back')).then((response) => {
               if(response == Alert.Result.NO) {
                 Preferences.stars(ve, vs);
+                Cache.clearNextDepartures();
               }
             });
           }
@@ -81,7 +84,7 @@ var header = {
       loader
     ];
 
-    if(ctrl.isNowView()) {
+    if(ctrl.isNowView() && Preferences.hasStars()) {
       var attrs: Attributes = {
         config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
           if(!isUpdate) {

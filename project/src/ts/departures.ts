@@ -94,7 +94,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
   }
 
   var loading = m("div.empty-loading", { key: 'departures-loading' }, [
-    m('img.train', _.merge({ src: 'images/cheminot_f4f7f9.gif' }, trainAttrs)),
+    m('img.train', _.merge({ src: 'images/cheminot_eceff1.gif' }, trainAttrs)),
     m('p', {}, m('span.label', {}, loadingLabel))
   ]);
 

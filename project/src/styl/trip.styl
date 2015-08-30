@@ -84,17 +84,15 @@
             }
 
             .right {
-                icon_cheminot('circle', blue)
                 border-left: size(4px) solid dark-blue
+                icon_cheminot('circle', grey, size(21px))
 
                 &::before {
                     position: absolute
                     left: -0.6em
                     top: 50%
                     transform: translateY(-50%)
-                    color: grey
                     background: #FFF
-                    font-size: size(21px)
                 }
             }
 
@@ -102,11 +100,7 @@
                 right: 12%
 
                 .alarm-clock {
-                    icon_cheminot('clock', grey-dark)
-
-                    &::before {
-                        font-size: size(14px)
-                    }
+                    icon_cheminot('clock', grey-dark, size(14px))
                 }
 
                 .at {
