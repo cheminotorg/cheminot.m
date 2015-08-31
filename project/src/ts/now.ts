@@ -14,10 +14,11 @@ import i18n = require('i18n');
 export type Ctrl = {
   scope: () => HTMLElement;
   displayed: () => boolean;
+  isLoading: (value?: boolean) => boolean;
+  timerId: (value?: number) => number;
   departures: (value?: Departure[]) => Departure[];
   itemHeight: (value?: number) => number;
   onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => void;
-  timerId: (value?: number) => number;
   onGoToSearchTouched: (ctrl: Ctrl, e: Event) => void;
 }
 
@@ -72,24 +73,40 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement[] {
 
   const attrs = {
     key: 'now-list',
+
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate && ctrl.displayed()) {
-        Cache.getOrSetNextDepartures(() => {
-          return lookForNextDepartures(ctrl);
-        }).then((departures) => {
-          ctrl.departures(departures);
+      const loop = (departures: Departure[]) => {
+        ctrl.departures(departures);
+        console.log('setTimeout');
+        const timerId = setTimeout(() => {
+          ctrl.isLoading(true);
           m.redraw();
-          if(!ctrl.timerId()) {
-            // const timerId = setInterval(() => {
-            //   const deprecated = ctrl.departures().map(departure => departure.id);
-            //   lookForNextDepartures(ctrl).then((departures) => {
-            //     Cache.setNextDepartures(departures);
-            //     Cache.removeByKeys(deprecated);
-            //   });
-            // }, 1000);
-            // ctrl.timerId(timerId);
-          }
-        });
+          const expired = ctrl.departures().map(departure => departure.id);
+          lookForNextDepartures(ctrl).then((departures) => {
+            Cache.setNextDepartures(departures);
+            Cache.removeByKeys(expired);
+          }).fin(() => {
+            ctrl.isLoading(false);
+            ctrl.timerId(null);
+            m.redraw();
+          });
+        }, 1000 * 10);
+        ctrl.timerId(timerId);
+        m.redraw();
+        return departures;
+      }
+
+      if(!isUpdate && ctrl.timerId()) {
+        clearTimeout(ctrl.timerId());
+        ctrl.timerId(null);
+      }
+
+      if(ctrl.displayed() && !ctrl.timerId()) {
+        if(!isUpdate) {
+          Cache.getOrSetNextDepartures(() => lookForNextDepartures(ctrl)).then(loop);
+        } else {
+          lookForNextDepartures(ctrl).then(loop);
+        }
       }
     }
   }
@@ -128,11 +145,30 @@ function render(ctrl: Ctrl) {
 var now: m.Module<Ctrl> = {
 
   controller(): Ctrl {
+    const scope = () => <HTMLElement> document.querySelector('#now');
     return {
-      scope: () => <HTMLElement> document.querySelector('#now'),
+      scope: scope,
       displayed: () => Routes.matchNow(m.route()),
+      timerId: (id?: number) => {
+        if(id) {
+          Cache.setNowTimerId(id);
+        } else if(_.isUndefined(id)) {
+          return Cache.getNowTimerId();
+        } else {
+          Cache.clearNowTimerId();
+        }
+      },
+      isLoading: Utils.m.prop(false, (isLoading) => {
+        const list = <HTMLElement> scope().querySelector('.departures');
+        if(list) {
+          if(isLoading) {
+            list.classList.add('loading');
+          } else {
+            list.classList.remove('loading');
+          }
+        }
+      }),
       departures: m.prop([]),
-      timerId: m.prop(null),
       itemHeight: m.prop(0),
       onGoToSearchTouched: (ctrl: Ctrl, e: Event) => {
         m.route('/');
@@ -153,7 +189,6 @@ export function get(): m.Module<Ctrl> {
 }
 
 function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
-  ctrl.departures([]);
   const starred = Preferences.starred();
   const step = (at: Date): Q.Promise<Departure[]> => {
     return Utils.Promise.sequence(Preferences.starred(), (s) => {
@@ -173,13 +208,10 @@ function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
         return departure.startTime.getTime();
       });
       ctrl.departures(updated);
-      if(isScreenFull(ctrl) || !ctrl.displayed()) {
+      if(!ctrl.displayed() || isScreenFull(ctrl)) {
         if(!ctrl.displayed()) {
-          clearInterval(ctrl.timerId());
-          ctrl.timerId(null);
           throw new Error("aborted");
         } else {
-          m.redraw();
           return Q(updated);
         }
       } else {
@@ -188,6 +220,7 @@ function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
       }
     });
   }
+  ctrl.departures([]);
   return step(new Date());
 }
 
@@ -196,5 +229,6 @@ function isScreenFull(ctrl: Ctrl): boolean {
   const topBar = <HTMLElement> ctrl.scope().querySelector('.top-bar');
   const [viewportHeight, viewportWidth] = Utils.viewportSize();
   const height = Math.max(viewportHeight, viewportWidth);
+  if(!header || !topBar) return false;
   return (header.offsetHeight + topBar.offsetHeight + (ctrl.itemHeight() * ctrl.departures().length)) >= height;
 }

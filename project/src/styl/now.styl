@@ -48,6 +48,21 @@
         }
     }
 
+    ul.loading {
+        position: relative
+
+        &::before {
+            position: absolute
+            top: 0
+            left: 0
+            right: 0
+            bottom: 0
+            content: ''
+            background: transparentify(blue, blue, .5)
+            z-index: 1
+        }
+    }
+
     li {
         height: size(66px)
         font-size: size(18px)

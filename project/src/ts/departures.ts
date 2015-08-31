@@ -68,7 +68,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     }
   };
 
-  var pullupAttrs = Utils.m.handleAttributes({ class: 'pull-up trace'}, (name, value) => {
+  var pullupAttrs = Utils.m.handleAttributes({ class: 'trace'}, (name, value) => {
     if((name + ':' + value) == 'class:trace') {
       return ctrl.isComputingLongTrip();
     }
@@ -111,14 +111,15 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     ]);
   }
 
-  var departuresList = ctrl.departures().map((departure) => {
+  var departuresList = ctrl.departures().map((departure, index) => {
     var attrs: Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
           Utils.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
         }
       },
-      key: departure.id
+      key: departure.id,
+      class: (index + 1 === ctrl.departures().length) ? 'last' : ''
     };
 
     return renderDepartureItem(departure, attrs);

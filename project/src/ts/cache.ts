@@ -104,7 +104,19 @@ export function setNextDepartures(departures: Departure[]) {
   scheduleGarbage(key);
 }
 
-
 export function clearNextDepartures() {
   sessionStorage.removeItem('now');
+}
+
+export function setNowTimerId(id: number) {
+  sessionStorage.setItem('now-timer', id.toString());
+}
+
+export function getNowTimerId(): number {
+  const timerId = sessionStorage.getItem('now-timer');
+  return parseInt(timerId, 10);
+}
+
+export function clearNowTimerId() {
+  sessionStorage.removeItem('now-timer');
 }

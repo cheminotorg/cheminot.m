@@ -9,10 +9,9 @@ import i18n = require('i18n');
 
 export type Ctrl = {
   starred: (value?: boolean) => boolean;
-  vs: (value?: string) => string;
-  ve: (value?: string) => string;
   onStarred: (ctrl: Ctrl, e: Event) => void;
   onNow: (ctrl: Ctrl, e: Event) => void;
+  tripId: (id?: string) => string;
   onSearch: (ctrl: Ctrl, e: Event) => void;
   isTripView: () => boolean;
   isDepartureView: () => boolean;
@@ -26,7 +25,11 @@ var header = {
     const ve = m.route.param('end');
 
     let isStarred = false;
-    if(Routes.matchDepartures(m.route())) {
+    let tripId: string = null;
+
+    if(Routes.matchTrip(m.route())) {
+      tripId = m.route.param("id");
+      const [vs, ve] = Cache.decomposeTripKey(tripId);
       isStarred = Preferences.isStarred(vs, ve);
     }
 
@@ -35,8 +38,7 @@ var header = {
       isTripView: () => Routes.matchTrip(m.route()),
       isNowView: () => Routes.matchNow(m.route()),
       starred: m.prop(isStarred),
-      vs: m.prop(vs),
-      ve: m.prop(ve),
+      tripId: m.prop(tripId),
       onSearch: (ctrl: Ctrl, e: Event) => {
         m.route('/');
       },
@@ -44,6 +46,7 @@ var header = {
         m.route('/now');
       },
       onStarred: (ctrl: Ctrl, e: Event) => {
+        const [vs, ve] = Cache.decomposeTripKey(ctrl.tripId());
         if(ctrl.starred()) {
           ctrl.starred(false);
           Preferences.unstars(vs, ve);
@@ -95,7 +98,7 @@ var header = {
       v.push(m('button.search', attrs));
     }
 
-    if(ctrl.isDepartureView()) {
+    if(ctrl.isTripView()) {
       const starsAttrs: Attributes = {
         config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
           if(!isUpdate) {

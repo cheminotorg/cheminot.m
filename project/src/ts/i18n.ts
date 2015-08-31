@@ -14,7 +14,7 @@ const messages: Messages = {
     'departure-time': 'Heure de départ',
     'search': 'Rechercher',
     'direct': 'Direct',
-    'pull-to-refresh': 'Tirer pour les horaires suivant',
+    'pull-to-refresh': 'Tirer pour les départs suivant',
     'trip-not-direct': 'Votre trajet n\'est pas direct! Veuillez patienter...',
     'release-to-refresh': 'Relacher pour actualiser',
     'loading': 'Chargement...',
