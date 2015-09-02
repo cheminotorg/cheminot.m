@@ -92,7 +92,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
   var eventAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.bind('cheminot:timepicker', _.partial(ctrl.onDisplay, ctrl));
+        Utils.$.bindOnce('cheminot:timepicker', _.partial(ctrl.onDisplay, ctrl));
       }
     }
   };

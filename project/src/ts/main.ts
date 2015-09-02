@@ -44,6 +44,6 @@ Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions
   Utils.handleError(e)
 });
 
-Utils.$.bind('cheminot:ready', () => {
+Utils.$.bindOnce('cheminot:ready', () => {
   navigator.splashscreen.hide()
 });

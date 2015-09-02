@@ -9,7 +9,7 @@ let deferred: Q.Deferred<string>;
 export type Ctrl = {
   onButtonTouched: (ctrl: Ctrl, key: string, e: Event) => void;
   body: (value?: m.VirtualElement) => m.VirtualElement;
-  buttons: (value?: m.VirtualElement[]) => m.VirtualElement[];
+  buttons: (value?: F<m.VirtualElement>[]) => F<m.VirtualElement>[];
   title: (value?: string) => string;
   onDisplay: (ctrl: Ctrl, e: Event) => void;
   displayed: (value?: boolean) => boolean;
@@ -21,16 +21,16 @@ function renderTitle(ctrl: Ctrl): m.VirtualElement {
 }
 
 function renderButtons(ctrl: Ctrl): m.VirtualElement {
-  return m('div.actions', {}, ctrl.buttons());
+  return m('div.actions', {}, ctrl.buttons().map((b) => b()));
 }
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.bind('cheminot:alert:display', _.partial(ctrl.onDisplay, ctrl));
-        Utils.$.bind('cheminot:alert:button', (e: any) => {
-          ctrl.onButtonTouched(ctrl, e.key, e.event);
+        Utils.$.bindOnce('cheminot:alert:display', _.partial(ctrl.onDisplay, ctrl));
+        Utils.$.bindOnce('cheminot:alert:button', (e: any) => {
+          ctrl.onButtonTouched(ctrl, e.detail.key, e.detail.event);
         });
       }
     }
@@ -52,7 +52,7 @@ const alert: m.Module<Ctrl> = {
       title: m.prop('Cheminot'),
       classList: m.prop([]),
       body: m.prop(m('div.body')),
-      buttons: m.prop([Buttons.OK]),
+      buttons: m.prop([]),
       displayed: m.prop(false),
       onButtonTouched: (ctrl: Ctrl, key: string, e: Event) => {
         ctrl.displayed(false);
@@ -121,17 +121,19 @@ export function prompt(content: string | m.VirtualElement, buttons: m.VirtualEle
 
 /// BUTTONS
 
-export function createButton(key: string, label: string, classList: string[] = []): m.VirtualElement {
-  const attrs: Attributes = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate) {
-        Utils.$.touchendOne(el, (e) => {
-          Utils.$.trigger('cheminot:alert:button', { key: key, event: e });
-        });
+export function createButton(key: string, label: string, classList: string[] = []): F<m.VirtualElement> {
+  return () => {
+    const attrs: Attributes = {
+      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+        if(!isUpdate) {
+          Utils.$.touchend(el, (e) => {
+            Utils.$.trigger('cheminot:alert:button', { key: key, event: e });
+          });
+        }
       }
     }
+    return m(`button.${classList.join('.')}`, attrs, label)
   }
-  return m(`button.${classList.join('.')}`, attrs, label)
 }
 
 export module Result {

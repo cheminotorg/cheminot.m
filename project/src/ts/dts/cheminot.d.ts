@@ -4,6 +4,8 @@ declare type KeysValues<V> = {
   [index: string]: V;
 }
 
+declare type F<V> = () => V;
+
 declare type Attributes = KeysValues<any>;
 
 declare type SuggestedStation = {

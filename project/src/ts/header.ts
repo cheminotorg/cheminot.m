@@ -63,7 +63,7 @@ var header = {
           Preferences.stars(vs, ve);
           if(!Preferences.isStarred(ve, vs)) {
             Alert.prompt(i18n.get('star-trip-back')).then((response) => {
-              if(response == Alert.Result.NO) {
+              if(response == Alert.Result.YES) {
                 Preferences.stars(ve, vs);
                 Cache.clearNextDepartures();
               }

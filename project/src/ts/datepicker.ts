@@ -108,7 +108,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
   var eventAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.bind('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl));
+        Utils.$.bindOnce('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl));
       }
     }
   };

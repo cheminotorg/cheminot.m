@@ -77,7 +77,6 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement[] {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       const loop = (departures: Departure[]) => {
         ctrl.departures(departures);
-        console.log('setTimeout');
         const timerId = setTimeout(() => {
           ctrl.isLoading(true);
           m.redraw();
