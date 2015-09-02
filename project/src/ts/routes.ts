@@ -1,5 +1,10 @@
-export function home(tab: string, start: string, end: string, at: Date) {
-  return '/query/' + [tab, start, end, at.getTime()].join('/');
+export function now() {
+  return '/';
+}
+
+export function search(tab?: string, start?: string, end?: string, at?: Date) {
+  const params = [tab, start, end, at ? at.getTime() : 0].filter((x) => !!x);
+  return params.length ? '/search/' + params.join('/') : '/search';
 }
 
 export function departures(startId: string, endId: string, at: Date) {
@@ -10,8 +15,8 @@ export function trip(id: string) {
   return '/trip/' + id;
 }
 
-export function matchHome(tab: string, route: string, start: string, end: string, at: Date) {
-  var reg = new RegExp('^(/query/.*?/' + start + '/' + end + '/' + at.getTime() + ')|(/)$');
+export function matchSearch(tab: string, route: string, start: string, end: string, at: Date) {
+  var reg = new RegExp('^(/search/.*?/' + start + '/' + end + '/' + at.getTime() + ')|(/search)$');
   return reg.test(route);
 }
 
@@ -24,5 +29,5 @@ export function matchTrip(route: string) {
 }
 
 export function matchNow(route: string) {
-  return /\/now/.test(route);
+  return '/' == route;
 }

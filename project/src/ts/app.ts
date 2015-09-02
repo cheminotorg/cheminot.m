@@ -1,6 +1,6 @@
 import m = require('mithril');
 import Header = require('header');
-import Home = require('home');
+import Search = require('search');
 import Departures = require('departures');
 import Trip = require('trip');
 import Now = require('now');
@@ -13,7 +13,7 @@ import Alert = require('alert');
 export type Ctrl = {
   modals: Modals.Ctrl;
   header: Header.Ctrl;
-  home: Home.Ctrl;
+  search: Search.Ctrl;
   now: Now.Ctrl;
   departures: Departures.Ctrl;
   trip: Trip.Ctrl;
@@ -32,9 +32,9 @@ function renderHeader(ctrl: Header.Ctrl): m.VirtualElement {
   return m("header", _.merge({ id: "header" }, headerAttrs), Header.get().view(ctrl));
 }
 
-function renderHome(ctrl: Home.Ctrl): m.VirtualElement {
+function renderSearch(ctrl: Search.Ctrl): m.VirtualElement {
   var attributes: Attributes = {
-    'id': 'home',
+    'id': 'search',
     'class': 'view hidden'
   };
 
@@ -45,7 +45,7 @@ function renderHome(ctrl: Home.Ctrl): m.VirtualElement {
     }
   });
 
-  return m("section", attributes, Home.get().view(ctrl));
+  return m("section", attributes, Search.get().view(ctrl));
 }
 
 function renderNow(ctrl: Now.Ctrl): m.VirtualElement {
@@ -102,7 +102,7 @@ var app = {
       modals: Modals.get().controller(),
       header: Header.get().controller(),
       now: Now.get().controller(),
-      home: Home.get().controller(),
+      search: Search.get().controller(),
       departures: Departures.get().controller(),
       trip: Trip.get().controller()
     };
@@ -123,7 +123,7 @@ var app = {
     return [m('main#viewport', attributes, [
       Modals.get().view(ctrl.modals),
       renderHeader(ctrl.header),
-      renderHome(ctrl.home),
+      renderSearch(ctrl.search),
       renderNow(ctrl.now),
       renderDepartures(ctrl.departures),
       renderTrip(ctrl.trip)

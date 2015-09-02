@@ -40,10 +40,10 @@ var header = {
       starred: m.prop(isStarred),
       tripId: m.prop(tripId),
       onSearch: (ctrl: Ctrl, e: Event) => {
-        m.route('/');
+        m.route(Routes.search());
       },
       onNow: (ctrl: Ctrl, e: Event) => {
-        m.route('/now');
+        m.route(Routes.now());
       },
       onStarred: (ctrl: Ctrl, e: Event) => {
         const [vs, ve] = Cache.decomposeTripKey(ctrl.tripId());

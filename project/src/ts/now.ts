@@ -114,7 +114,7 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement[] {
 }
 
 function renderNothing(ctrl: Ctrl): m.VirtualElement[] {
-  const buttonAttrs: Attributes = {
+  const addStarBtnAttrs: Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.touchend(el, _.partial(ctrl.onGoToSearchTouched, ctrl));
@@ -123,7 +123,7 @@ function renderNothing(ctrl: Ctrl): m.VirtualElement[] {
   };
   return [m('div.nothing', {}, [
     m('div.description', {}, m('p', {}, i18n.get('stars-empty'))),
-    m('button.add-star', buttonAttrs, i18n.get('add-star'))
+    m('button.add-star', addStarBtnAttrs, i18n.get('add-star'))
   ])];
 }
 
@@ -170,7 +170,7 @@ var now: m.Module<Ctrl> = {
       departures: m.prop([]),
       itemHeight: m.prop(0),
       onGoToSearchTouched: (ctrl: Ctrl, e: Event) => {
-        m.route('/');
+        m.route(Routes.search());
       },
       onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => {
         m.route(Routes.trip(departure.id));

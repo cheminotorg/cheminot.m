@@ -297,7 +297,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
   ];
 }
 
-var home: m.Module<Ctrl> = {
+var search: m.Module<Ctrl> = {
 
   controller(): Ctrl {
     var startTerm = m.route.param('start') || '';
@@ -310,12 +310,13 @@ var home: m.Module<Ctrl> = {
       var x = parseInt(m.route.param('at'), 10);
       return (x ? new Date(x) : new Date());
     })();
-    var displayed = () => Routes.matchHome(currentTab(), m.route(), startTerm, endTerm, at);
-    if(displayed()) native.GoogleAnalytics.trackView('Home');
+    var displayed = () => Routes.matchSearch(currentTab(), m.route(), startTerm, endTerm, at);
+    console.log(displayed());
+    if(displayed()) native.GoogleAnalytics.trackView('Search');
 
     var ctrl = {
       scope: () => {
-        return <HTMLElement> document.querySelector('#home');
+        return <HTMLElement> document.querySelector('#search');
       },
 
       displayed: displayed,
@@ -502,7 +503,7 @@ var home: m.Module<Ctrl> = {
       onSubmitTouched: (ctrl: Ctrl, e: Event) => {
         if(canBeSubmitted(ctrl)) {
           var atDateTime = Utils.DateTime.setSameTime(ctrl.inputDateSelected(), ctrl.inputTimeSelected());
-          var uri = Routes.home(ctrl.currentTab(), ctrl.inputStationStartTerm(), ctrl.inputStationEndTerm(), atDateTime);
+          var uri = Routes.search(ctrl.currentTab(), ctrl.inputStationStartTerm(), ctrl.inputStationEndTerm(), atDateTime);
           window.history.pushState({}, '', '#' + uri);
           m.route(Routes.departures(ctrl.inputStationStartSelected(), ctrl.inputStationEndSelected(), atDateTime));
         }
@@ -517,7 +518,7 @@ var home: m.Module<Ctrl> = {
       }
     }
 
-    native.onBackButton('home', () => {
+    native.onBackButton('search', () => {
       if(ctrl.displayed() && ctrl.isViewportUp()) {
         m.startComputation();
         var inputStation = ctrl.isInputStationStartDisabled() ? getInputStationEnd(ctrl) : getInputStationStart(ctrl);
@@ -694,5 +695,5 @@ function isOtherTab(el: HTMLElement): boolean {
 }
 
 export function get(): m.Module<Ctrl> {
-  return home;
+  return search;
 }
