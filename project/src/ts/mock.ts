@@ -2,7 +2,7 @@ import _ = require('lodash');
 import Utils = require('utils');
 import moment = require('moment');
 
-var CHARTRES = 'StopPoint:OCETrain TER-87394007';
+const CHARTRES = 'StopPoint:OCETrain TER-87394007';
 
 export function gitVersion(success: (sha: string) => void, error: (err: string) => void): void {
   success('xxxxxxx');
@@ -32,9 +32,8 @@ export function getTrip(at: Date = new Date()): ArrivalTimes {
 }
 
 export function getArrivalTimes(at: Date): ArrivalTime[] {
-  var last: Date;
-
-  var time = () => {
+  let last: Date;
+  const time = () => {
     if(last) {
       last = Utils.DateTime.addHours(last, 1);
     } else {
@@ -43,7 +42,7 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
     return last;
   }
 
-  var leMansParis = [
+  const leMansParis = [
     {
       stopId: 'StopPoint:OCETrain TER-87396002',
       stopName: 'Le Mans',
@@ -169,7 +168,7 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
 }
 
 export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number, success: (stopTimes: ArrivalTime[]) => void, error: (err: string) => void): void {
-  var timeout = (vsId != CHARTRES) ? 1000 : 500;
+  const timeout = (vsId != CHARTRES) ? 1000 : 500;
   window.setTimeout(function() {
     success(getArrivalTimes(at));
   }, timeout);

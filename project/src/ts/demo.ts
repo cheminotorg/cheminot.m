@@ -27,7 +27,7 @@ export function init(success: (meta: Meta) => void, error: (err: string) => void
   const endpoint = baseURL + '/cheminotm/init';
   Qajax({ url: endpoint, timeout: defaultTimeout })
       .then((response) => {
-        var result: any;
+        let result: any;
         try { result = JSON.parse(response.responseText); } catch(e) {};
         if(response.status == 400 && result && result.error) {
           window.parent.postMessage({
@@ -80,7 +80,7 @@ export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, 
         error('aborted');
       }
     }).catch(response => {
-      var r = JSON.parse(response.responseText);
+      const r = JSON.parse(response.responseText);
       error(r.error);
     });
 }
@@ -136,16 +136,16 @@ export function abort(success: () => void, error: (err: string) => void): void {
     .catch(e => error(e));
 }
 
-var stream: EventSource;
-var queue: Station[] = [];
+let stream: EventSource;
+let queue: Station[] = [];
 
 function Stream(): EventSource {
   const endpoint = baseURL + '/cheminotm/trace';
 
-  var stream = new EventSource(baseURL + '/cheminotm/trace');
+  const stream = new EventSource(baseURL + '/cheminotm/trace');
 
   stream.onmessage = (msg) => {
-    var data: Station[] = JSON.parse(msg.data);
+    const data: Station[] = JSON.parse(msg.data);
     queue = queue.concat(data);
   };
 

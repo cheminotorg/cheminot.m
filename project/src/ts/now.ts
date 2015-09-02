@@ -141,7 +141,7 @@ function render(ctrl: Ctrl) {
   }
 }
 
-var now: m.Module<Ctrl> = {
+const now: m.Module<Ctrl> = {
 
   controller(): Ctrl {
     const scope = () => <HTMLElement> document.querySelector('#now');

@@ -13,7 +13,7 @@ export function tripKey(vs: string, ve: string, at: Date, te: Date, max: number 
 }
 
 export function decomposeTripKey(id: string): [string, string, number, number, number] {
-  let [vs, ve, at, te, max] = id.split('|');
+  const [vs, ve, at, te, max] = id.split('|');
   return [vs, ve, parseInt(at, 10), parseInt(te, 10), parseInt(max, 10)];
 }
 
@@ -27,9 +27,9 @@ export function setTrip(key: string, trip: ArrivalTimes): void {
 }
 
 export function getTrip(key: string): ArrivalTimes {
-  var trip = sessionStorage.getItem(key);
+  const trip = sessionStorage.getItem(key);
   if(trip) {
-    var t:any = JSON.parse(trip);
+    const t:any = JSON.parse(trip);
     t.arrivalTimes = t.arrivalTimes.map((arrivalTime:any) => {
       arrivalTime.departure = new Date(arrivalTime.departure);
       arrivalTime.arrival = new Date(arrivalTime.arrival);
@@ -42,7 +42,7 @@ export function getTrip(key: string): ArrivalTimes {
 }
 
 export function getOrSetTrip(key: string, f: () => Q.Promise<ArrivalTimes>): Q.Promise<ArrivalTimes> {
-  var trip = getTrip(key);
+  const trip = getTrip(key);
   if(trip) {
     return Q(trip);
   } else {
@@ -54,9 +54,10 @@ export function getOrSetTrip(key: string, f: () => Q.Promise<ArrivalTimes>): Q.P
 }
 
 export function getAllTripsFrom(vs:string, ve: string, at: Date, max: number, nextDeparture: (d: Date) => Date, departureBound: (d: Date) => Date): ArrivalTimes[] {
-  var trips: ArrivalTimes[] = [];
-  var lastDeparture: Date;
-  var te: Date;
+  const trips: ArrivalTimes[] = [];
+  let lastDeparture: Date;
+  let te: Date;
+  let trip: ArrivalTimes;
   do {
     if(lastDeparture) {
       lastDeparture = nextDeparture(lastDeparture);
@@ -66,8 +67,8 @@ export function getAllTripsFrom(vs:string, ve: string, at: Date, max: number, ne
       te = departureBound(at);
     }
 
-    var k = tripKey(vs, ve, lastDeparture, te, max);
-    var trip = getTrip(k);
+    const k = tripKey(vs, ve, lastDeparture, te, max);
+    trip = getTrip(k);
     if(trip && trip.arrivalTimes.length) {
       let stopTime = _.head(trip.arrivalTimes);
       if(lastDeparture.getTime() > stopTime.departure.getTime()) {

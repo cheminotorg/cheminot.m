@@ -1,13 +1,13 @@
 import Utils = require('utils');
 import native = require('native');
 
-var ticking = false;
+let ticking = false;
 
 function update() {
-  var [height, width] = Utils.viewportSize();
-  var wsize = (width * 100) / 320;
-  var hsize = (height * 100) / 568;
-  var html = <HTMLElement> document.querySelector('html');
+  const [height, width] = Utils.viewportSize();
+  const wsize = (width * 100) / 320;
+  const hsize = (height * 100) / 568;
+  const html = <HTMLElement> document.querySelector('html');
   html.style.fontSize = (wsize < hsize ? wsize : hsize) + '%';
   ticking = false;
 }

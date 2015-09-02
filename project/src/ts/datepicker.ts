@@ -5,7 +5,7 @@ import _ = require('lodash');
 import Q = require('q');
 import Utils = require('utils');
 
-var deferred: Q.Deferred<Date>;
+let deferred: Q.Deferred<Date>;
 
 export type Ctrl = {
   dateSelected: (value?: Date) => Date;
@@ -28,7 +28,7 @@ function renderTitle(ctrl: Ctrl): m.VirtualElement {
 }
 
 function renderDay(ctrl: Ctrl): m.VirtualElement {
-  var attrs = {
+  const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.touchend(el, _.partial(ctrl.onDayChange, ctrl));
@@ -44,7 +44,7 @@ function renderDay(ctrl: Ctrl): m.VirtualElement {
 }
 
 function renderMonth(ctrl: Ctrl): m.VirtualElement {
-  var attrs = {
+  const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.touchend(el, _.partial(ctrl.onMonthChange, ctrl));
@@ -60,7 +60,7 @@ function renderMonth(ctrl: Ctrl): m.VirtualElement {
 }
 
 function renderYear(ctrl: Ctrl): m.VirtualElement {
-  var attrs = {
+  const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.touchend(el, _.partial(ctrl.onYearChange, ctrl));
@@ -76,7 +76,7 @@ function renderYear(ctrl: Ctrl): m.VirtualElement {
 }
 
 function renderButtons(ctrl: Ctrl): m.VirtualElement {
-  var getAttrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
+  const getAttrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
@@ -86,9 +86,9 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
     }
   };
 
-  var onok = getAttrs(ctrl.onOkTouched);
-  var onclear = getAttrs(ctrl.onClearTouched);
-  var oncancel = getAttrs(ctrl.onCancelTouched);
+  const onok = getAttrs(ctrl.onOkTouched);
+  const onclear = getAttrs(ctrl.onClearTouched);
+  const oncancel = getAttrs(ctrl.onCancelTouched);
 
   return m('div.actions', {}, [
     m('button.ok', onok, 'ok'),
@@ -98,14 +98,14 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
 }
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
-  var attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
+  const attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
     if((name + ':' + value) == 'class:fade-in') {
       return ctrl.displayed();
     }
     return true;
   });
 
-  var eventAttrs = {
+  const eventAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.bindOnce('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl));
@@ -124,13 +124,13 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
       renderButtons(ctrl)])];
 }
 
-var datePicker: m.Module<Ctrl> = {
+const datePicker: m.Module<Ctrl> = {
   controller(): Ctrl {
     return {
       displayed: m.prop(false),
 
       onDisplay: (ctrl: Ctrl, e: any) => {
-        var date: Date = e.detail.date || new Date();
+        const date: Date = e.detail.date || new Date();
         ctrl.dateSelected(date);
         ctrl.displayed(true);
         m.redraw();
@@ -160,8 +160,8 @@ var datePicker: m.Module<Ctrl> = {
 
       onDayChange: (ctrl: Ctrl, e: Event) => {
         vibrate();
-        var button = <HTMLElement> e.currentTarget;
-        var date = ctrl.dateSelected();
+        const button = <HTMLElement> e.currentTarget;
+        const date = ctrl.dateSelected();
         if(button.classList.contains('up')) {
           ctrl.dateSelected(moment(date).add(1, 'day').toDate());
         } else {
@@ -172,8 +172,8 @@ var datePicker: m.Module<Ctrl> = {
 
       onMonthChange: (ctrl: Ctrl, e: Event) => {
         vibrate();
-        var button = <HTMLElement> e.currentTarget;
-        var date = ctrl.dateSelected();
+        const button = <HTMLElement> e.currentTarget;
+        const date = ctrl.dateSelected();
         if(button.classList.contains('up')) {
           ctrl.dateSelected(moment(date).add(1, 'month').toDate());
         } else {
@@ -184,8 +184,8 @@ var datePicker: m.Module<Ctrl> = {
 
       onYearChange: (ctrl: Ctrl, e: Event) => {
         vibrate();
-        var button = <HTMLElement> e.currentTarget;
-        var date = ctrl.dateSelected();
+        const button = <HTMLElement> e.currentTarget;
+        const date = ctrl.dateSelected();
         if(button.classList.contains('up')) {
           ctrl.dateSelected(moment(date).add(1, 'year').toDate());
         } else {

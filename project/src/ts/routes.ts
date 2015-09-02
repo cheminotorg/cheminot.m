@@ -16,7 +16,7 @@ export function trip(id: string) {
 }
 
 export function matchSearch(tab: string, route: string, start: string, end: string, at: Date) {
-  var reg = new RegExp('^(/search/.*?/' + start + '/' + end + '/' + at.getTime() + ')|(/search)$');
+  const reg = new RegExp('^(/search/.*?/' + start + '/' + end + '/' + at.getTime() + ')|(/search)$');
   return reg.test(route);
 }
 

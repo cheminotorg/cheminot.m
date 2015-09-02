@@ -20,7 +20,7 @@ export type Ctrl = {
 }
 
 function renderHeader(ctrl: Header.Ctrl): m.VirtualElement {
-  var headerAttrs: Attributes = {
+  const headerAttrs: Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.longtouch(el, 3000, () => {
@@ -33,7 +33,7 @@ function renderHeader(ctrl: Header.Ctrl): m.VirtualElement {
 }
 
 function renderSearch(ctrl: Search.Ctrl): m.VirtualElement {
-  var attributes: Attributes = {
+  let attributes: Attributes = {
     'id': 'search',
     'class': 'view hidden'
   };
@@ -49,7 +49,7 @@ function renderSearch(ctrl: Search.Ctrl): m.VirtualElement {
 }
 
 function renderNow(ctrl: Now.Ctrl): m.VirtualElement {
-  var attributes: Attributes = {
+  let attributes: Attributes = {
     'id': 'now',
     'class': 'view hidden'
   };
@@ -65,7 +65,7 @@ function renderNow(ctrl: Now.Ctrl): m.VirtualElement {
 }
 
 function renderDepartures(ctrl: Departures.Ctrl): m.VirtualElement {
-  var attributes: Attributes = {
+  let attributes: Attributes = {
     'id': 'departures',
     'class': 'view hidden'
   };
@@ -81,7 +81,7 @@ function renderDepartures(ctrl: Departures.Ctrl): m.VirtualElement {
 }
 
 function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement {
-  var attributes: Attributes = {
+  let attributes: Attributes = {
     'id': 'trip',
     'class': 'view hidden'
   };
@@ -96,7 +96,7 @@ function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement {
   return m("section", attributes, Trip.get().view(ctrl));
 }
 
-var app = {
+const app = {
   controller(): Ctrl {
     return {
       modals: Modals.get().controller(),
@@ -109,7 +109,7 @@ var app = {
   },
 
   view(ctrl: Ctrl) {
-    var attributes = {
+    const attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if (!isUpdate) {
           document.querySelector('#viewport').classList.add('ready');

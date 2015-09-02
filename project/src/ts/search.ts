@@ -55,7 +55,7 @@ function formatTime(date: Date) {
 /// RENDER TABS
 
 function renderTabs(ctrl: Ctrl): m.VirtualElement {
-  var attributes = {
+  const attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.touchend(el, _.partial(ctrl.onTabTouched, ctrl));
@@ -63,28 +63,28 @@ function renderTabs(ctrl: Ctrl): m.VirtualElement {
     }
   }
 
-  var todayAttrs = Utils.m.handleAttributes({ class: 'today selected'}, (name, value) => {
+  const todayAttrs = Utils.m.handleAttributes({ class: 'today selected'}, (name, value) => {
     if((name + ':' + value) == 'class:selected') {
       return ctrl.isTodayTabSelected();
     }
     return true;
   });
 
-  var tomorrowAttrs = Utils.m.handleAttributes({ class: 'tomorrow selected'}, (name, value) => {
+  const tomorrowAttrs = Utils.m.handleAttributes({ class: 'tomorrow selected'}, (name, value) => {
     if((name + ':' + value) == 'class:selected') {
       return ctrl.isTomorrowTabSelected();
     }
     return true;
   });
 
-  var otherAttrs = Utils.m.handleAttributes({ class: 'other selected'}, (name, value) => {
+  const otherAttrs = Utils.m.handleAttributes({ class: 'other selected'}, (name, value) => {
     if((name + ':' + value) == 'class:selected') {
       return ctrl.isOtherTabSelected();
     }
     return true;
   });
 
-  var hint = m("div", { class: "hint" });
+  const hint = m("div", { class: "hint" });
 
   return m('ul', { class: 'top-bar tabs'}, [
     m('li', _.merge(todayAttrs, attributes), [m('span.label', {}, i18n.get('today')), hint]),
@@ -96,7 +96,7 @@ function renderTabs(ctrl: Ctrl): m.VirtualElement {
 /// RENDER INPUTS STATION
 
 function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
-  var inputStationWrapperAttrs = {
+  const inputStationWrapperAttrs = {
     config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
       if(!isUpdate) {
         Utils.$.touchendOne(el, _.partial(ctrl.onInputStationTouched, ctrl));
@@ -104,14 +104,14 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
     }
   };
 
-  var inputStationAttrs = (isStartStation: boolean) => {
-    var value = isStartStation ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
-    var attrs: Attributes = {
+  const inputStationAttrs = (isStartStation: boolean) => {
+    const value = isStartStation ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
+    const attrs: Attributes = {
       disabled: "true",
       type: "text",
       value: value,
       config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
-        var disabled = isStartStation ? ctrl.isInputStationStartDisabled() : ctrl.isInputStationEndDisabled();
+        const disabled = isStartStation ? ctrl.isInputStationStartDisabled() : ctrl.isInputStationEndDisabled();
         if(!disabled) {
           window.setTimeout(() => {
             el.focus();
@@ -130,7 +130,7 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
     });
   };
 
-  var resetStationAttrs = (isStartStation: boolean) => {
+  const resetStationAttrs = (isStartStation: boolean) => {
     return Utils.m.handleAttributes({
       class: 'font reset focus',
       type: 'button',
@@ -141,15 +141,15 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
       }
     }, (name, value) => {
       if((name + ':' + value) == 'class:focus') {
-        var isSelected = isStartStation ? ctrl.inputStationStartSelected() !='' : ctrl.inputStationEndSelected() != '';
-        var isEnabled = isStartStation ? !ctrl.isInputStationStartDisabled() : !ctrl.isInputStationEndDisabled();
+        const isSelected = isStartStation ? ctrl.inputStationStartSelected() !='' : ctrl.inputStationEndSelected() != '';
+        const isEnabled = isStartStation ? !ctrl.isInputStationStartDisabled() : !ctrl.isInputStationEndDisabled();
         return isSelected || isEnabled;
       }
       return true;
     });
   };
 
-  var formAttrs = {
+  const formAttrs = {
     config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
       if(!isUpdate) {
         el.addEventListener('submit', _.partial(ctrl.onInputStationSubmit, ctrl));
@@ -174,9 +174,8 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
 /// RENDER STATION SUGGESTIONS
 
 function renderStations(ctrl: Ctrl): m.VirtualElement {
-  var term = ctrl.isInputStationEndDisabled() ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
-  term = term.toLowerCase();
-  var stationAttrs = function(index: number) {
+  const term = (ctrl.isInputStationEndDisabled() ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm()).toLowerCase();
+  const stationAttrs = function(index: number) {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
@@ -190,7 +189,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
     }
   }
 
-  var suggestionsAttrs = {
+  const suggestionsAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.touchstart(el, _.partial(ctrl.onScrollStations, ctrl));
@@ -198,12 +197,12 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
     }
   }
 
-  var stopsList = ctrl.stations().map((station, index) => {
-    var name = Suggestions.adaptSaintWord(term, station) || Suggestions.adaptCompoundWord(term, station) || station.name;
-    var matchedAt = name.toLowerCase().indexOf(term.toLowerCase());
-    var left = name.substring(0, matchedAt);
-    var match = name.substring(matchedAt, matchedAt + term.length)
-    var right = name.substring(matchedAt + term.length)
+  const stopsList = ctrl.stations().map((station, index) => {
+    const name = Suggestions.adaptSaintWord(term, station) || Suggestions.adaptCompoundWord(term, station) || station.name;
+    const matchedAt = name.toLowerCase().indexOf(term.toLowerCase());
+    const left = name.substring(0, matchedAt);
+    const match = name.substring(matchedAt, matchedAt + term.length)
+    const right = name.substring(matchedAt + term.length)
     return m('li', _.merge({ "data-id": station.id, "data-name": name }, stationAttrs(index)),
              m('div', {},
                m('span', {}, [
@@ -212,11 +211,11 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
                  right])))
   });
 
-  var emptyResult = m('li.empty', {}, m('div', {}, i18n.get('no-result')));
+  const emptyResult = m('li.empty', {}, m('div', {}, i18n.get('no-result')));
 
-  var inputDisabled = ctrl.isInputStationStartDisabled() && ctrl.isInputStationEndDisabled();
+  const inputDisabled = ctrl.isInputStationStartDisabled() && ctrl.isInputStationEndDisabled();
 
-  var items = (!stopsList.length && term && !inputDisabled) ? emptyResult : stopsList;
+  const items = (!stopsList.length && term && !inputDisabled) ? emptyResult : stopsList;
 
   return m("div", { class: "stations" },
            m("div", { id: "wrapper" },
@@ -227,7 +226,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
 
 function renderDateTime(ctrl: Ctrl): m.VirtualElement {
 
-  var inputTimeAttrs = {
+  const inputTimeAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Utils.$.touchend(el, _.partial(ctrl.onTimeTouched, ctrl));
@@ -235,15 +234,15 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement {
     }
   };
 
-  var dateSelectorAttrs = () => {
-    var inputAttrs = {
+  const dateSelectorAttrs = () => {
+    const inputAttrs = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
           Utils.$.touchend(el, _.partial(ctrl.onDateTouched, ctrl));
         }
       }
     };
-    var cssAttrs = Utils.m.handleAttributes({ class: 'date other' }, (name, value) => {
+    const cssAttrs = Utils.m.handleAttributes({ class: 'date other' }, (name, value) => {
       if((name + ':' + value) == 'class:other') {
         return ctrl.isOtherTabSelected();
       }
@@ -252,8 +251,8 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement {
     return _.merge(inputAttrs, cssAttrs);
   }
 
-  var submitAttrs: any = (() => {
-    var attrs = Utils.m.handleAttributes({ class: 'submit enabled disabled' }, (name, value) => {
+  const submitAttrs: any = (() => {
+    const attrs = Utils.m.handleAttributes({ class: 'submit enabled disabled' }, (name, value) => {
       if((name + ':' + value) == 'class:disabled') {
         return !canBeSubmitted(ctrl);
       } else if((name + ':' + value) == 'class:enabled'){
@@ -297,24 +296,24 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
   ];
 }
 
-var search: m.Module<Ctrl> = {
+const search: m.Module<Ctrl> = {
 
   controller(): Ctrl {
-    var startTerm = m.route.param('start') || '';
-    var endTerm = m.route.param('end') || '';
-    var startStation = startTerm ? Suggestions.getStationByTerm(startTerm) : null;
-    var endStation = endTerm ? Suggestions.getStationByTerm(endTerm) : null;
-    var tab = m.route.param('tab') || 'today';
-    var currentTab = m.prop(tab);
-    var at = (() => {
-      var x = parseInt(m.route.param('at'), 10);
+    const startTerm = m.route.param('start') || '';
+    const endTerm = m.route.param('end') || '';
+    const startStation = startTerm ? Suggestions.getStationByTerm(startTerm) : null;
+    const endStation = endTerm ? Suggestions.getStationByTerm(endTerm) : null;
+    const tab = m.route.param('tab') || 'today';
+    const currentTab = m.prop(tab);
+    const at = (() => {
+      const x = parseInt(m.route.param('at'), 10);
       return (x ? new Date(x) : new Date());
     })();
-    var displayed = () => Routes.matchSearch(currentTab(), m.route(), startTerm, endTerm, at);
+    const displayed = () => Routes.matchSearch(currentTab(), m.route(), startTerm, endTerm, at);
     console.log(displayed());
     if(displayed()) native.GoogleAnalytics.trackView('Search');
 
-    var ctrl = {
+    const ctrl = {
       scope: () => {
         return <HTMLElement> document.querySelector('#search');
       },
@@ -322,7 +321,7 @@ var search: m.Module<Ctrl> = {
       displayed: displayed,
 
       onTabTouched: (ctrl: Ctrl, e: Event) => {
-        var tab = <HTMLElement> e.currentTarget;
+        const tab = <HTMLElement> e.currentTarget;
 
         ctrl.isTodayTabSelected(false);
         ctrl.isTomorrowTabSelected(false);
@@ -341,11 +340,11 @@ var search: m.Module<Ctrl> = {
       },
 
       onInputStationTouched: (ctrl: Ctrl, e: Event) => {
-        var station = <HTMLElement> e.currentTarget;
-        var inputStation = <HTMLInputElement> station.nextElementSibling;
-        var hideInput = isInputStationStart(inputStation) ? hideInputStationEnd : hideInputStationStart;
+        const station = <HTMLElement> e.currentTarget;
+        const inputStation = <HTMLInputElement> station.nextElementSibling;
+        const hideInput = isInputStationStart(inputStation) ? hideInputStationEnd : hideInputStationStart;
         m.startComputation();
-        var selected = isInputStationStart(inputStation) ? ctrl.inputStationStartSelected() : ctrl.inputStationEndSelected();
+        const selected = isInputStationStart(inputStation) ? ctrl.inputStationStartSelected() : ctrl.inputStationEndSelected();
         window.parent.postMessage({
           event: 'cheminot:resetstop',
           stopId: selected
@@ -361,8 +360,8 @@ var search: m.Module<Ctrl> = {
       },
 
       onInputStationKeyUp: (ctrl: Ctrl, e: Event) => {
-        var inputStation = <HTMLInputElement> e.currentTarget;
-        var value = isInputStationStart(inputStation) ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
+        const inputStation = <HTMLInputElement> e.currentTarget;
+        const value = isInputStationStart(inputStation) ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
         if(value != inputStation.value) {
           setInputStationValue(ctrl, inputStation, inputStation.value);
           ctrl.stations(Suggestions.search(inputStation.value));
@@ -425,8 +424,8 @@ var search: m.Module<Ctrl> = {
       }),
 
       iscroll: _.once(function() {
-        var wrapper = this.scope().querySelector('#wrapper');
-        var iscroll = new IScroll(wrapper);
+        const wrapper = this.scope().querySelector('#wrapper');
+        const iscroll = new IScroll(wrapper);
 
         iscroll.on('scrollStart', () => {
           this.isScrollingStations(true);
@@ -441,9 +440,9 @@ var search: m.Module<Ctrl> = {
       }),
 
       adaptWrapperTop: (ctrl: Ctrl) => {
-        var wrapper = <HTMLElement> ctrl.scope().querySelector('#wrapper');
-        var startEndWrapper = <HTMLElement> ctrl.scope().querySelector('.start-end');
-        var top = startEndWrapper.offsetTop + startEndWrapper.offsetHeight + Math.abs(document.body.offsetTop) + 10;
+        const wrapper = <HTMLElement> ctrl.scope().querySelector('#wrapper');
+        const startEndWrapper = <HTMLElement> ctrl.scope().querySelector('.start-end');
+        const top = startEndWrapper.offsetTop + startEndWrapper.offsetHeight + Math.abs(document.body.offsetTop) + 10;
         wrapper.style.top = top + 'px';
       },
 
@@ -451,10 +450,10 @@ var search: m.Module<Ctrl> = {
 
       onStationSelected: (ctrl: Ctrl, e: Event) => {
         if(!ctrl.isScrollingStations()) {
-          var station = <HTMLElement> e.currentTarget;
-          var id = station.getAttribute('data-id');
-          var name = station.getAttribute('data-name');
-          var inputStation = currentInputStation(ctrl);
+          const station = <HTMLElement> e.currentTarget;
+          const id = station.getAttribute('data-id');
+          const name = station.getAttribute('data-name');
+          const inputStation = currentInputStation(ctrl);
           ctrl.stations([]);
           setInputStationValue(ctrl, inputStation, name);
           setInputStationSelected(ctrl, inputStation, id);
@@ -469,9 +468,9 @@ var search: m.Module<Ctrl> = {
 
       onInputStationSubmit: (ctrl: Ctrl, e: Event) => {
         e.preventDefault();
-        var station = ctrl.stations()[0];
+        const station = ctrl.stations()[0];
         if(station) {
-          var inputStation = currentInputStation(ctrl);
+          const inputStation = currentInputStation(ctrl);
           ctrl.stations([]);
           setInputStationValue(ctrl, inputStation, station.name);
           setInputStationSelected(ctrl, inputStation, station.id);
@@ -485,11 +484,11 @@ var search: m.Module<Ctrl> = {
 
       onResetStationTouched: (ctrl: Ctrl, e: Event) => {
         e.stopPropagation();
-        var resetButton = <HTMLElement> e.currentTarget;
-        var inputStation = <HTMLInputElement> resetButton.previousElementSibling;
-        var term = inputStation.value;
+        const resetButton = <HTMLElement> e.currentTarget;
+        const inputStation = <HTMLInputElement> resetButton.previousElementSibling;
+        const term = inputStation.value;
         if(ctrl.isViewportUp() && !term) resetInputStationsPosition(ctrl, inputStation);
-        var selected = isInputStationStart(inputStation) ? ctrl.inputStationStartSelected() : ctrl.inputStationEndSelected();
+        const selected = isInputStationStart(inputStation) ? ctrl.inputStationStartSelected() : ctrl.inputStationEndSelected();
         window.parent.postMessage({
           event: 'cheminot:resetstop',
           stopId: selected
@@ -502,16 +501,16 @@ var search: m.Module<Ctrl> = {
 
       onSubmitTouched: (ctrl: Ctrl, e: Event) => {
         if(canBeSubmitted(ctrl)) {
-          var atDateTime = Utils.DateTime.setSameTime(ctrl.inputDateSelected(), ctrl.inputTimeSelected());
-          var uri = Routes.search(ctrl.currentTab(), ctrl.inputStationStartTerm(), ctrl.inputStationEndTerm(), atDateTime);
+          const atDateTime = Utils.DateTime.setSameTime(ctrl.inputDateSelected(), ctrl.inputTimeSelected());
+          const uri = Routes.search(ctrl.currentTab(), ctrl.inputStationStartTerm(), ctrl.inputStationEndTerm(), atDateTime);
           window.history.pushState({}, '', '#' + uri);
           m.route(Routes.departures(ctrl.inputStationStartSelected(), ctrl.inputStationEndSelected(), atDateTime));
         }
       },
 
       onScrollStations: (ctrl: Ctrl, e: Event) => {
-        var inputStationStart = <HTMLElement> ctrl.scope().querySelector('.input.start input');
-        var inputStationEnd = <HTMLElement> ctrl.scope().querySelector('.input.end input');
+        const inputStationStart = <HTMLElement> ctrl.scope().querySelector('.input.start input');
+        const inputStationEnd = <HTMLElement> ctrl.scope().querySelector('.input.end input');
         inputStationStart.blur();
         inputStationEnd.blur();
         native.Keyboard.close();
@@ -521,7 +520,7 @@ var search: m.Module<Ctrl> = {
     native.onBackButton('search', () => {
       if(ctrl.displayed() && ctrl.isViewportUp()) {
         m.startComputation();
-        var inputStation = ctrl.isInputStationStartDisabled() ? getInputStationEnd(ctrl) : getInputStationStart(ctrl);
+        const inputStation = ctrl.isInputStationStartDisabled() ? getInputStationEnd(ctrl) : getInputStationStart(ctrl);
         resetInputStationsPosition(ctrl, inputStation);
         setInputStationValue(ctrl, inputStation, '');
         setInputStationSelected(ctrl, inputStation, '');
@@ -553,16 +552,16 @@ function getInputStationEnd(ctrl: Ctrl): HTMLInputElement {
 }
 
 function hideInputStationEnd(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var inputStationEnd = <HTMLInputElement> ctrl.scope().querySelector('.input.end');
-  var inputStationStart = <HTMLInputElement> ctrl.scope().querySelector('.input.start');
+  const inputStationEnd = <HTMLInputElement> ctrl.scope().querySelector('.input.end');
+  const inputStationStart = <HTMLInputElement> ctrl.scope().querySelector('.input.start');
   inputStationStart.classList.remove('animating');
   inputStationEnd.classList.add('animating');
-  var translateY = inputStationStart.offsetTop - inputStationEnd.offsetTop;
+  const translateY = inputStationStart.offsetTop - inputStationEnd.offsetTop;
   return Zanimo(inputStationEnd, 'transform', 'translate3d(0,'+ translateY + 'px,0)', 10);
 }
 
 function showInputStationEnd(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var inputStationEnd = <HTMLElement> ctrl.scope().querySelector('.input.end');
+  const inputStationEnd = <HTMLElement> ctrl.scope().querySelector('.input.end');
   return Zanimo(inputStationEnd, 'transform', 'translate3d(0,0,0)', 10).then(() => {
     inputStationEnd.classList.remove('animating');
     inputStationEnd.classList.remove('above');
@@ -571,24 +570,24 @@ function showInputStationEnd(ctrl: Ctrl): Q.Promise<HTMLElement> {
 }
 
 function hideInputStationStart(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var stationStart = <HTMLElement> ctrl.scope().querySelector('.input.start');
+  const stationStart = <HTMLElement> ctrl.scope().querySelector('.input.start');
   stationStart.style.display = 'none';
   return Q(stationStart);
 }
 
 function showInputStationStart(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var stationStart = <HTMLElement> ctrl.scope().querySelector('.input.start');
+  const stationStart = <HTMLElement> ctrl.scope().querySelector('.input.start');
   stationStart.style.display = 'block';
   return Q(stationStart);
 }
 
 function moveUpViewport(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var viewport = <HTMLElement> document.querySelector('#viewport');
-  var header = <HTMLElement> document.querySelector('#header');
-  var headerHeight = header.offsetHeight;
-  var tabs = <HTMLElement> ctrl.scope().querySelector('.tabs');
-  var tabsHeight = tabs.offsetHeight;
-  var translateY = tabsHeight + headerHeight;
+  const viewport = <HTMLElement> document.querySelector('#viewport');
+  const header = <HTMLElement> document.querySelector('#header');
+  const headerHeight = header.offsetHeight;
+  const tabs = <HTMLElement> ctrl.scope().querySelector('.tabs');
+  const tabsHeight = tabs.offsetHeight;
+  const translateY = tabsHeight + headerHeight;
   return Zanimo(viewport, 'transform', 'translate3d(0,-'+ translateY + 'px,0)', 200).then(() => {
     viewport.style.bottom = '-' + translateY + 'px';
     ctrl.isViewportUp(true);
@@ -597,7 +596,7 @@ function moveUpViewport(ctrl: Ctrl): Q.Promise<HTMLElement> {
 }
 
 function moveDownViewport(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var viewport = <HTMLElement> document.querySelector('#viewport');
+  const viewport = <HTMLElement> document.querySelector('#viewport');
   return Zanimo(viewport, 'transform', 'translate3d(0,0,0)', 200).then(() => {
     viewport.style.bottom = '0';
     ctrl.isViewportUp(false);
@@ -606,28 +605,28 @@ function moveDownViewport(ctrl: Ctrl): Q.Promise<HTMLElement> {
 }
 
 function hideDateTimePanel(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var datetime = <HTMLElement> ctrl.scope().querySelector('.datetime');
+  const datetime = <HTMLElement> ctrl.scope().querySelector('.datetime');
   datetime.style.display = 'none';
   return Q(datetime);
 }
 
 function showDateTimePanel(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var datetime = <HTMLElement> ctrl.scope().querySelector('.datetime');
+  const datetime = <HTMLElement> ctrl.scope().querySelector('.datetime');
   datetime.style.display = 'block';
   return Q(datetime);
 }
 
 function resetInputStationsPosition(ctrl: Ctrl, inputStation: HTMLInputElement): Q.Promise<void> {
-  var showInput = isInputStationStart(inputStation) ? showInputStationEnd : showInputStationStart;
-  var resetButton = <HTMLElement> inputStation.nextElementSibling;
+  const showInput = isInputStationStart(inputStation) ? showInputStationEnd : showInputStationStart;
+  const resetButton = <HTMLElement> inputStation.nextElementSibling;
   disableInputStation(ctrl, inputStation);
   m.redraw();
   return native.Keyboard.close().then(() => {
     moveDownViewport(ctrl).then(() => {
       showInput(ctrl).then(() => {
         showDateTimePanel(ctrl).then(() => {
-          var inputWrapper = <HTMLElement> resetButton.parentElement;
-          var above = <HTMLElement> inputWrapper.querySelector('.above');
+          const inputWrapper = <HTMLElement> resetButton.parentElement;
+          const above = <HTMLElement> inputWrapper.querySelector('.above');
           Utils.$.touchendOne(above, _.partial(ctrl.onInputStationTouched, ctrl));
         });
       });
@@ -636,13 +635,13 @@ function resetInputStationsPosition(ctrl: Ctrl, inputStation: HTMLInputElement):
 }
 
 function currentInputStation(ctrl: Ctrl): HTMLInputElement {
-  var inputStation = <HTMLInputElement> ctrl.scope().querySelector('.input input:not([disabled])');
+  const inputStation = <HTMLInputElement> ctrl.scope().querySelector('.input input:not([disabled])');
   return inputStation;
 }
 
 function canBeSubmitted(ctrl: Ctrl): boolean {
-  var selectedStart = ctrl.inputStationStartSelected();
-  var selectedEnd = ctrl.inputStationEndSelected();
+  const selectedStart = ctrl.inputStationStartSelected();
+  const selectedEnd = ctrl.inputStationEndSelected();
 
   if(selectedStart && selectedEnd && (selectedStart != selectedEnd)) {
     if(ctrl.isOtherTabSelected()) {

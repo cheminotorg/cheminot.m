@@ -38,8 +38,8 @@ export type Ctrl = {
 }
 
 function renderMeta(departure: Departure): m.VirtualElement[] {
-  let value = Utils.DateTime.diff(departure.startTime, departure.endTime)
-  var duration = m('div.duration', {}, [
+  const value = Utils.DateTime.diff(departure.startTime, departure.endTime)
+  const duration = m('div.duration', {}, [
     m('span.egg-timer'),
     m('span.value', {}, Common.Departure.formatDuration(value))
   ]);
@@ -56,7 +56,7 @@ function renderMeta(departure: Departure): m.VirtualElement[] {
 
 function render(ctrl: Ctrl): m.VirtualElement[] {
 
-  var pullupAttrsConfig = {
+  const pullupAttrsConfig = {
     key: 'departures-pullup',
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(ctrl.displayed()) {
@@ -68,24 +68,24 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     }
   };
 
-  var pullupAttrs = Utils.m.handleAttributes({ class: 'trace'}, (name, value) => {
+  const pullupAttrs = Utils.m.handleAttributes({ class: 'trace'}, (name, value) => {
     if((name + ':' + value) == 'class:trace') {
       return ctrl.isComputingLongTrip();
     }
     return true;
   });
 
-  var pullUp = m("li.pull-up", _.merge(pullupAttrs, pullupAttrsConfig), [
+  const pullUp = m("li.pull-up", _.merge(pullupAttrs, pullupAttrsConfig), [
     m('span.pin'),
     m("span.label", {}, i18n.get('pull-to-refresh'))
   ]);
 
-  var loadingLabel = i18n.get('loading');
+  let loadingLabel = i18n.get('loading');
   if(ctrl.isComputingLongTrip()) {
     loadingLabel = i18n.get('trip-not-direct');
   }
 
-  var trainAttrs: Attributes = {
+  const trainAttrs: Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         el.classList.add('fade-in')
@@ -93,12 +93,12 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     }
   }
 
-  var loading = m("div.empty-loading", { key: 'departures-loading' }, [
+  const loading = m("div.empty-loading", { key: 'departures-loading' }, [
     m('img.train', _.merge({ src: 'images/cheminot_eceff1.gif' }, trainAttrs)),
     m('p', {}, m('span.label', {}, loadingLabel))
   ]);
 
-  var renderDepartureItem = (departure: Departure, attrs: Attributes) => {
+  const renderDepartureItem = (departure: Departure, attrs: Attributes) => {
     return m('li', attrs, [
       m('div.wrapper', {}, [
         m('div.meta', {}, renderMeta(departure)),
@@ -111,8 +111,8 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     ]);
   }
 
-  var departuresList = ctrl.departures().map((departure, index) => {
-    var attrs: Attributes = {
+  const departuresList = ctrl.departures().map((departure, index) => {
+    const attrs: Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
           Utils.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
@@ -125,11 +125,11 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     return renderDepartureItem(departure, attrs);
   });
 
-  var zipped = _.zip<Departure, m.VirtualElement>(ctrl.departures(), departuresList);
-  var departures = _.reduce(zipped, (acc, d) => {
+  const zipped = _.zip<Departure, m.VirtualElement>(ctrl.departures(), departuresList);
+  const departures = _.reduce(zipped, (acc, d) => {
     let [model, dom] = d;
     if(!moment(acc.lastDay).isSame(model.startTime, 'day')) {
-      var dayEl = m('li.day', { key: model.startTime }, Common.Departure.formatDay(model.startTime));
+      const dayEl = m('li.day', { key: model.startTime }, Common.Departure.formatDay(model.startTime));
       acc.lastDay = model.startTime;
       acc.elements.push(dayEl);
     }
@@ -142,8 +142,8 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
   }
 
   if(!departures.elements.length) {
-    var departure = Common.tripToDeparture(Mock.getTrip());
-    var attrs: Attributes = {
+    const departure = Common.tripToDeparture(Mock.getTrip());
+    const attrs: Attributes = {
       'class': 'fake',
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
@@ -154,7 +154,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     departures.elements.push(renderDepartureItem(departure, attrs));
   }
 
-  var departuresAttrs = {
+  const departuresAttrs = {
     key: 'departures-list',
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(ctrl.displayed()) {
@@ -178,7 +178,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     }
   };
 
-  var traceAttrs = {
+  const traceAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(ctrl.displayed()) {
         ctrl.iscroll().refresh();
@@ -197,7 +197,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     }
   };
 
-  var wrapper = [m("ul.departures", departuresAttrs, departures.elements)]
+  const wrapper = [m("ul.departures", departuresAttrs, departures.elements)]
   if(ctrl.departures().length == 0) {
     wrapper.push(loading);
   }
@@ -208,26 +208,26 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
             m('span.label', {}, i18n.get('loading'))])];
 }
 
-var departures: m.Module<Ctrl> = {
+const departures: m.Module<Ctrl> = {
 
   controller(): Ctrl {
-    var at = parseInt(m.route.param("at"), 10);
-    var scope = () => <HTMLElement> document.querySelector('#departures');
-    var displayed = () => Routes.matchDepartures(m.route());
+    const at = parseInt(m.route.param("at"), 10);
+    const scope = () => <HTMLElement> document.querySelector('#departures');
+    const displayed = () => Routes.matchDepartures(m.route());
     if(displayed()) native.GoogleAnalytics.trackView('Departures');
 
-    var ctrl: Ctrl = {
+    const ctrl: Ctrl = {
       scope: scope,
 
       displayed: displayed,
 
       iscroll: _.once(function() {
-        var wrapper = <HTMLElement> scope().querySelector('#wrapper');
-        var header = <HTMLElement> document.querySelector('#header');
-        var top = header.offsetTop + header.offsetHeight;
+        const wrapper = <HTMLElement> scope().querySelector('#wrapper');
+        const header = <HTMLElement> document.querySelector('#header');
+        const top = header.offsetTop + header.offsetHeight;
         wrapper.style.top = top + 'px';
 
-        var iscroll = new IScroll(wrapper, { probeType: 1});
+        const iscroll = new IScroll(wrapper, { probeType: 1});
 
         iscroll.on('refresh', () => {
           if(this.isPullUpLoading() && !this.isComputationInProgress()) {
@@ -298,20 +298,20 @@ var departures: m.Module<Ctrl> = {
       isPullUpDisplayed: m.prop(false),
 
       isPullUpLoading: Utils.m.prop(false, (isLoading: boolean) => {
-        var wrapper = <HTMLElement> scope().querySelector('#wrapper');
+        const wrapper = <HTMLElement> scope().querySelector('#wrapper');
         isLoading ? wrapper.classList.add('loading') : wrapper.classList.remove('loading');
         return isLoading ? displayHolo(ctrl) : hideHolo(ctrl);
       }),
 
       isPullUpFlip: Utils.m.prop(false, (isFlip: boolean) => {
-        var wrapper = <HTMLElement> scope().querySelector('#wrapper');
+        const wrapper = <HTMLElement> scope().querySelector('#wrapper');
         isFlip ? wrapper.classList.add('flip') : wrapper.classList.remove('flip');
       }),
 
       pullUpProgress: m.prop(0),
 
       pullUpLabel: Utils.m.prop(i18n.get('pull-to-refresh'), (label: string) => {
-        var pullUpLabel = scope().querySelector('.pull-up .label')
+        const pullUpLabel = scope().querySelector('.pull-up .label')
         if(pullUpLabel) pullUpLabel.textContent = label;
       }),
 
@@ -349,16 +349,16 @@ enum StatusCode {
 }
 
 function traceLongTrip(ctrl: Ctrl) {
-  var queue: Station[] = [];
-  var lastProducerSpeed = 0;
-  var minInterval = 100;
+  let queue: Station[] = [];
+  let lastProducerSpeed = 0;
+  let minInterval = 100;
 
   (function consummer(interval: number) {
     if(ctrl.isComputationInProgress()) {
-      var h = queue.shift();
-      var el = ctrl.scope().querySelector('.trace .label');
+      const h = queue.shift();
+      const el = ctrl.scope().querySelector('.trace .label');
       if(el && h) el.textContent = h.name;
-      var producerSpeed = queue.length > 1 ? lastProducerSpeed / queue.length : lastProducerSpeed;
+      const producerSpeed = queue.length > 1 ? lastProducerSpeed / queue.length : lastProducerSpeed;
       setTimeout(() => consummer(producerSpeed), producerSpeed);
     }
   })(1000);
@@ -376,10 +376,10 @@ function traceLongTrip(ctrl: Ctrl) {
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
   ctrl.isComputationInProgress(true);
-  var step = (ctrl: Ctrl, at: Date, retries: number = 2): Q.Promise<StatusCode> => {
+  const step = (ctrl: Ctrl, at: Date, retries: number = 2): Q.Promise<StatusCode> => {
     if(isMoreItemsNeeded(ctrl)) {
-      var te = departureBound(at);
-      var eventuallyTrip: Q.Promise<ArrivalTimes>;
+      const te = departureBound(at);
+      let eventuallyTrip: Q.Promise<ArrivalTimes>;
       if(!ctrl.isComputingLongTrip()) {
         eventuallyTrip = native.Cheminot.lookForBestDirectTrip(ctrl.startStationId(), ctrl.endStationId(), at, te).then((trip) => {
           if(!trip.arrivalTimes.length && !trip.isDirect) {
@@ -395,7 +395,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
       }
       return eventuallyTrip.then((trip) => {
         if(trip.arrivalTimes.length > 0) {
-          var departure = Common.tripToDeparture(trip);
+          const departure = Common.tripToDeparture(trip);
           ctrl.departures().push(departure);
           if(ctrl.isComputingLongTrip()) {
             displayHolo(ctrl);
@@ -451,9 +451,9 @@ function departureBound(departure: Date): Date {
 }
 
 function isMoreItemsNeeded(ctrl: Ctrl): boolean {
-  var screenFull = isScreenFull(ctrl);
-  var hasFirstPageNotFull = ctrl.nbItemsPerScreen() == 0 && !screenFull;
-  var hasLastPageNotFull = screenFull && ctrl.currentPageSize() < ctrl.nbItemsPerScreen();
+  const screenFull = isScreenFull(ctrl);
+  const hasFirstPageNotFull = ctrl.nbItemsPerScreen() == 0 && !screenFull;
+  const hasLastPageNotFull = screenFull && ctrl.currentPageSize() < ctrl.nbItemsPerScreen();
   return (hasFirstPageNotFull || hasLastPageNotFull) && ctrl.displayed();
 }
 
@@ -470,9 +470,9 @@ function isScreenFull(ctrl: Ctrl): boolean {
 }
 
 function computePullUpBar(iscroll: IScroll): number {
-  var max = 8;
-  var deltaY = iscroll.y + Math.abs(iscroll.maxScrollY);
-  var value = Math.abs(deltaY * 100 / max);
+  const max = 8;
+  const deltaY = iscroll.y + Math.abs(iscroll.maxScrollY);
+  const value = Math.abs(deltaY * 100 / max);
   return deltaY < 0 ? value : 0;
 }
 
@@ -485,12 +485,12 @@ function hideHolo(ctrl: Ctrl): void {
 }
 
 function hideTrace(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var el = <HTMLElement> ctrl.scope().querySelector('.trace');
+  const el = <HTMLElement> ctrl.scope().querySelector('.trace');
   return Zanimo(el, 'transform', 'translate3d(0, 0, 0)', 100);
 }
 
 function showTrace(ctrl: Ctrl): Q.Promise<HTMLElement> {
-  var el = <HTMLElement> ctrl.scope().querySelector('.trace');
+  const el = <HTMLElement> ctrl.scope().querySelector('.trace');
   return Zanimo(el, 'transform', 'translate3d(0, -' + el.clientHeight + 'px, 0)', 400, 'cubic-bezier(0.025, 0.970, 0.395, 1.000)');
 }
 

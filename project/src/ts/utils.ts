@@ -23,7 +23,7 @@ export function handleError(event: any, source?: string, fileno?: number, column
 }
 
 export function pad(n: number, width: number): string {
-  var sn = n + '';
+  const sn = n + '';
   return sn.length >= width ? sn : new Array(width - sn.length + 1).join('0') + sn;
 }
 
@@ -41,16 +41,16 @@ export module DateTime {
   }
 
   export function setSameTime(reference: Date, time: Date): Date {
-    var h = time.getHours();
-    var m = time.getMinutes();
-    var s = time.getSeconds();
+    const h = time.getHours();
+    const m = time.getMinutes();
+    const s = time.getSeconds();
     return moment(reference).hours(h).minutes(m).seconds(s).toDate()
   }
 
   export function setSameDay(reference: Date, date: Date): Date {
-    var d = date.getDate();
-    var m = date.getMonth();
-    var y = date.getFullYear();
+    const d = date.getDate();
+    const m = date.getMonth();
+    const y = date.getFullYear();
     return moment(reference).date(d).month(m).year(y).toDate()
   }
 
@@ -71,7 +71,7 @@ export module m {
 
   export function prop(value?: any, f?: (value: any) => void, scope?: any): (value?: any) => any {
     function _prop(store?: any, f?: (value: any) => void, scope?: any) {
-      var prop = function(s?: any) {
+      const prop = function(s?: any) {
         if (s !== undefined) store = s;
         f !== undefined && s !==undefined && f.call(scope, s);
         return store;
@@ -84,9 +84,9 @@ export module m {
 
   export function handleAttributes(attributes: Attributes, validate: (name: string, value: string) => boolean): Attributes {
     for(var key in attributes) {
-      var attributeValue = attributes[key];
+      const attributeValue = attributes[key];
       if(_.isString(attributeValue)) {
-        var values = attributes[key].split(' ');
+        const values = attributes[key].split(' ');
         attributes[key] = values.filter((value:any) => validate(key, value)).join(' ');
       } else {
         attributes[key] = validate(key, attributeValue) ? attributeValue : null;
@@ -152,7 +152,7 @@ export module Promise {
   }
 
   export function withMinimumDelay<T>(promise: Q.Promise<T>, delay: number): Q.Promise<T> {
-    var timeout = Q.defer<T>();
+    const timeout = Q.defer<T>();
     setTimeout(() => timeout.resolve(null), delay);
     return Q.spread([promise, timeout.promise], (result: T) => {
       return result;
@@ -173,8 +173,8 @@ export module Promise {
     if(seq.length === 0) {
       return Q([]);
     } else {
-      var h = seq[0];
-      var t = seq.slice(1);
+      const h = seq[0];
+      const t = seq.slice(1);
       return f(h).then<Array<U>>((t1) => {
         return sequence(t, f).then((t2) => {
           return [t1].concat(t2)
@@ -187,7 +187,7 @@ export module Promise {
 export module Transition {
 
   export function transitionEnd(): string {
-    var transitionend = "transitionend"
+    let transitionend = "transitionend"
     if('WebkitTransition' in document.body.style
        && !("OTransition" in document.body.style) ) {
       transitionend = 'webkitTransitionEnd';
@@ -244,7 +244,8 @@ export module $ {
   }
 
   export function longtouch(el: HTMLElement, ms: number, handler: (e: Event) => void): Element {
-    var t: number;
+    let t: number;
+
     el.addEventListener('touchstart', (e) => {
       if(!el.classList.contains('press')) {
         el.classList.add('press');

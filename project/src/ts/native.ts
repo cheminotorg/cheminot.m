@@ -9,10 +9,10 @@ type BackButtonHandlers = {
   [index: string]: () => void;
 }
 
-var handlers: BackButtonHandlers = {};
+const handlers: BackButtonHandlers = {};
 
 export function onBackButton(key: string, f: () => void) {
-  var h = handlers[key];
+  const h = handlers[key];
   if(!h) {
     handlers[key] = f;
     document.addEventListener('backbutton', f, false);
@@ -23,7 +23,7 @@ window.addEventListener("message", (message: MessageEvent) => {
   if(message.data && message.data.event == "cheminot:back" && message.origin == window.location.origin) {
     if(window.location.hash != '#/') {
       Object.keys(handlers).forEach(key => {
-        var h = handlers[key];
+        const h = handlers[key];
         h && h();
       });
     }
@@ -32,13 +32,13 @@ window.addEventListener("message", (message: MessageEvent) => {
 
 export module Keyboard {
 
-  var timeout = 2000;
+  const timeout = 2000;
 
   export function show(): Q.Promise<void> {
-    var d = Q.defer<void>();
+    const d = Q.defer<void>();
     cordova.plugins.Keyboard.show();
-    var start = Date.now();
-    var intervalId = setInterval(() => {
+    const start = Date.now();
+    const intervalId = setInterval(() => {
       if(cordova.plugins.Keyboard.isVisible || Cheminot.isMocked()) {
         clearInterval(intervalId);
         d.resolve(null);
@@ -55,10 +55,10 @@ export module Keyboard {
   }
 
   export function close(): Q.Promise<void> {
-    var d = Q.defer<void>();
+    const d = Q.defer<void>();
     cordova.plugins.Keyboard.close();
-    var start = Date.now();
-    var intervalId = setInterval(() => {
+    const start = Date.now();
+    const intervalId = setInterval(() => {
       if(!cordova.plugins.Keyboard.isVisible) {
         clearInterval(intervalId);
         d.resolve(null);
@@ -86,9 +86,9 @@ export module Cheminot {
   }
 
   export function gitVersion(): Q.Promise<string> {
-    var d = Q.defer<string>();
-    var success = (sha: string) => d.resolve(sha);
-    var error = (e: string) => d.reject(e);
+    const d = Q.defer<string>();
+    const success = (sha: string) => d.resolve(sha);
+    const error = (e: string) => d.reject(e);
     if(isDemo()) {
       Demo.gitVersion(success, error);
     } else if(isMocked()) {
@@ -100,9 +100,9 @@ export module Cheminot {
   }
 
   export function init(): Q.Promise<Meta> {
-    var d = Q.defer<Meta>();
-    var success = (meta: Meta) => d.resolve(meta);
-    var error = (e: string) => d.reject(e);
+    const d = Q.defer<Meta>();
+    const success = (meta: Meta) => d.resolve(meta);
+    const error = (e: string) => d.reject(e);
     if(isDemo()) {
       Demo.init(success, error);
     } else if(isMocked()) {
@@ -114,9 +114,9 @@ export module Cheminot {
   }
 
   export function getStop(stopId: string): Q.Promise<Station> {
-    var d = Q.defer<Station>();
-    var success = (station: Station) => d.resolve(station);
-    var error = (e: string) => d.reject(e);
+    const d = Q.defer<Station>();
+    const success = (station: Station) => d.resolve(station);
+    const error = (e: string) => d.reject(e);
     if(isMocked()) {
       Mock.getStop(stopId, success, error);
     } else  {
@@ -126,15 +126,15 @@ export module Cheminot {
   }
 
   export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: Date): Q.Promise<ArrivalTimes> {
-    var key = Cache.tripKey(vsId, veId, at, te);
+    const key = Cache.tripKey(vsId, veId, at, te);
     return Cache.getOrSetTrip(key, () => {
-      var d = Q.defer<ArrivalTimes>();
-      var success = (result: [boolean, ArrivalTime[]]) => {
-        var arrivalTimes = result[1], hasDirect = result[0];
-        var trip = { id: key, arrivalTimes: arrivalTimes, isDirect: hasDirect };
+      const d = Q.defer<ArrivalTimes>();
+      const success = (result: [boolean, ArrivalTime[]]) => {
+        const arrivalTimes = result[1], hasDirect = result[0];
+        const trip = { id: key, arrivalTimes: arrivalTimes, isDirect: hasDirect };
         d.resolve(trip);
       }
-      var error = (e: string) => d.reject(e);
+      const error = (e: string) => d.reject(e);
       if(isDemo()) {
         Demo.lookForBestDirectTrip(vsId, veId, at, te, success, error);
       } else if(isMocked()) {
@@ -147,14 +147,14 @@ export module Cheminot {
   }
 
   export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number): Q.Promise<ArrivalTimes> {
-    var key = Cache.tripKey(vsId, veId, at, te, max);
+    const key = Cache.tripKey(vsId, veId, at, te, max);
     return Cache.getOrSetTrip(key, () => {
-      var d = Q.defer<ArrivalTimes>();
-      var success = (arrivalTimes: ArrivalTime[]) => {
-        var trip = { id: key, arrivalTimes: arrivalTimes, isDirect: false };
+      const d = Q.defer<ArrivalTimes>();
+      const success = (arrivalTimes: ArrivalTime[]) => {
+        const trip = { id: key, arrivalTimes: arrivalTimes, isDirect: false };
         d.resolve(trip);
       }
-      var error = (e: string) => d.reject(e);
+      const error = (e: string) => d.reject(e);
       if(isDemo()) {
         Demo.lookForBestTrip(vsId, veId, at, te, max, success, error);
       } else if(isMocked()) {
@@ -167,8 +167,8 @@ export module Cheminot {
   }
 
   export function abort(): Q.Promise<void> {
-    var d = Q.defer<void>();
-    var error = (e: string) => d.reject(e);
+    const d = Q.defer<void>();
+    const error = (e: string) => d.reject(e);
     if(isDemo()) {
       Demo.abort(() => d.resolve(null), error);
     } else {
@@ -178,8 +178,8 @@ export module Cheminot {
   }
 
   export function trace(): Q.Promise<Station[]> {
-    var d = Q.defer<Station[]>();
-    var error = (e: string) => d.reject(e);
+    const d = Q.defer<Station[]>();
+    const error = (e: string) => d.reject(e);
     if(isDemo()) {
       Demo.trace(trace => d.resolve(trace), error);
     } else {
@@ -192,15 +192,15 @@ export module Cheminot {
 export module GoogleAnalytics {
 
   export function debugMode(): Q.Promise<void> {
-    var d = Q.defer<void>();
+    const d = Q.defer<void>();
     analytics.debugMode(() => d.resolve(null), (e) => d.reject(e));
     return d.promise;
   }
 
   export function startTrackerWithId(id: string): Q.Promise<void> {
-    var d = Q.defer<void>();
+    const d = Q.defer<void>();
     if(!Cheminot.isMocked()) {
-      var debug = (!Cheminot.isProd()) ? debugMode() : Utils.Promise.done();
+      const debug = (!Cheminot.isProd()) ? debugMode() : Utils.Promise.done();
       debug.fin(() => analytics.startTrackerWithId(id, () => d.resolve(null), (e) => d.reject(e)));
     } else {
       d.resolve(null);
@@ -209,7 +209,7 @@ export module GoogleAnalytics {
   }
 
   export function trackView(screen: string): Q.Promise<void> {
-    var d = Q.defer<void>();
+    const d = Q.defer<void>();
     if(!Cheminot.isMocked()) {
       analytics.trackView(screen, () => d.resolve(null), (e) => d.reject(e));
     } else {
@@ -219,7 +219,7 @@ export module GoogleAnalytics {
   }
 
   export function trackException(description: string, fatal: boolean): Q.Promise<void> {
-    var d = Q.defer<void>();
+    const d = Q.defer<void>();
     if(!Cheminot.isMocked()) {
       analytics.trackException(description, fatal, () => d.resolve(null), (e) => d.reject(e));
     } else {
@@ -229,7 +229,7 @@ export module GoogleAnalytics {
   }
 
   export function trackEvent(category: string, action: string, label: string, value: number): Q.Promise<void> {
-    var d = Q.defer<void>();
+    const d = Q.defer<void>();
     if(!Cheminot.isMocked()) {
       analytics.trackEvent(category, action, label, value, () => d.resolve(null), (e) => d.reject(e));
     } else {
@@ -239,7 +239,7 @@ export module GoogleAnalytics {
   }
 
   export function trackTiming(category: string, interval: number, name: string, label: string): Q.Promise<void> {
-    var d = Q.defer<void>();
+    const d = Q.defer<void>();
     if(!Cheminot.isMocked()) {
       analytics.trackTiming(category, interval, name, label, () => d.resolve(null), (e) => d.reject(e));
     } else {

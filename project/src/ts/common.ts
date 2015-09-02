@@ -9,9 +9,9 @@ export function departureBound(departure: Date): Date {
 }
 
 export function tripToDeparture(trip: ArrivalTimes): Departure {
-  var start = _.head(trip.arrivalTimes);
-  var end = _.last(trip.arrivalTimes);
-  var nbSteps = Object.keys(_.groupBy(trip.arrivalTimes, arrivalTime => arrivalTime.tripId)).length;
+  const start = _.head(trip.arrivalTimes);
+  const end = _.last(trip.arrivalTimes);
+  const nbSteps = Object.keys(_.groupBy(trip.arrivalTimes, arrivalTime => arrivalTime.tripId)).length;
 
   return {
     startId: start.stopId,
@@ -40,8 +40,8 @@ export module Departure {
   }
 
   export function formatDuration(duration: number, f?: (hours: number, minutes: number) => string): string {
-    var hours = Utils.Number.trunc(duration / 3600000);
-    var minutes = Utils.Number.trunc((duration - (hours * 3600000)) / 1000 / 60);
+    const hours = Utils.Number.trunc(duration / 3600000);
+    const minutes = Utils.Number.trunc((duration - (hours * 3600000)) / 1000 / 60);
     if(!f) {
       return Utils.pad(hours, 2) + ':' + Utils.pad(minutes, 2);
     } else {

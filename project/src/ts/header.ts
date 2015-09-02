@@ -18,7 +18,7 @@ export type Ctrl = {
   isNowView: () => boolean;
 }
 
-var header = {
+const header = {
   controller(): Ctrl {
 
     const vs = m.route.param('start');
@@ -88,7 +88,7 @@ var header = {
     ];
 
     if(ctrl.isNowView() && Preferences.hasStars()) {
-      var attrs: Attributes = {
+      const attrs: Attributes = {
         config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
           if(!isUpdate) {
             Utils.$.touchend(el, _.partial(ctrl.onSearch, ctrl));
