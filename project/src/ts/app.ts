@@ -19,7 +19,7 @@ export type Ctrl = {
   trip: Trip.Ctrl;
 }
 
-function renderHeader(ctrl: Header.Ctrl): m.VirtualElement {
+function renderHeader(ctrl: Header.Ctrl): m.VirtualElement<Header.Ctrl> {
   const headerAttrs: Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
@@ -29,10 +29,10 @@ function renderHeader(ctrl: Header.Ctrl): m.VirtualElement {
       }
     }
   }
-  return m("header", _.merge({ id: "header" }, headerAttrs), Header.get().view(ctrl));
+  return m("header", _.merge({ id: "header" }, headerAttrs), Header.component.view(ctrl));
 }
 
-function renderSearch(ctrl: Search.Ctrl): m.VirtualElement {
+function renderSearch(ctrl: Search.Ctrl): m.VirtualElement<Search.Ctrl> {
   let attributes: Attributes = {
     'id': 'search',
     'class': 'view hidden'
@@ -45,10 +45,10 @@ function renderSearch(ctrl: Search.Ctrl): m.VirtualElement {
     }
   });
 
-  return m("section", attributes, Search.get().view(ctrl));
+  return m("section", attributes, Search.component.view(ctrl));
 }
 
-function renderNow(ctrl: Now.Ctrl): m.VirtualElement {
+function renderNow(ctrl: Now.Ctrl): m.VirtualElement<Now.Ctrl> {
   let attributes: Attributes = {
     'id': 'now',
     'class': 'view hidden'
@@ -61,10 +61,10 @@ function renderNow(ctrl: Now.Ctrl): m.VirtualElement {
     }
   });
 
-  return m("section", attributes, Now.get().view(ctrl));
+  return m("section", attributes, Now.component.view(ctrl));
 }
 
-function renderDepartures(ctrl: Departures.Ctrl): m.VirtualElement {
+function renderDepartures(ctrl: Departures.Ctrl): m.VirtualElement<Departures.Ctrl> {
   let attributes: Attributes = {
     'id': 'departures',
     'class': 'view hidden'
@@ -77,10 +77,10 @@ function renderDepartures(ctrl: Departures.Ctrl): m.VirtualElement {
     }
   });
 
-  return m("section", attributes, Departures.get().view(ctrl));
+  return m("section", attributes, Departures.component.view(ctrl));
 }
 
-function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement {
+function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement<Trip.Ctrl> {
   let attributes: Attributes = {
     'id': 'trip',
     'class': 'view hidden'
@@ -93,22 +93,22 @@ function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement {
     }
   });
 
-  return m("section", attributes, Trip.get().view(ctrl));
+  return m("section", attributes, Trip.component.view(ctrl));
 }
 
-const app = {
+export const component = {
   controller(): Ctrl {
     return {
-      modals: Modals.get().controller(),
-      header: Header.get().controller(),
-      now: Now.get().controller(),
-      search: Search.get().controller(),
-      departures: Departures.get().controller(),
-      trip: Trip.get().controller()
+      modals: Modals.component.controller(),
+      header: Header.component.controller(),
+      now: Now.component.controller(),
+      search: Search.component.controller(),
+      departures: Departures.component.controller(),
+      trip: Trip.component.controller()
     };
   },
 
-  view(ctrl: Ctrl) {
+  view(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
     const attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if (!isUpdate) {
@@ -121,7 +121,7 @@ const app = {
       }
     }
     return [m('main#viewport', attributes, [
-      Modals.get().view(ctrl.modals),
+      Modals.component.view(ctrl.modals),
       renderHeader(ctrl.header),
       renderSearch(ctrl.search),
       renderNow(ctrl.now),
@@ -129,8 +129,4 @@ const app = {
       renderTrip(ctrl.trip)
     ])];
   }
-}
-
-export function get(): m.Module<Ctrl> {
-  return app;
 }

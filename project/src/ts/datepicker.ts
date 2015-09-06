@@ -23,11 +23,11 @@ function vibrate() {
   navigator.vibrate(30);
 }
 
-function renderTitle(ctrl: Ctrl): m.VirtualElement {
+function renderTitle(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   return m('div.title', {}, "Définir la date");
 }
 
-function renderDay(ctrl: Ctrl): m.VirtualElement {
+function renderDay(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
@@ -43,7 +43,7 @@ function renderDay(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function renderMonth(ctrl: Ctrl): m.VirtualElement {
+function renderMonth(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
@@ -59,7 +59,7 @@ function renderMonth(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function renderYear(ctrl: Ctrl): m.VirtualElement {
+function renderYear(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
@@ -75,7 +75,7 @@ function renderYear(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function renderButtons(ctrl: Ctrl): m.VirtualElement {
+function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const getAttrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
@@ -97,7 +97,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function render(ctrl: Ctrl): m.VirtualElement[] {
+function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
     if((name + ':' + value) == 'class:fade-in') {
       return ctrl.displayed();
@@ -124,7 +124,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
       renderButtons(ctrl)])];
 }
 
-const datePicker: m.Module<Ctrl> = {
+export const component: m.Component<Ctrl> = {
   controller(): Ctrl {
     return {
       displayed: m.prop(false),
@@ -199,10 +199,6 @@ const datePicker: m.Module<Ctrl> = {
   view(ctrl: Ctrl) {
     return render(ctrl);
   }
-}
-
-export function get(): m.Module<Ctrl> {
-  return datePicker;
 }
 
 export function show(date?: Date): Q.Promise<Date> {

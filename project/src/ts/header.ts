@@ -18,9 +18,9 @@ export type Ctrl = {
   isNowView: () => boolean;
 }
 
-const header = {
-  controller(): Ctrl {
+export const component: m.Component<Ctrl> = {
 
+  controller(): Ctrl {
     const vs = m.route.param('start');
     const ve = m.route.param('end');
 
@@ -111,8 +111,4 @@ const header = {
 
     return v;
   }
-}
-
-export function get(): m.Module<Ctrl> {
-  return header;
 }

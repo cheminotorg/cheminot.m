@@ -22,11 +22,11 @@ function vibrate() {
   navigator.vibrate(30);
 }
 
-function renderTitle(ctrl: Ctrl): m.VirtualElement {
+function renderTitle(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   return m('div.title', {}, "Définir l'heure");
 }
 
-function renderHour(ctrl: Ctrl): m.VirtualElement {
+function renderHour(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
@@ -42,7 +42,7 @@ function renderHour(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function renderMinute(ctrl: Ctrl): m.VirtualElement {
+function renderMinute(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
@@ -58,7 +58,7 @@ function renderMinute(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function renderButtons(ctrl: Ctrl): m.VirtualElement {
+function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const getAttrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
@@ -80,7 +80,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function render(ctrl: Ctrl): m.VirtualElement[] {
+function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
   const attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
     if((name + ':' + value) == 'class:fade-in') {
@@ -107,7 +107,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
       renderButtons(ctrl)])];
 }
 
-const timePicker: m.Module<Ctrl> = {
+export const component: m.Component<Ctrl> = {
   controller(): Ctrl {
 
     return {
@@ -171,10 +171,6 @@ const timePicker: m.Module<Ctrl> = {
   view(ctrl: Ctrl) {
     return render(ctrl);
   }
-}
-
-export function get(): m.Module<Ctrl> {
-  return timePicker;
 }
 
 export function show(time?: Date): Q.Promise<Date> {

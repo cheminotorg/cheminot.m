@@ -22,7 +22,7 @@ export type Ctrl = {
   onGoToSearchTouched: (ctrl: Ctrl, e: Event) => void;
 }
 
-function renderDepartureItem(ctrl: Ctrl, departure: Departure, attrs: Attributes): m.VirtualElement {
+function renderDepartureItem(ctrl: Ctrl, departure: Departure, attrs: Attributes): m.VirtualElement<Ctrl> {
   const remaining = Utils.DateTime.diff(new Date(), departure.startTime);
   const formattedRemaining = Common.Departure.formatDuration(remaining, (hours, minutes) => {
     if(hours > 0) {
@@ -41,7 +41,7 @@ function renderDepartureItem(ctrl: Ctrl, departure: Departure, attrs: Attributes
         m('span.remaining', {}, `Dans ${formattedRemaining}`)])]);
 }
 
-function renderDepartureItems(ctrl: Ctrl): m.VirtualElement[] {
+function renderDepartureItems(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   return ctrl.departures().map((departure) => {
     const attrs: Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
@@ -55,7 +55,7 @@ function renderDepartureItems(ctrl: Ctrl): m.VirtualElement[] {
   });
 }
 
-function renderDeparturesList(ctrl: Ctrl): m.VirtualElement[] {
+function renderDeparturesList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   let departureItems = renderDepartureItems(ctrl);
 
   if(!departureItems.length) {
@@ -113,7 +113,7 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement[] {
   return [m('ul.departures.list', attrs, departureItems)];
 }
 
-function renderNothing(ctrl: Ctrl): m.VirtualElement[] {
+function renderNothing(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const addStarBtnAttrs: Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
@@ -129,7 +129,7 @@ function renderNothing(ctrl: Ctrl): m.VirtualElement[] {
 
 function render(ctrl: Ctrl) {
   if(!ctrl.displayed()) {
-    return new Array<m.VirtualElement>();
+    return [];
   } else {
     const topBar = m('div.top-bar.title', {}, [
       m('div', {}, i18n.get('your-departures'))
@@ -141,7 +141,7 @@ function render(ctrl: Ctrl) {
   }
 }
 
-const now: m.Module<Ctrl> = {
+export const component: m.Component<Ctrl> = {
 
   controller(): Ctrl {
     const scope = () => <HTMLElement> document.querySelector('#now');
@@ -181,10 +181,6 @@ const now: m.Module<Ctrl> = {
   view(ctrl: Ctrl) {
     return render(ctrl);
   }
-}
-
-export function get(): m.Module<Ctrl> {
-  return now;
 }
 
 function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {

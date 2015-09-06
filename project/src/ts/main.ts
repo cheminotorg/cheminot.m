@@ -33,11 +33,11 @@ Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions
     Settings.cheminotcVersion = cheminotcVersion;
     m.route.mode = 'hash';
     m.route(document.body, '/', {
-      "/": App.get(),
-      "/search": App.get(),
-      "/search/:tab/:start/:end/:at": App.get(),
-      "/departures/:start/:end/:at": App.get(),
-      "/trip/:id": App.get()
+      "/": App.component,
+      "/search": App.component,
+      "/search/:tab/:start/:end/:at": App.component,
+      "/departures/:start/:end/:at": App.component,
+      "/trip/:id": App.component
     });
   });
 }).catch((e) => {

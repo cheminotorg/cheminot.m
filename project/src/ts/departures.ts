@@ -37,7 +37,7 @@ export type Ctrl = {
   iscroll: () => IScroll;
 }
 
-function renderMeta(departure: Departure): m.VirtualElement[] {
+function renderMeta(departure: Departure): m.VirtualElement<Ctrl>[] {
   const value = Utils.DateTime.diff(departure.startTime, departure.endTime)
   const duration = m('div.duration', {}, [
     m('span.egg-timer'),
@@ -54,7 +54,7 @@ function renderMeta(departure: Departure): m.VirtualElement[] {
   }
 }
 
-function render(ctrl: Ctrl): m.VirtualElement[] {
+function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
   const pullupAttrsConfig = {
     key: 'departures-pullup',
@@ -80,10 +80,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     m("span.label", {}, i18n.get('pull-to-refresh'))
   ]);
 
-  let loadingLabel = i18n.get('loading');
-  if(ctrl.isComputingLongTrip()) {
-    loadingLabel = i18n.get('trip-not-direct');
-  }
+  const loadingLabel = ctrl.isComputingLongTrip() ? i18n.get('trip-not-direct') : i18n.get('loading');
 
   const trainAttrs: Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
@@ -93,7 +90,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     }
   }
 
-  const loading = m("div.empty-loading", { key: 'departures-loading' }, [
+  const loading = m('div.empty-loading', { key: 'departures-loading' }, [
     m('img.train', _.merge({ src: 'images/cheminot_eceff1.gif' }, trainAttrs)),
     m('p', {}, m('span.label', {}, loadingLabel))
   ]);
@@ -125,17 +122,18 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
     return renderDepartureItem(departure, attrs);
   });
 
-  const zipped = _.zip<Departure, m.VirtualElement>(ctrl.departures(), departuresList);
+  const zipped = _.zip<Departure, m.VirtualElement<Ctrl>>(ctrl.departures(), departuresList);
   const departures = _.reduce(zipped, (acc, d) => {
-    let [model, dom] = d;
+    const [model, dom] = d;
     if(!moment(acc.lastDay).isSame(model.startTime, 'day')) {
-      const dayEl = m('li.day', { key: model.startTime }, Common.Departure.formatDay(model.startTime));
+      const formattedStartTime = Common.Departure.formatDay(model.startTime);
+      const dayEl = m('li.day', formattedStartTime);
       acc.lastDay = model.startTime;
       acc.elements.push(dayEl);
     }
     acc.elements.push(dom);
     return acc;
-  }, { lastDay: new Date(), elements: new Array<m.VirtualElement>() });
+  }, { lastDay: new Date(), elements: [] });
 
   if(ctrl.isPullUpDisplayed()) {
     departures.elements.push(pullUp);
@@ -208,7 +206,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
             m('span.label', {}, i18n.get('loading'))])];
 }
 
-const departures: m.Module<Ctrl> = {
+export const component: m.Component<Ctrl> = {
 
   controller(): Ctrl {
     const at = parseInt(m.route.param("at"), 10);
@@ -315,7 +313,7 @@ const departures: m.Module<Ctrl> = {
         if(pullUpLabel) pullUpLabel.textContent = label;
       }),
 
-      lastDepartureTime: m.prop(undefined),
+      lastDepartureTime: m.prop<Date>(),
 
       isComputingLongTrip: m.prop(false),
 
@@ -492,8 +490,4 @@ function hideTrace(ctrl: Ctrl): Q.Promise<HTMLElement> {
 function showTrace(ctrl: Ctrl): Q.Promise<HTMLElement> {
   const el = <HTMLElement> ctrl.scope().querySelector('.trace');
   return Zanimo(el, 'transform', 'translate3d(0, -' + el.clientHeight + 'px, 0)', 400, 'cubic-bezier(0.025, 0.970, 0.395, 1.000)');
-}
-
-export function get(): m.Module<Ctrl> {
-  return departures;
 }

@@ -54,7 +54,7 @@ function formatTime(date: Date) {
 
 /// RENDER TABS
 
-function renderTabs(ctrl: Ctrl): m.VirtualElement {
+function renderTabs(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
@@ -95,7 +95,7 @@ function renderTabs(ctrl: Ctrl): m.VirtualElement {
 
 /// RENDER INPUTS STATION
 
-function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
+function renderInputsStation(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const inputStationWrapperAttrs = {
     config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
       if(!isUpdate) {
@@ -173,7 +173,7 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement {
 
 /// RENDER STATION SUGGESTIONS
 
-function renderStations(ctrl: Ctrl): m.VirtualElement {
+function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const term = (ctrl.isInputStationEndDisabled() ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm()).toLowerCase();
   const stationAttrs = function(index: number) {
     return {
@@ -224,7 +224,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement {
 
 /// RENDER DATETIME SELECTOR
 
-function renderDateTime(ctrl: Ctrl): m.VirtualElement {
+function renderDateTime(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
   const inputTimeAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
@@ -287,7 +287,7 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement {
         m("button", { class: "font go" })])])]);
 }
 
-function render(ctrl: Ctrl): m.VirtualElement[] {
+function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   return [
     renderTabs(ctrl),
     renderInputsStation(ctrl),
@@ -296,7 +296,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
   ];
 }
 
-const search: m.Module<Ctrl> = {
+export const component: m.Component<Ctrl> = {
 
   controller(): Ctrl {
     const startTerm = m.route.param('start') || '';
@@ -310,7 +310,7 @@ const search: m.Module<Ctrl> = {
       return (x ? new Date(x) : new Date());
     })();
     const displayed = () => Routes.matchSearch(currentTab(), m.route(), startTerm, endTerm, at);
-    console.log(displayed());
+
     if(displayed()) native.GoogleAnalytics.trackView('Search');
 
     const ctrl = {
@@ -691,8 +691,4 @@ function isTomorrowTab(el: HTMLElement): boolean {
 
 function isOtherTab(el: HTMLElement): boolean {
   return el.classList.contains('other');
-}
-
-export function get(): m.Module<Ctrl> {
-  return search;
 }

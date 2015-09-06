@@ -82,6 +82,14 @@ export module m {
     return _prop(value, f, scope);
   }
 
+  // export function m(selector: string, attributes: Object, children?: any): m.VirtualElement {
+  //   return null;
+  // }
+
+  // export function m(selector: string, children?: any): m.VirtualElement {
+  //   return null;
+  // }
+
   export function handleAttributes(attributes: Attributes, validate: (name: string, value: string) => boolean): Attributes {
     for(var key in attributes) {
       const attributeValue = attributes[key];

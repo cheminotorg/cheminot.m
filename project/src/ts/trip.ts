@@ -19,9 +19,9 @@ function formatTime(dateTime: Date): string {
   return moment(dateTime).format('HH:mm');
 }
 
-function renderStopTimes(ctrl: Ctrl): m.VirtualElement[] {
+function renderStopTimes(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   if(!ctrl.displayed()) {
-    return new Array<m.VirtualElement>();
+    return [];
   } else {
     return ctrl.trip().map((arrivalTime, index) => {
       const waiting = moment(arrivalTime.departure).diff(moment(arrivalTime.arrival));
@@ -79,7 +79,7 @@ function render(ctrl: Ctrl) {
   ];
 }
 
-const trip: m.Module<Ctrl> = {
+export const component: m.Component<Ctrl> = {
 
   controller(): Ctrl {
 
@@ -136,7 +136,3 @@ const trip: m.Module<Ctrl> = {
     return render(ctrl);
   }
 };
-
-export function get(): m.Module<Ctrl> {
-  return trip;
-}

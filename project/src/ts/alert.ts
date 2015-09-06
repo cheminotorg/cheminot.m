@@ -3,28 +3,29 @@ import Q = require('q');
 import Utils = require('utils');
 import _ = require('lodash');
 import moment = require('moment');
+//import mm = require('mmithril');
 
 let deferred: Q.Deferred<string>;
 
 export type Ctrl = {
   onButtonTouched: (ctrl: Ctrl, key: string, e: Event) => void;
-  body: (value?: m.VirtualElement) => m.VirtualElement;
-  buttons: (value?: F<m.VirtualElement>[]) => F<m.VirtualElement>[];
+  body: (value?: m.VirtualElement<Ctrl>) => m.VirtualElement<Ctrl>;
+  buttons: (value?: F<m.VirtualElement<Ctrl>>[]) => F<m.VirtualElement<Ctrl>>[];
   title: (value?: string) => string;
   onDisplay: (ctrl: Ctrl, e: Event) => void;
   displayed: (value?: boolean) => boolean;
   classList: (value?: string[]) => string[];
 }
 
-function renderTitle(ctrl: Ctrl): m.VirtualElement {
+function renderTitle(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   return m('div.title', {}, ctrl.title());
 }
 
-function renderButtons(ctrl: Ctrl): m.VirtualElement {
+function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   return m('div.actions', {}, ctrl.buttons().map((b) => b()));
 }
 
-function render(ctrl: Ctrl): m.VirtualElement[] {
+function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
@@ -46,7 +47,7 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
       renderButtons(ctrl)])];
 }
 
-const alert: m.Module<Ctrl> = {
+export const component: m.Component<Ctrl> = {
   controller(): Ctrl {
     return {
       title: m.prop('Cheminot'),
@@ -76,10 +77,6 @@ const alert: m.Module<Ctrl> = {
   }
 }
 
-export function get(): m.Module<Ctrl> {
-  return alert;
-}
-
 export function about(classList: string[] = []): Q.Promise<string> {
   const formatDay = (dateTime: Date) => moment(dateTime).format('dddd D MMMM YYYY');
   const body = m('table', {}, [
@@ -93,25 +90,25 @@ export function about(classList: string[] = []): Q.Promise<string> {
   return info(body, classList.concat(['about']));
 }
 
-function bodyElement(text: string): m.VirtualElement {
+function bodyElement(text: string): m.VirtualElement<Ctrl> {
   return m('p.body', {}, text);
 }
 
-export function info(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<string> {
+export function info(content: string | m.VirtualElement<Ctrl>, classList: string[] = []): Q.Promise<string> {
   deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
   Utils.$.trigger('cheminot:alert:display', { body: body, classList: classList });
   return deferred.promise;
 }
 
-export function error(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<string> {
+export function error(content: string | m.VirtualElement<Ctrl>, classList: string[] = []): Q.Promise<string> {
   deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
   Utils.$.trigger('cheminot:alert:display', { body: body, classList: classList.concat(['error']) });
   return deferred.promise;
 }
 
-export function prompt(content: string | m.VirtualElement, buttons: m.VirtualElement[] = [], classList: string[] = []): Q.Promise<string> {
+export function prompt(content: string | m.VirtualElement<Ctrl>, buttons: m.VirtualElement<Ctrl>[] = [], classList: string[] = []): Q.Promise<string> {
   deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
   const btns = buttons.length ? buttons : [Buttons.YES, Buttons.NO];
@@ -121,7 +118,7 @@ export function prompt(content: string | m.VirtualElement, buttons: m.VirtualEle
 
 /// BUTTONS
 
-export function createButton(key: string, label: string, classList: string[] = []): F<m.VirtualElement> {
+export function createButton(key: string, label: string, classList: string[] = []): F<m.VirtualElement<Ctrl>> {
   return () => {
     const attrs: Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
