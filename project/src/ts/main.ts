@@ -17,12 +17,12 @@ import App = require('app');
 import Routes = require('routes');
 import Suggestions = require('suggestions');
 import native = require('native');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import moment = require('moment');
 import Locale = require('locale');
 import Responsive = require('responsive');
 
-window.onerror = Utils.handleError;
+window.onerror = Toolkit.handleError;
 
 Responsive.init();
 
@@ -41,9 +41,9 @@ Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions
     });
   });
 }).catch((e) => {
-  Utils.handleError(e)
+  Toolkit.handleError(e)
 });
 
-Utils.$.bindOnce('cheminot:ready', () => {
+Toolkit.$.bindonce('cheminot:ready', () => {
   navigator.splashscreen.hide()
 });

@@ -232,7 +232,7 @@ export module $ {
 
   const bindHandlers: KeysValues<EventHandler> = {};
 
-  export function bindOnce(event: string, handler: (e: Event) => void): void {
+  export function bindonce(event: string, handler: (e: Event) => void): void {
     const h = bindHandlers[event];
     if(h) document.body.removeEventListener(event, h);
     document.body.addEventListener(event, handler);

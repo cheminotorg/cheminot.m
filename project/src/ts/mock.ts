@@ -1,5 +1,5 @@
 import _ = require('lodash');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import moment = require('moment');
 
 const CHARTRES = 'StopPoint:OCETrain TER-87394007';
@@ -35,9 +35,9 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
   let last: Date;
   const time = () => {
     if(last) {
-      last = Utils.DateTime.addHours(last, 1);
+      last = Toolkit.DateTime.addHours(last, 1);
     } else {
-      last = Utils.DateTime.addHours(at, 1);
+      last = Toolkit.DateTime.addHours(at, 1);
     }
     return last;
   }

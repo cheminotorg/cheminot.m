@@ -3,7 +3,7 @@ import moment = require('moment');
 import i18n = require('i18n');
 import _ = require('lodash');
 import Q = require('q');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 
 let deferred: Q.Deferred<Date>;
 
@@ -31,7 +31,7 @@ function renderDay(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onDayChange, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onDayChange, ctrl));
       }
     }
   };
@@ -47,7 +47,7 @@ function renderMonth(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onMonthChange, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onMonthChange, ctrl));
       }
     }
   };
@@ -63,7 +63,7 @@ function renderYear(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onYearChange, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onYearChange, ctrl));
       }
     }
   };
@@ -80,7 +80,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(handler, ctrl));
+          Toolkit.$.touchend(el, _.partial(handler, ctrl));
         }
       }
     }
@@ -98,7 +98,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 }
 
 function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
-  const attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
+  const attrs = Toolkit.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
     if((name + ':' + value) == 'class:fade-in') {
       return ctrl.displayed();
     }
@@ -108,7 +108,7 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const eventAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.bindOnce('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl));
+        Toolkit.$.bindonce('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl));
       }
     }
   };
@@ -203,6 +203,6 @@ export const component: m.Component<Ctrl> = {
 
 export function show(date?: Date): Q.Promise<Date> {
   deferred = Q.defer<Date>();
-  Utils.$.trigger('cheminot:datepicker', { date: date });
+  Toolkit.$.trigger('cheminot:datepicker', { date: date });
   return deferred.promise;
 }

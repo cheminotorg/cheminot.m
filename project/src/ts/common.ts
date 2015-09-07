@@ -1,11 +1,11 @@
 import _ = require('lodash');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import Cache = require('cache');
 import Q = require('q');
 import moment = require('moment');
 
 export function departureBound(departure: Date): Date {
-  return Utils.DateTime.addHours(departure, 12);
+  return Toolkit.DateTime.addHours(departure, 12);
 }
 
 export function tripToDeparture(trip: ArrivalTimes): Departure {
@@ -40,10 +40,10 @@ export module Departure {
   }
 
   export function formatDuration(duration: number, f?: (hours: number, minutes: number) => string): string {
-    const hours = Utils.Number.trunc(duration / 3600000);
-    const minutes = Utils.Number.trunc((duration - (hours * 3600000)) / 1000 / 60);
+    const hours = Toolkit.Number.trunc(duration / 3600000);
+    const minutes = Toolkit.Number.trunc((duration - (hours * 3600000)) / 1000 / 60);
     if(!f) {
-      return Utils.pad(hours, 2) + ':' + Utils.pad(minutes, 2);
+      return Toolkit.pad(hours, 2) + ':' + Toolkit.pad(minutes, 2);
     } else {
       return f(hours, minutes);
     }

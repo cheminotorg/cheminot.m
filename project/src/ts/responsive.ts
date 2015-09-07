@@ -1,10 +1,10 @@
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import native = require('native');
 
 let ticking = false;
 
 function update() {
-  const [height, width] = Utils.viewportSize();
+  const [height, width] = Toolkit.viewportSize();
   const wsize = (width * 100) / 320;
   const hsize = (height * 100) / 568;
   const html = <HTMLElement> document.querySelector('html');
@@ -25,7 +25,7 @@ function onResize() {
 
 export function init() {
 
-  if(native.Cheminot.isDemo() && !Utils.Detectizr.isMobile()) {
+  if(native.Cheminot.isDemo() && !Toolkit.Detectizr.isMobile()) {
 
     window.addEventListener('resize', onResize, false);
 

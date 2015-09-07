@@ -1,7 +1,7 @@
 import m = require('mithril');
 import _ = require('lodash');
 import Routes = require('routes');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import Cache = require('cache');
 import Preferences = require('preferences');
 import Alert = require('alert');
@@ -91,7 +91,7 @@ export const component: m.Component<Ctrl> = {
       const attrs: Attributes = {
         config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
           if(!isUpdate) {
-            Utils.$.touchend(el, _.partial(ctrl.onSearch, ctrl));
+            Toolkit.$.touchend(el, _.partial(ctrl.onSearch, ctrl));
           }
         }
       };
@@ -102,7 +102,7 @@ export const component: m.Component<Ctrl> = {
       const starsAttrs: Attributes = {
         config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
           if(!isUpdate) {
-            Utils.$.touchend(el, _.partial(ctrl.onStarred, ctrl));
+            Toolkit.$.touchend(el, _.partial(ctrl.onStarred, ctrl));
           }
         }
       };

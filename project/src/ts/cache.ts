@@ -1,5 +1,4 @@
 import Q = require('q');
-import Utils = require('utils');
 import _ = require('lodash');
 
 function scheduleGarbage(key: string) {

@@ -4,7 +4,7 @@ import _ = require('lodash');
 import IScroll = require('IScroll');
 import moment = require('moment');
 import locale = require('locale');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import Common = require('common');
 import native = require('native');
 import Mock = require('mock');
@@ -38,7 +38,7 @@ export type Ctrl = {
 }
 
 function renderMeta(departure: Departure): m.VirtualElement<Ctrl>[] {
-  const value = Utils.DateTime.diff(departure.startTime, departure.endTime)
+  const value = Toolkit.DateTime.diff(departure.startTime, departure.endTime)
   const duration = m('div.duration', {}, [
     m('span.egg-timer'),
     m('span.value', {}, Common.Departure.formatDuration(value))
@@ -68,7 +68,7 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
     }
   };
 
-  const pullupAttrs = Utils.m.handleAttributes({ class: 'trace'}, (name, value) => {
+  const pullupAttrs = Toolkit.m.handleAttributes({ class: 'trace'}, (name, value) => {
     if((name + ':' + value) == 'class:trace') {
       return ctrl.isComputingLongTrip();
     }
@@ -112,7 +112,7 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
     const attrs: Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
+          Toolkit.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
         }
       },
       key: departure.id,
@@ -258,7 +258,7 @@ export const component: m.Component<Ctrl> = {
           if(this.isPullUpFlip() && !this.isPullUpLoading()) {
             this.isPullUpLoading(true);
             this.pullUpLabel(i18n.get('loading'));
-            lookForNextDepartures(this, Utils.DateTime.addMinutes(this.lastDepartureTime(), 1));
+            lookForNextDepartures(this, Toolkit.DateTime.addMinutes(this.lastDepartureTime(), 1));
           } else {
             this.pullUpProgress(0);
             this.isPullUpFlip(false);
@@ -295,20 +295,20 @@ export const component: m.Component<Ctrl> = {
 
       isPullUpDisplayed: m.prop(false),
 
-      isPullUpLoading: Utils.m.prop(false, (isLoading: boolean) => {
+      isPullUpLoading: Toolkit.m.prop(false, (isLoading: boolean) => {
         const wrapper = <HTMLElement> scope().querySelector('#wrapper');
         isLoading ? wrapper.classList.add('loading') : wrapper.classList.remove('loading');
         return isLoading ? displayHolo(ctrl) : hideHolo(ctrl);
       }),
 
-      isPullUpFlip: Utils.m.prop(false, (isFlip: boolean) => {
+      isPullUpFlip: Toolkit.m.prop(false, (isFlip: boolean) => {
         const wrapper = <HTMLElement> scope().querySelector('#wrapper');
         isFlip ? wrapper.classList.add('flip') : wrapper.classList.remove('flip');
       }),
 
       pullUpProgress: m.prop(0),
 
-      pullUpLabel: Utils.m.prop(i18n.get('pull-to-refresh'), (label: string) => {
+      pullUpLabel: Toolkit.m.prop(i18n.get('pull-to-refresh'), (label: string) => {
         const pullUpLabel = scope().querySelector('.pull-up .label')
         if(pullUpLabel) pullUpLabel.textContent = label;
       }),
@@ -319,7 +319,7 @@ export const component: m.Component<Ctrl> = {
 
       isComputationInProgress: m.prop(false),
 
-      isScrollingDepartures: Utils.m.prop(false, (isScrolling) => {
+      isScrollingDepartures: Toolkit.m.prop(false, (isScrolling) => {
         if(isScrolling) {
           document.body.classList.add('scrolling');
         } else {
@@ -428,7 +428,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
     if(error == 'busy') {
       Alert.info(i18n.get('demo-try-later-busy')).then(() => history.back());
     } else if(error != 'aborted') {
-      Utils.handleError(error);
+      Toolkit.handleError(error);
     }
     return StatusCode.ERROR;
   }).finally(() => {
@@ -441,11 +441,11 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
 }
 
 function nextDeparture(departure: Date): Date {
-  return Utils.DateTime.addMinutes(departure, 1);
+  return Toolkit.DateTime.addMinutes(departure, 1);
 }
 
 function departureBound(departure: Date): Date {
-  return Utils.DateTime.addHours(departure, 12);
+  return Toolkit.DateTime.addHours(departure, 12);
 }
 
 function isMoreItemsNeeded(ctrl: Ctrl): boolean {
@@ -457,7 +457,7 @@ function isMoreItemsNeeded(ctrl: Ctrl): boolean {
 
 function isScreenFull(ctrl: Ctrl): boolean {
   let header = <HTMLElement> document.querySelector('#header');
-  let [viewportHeight, viewportWidth] = Utils.viewportSize();
+  let [viewportHeight, viewportWidth] = Toolkit.viewportSize();
   let height = Math.max(viewportHeight, viewportWidth);
   let isFull = (header.offsetHeight + (ctrl.itemHeight() * ctrl.departures().length)) >= height;
   if(isFull && ctrl.nbItemsPerScreen() == 0) {

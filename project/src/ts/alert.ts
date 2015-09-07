@@ -1,9 +1,8 @@
 import m = require('mithril');
 import Q = require('q');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import _ = require('lodash');
 import moment = require('moment');
-//import mm = require('mmithril');
 
 let deferred: Q.Deferred<string>;
 
@@ -29,8 +28,8 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.bindOnce('cheminot:alert:display', _.partial(ctrl.onDisplay, ctrl));
-        Utils.$.bindOnce('cheminot:alert:button', (e: any) => {
+        Toolkit.$.bindonce('cheminot:alert:display', _.partial(ctrl.onDisplay, ctrl));
+        Toolkit.$.bindonce('cheminot:alert:button', (e: any) => {
           ctrl.onButtonTouched(ctrl, e.detail.key, e.detail.event);
         });
       }
@@ -97,14 +96,14 @@ function bodyElement(text: string): m.VirtualElement<Ctrl> {
 export function info(content: string | m.VirtualElement<Ctrl>, classList: string[] = []): Q.Promise<string> {
   deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
-  Utils.$.trigger('cheminot:alert:display', { body: body, classList: classList });
+  Toolkit.$.trigger('cheminot:alert:display', { body: body, classList: classList });
   return deferred.promise;
 }
 
 export function error(content: string | m.VirtualElement<Ctrl>, classList: string[] = []): Q.Promise<string> {
   deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
-  Utils.$.trigger('cheminot:alert:display', { body: body, classList: classList.concat(['error']) });
+  Toolkit.$.trigger('cheminot:alert:display', { body: body, classList: classList.concat(['error']) });
   return deferred.promise;
 }
 
@@ -112,7 +111,7 @@ export function prompt(content: string | m.VirtualElement<Ctrl>, buttons: m.Virt
   deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
   const btns = buttons.length ? buttons : [Buttons.YES, Buttons.NO];
-  Utils.$.trigger('cheminot:alert:display', { body: body, classList: classList, buttons: btns});
+  Toolkit.$.trigger('cheminot:alert:display', { body: body, classList: classList, buttons: btns});
   return deferred.promise;
 }
 
@@ -123,8 +122,8 @@ export function createButton(key: string, label: string, classList: string[] = [
     const attrs: Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          Utils.$.touchend(el, (e) => {
-            Utils.$.trigger('cheminot:alert:button', { key: key, event: e });
+          Toolkit.$.touchend(el, (e) => {
+            Toolkit.$.trigger('cheminot:alert:button', { key: key, event: e });
           });
         }
       }

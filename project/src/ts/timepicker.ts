@@ -3,7 +3,7 @@ import moment = require('moment');
 import i18n = require('i18n');
 import _ = require('lodash');
 import Q = require('q');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 
 let deferred: Q.Deferred<Date>;
 
@@ -30,7 +30,7 @@ function renderHour(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onHourChange, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onHourChange, ctrl));
       }
     }
   };
@@ -46,7 +46,7 @@ function renderMinute(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onMinuteChange, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onMinuteChange, ctrl));
       }
     }
   };
@@ -63,7 +63,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(handler, ctrl));
+          Toolkit.$.touchend(el, _.partial(handler, ctrl));
         }
       }
     }
@@ -82,7 +82,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
-  const attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
+  const attrs = Toolkit.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
     if((name + ':' + value) == 'class:fade-in') {
       return ctrl.displayed();
     }
@@ -92,7 +92,7 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const eventAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.bindOnce('cheminot:timepicker', _.partial(ctrl.onDisplay, ctrl));
+        Toolkit.$.bindonce('cheminot:timepicker', _.partial(ctrl.onDisplay, ctrl));
       }
     }
   };
@@ -175,6 +175,6 @@ export const component: m.Component<Ctrl> = {
 
 export function show(time?: Date): Q.Promise<Date> {
   deferred = Q.defer<Date>();
-  Utils.$.trigger('cheminot:timepicker', { time: time });
+  Toolkit.$.trigger('cheminot:timepicker', { time: time });
   return deferred.promise;
 }

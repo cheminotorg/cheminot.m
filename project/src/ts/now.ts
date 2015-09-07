@@ -4,7 +4,7 @@ import IScroll = require('IScroll');
 import native = require('native');
 import Preferences = require('preferences');
 import Common = require('common');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import Mock = require('mock');
 import Q = require('q');
 import _ = require('lodash');
@@ -23,12 +23,12 @@ export type Ctrl = {
 }
 
 function renderDepartureItem(ctrl: Ctrl, departure: Departure, attrs: Attributes): m.VirtualElement<Ctrl> {
-  const remaining = Utils.DateTime.diff(new Date(), departure.startTime);
+  const remaining = Toolkit.DateTime.diff(new Date(), departure.startTime);
   const formattedRemaining = Common.Departure.formatDuration(remaining, (hours, minutes) => {
     if(hours > 0) {
-      return hours + 'h' + Utils.pad(minutes, 2);
+      return hours + 'h' + Toolkit.pad(minutes, 2);
     } else {
-      return Utils.pad(minutes, 2) + ' min';
+      return Toolkit.pad(minutes, 2) + ' min';
     }
   });
   return m('li', attrs, [
@@ -46,7 +46,7 @@ function renderDepartureItems(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
     const attrs: Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
+          Toolkit.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
         }
       },
       key: departure.id
@@ -117,7 +117,7 @@ function renderNothing(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const addStarBtnAttrs: Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onGoToSearchTouched, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onGoToSearchTouched, ctrl));
       }
     },
   };
@@ -157,7 +157,7 @@ export const component: m.Component<Ctrl> = {
           Cache.clearNowTimerId();
         }
       },
-      isLoading: Utils.m.prop(false, (isLoading) => {
+      isLoading: Toolkit.m.prop(false, (isLoading) => {
         const list = <HTMLElement> scope().querySelector('.departures');
         if(list) {
           if(isLoading) {
@@ -186,7 +186,7 @@ export const component: m.Component<Ctrl> = {
 function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
   const starred = Preferences.starred();
   const step = (at: Date): Q.Promise<Departure[]> => {
-    return Utils.Promise.sequence(Preferences.starred(), (s) => {
+    return Toolkit.Promise.sequence(Preferences.starred(), (s) => {
       if(!isScreenFull(ctrl) && ctrl.displayed()) {
         const te = Common.departureBound(at);
         return native.Cheminot.lookForBestDirectTrip(s.startId, s.endId, at, te).then((trip) => {
@@ -196,7 +196,7 @@ function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
           console.log(e);
         });
       } else {
-        return Utils.Promise.done();
+        return Toolkit.Promise.done();
       }
     }).then(() => {
       const updated = _.sortBy(ctrl.departures(), (departure) => {
@@ -210,7 +210,7 @@ function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
           return Q(updated);
         }
       } else {
-        const nextDeparture = Utils.DateTime.addMinutes(_.last(updated).startTime, 1);
+        const nextDeparture = Toolkit.DateTime.addMinutes(_.last(updated).startTime, 1);
         return step(nextDeparture);
       }
     });
@@ -222,7 +222,7 @@ function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
 function isScreenFull(ctrl: Ctrl): boolean {
   const header = <HTMLElement> document.querySelector('#header');
   const topBar = <HTMLElement> ctrl.scope().querySelector('.top-bar');
-  const [viewportHeight, viewportWidth] = Utils.viewportSize();
+  const [viewportHeight, viewportWidth] = Toolkit.viewportSize();
   const height = Math.max(viewportHeight, viewportWidth);
   if(!header || !topBar) return false;
   return (header.offsetHeight + topBar.offsetHeight + (ctrl.itemHeight() * ctrl.departures().length)) >= height;

@@ -3,7 +3,7 @@ import Demo = require('demo');
 import Q = require('q');
 import Cache = require('cache');
 import _ = require('lodash');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 
 type BackButtonHandlers = {
   [index: string]: () => void;
@@ -200,7 +200,7 @@ export module GoogleAnalytics {
   export function startTrackerWithId(id: string): Q.Promise<void> {
     const d = Q.defer<void>();
     if(!Cheminot.isMocked()) {
-      const debug = (!Cheminot.isProd()) ? debugMode() : Utils.Promise.done();
+      const debug = (!Cheminot.isProd()) ? debugMode() : Toolkit.Promise.done();
       debug.fin(() => analytics.startTrackerWithId(id, () => d.resolve(null), (e) => d.reject(e)));
     } else {
       d.resolve(null);

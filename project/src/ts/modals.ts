@@ -2,7 +2,7 @@ import m = require('mithril');
 import DatePicker = require('datepicker');
 import TimePicker = require('timepicker');
 import Alert = require('alert');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 
 export type Ctrl = {
   alert: Alert.Ctrl;
@@ -11,7 +11,7 @@ export type Ctrl = {
 }
 
 function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
-  var attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
+  var attrs = Toolkit.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
     if((name + ':' + value) == 'class:fade-in') {
       return ctrl.alert.displayed() || ctrl.timePicker.displayed() || ctrl.datePicker.displayed();
     }

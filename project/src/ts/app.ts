@@ -4,7 +4,7 @@ import Search = require('search');
 import Departures = require('departures');
 import Trip = require('trip');
 import Now = require('now');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import _ = require('lodash');
 import moment = require('moment');
 import Modals = require('modals');
@@ -23,7 +23,7 @@ function renderHeader(ctrl: Header.Ctrl): m.VirtualElement<Header.Ctrl> {
   const headerAttrs: Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.longtouch(el, 3000, () => {
+        Toolkit.$.longtouch(el, 3000, () => {
           Alert.about();
         });
       }
@@ -38,7 +38,7 @@ function renderSearch(ctrl: Search.Ctrl): m.VirtualElement<Search.Ctrl> {
     'class': 'view hidden'
   };
 
-  attributes = Utils.m.handleAttributes(attributes, (name, value) => {
+  attributes = Toolkit.m.handleAttributes(attributes, (name, value) => {
     switch (name + ':' + value) {
       case 'class:hidden': return !ctrl.displayed();
       default: return true;
@@ -54,7 +54,7 @@ function renderNow(ctrl: Now.Ctrl): m.VirtualElement<Now.Ctrl> {
     'class': 'view hidden'
   };
 
-  attributes = Utils.m.handleAttributes(attributes, (name, value) => {
+  attributes = Toolkit.m.handleAttributes(attributes, (name, value) => {
     switch (name + ':' + value) {
       case 'class:hidden': return !ctrl.displayed();
       default: return true;
@@ -70,7 +70,7 @@ function renderDepartures(ctrl: Departures.Ctrl): m.VirtualElement<Departures.Ct
     'class': 'view hidden'
   };
 
-  attributes = Utils.m.handleAttributes(attributes, (name, value) => {
+  attributes = Toolkit.m.handleAttributes(attributes, (name, value) => {
     switch (name + ':' + value) {
     case 'class:hidden': return !ctrl.displayed();
       default: return true;
@@ -86,7 +86,7 @@ function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement<Trip.Ctrl> {
     'class': 'view hidden'
   };
 
-  attributes = Utils.m.handleAttributes(attributes, (name, value) => {
+  attributes = Toolkit.m.handleAttributes(attributes, (name, value) => {
     switch (name + ':' + value) {
     case 'class:hidden': return !ctrl.displayed();
       default: return true;
@@ -115,7 +115,7 @@ export const component = {
           document.querySelector('#viewport').classList.add('ready');
           setTimeout(() => {
             window.parent.postMessage({ event: 'cheminot:ready' }, window.location.origin);
-            Utils.$.trigger('cheminot:ready')
+            Toolkit.$.trigger('cheminot:ready')
           }, 200);
         }
       }

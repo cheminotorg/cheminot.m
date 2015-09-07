@@ -4,7 +4,7 @@ import Zanimo = require('Zanimo');
 import _ = require('lodash');
 import IScroll = require('IScroll');
 import moment = require('moment');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import Suggestions = require('suggestions');
 import Routes = require('routes');
 import i18n = require('i18n');
@@ -58,26 +58,26 @@ function renderTabs(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onTabTouched, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onTabTouched, ctrl));
       }
     }
   }
 
-  const todayAttrs = Utils.m.handleAttributes({ class: 'today selected'}, (name, value) => {
+  const todayAttrs = Toolkit.m.handleAttributes({ class: 'today selected'}, (name, value) => {
     if((name + ':' + value) == 'class:selected') {
       return ctrl.isTodayTabSelected();
     }
     return true;
   });
 
-  const tomorrowAttrs = Utils.m.handleAttributes({ class: 'tomorrow selected'}, (name, value) => {
+  const tomorrowAttrs = Toolkit.m.handleAttributes({ class: 'tomorrow selected'}, (name, value) => {
     if((name + ':' + value) == 'class:selected') {
       return ctrl.isTomorrowTabSelected();
     }
     return true;
   });
 
-  const otherAttrs = Utils.m.handleAttributes({ class: 'other selected'}, (name, value) => {
+  const otherAttrs = Toolkit.m.handleAttributes({ class: 'other selected'}, (name, value) => {
     if((name + ':' + value) == 'class:selected') {
       return ctrl.isOtherTabSelected();
     }
@@ -99,7 +99,7 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const inputStationWrapperAttrs = {
     config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
       if(!isUpdate) {
-        Utils.$.touchendOne(el, _.partial(ctrl.onInputStationTouched, ctrl));
+        Toolkit.$.touchendOne(el, _.partial(ctrl.onInputStationTouched, ctrl));
       }
     }
   };
@@ -123,7 +123,7 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement<Ctrl> {
         }
       }
     };
-    return Utils.m.handleAttributes(attrs, (name, value) => {
+    return Toolkit.m.handleAttributes(attrs, (name, value) => {
       if(name == 'disabled') {
         return isStartStation ? ctrl.isInputStationStartDisabled() : ctrl.isInputStationEndDisabled();
       } else return true;
@@ -131,12 +131,12 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   };
 
   const resetStationAttrs = (isStartStation: boolean) => {
-    return Utils.m.handleAttributes({
+    return Toolkit.m.handleAttributes({
       class: 'font reset focus',
       type: 'button',
       config: (el: HTMLElement, isUpdate: boolean, context: any) => {
         if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(ctrl.onResetStationTouched, ctrl));
+          Toolkit.$.touchend(el, _.partial(ctrl.onResetStationTouched, ctrl));
         }
       }
     }, (name, value) => {
@@ -179,7 +179,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(ctrl.onStationSelected, ctrl));
+          Toolkit.$.touchend(el, _.partial(ctrl.onStationSelected, ctrl));
         }
         if((index + 1) === ctrl.stations().length) {
           ctrl.adaptWrapperTop(ctrl);
@@ -192,7 +192,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const suggestionsAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.touchstart(el, _.partial(ctrl.onScrollStations, ctrl));
+        Toolkit.$.touchstart(el, _.partial(ctrl.onScrollStations, ctrl));
       }
     }
   }
@@ -229,7 +229,7 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const inputTimeAttrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onTimeTouched, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onTimeTouched, ctrl));
       }
     }
   };
@@ -238,11 +238,11 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     const inputAttrs = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(ctrl.onDateTouched, ctrl));
+          Toolkit.$.touchend(el, _.partial(ctrl.onDateTouched, ctrl));
         }
       }
     };
-    const cssAttrs = Utils.m.handleAttributes({ class: 'date other' }, (name, value) => {
+    const cssAttrs = Toolkit.m.handleAttributes({ class: 'date other' }, (name, value) => {
       if((name + ':' + value) == 'class:other') {
         return ctrl.isOtherTabSelected();
       }
@@ -252,7 +252,7 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   }
 
   const submitAttrs: any = (() => {
-    const attrs = Utils.m.handleAttributes({ class: 'submit enabled disabled' }, (name, value) => {
+    const attrs = Toolkit.m.handleAttributes({ class: 'submit enabled disabled' }, (name, value) => {
       if((name + ':' + value) == 'class:disabled') {
         return !canBeSubmitted(ctrl);
       } else if((name + ':' + value) == 'class:enabled'){
@@ -264,7 +264,7 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     return _.merge(attrs, {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(ctrl.onSubmitTouched, ctrl));
+          Toolkit.$.touchend(el, _.partial(ctrl.onSubmitTouched, ctrl));
         }
       }
     });
@@ -332,7 +332,7 @@ export const component: m.Component<Ctrl> = {
           ctrl.inputDateSelected(new Date());
         } else if(isTomorrowTab(tab)) {
           ctrl.isTomorrowTabSelected(true);
-          ctrl.inputDateSelected(Utils.DateTime.addDays(new Date(), 1));
+          ctrl.inputDateSelected(Toolkit.DateTime.addDays(new Date(), 1));
         } else if(isOtherTab(tab)) {
           ctrl.isOtherTabSelected(true);
         }
@@ -383,15 +383,15 @@ export const component: m.Component<Ctrl> = {
 
       currentTab: currentTab,
 
-      isTodayTabSelected: Utils.m.prop(tab == 'today', (active) => {
+      isTodayTabSelected: Toolkit.m.prop(tab == 'today', (active) => {
         if(active) currentTab('today');
       }),
 
-      isTomorrowTabSelected: Utils.m.prop(tab == 'tomorrow', (active) => {
+      isTomorrowTabSelected: Toolkit.m.prop(tab == 'tomorrow', (active) => {
         if(active) currentTab('tomorrow');
       }),
 
-      isOtherTabSelected: Utils.m.prop(tab == 'other', (active) => {
+      isOtherTabSelected: Toolkit.m.prop(tab == 'other', (active) => {
         if(active) currentTab('other');
       }),
 
@@ -415,7 +415,7 @@ export const component: m.Component<Ctrl> = {
 
       isViewportUp: m.prop(false),
 
-      isScrollingStations: Utils.m.prop(false, (isScrolling) => {
+      isScrollingStations: Toolkit.m.prop(false, (isScrolling) => {
         if(isScrolling) {
           document.body.classList.add('scrolling');
         } else {
@@ -501,7 +501,7 @@ export const component: m.Component<Ctrl> = {
 
       onSubmitTouched: (ctrl: Ctrl, e: Event) => {
         if(canBeSubmitted(ctrl)) {
-          const atDateTime = Utils.DateTime.setSameTime(ctrl.inputDateSelected(), ctrl.inputTimeSelected());
+          const atDateTime = Toolkit.DateTime.setSameTime(ctrl.inputDateSelected(), ctrl.inputTimeSelected());
           const uri = Routes.search(ctrl.currentTab(), ctrl.inputStationStartTerm(), ctrl.inputStationEndTerm(), atDateTime);
           window.history.pushState({}, '', '#' + uri);
           m.route(Routes.departures(ctrl.inputStationStartSelected(), ctrl.inputStationEndSelected(), atDateTime));
@@ -627,7 +627,7 @@ function resetInputStationsPosition(ctrl: Ctrl, inputStation: HTMLInputElement):
         showDateTimePanel(ctrl).then(() => {
           const inputWrapper = <HTMLElement> resetButton.parentElement;
           const above = <HTMLElement> inputWrapper.querySelector('.above');
-          Utils.$.touchendOne(above, _.partial(ctrl.onInputStationTouched, ctrl));
+          Toolkit.$.touchendOne(above, _.partial(ctrl.onInputStationTouched, ctrl));
         });
       });
     });
