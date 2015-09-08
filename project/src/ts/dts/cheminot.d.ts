@@ -4,7 +4,13 @@ declare type KeysValues<V> = {
   [index: string]: V;
 }
 
+declare type JsObject = KeysValues<JsValue>;
+
+declare type JsValue = number | boolean | string | Object | Array<number|boolean|string|Object>;
+
 declare type F<V> = () => V;
+
+declare type F1<U, V> = (u: U) => V;
 
 declare type Attributes = KeysValues<any>;
 

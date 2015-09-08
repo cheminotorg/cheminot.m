@@ -67,6 +67,59 @@ export module DateTime {
   }
 }
 
+export module Obj {
+
+  export function put(obj: Object, path: string, value: JsValue): Object {
+    const xxx = path.split('.');
+    xxx.reduce((acc: JsObject, p: string, index: number) => {
+      const v = acc[p];
+      if(index + 1 >= xxx.length) {
+        const x = acc[p];
+        if(typeof x === 'string') {
+          acc[p] = acc[p] + ' ' + x;
+        } else {
+          acc[p] = value;
+        }
+        return acc;
+      } else if(_.isNull(v) || _.isUndefined(v) || !_.isObject(v)) {
+        acc[p] = {};
+        return acc[p];
+      } else {
+        return acc;
+      }
+    }, obj);
+    return obj;
+  }
+
+  function buildPath(rootPath: string, key: string) {
+    return rootPath ? (rootPath + '.' + key) : key;
+  }
+
+  export function filter(obj: Object, predicat: (path: string) => boolean): Object {
+    const step = (z: Object = {}, rootPath: string = '', tree: JsObject = {}): Object => {
+      return Object.keys(tree).reduce((acc: Object, key: string) => {
+        const value: JsValue = tree[key];
+        const path = buildPath(rootPath, key);
+        if(_.isObject(value)) {
+          const o = <JsObject>value;
+          return step(acc, path, o);
+        } else if(_.isNull(value) || _.isUndefined(value)) {
+          return acc;
+        } else {
+          if(typeof value === 'string') {
+            return value.split(' ').reduce((xxx, v) => {
+              return predicat(buildPath(path, v)) ? put(xxx, path, value) : xxx;
+            }, acc);
+          } else {
+            return predicat(path) ? put(acc, path, value) : acc;
+          }
+        }
+      }, z);
+    }
+    return step({}, '', <JsObject>obj);
+  }
+}
+
 export module m {
 
   export function prop(value?: any, f?: (value: any) => void, scope?: any): (value?: any) => any {
@@ -82,13 +135,15 @@ export module m {
     return _prop(value, f, scope);
   }
 
-  // export function m(selector: string, attributes: Object, children?: any): m.VirtualElement {
-  //   return null;
-  // }
-
-  // export function m(selector: string, children?: any): m.VirtualElement {
-  //   return null;
-  // }
+  export function attributes(mask: KeysValues<boolean>): F1<Object, Object> {
+    return (obj: Object) => {
+      return Obj.filter(obj, (path) => {
+        console.log(path);
+        const x = mask[path];
+        return (_.isUndefined(x) || _.isNull(x)) || x;
+      });
+    }
+  }
 
   export function handleAttributes(attributes: Attributes, validate: (name: string, value: string) => boolean): Attributes {
     for(var key in attributes) {

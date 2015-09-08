@@ -33,19 +33,8 @@ function renderHeader(ctrl: Header.Ctrl): m.VirtualElement<Header.Ctrl> {
 }
 
 function renderSearch(ctrl: Search.Ctrl): m.VirtualElement<Search.Ctrl> {
-  let attributes: Attributes = {
-    'id': 'search',
-    'class': 'view hidden'
-  };
-
-  attributes = Toolkit.m.handleAttributes(attributes, (name, value) => {
-    switch (name + ':' + value) {
-      case 'class:hidden': return !ctrl.displayed();
-      default: return true;
-    }
-  });
-
-  return m("section", attributes, Search.component.view(ctrl));
+  const ma = Toolkit.m.attributes({ 'class.hidden': ctrl.displayed() });
+  return m("section", ma({ id: 'search', 'class': 'view hidden' }), Search.component.view(ctrl));
 }
 
 function renderNow(ctrl: Now.Ctrl): m.VirtualElement<Now.Ctrl> {
