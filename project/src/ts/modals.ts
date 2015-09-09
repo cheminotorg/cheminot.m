@@ -11,14 +11,8 @@ export type Ctrl = {
 }
 
 function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
-  var attrs = Toolkit.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
-    if((name + ':' + value) == 'class:fade-in') {
-      return ctrl.alert.displayed() || ctrl.timePicker.displayed() || ctrl.datePicker.displayed();
-    }
-    return true;
-  });
-
-  return [m('div.modals', attrs,[
+  const ma = Toolkit.m.attributes({ 'class:fade-in': ctrl.alert.displayed() || ctrl.timePicker.displayed() || ctrl.datePicker.displayed() });
+  return [m('div.modals', ma({ class: 'fade-in' }),[
     Alert.component.view(ctrl.alert),
     DatePicker.component.view(ctrl.datePicker),
     TimePicker.component.view(ctrl.timePicker)

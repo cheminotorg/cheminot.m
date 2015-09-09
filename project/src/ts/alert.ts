@@ -119,7 +119,7 @@ export function prompt(content: string | m.VirtualElement<Ctrl>, buttons: m.Virt
 
 export function createButton(key: string, label: string, classList: string[] = []): F<m.VirtualElement<Ctrl>> {
   return () => {
-    const attrs: Attributes = {
+    const attrs: m.Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
           Toolkit.$.touchend(el, (e) => {

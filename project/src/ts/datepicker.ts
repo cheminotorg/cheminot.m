@@ -76,7 +76,7 @@ function renderYear(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 }
 
 function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
-  const getAttrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
+  const attrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
@@ -86,9 +86,9 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     }
   };
 
-  const onok = getAttrs(ctrl.onOkTouched);
-  const onclear = getAttrs(ctrl.onClearTouched);
-  const oncancel = getAttrs(ctrl.onCancelTouched);
+  const onok = attrs(ctrl.onOkTouched);
+  const onclear = attrs(ctrl.onClearTouched);
+  const oncancel = attrs(ctrl.onCancelTouched);
 
   return m('div.actions', {}, [
     m('button.ok', onok, 'ok'),
@@ -98,23 +98,16 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 }
 
 function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
-  const attrs = Toolkit.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
-    if((name + ':' + value) == 'class:fade-in') {
-      return ctrl.displayed();
+  const attrs = Toolkit.m.attributes
+  ({ 'class:fade-in': ctrl.displayed() })
+  ({ class: 'fade-in'}, (el: HTMLElement, isUpdate: boolean) => {
+    if(!isUpdate) {
+      Toolkit.$.bindonce('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl));
     }
-    return true;
   });
 
-  const eventAttrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate) {
-        Toolkit.$.bindonce('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl));
-      }
-    }
-  };
-
   return [
-    m('div.modal.date-picker', _.merge(attrs, eventAttrs), [
+    m('div.modal.date-picker', attrs, [
       renderTitle(ctrl),
       m('div.controls', {}, [
         renderDay(ctrl),

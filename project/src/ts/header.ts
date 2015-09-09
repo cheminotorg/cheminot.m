@@ -88,7 +88,7 @@ export const component: m.Component<Ctrl> = {
     ];
 
     if(ctrl.isNowView() && Preferences.hasStars()) {
-      const attrs: Attributes = {
+      const attrs: m.Attributes = {
         config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
           if(!isUpdate) {
             Toolkit.$.touchend(el, _.partial(ctrl.onSearch, ctrl));
@@ -99,7 +99,7 @@ export const component: m.Component<Ctrl> = {
     }
 
     if(ctrl.isTripView()) {
-      const starsAttrs: Attributes = {
+      const starsAttrs: m.Attributes = {
         config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
           if(!isUpdate) {
             Toolkit.$.touchend(el, _.partial(ctrl.onStarred, ctrl));

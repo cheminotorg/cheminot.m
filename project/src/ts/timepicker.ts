@@ -82,23 +82,16 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
-  const attrs = Toolkit.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
-    if((name + ':' + value) == 'class:fade-in') {
-      return ctrl.displayed();
+  const attrs = Toolkit.m.attributes
+  ({ 'class:fade-in': ctrl.displayed()})
+  ({ 'class': 'fade-in' }, (el: HTMLElement, isUpdate: boolean) => {
+    if(!isUpdate) {
+      Toolkit.$.bindonce('cheminot:timepicker', _.partial(ctrl.onDisplay, ctrl));
     }
-    return true;
   });
 
-  const eventAttrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate) {
-        Toolkit.$.bindonce('cheminot:timepicker', _.partial(ctrl.onDisplay, ctrl));
-      }
-    }
-  };
-
   return [
-    m('div.modal.time-picker', _.merge(attrs, eventAttrs), [
+    m('div.modal.time-picker', attrs, [
       renderTitle(ctrl),
       m('div.controls', {}, [
         renderHour(ctrl),

@@ -1,5 +1,6 @@
 import moment = require('moment');
 import Q = require('q');
+import mithril = require('mithril');
 import _ = require('lodash');
 import native = require('native');
 import Alert = require('alert');
@@ -70,13 +71,24 @@ export module DateTime {
 export module Obj {
 
   export function put(obj: Object, path: string, value: JsValue): Object {
-    const xxx = path.split('.');
-    xxx.reduce((acc: JsObject, p: string, index: number) => {
+    const sp = path.split('.');
+    sp.reduce((acc: JsObject, p: string, index: number) => {
       const v = acc[p];
-      if(index + 1 >= xxx.length) {
+      if(index + 1 >= sp.length) {
         const x = acc[p];
         if(typeof x === 'string') {
-          acc[p] = acc[p] + ' ' + x;
+          const alreadyExisting = acc[p];
+          if(typeof alreadyExisting === 'string') {
+            const xxx: string[] = alreadyExisting.split(' ');
+            if(typeof value === 'string') {
+              const yyy = value.split(' ');
+              acc[p] = _.uniq<string>(xxx.concat(yyy)).join(' ');
+            } else {
+              acc[p] = value;
+            }
+          } else {
+            acc[p] = value;
+          }
         } else {
           acc[p] = value;
         }
@@ -100,7 +112,7 @@ export module Obj {
       return Object.keys(tree).reduce((acc: Object, key: string) => {
         const value: JsValue = tree[key];
         const path = buildPath(rootPath, key);
-        if(_.isObject(value)) {
+        if(_.isPlainObject(value)) {
           const o = <JsObject>value;
           return step(acc, path, o);
         } else if(_.isNull(value) || _.isUndefined(value)) {
@@ -108,7 +120,7 @@ export module Obj {
         } else {
           if(typeof value === 'string') {
             return value.split(' ').reduce((xxx, v) => {
-              return predicat(buildPath(path, v)) ? put(xxx, path, value) : xxx;
+              return predicat(buildPath(path, v)) ? put(xxx, path, v) : xxx;
             }, acc);
           } else {
             return predicat(path) ? put(acc, path, value) : acc;
@@ -135,27 +147,14 @@ export module m {
     return _prop(value, f, scope);
   }
 
-  export function attributes(mask: KeysValues<boolean>): F1<Object, Object> {
-    return (obj: Object) => {
+  export function attributes(mask: StringMap<boolean>): (obj: Object, config?: (el: HTMLElement, isUpdate: boolean) => void) => Object {
+    return (obj: mithril.Attributes, config?: (el: HTMLElement, isUpdate: boolean) => void) => {
+      if(config) obj.config = config;
       return Obj.filter(obj, (path) => {
-        console.log(path);
-        const x = mask[path];
-        return (_.isUndefined(x) || _.isNull(x)) || x;
+        const x = mask[path.replace(/\./g, ':')];
+        return _.isUndefined(x) || _.isNull(x) || !!x;
       });
     }
-  }
-
-  export function handleAttributes(attributes: Attributes, validate: (name: string, value: string) => boolean): Attributes {
-    for(var key in attributes) {
-      const attributeValue = attributes[key];
-      if(_.isString(attributeValue)) {
-        const values = attributes[key].split(' ');
-        attributes[key] = values.filter((value:any) => validate(key, value)).join(' ');
-      } else {
-        attributes[key] = validate(key, attributeValue) ? attributeValue : null;
-      }
-    }
-    return attributes;
   }
 }
 
@@ -285,7 +284,7 @@ export module $ {
     }
   }
 
-  const bindHandlers: KeysValues<EventHandler> = {};
+  const bindHandlers: StringMap<EventHandler> = {};
 
   export function bindonce(event: string, handler: (e: Event) => void): void {
     const h = bindHandlers[event];

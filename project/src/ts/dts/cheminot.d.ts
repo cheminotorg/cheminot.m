@@ -1,10 +1,14 @@
 declare type EventHandler = (e: Event) => void;
 
-declare type KeysValues<V> = {
+declare type StringMap<V> = {
   [index: string]: V;
 }
 
-declare type JsObject = KeysValues<JsValue>;
+declare type NumberMap<V> = {
+  [index: number]: V;
+}
+
+declare type JsObject = StringMap<JsValue>;
 
 declare type JsValue = number | boolean | string | Object | Array<number|boolean|string|Object>;
 
@@ -12,7 +16,7 @@ declare type F<V> = () => V;
 
 declare type F1<U, V> = (u: U) => V;
 
-declare type Attributes = KeysValues<any>;
+declare type F2<U, V, W> = (u: U, v: V) => W;
 
 declare type SuggestedStation = {
   id: string;

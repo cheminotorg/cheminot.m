@@ -20,69 +20,47 @@ export type Ctrl = {
 }
 
 function renderHeader(ctrl: Header.Ctrl): m.VirtualElement<Header.Ctrl> {
-  const headerAttrs: Attributes = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate) {
-        Toolkit.$.longtouch(el, 3000, () => {
-          Alert.about();
-        });
-      }
+  const attrs = Toolkit.m.attributes({})({ id: "header" }, (el: HTMLElement, isUpdate: boolean) => {
+    if(!isUpdate) {
+      Toolkit.$.longtouch(el, 3000, () => {
+        Alert.about();
+      });
     }
-  }
-  return m("header", _.merge({ id: "header" }, headerAttrs), Header.component.view(ctrl));
+  });
+
+  return m("header", attrs, Header.component.view(ctrl));
 }
 
 function renderSearch(ctrl: Search.Ctrl): m.VirtualElement<Search.Ctrl> {
-  const ma = Toolkit.m.attributes({ 'class.hidden': ctrl.displayed() });
-  return m("section", ma({ id: 'search', 'class': 'view hidden' }), Search.component.view(ctrl));
+  const attrs = Toolkit.m.attributes
+  ({ 'class:hidden': !ctrl.displayed() })
+  ({ id: 'search', 'class': 'view hidden' });
+
+  return m("section", attrs, Search.component.view(ctrl));
 }
 
 function renderNow(ctrl: Now.Ctrl): m.VirtualElement<Now.Ctrl> {
-  let attributes: Attributes = {
-    'id': 'now',
-    'class': 'view hidden'
-  };
+  const attrs = Toolkit.m.attributes
+  ({ 'class:hidden': !ctrl.displayed() })
+  ({ 'id': 'now', 'class': 'view hidden' });
 
-  attributes = Toolkit.m.handleAttributes(attributes, (name, value) => {
-    switch (name + ':' + value) {
-      case 'class:hidden': return !ctrl.displayed();
-      default: return true;
-    }
-  });
-
-  return m("section", attributes, Now.component.view(ctrl));
+  return m("section", attrs, Now.component.view(ctrl));
 }
 
 function renderDepartures(ctrl: Departures.Ctrl): m.VirtualElement<Departures.Ctrl> {
-  let attributes: Attributes = {
-    'id': 'departures',
-    'class': 'view hidden'
-  };
+  const attrs = Toolkit.m.attributes
+  ({ 'class:hidden': !ctrl.displayed() })
+  ({ 'id': 'departures', 'class': 'view hidden' });
 
-  attributes = Toolkit.m.handleAttributes(attributes, (name, value) => {
-    switch (name + ':' + value) {
-    case 'class:hidden': return !ctrl.displayed();
-      default: return true;
-    }
-  });
-
-  return m("section", attributes, Departures.component.view(ctrl));
+  return m("section", attrs, Departures.component.view(ctrl));
 }
 
 function renderTrip(ctrl: Trip.Ctrl): m.VirtualElement<Trip.Ctrl> {
-  let attributes: Attributes = {
-    'id': 'trip',
-    'class': 'view hidden'
-  };
+  const attrs = Toolkit.m.attributes
+  ({ 'class:hidden': !ctrl.displayed() })
+  ({ 'id': 'trip','class': 'view hidden' });
 
-  attributes = Toolkit.m.handleAttributes(attributes, (name, value) => {
-    switch (name + ':' + value) {
-    case 'class:hidden': return !ctrl.displayed();
-      default: return true;
-    }
-  });
-
-  return m("section", attributes, Trip.component.view(ctrl));
+  return m("section", attrs, Trip.component.view(ctrl));
 }
 
 export const component = {

@@ -34,7 +34,7 @@ function renderStopTimes(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
         }
       })();
 
-      const attrs: Attributes = {
+      const attrs: m.Attributes = {
         config: function(el: HTMLElement, isUpdate: boolean, context: any) {
           if((index + 1) === ctrl.trip().length) {
             ctrl.adaptWrapperTop(ctrl);

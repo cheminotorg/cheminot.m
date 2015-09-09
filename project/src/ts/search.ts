@@ -55,41 +55,30 @@ function formatTime(date: Date) {
 /// RENDER TABS
 
 function renderTabs(ctrl: Ctrl): m.VirtualElement<Ctrl> {
-  const attributes = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate) {
-        Toolkit.$.touchend(el, _.partial(ctrl.onTabTouched, ctrl));
-      }
+  const config = (el: HTMLElement, isUpdate: boolean) => {
+    if(!isUpdate) {
+      Toolkit.$.touchend(el, _.partial(ctrl.onTabTouched, ctrl));
     }
   }
 
-  const todayAttrs = Toolkit.m.handleAttributes({ class: 'today selected'}, (name, value) => {
-    if((name + ':' + value) == 'class:selected') {
-      return ctrl.isTodayTabSelected();
-    }
-    return true;
-  });
+  const todayAttrs = Toolkit.m.attributes
+  ({ 'class:selected': ctrl.isTodayTabSelected() })
+  ({ class: 'today selected'}, config);
 
-  const tomorrowAttrs = Toolkit.m.handleAttributes({ class: 'tomorrow selected'}, (name, value) => {
-    if((name + ':' + value) == 'class:selected') {
-      return ctrl.isTomorrowTabSelected();
-    }
-    return true;
-  });
+  const tomorrowAttrs = Toolkit.m.attributes
+  ({ 'class:selected': ctrl.isTomorrowTabSelected() })
+  ({ class: 'tomorrow selected'}, config);
 
-  const otherAttrs = Toolkit.m.handleAttributes({ class: 'other selected'}, (name, value) => {
-    if((name + ':' + value) == 'class:selected') {
-      return ctrl.isOtherTabSelected();
-    }
-    return true;
-  });
+  const otherAttrs = Toolkit.m.attributes
+  ({ 'class:selected': ctrl.isOtherTabSelected() })
+  ({ class: 'other selected'}, config);
 
   const hint = m("div", { class: "hint" });
 
   return m('ul', { class: 'top-bar tabs'}, [
-    m('li', _.merge(todayAttrs, attributes), [m('span.label', {}, i18n.get('today')), hint]),
-    m('li', _.merge(tomorrowAttrs, attributes), [m('span.label', {}, i18n.get('tomorrow')), hint]),
-    m('li', _.merge(otherAttrs, attributes), [m('span.label', {}, i18n.get('other')), hint])
+    m('li', todayAttrs, [m('span.label', {}, i18n.get('today')), hint]),
+    m('li', tomorrowAttrs, [m('span.label', {}, i18n.get('tomorrow')), hint]),
+    m('li', otherAttrs, [m('span.label', {}, i18n.get('other')), hint])
   ])
 }
 
@@ -104,49 +93,40 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     }
   };
 
-  const inputStationAttrs = (isStartStation: boolean) => {
-    const value = isStartStation ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
-    const attrs: Attributes = {
-      disabled: "true",
-      type: "text",
-      value: value,
-      config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
-        const disabled = isStartStation ? ctrl.isInputStationStartDisabled() : ctrl.isInputStationEndDisabled();
-        if(!disabled) {
-          window.setTimeout(() => {
-            el.focus();
-            if(!native.Keyboard.isVisible()) native.Keyboard.show();
-          }, 100)
-        }
-        if(!isUpdate) {
-          el.addEventListener('input', _.partial(ctrl.onInputStationKeyUp, ctrl))
-        }
+  const initInputStationAttrs = (isStartStation: boolean) => {
+    const term = isStartStation ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm();
+    const disabled = isStartStation ? ctrl.isInputStationStartDisabled() : ctrl.isInputStationEndDisabled();
+
+    const attrs = Toolkit.m.attributes
+    ({ 'disabled:true': disabled })
+    ({ disabled: "true", type: "text", value: term }, (el: HTMLElement, isUpdate: boolean) => {
+      if(!disabled) {
+        window.setTimeout(() => {
+          el.focus();
+          if(!native.Keyboard.isVisible()) native.Keyboard.show();
+        }, 100)
       }
-    };
-    return Toolkit.m.handleAttributes(attrs, (name, value) => {
-      if(name == 'disabled') {
-        return isStartStation ? ctrl.isInputStationStartDisabled() : ctrl.isInputStationEndDisabled();
-      } else return true;
+      if(!isUpdate) {
+        el.addEventListener('input', _.partial(ctrl.onInputStationKeyUp, ctrl))
+      }
     });
+
+    return attrs;
   };
 
-  const resetStationAttrs = (isStartStation: boolean) => {
-    return Toolkit.m.handleAttributes({
-      class: 'font reset focus',
-      type: 'button',
-      config: (el: HTMLElement, isUpdate: boolean, context: any) => {
-        if(!isUpdate) {
-          Toolkit.$.touchend(el, _.partial(ctrl.onResetStationTouched, ctrl));
-        }
+  const initResetStationAttrs = (isStartStation: boolean) => {
+    const isSelected = isStartStation ? ctrl.inputStationStartSelected() !='' : ctrl.inputStationEndSelected() != '';
+    const isEnabled = isStartStation ? !ctrl.isInputStationStartDisabled() : !ctrl.isInputStationEndDisabled();
+
+    const attrs = Toolkit.m.attributes
+    ({ 'class:focus': isSelected || isEnabled })
+    ({ class: 'font reset focus', type: 'button' }, (el: HTMLElement, isUpdate: boolean) => {
+      if(!isUpdate) {
+        Toolkit.$.touchend(el, _.partial(ctrl.onResetStationTouched, ctrl));
       }
-    }, (name, value) => {
-      if((name + ':' + value) == 'class:focus') {
-        const isSelected = isStartStation ? ctrl.inputStationStartSelected() !='' : ctrl.inputStationEndSelected() != '';
-        const isEnabled = isStartStation ? !ctrl.isInputStationStartDisabled() : !ctrl.isInputStationEndDisabled();
-        return isSelected || isEnabled;
-      }
-      return true;
     });
+
+    return attrs;
   };
 
   const formAttrs = {
@@ -161,14 +141,14 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement<Ctrl> {
            m("form", formAttrs, [
              m("div", { class: "input start" }, [
                m("div.above", inputStationWrapperAttrs),
-               m("input", _.merge({ name: "start", autocomplete: "off", placeholder: i18n.get('departure') }, inputStationAttrs(true))),
-               m("button", resetStationAttrs(true))
+               m("input", _.merge({ name: "start", autocomplete: "off", placeholder: i18n.get('departure') }, initInputStationAttrs(true))),
+               m("button", initResetStationAttrs(true))
              ]),
              m('input.submit', { type: 'submit' }),
              m("div", { class: "input end"}, [
                m("div.above", inputStationWrapperAttrs),
-               m("input", _.merge({ name: "end", autocomplete: "off", placeholder: i18n.get('arrival') }, inputStationAttrs(false))),
-               m("button", resetStationAttrs(false))])]));
+               m("input", _.merge({ name: "end", autocomplete: "off", placeholder: i18n.get('arrival') }, initInputStationAttrs(false))),
+               m("button", initResetStationAttrs(false))])]));
 }
 
 /// RENDER STATION SUGGESTIONS
@@ -234,44 +214,24 @@ function renderDateTime(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     }
   };
 
-  const dateSelectorAttrs = () => {
-    const inputAttrs = {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-        if(!isUpdate) {
-          Toolkit.$.touchend(el, _.partial(ctrl.onDateTouched, ctrl));
-        }
-      }
-    };
-    const cssAttrs = Toolkit.m.handleAttributes({ class: 'date other' }, (name, value) => {
-      if((name + ':' + value) == 'class:other') {
-        return ctrl.isOtherTabSelected();
-      }
-      return true;
-    });
-    return _.merge(inputAttrs, cssAttrs);
-  }
+  const dateSelectorAttrs = Toolkit.m.attributes
+  ({ 'class:other':  ctrl.isOtherTabSelected() })
+  ({ 'class': 'date other' }, (el: HTMLElement, isUpdate: boolean) => {
+    if(!isUpdate) {
+      Toolkit.$.touchend(el, _.partial(ctrl.onDateTouched, ctrl));
+    }
+  });
 
-  const submitAttrs: any = (() => {
-    const attrs = Toolkit.m.handleAttributes({ class: 'submit enabled disabled' }, (name, value) => {
-      if((name + ':' + value) == 'class:disabled') {
-        return !canBeSubmitted(ctrl);
-      } else if((name + ':' + value) == 'class:enabled'){
-        return canBeSubmitted(ctrl);
-      }
-      return true;
-    });
-
-    return _.merge(attrs, {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-        if(!isUpdate) {
-          Toolkit.$.touchend(el, _.partial(ctrl.onSubmitTouched, ctrl));
-        }
-      }
-    });
-  })();
+  const submitAttrs = Toolkit.m.attributes
+  ({ 'class:enabled': canBeSubmitted(ctrl), 'class:disabled': !canBeSubmitted(ctrl)})
+  ({ 'class': 'submit enabled disabled'}, (el: HTMLElement, isUpdate: boolean) => {
+    if(!isUpdate) {
+      Toolkit.$.touchend(el, _.partial(ctrl.onSubmitTouched, ctrl));
+    }
+  });
 
   return m("ul", { class: 'datetime'}, [
-    m("li", dateSelectorAttrs(), [
+    m("li", dateSelectorAttrs, [
       m('div', {}, [
         m("span", { class: "label" }, i18n.get('departure-date')),
         m("span", { class: "value" }, formatDate(ctrl.inputDateSelected()))

@@ -54,35 +54,28 @@ function renderMeta(departure: Departure): m.VirtualElement<Ctrl>[] {
   }
 }
 
-function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
-
-  const pullupAttrsConfig = {
-    key: 'departures-pullup',
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(ctrl.displayed()) {
-        ctrl.iscroll().refresh();
-        if(ctrl.isComputingLongTrip()) {
-          ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 600);
-        }
+function renderPullup(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const attrs = Toolkit.m.attributes
+  ({ 'class:trace': ctrl.isComputingLongTrip() })
+  ({key: 'departures-pullup'}, (el: HTMLElement, isUpdate: boolean) => {
+    if(ctrl.displayed()) {
+      ctrl.iscroll().refresh();
+      if(ctrl.isComputingLongTrip()) {
+        ctrl.iscroll().scrollTo(0, ctrl.iscroll().maxScrollY, 600);
       }
     }
-  };
-
-  const pullupAttrs = Toolkit.m.handleAttributes({ class: 'trace'}, (name, value) => {
-    if((name + ':' + value) == 'class:trace') {
-      return ctrl.isComputingLongTrip();
-    }
-    return true;
   });
 
-  const pullUp = m("li.pull-up", _.merge(pullupAttrs, pullupAttrsConfig), [
+  return m("li.pull-up", attrs, [
     m('span.pin'),
     m("span.label", {}, i18n.get('pull-to-refresh'))
   ]);
+}
 
-  const loadingLabel = ctrl.isComputingLongTrip() ? i18n.get('trip-not-direct') : i18n.get('loading');
+function renderLoading(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const label = ctrl.isComputingLongTrip() ? i18n.get('trip-not-direct') : i18n.get('loading');
 
-  const trainAttrs: Attributes = {
+  const attrs: m.Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         el.classList.add('fade-in')
@@ -90,26 +83,41 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
     }
   }
 
-  const loading = m('div.empty-loading', { key: 'departures-loading' }, [
-    m('img.train', _.merge({ src: 'images/cheminot_eceff1.gif' }, trainAttrs)),
-    m('p', {}, m('span.label', {}, loadingLabel))
+  return m('div.empty-loading', { key: 'departures-loading' }, [
+    m('img.train', _.merge({ src: 'images/cheminot_eceff1.gif' }, attrs)),
+    m('p', {}, m('span.label', {}, label))
   ]);
+}
 
-  const renderDepartureItem = (departure: Departure, attrs: Attributes) => {
-    return m('li', attrs, [
-      m('div.wrapper', {}, [
-        m('div.meta', {}, renderMeta(departure)),
-        m('div.start-end', {}, [
-          m('span.alarm-clock'),
-          m('span.start', {}, Common.Departure.formatTime(departure.startTime)),
-          m('span.end', {}, Common.Departure.formatTime(departure.endTime))
-        ])
+function renderDepartureItem(departure: Departure, attrs: m.Attributes): m.VirtualElement<Ctrl> {
+  return m('li', attrs, [
+    m('div.wrapper', {}, [
+      m('div.meta', {}, renderMeta(departure)),
+      m('div.start-end', {}, [
+        m('span.alarm-clock'),
+        m('span.start', {}, Common.Departure.formatTime(departure.startTime)),
+        m('span.end', {}, Common.Departure.formatTime(departure.endTime))
       ])
-    ]);
-  }
+    ])
+  ]);
+}
 
-  const departuresList = ctrl.departures().map((departure, index) => {
-    const attrs: Attributes = {
+function renderFakeDepartureItem(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const departure = Common.tripToDeparture(Mock.getTrip());
+  const attrs: m.Attributes = {
+    'class': 'fake',
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(!isUpdate) {
+        ctrl.itemHeight(el.offsetHeight);
+      }
+    }
+  };
+  return renderDepartureItem(departure, attrs)
+}
+
+function renderDepartureList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
+  return ctrl.departures().map((departure, index) => {
+    const attrs: m.Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
           Toolkit.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
@@ -118,11 +126,37 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
       key: departure.id,
       class: (index + 1 === ctrl.departures().length) ? 'last' : ''
     };
-
     return renderDepartureItem(departure, attrs);
   });
+}
 
-  const zipped = _.zip<Departure, m.VirtualElement<Ctrl>>(ctrl.departures(), departuresList);
+function renderTrace(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const attrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(ctrl.displayed()) {
+        ctrl.iscroll().refresh();
+        if(!isUpdate) {
+          el.style.bottom = '-' + el.clientHeight + 'px';
+        }
+
+        context.onunload = () => {
+          if(ctrl.isComputationInProgress()) {
+            ctrl.isComputationInProgress(false);
+            native.Cheminot.abort();
+            hideHolo(ctrl);
+          }
+        }
+      }
+    }
+  };
+  return m('div.trace', attrs, [
+    m('span.pin'),
+    m('span.label', {}, i18n.get('loading'))]);
+}
+
+function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
+
+  const zipped = _.zip<Departure, m.VirtualElement<Ctrl>>(ctrl.departures(), renderDepartureList(ctrl));
   const departures = _.reduce(zipped, (acc, d) => {
     const [model, dom] = d;
     if(!moment(acc.lastDay).isSame(model.startTime, 'day')) {
@@ -136,23 +170,14 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   }, { lastDay: new Date(), elements: [] });
 
   if(ctrl.isPullUpDisplayed()) {
-    departures.elements.push(pullUp);
+    departures.elements.push(renderPullup(ctrl));
   }
 
   if(!departures.elements.length) {
-    const departure = Common.tripToDeparture(Mock.getTrip());
-    const attrs: Attributes = {
-      'class': 'fake',
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-        if(!isUpdate) {
-          ctrl.itemHeight(el.offsetHeight);
-        }
-      }
-    };
-    departures.elements.push(renderDepartureItem(departure, attrs));
+    departures.elements.push(renderFakeDepartureItem(ctrl));
   }
 
-  const departuresAttrs = {
+  const attrs = {
     key: 'departures-list',
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(ctrl.displayed()) {
@@ -176,34 +201,12 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
     }
   };
 
-  const traceAttrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(ctrl.displayed()) {
-        ctrl.iscroll().refresh();
-        if(!isUpdate) {
-          el.style.bottom = '-' + el.clientHeight + 'px';
-        }
-
-        context.onunload = () => {
-          if(ctrl.isComputationInProgress()) {
-            ctrl.isComputationInProgress(false);
-            native.Cheminot.abort();
-            hideHolo(ctrl);
-          }
-        }
-      }
-    }
-  };
-
-  const wrapper = [m("ul.departures", departuresAttrs, departures.elements)]
-  if(ctrl.departures().length == 0) {
-    wrapper.push(loading);
+  const wrapper = [m("ul.departures", attrs, departures.elements)]
+  if(!ctrl.departures().length) {
+    wrapper.push(renderLoading(ctrl));
   }
 
-  return [m("div#wrapper", {}, wrapper),
-          m('div.trace', traceAttrs, [
-            m('span.pin'),
-            m('span.label', {}, i18n.get('loading'))])];
+  return [m("div#wrapper", {}, wrapper), renderTrace(ctrl)];
 }
 
 export const component: m.Component<Ctrl> = {

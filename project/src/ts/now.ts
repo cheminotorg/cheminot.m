@@ -22,7 +22,7 @@ export type Ctrl = {
   onGoToSearchTouched: (ctrl: Ctrl, e: Event) => void;
 }
 
-function renderDepartureItem(ctrl: Ctrl, departure: Departure, attrs: Attributes): m.VirtualElement<Ctrl> {
+function renderDepartureItem(ctrl: Ctrl, departure: Departure, attrs: m.Attributes): m.VirtualElement<Ctrl> {
   const remaining = Toolkit.DateTime.diff(new Date(), departure.startTime);
   const formattedRemaining = Common.Departure.formatDuration(remaining, (hours, minutes) => {
     if(hours > 0) {
@@ -43,7 +43,7 @@ function renderDepartureItem(ctrl: Ctrl, departure: Departure, attrs: Attributes
 
 function renderDepartureItems(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   return ctrl.departures().map((departure) => {
-    const attrs: Attributes = {
+    const attrs: m.Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: any) {
         if(!isUpdate) {
           Toolkit.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
@@ -55,20 +55,24 @@ function renderDepartureItems(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   });
 }
 
+function renderFakeDepartureItem(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const departure = Common.tripToDeparture(Mock.getTrip());
+  const attrs: m.Attributes = {
+    'class': 'fake',
+    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      if(!isUpdate) {
+        if(!ctrl.itemHeight()) ctrl.itemHeight(el.offsetHeight);
+      }
+    }
+  };
+  return renderDepartureItem(ctrl, departure, attrs);
+}
+
 function renderDeparturesList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   let departureItems = renderDepartureItems(ctrl);
 
   if(!departureItems.length) {
-    const departure = Common.tripToDeparture(Mock.getTrip());
-    const attrs: Attributes = {
-      'class': 'fake',
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-        if(!isUpdate) {
-          if(!ctrl.itemHeight()) ctrl.itemHeight(el.offsetHeight);
-        }
-      }
-    };
-    departureItems = [renderDepartureItem(ctrl, departure, attrs)];
+    departureItems = [renderFakeDepartureItem(ctrl)];
   }
 
   const attrs = {
@@ -114,7 +118,7 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 }
 
 function renderNothing(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
-  const addStarBtnAttrs: Attributes = {
+  const addStarBtnAttrs: m.Attributes = {
     config: function(el: HTMLElement, isUpdate: boolean, context: any) {
       if(!isUpdate) {
         Toolkit.$.touchend(el, _.partial(ctrl.onGoToSearchTouched, ctrl));

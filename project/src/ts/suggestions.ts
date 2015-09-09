@@ -27,7 +27,7 @@ function getStationsTree(): Q.Promise<any> {
   return d.promise;
 }
 
-function suggestions(predicat: (station: SuggestedStation) => boolean, found: Attributes, node: any): any[] {
+function suggestions(predicat: (station: SuggestedStation) => boolean, found: StringMap<any>, node: any): any[] {
   if(node) {
     const onLeft = suggestions(predicat, found, node.left);
     const onRight = suggestions(predicat, found, node.right);
@@ -45,7 +45,7 @@ function suggestions(predicat: (station: SuggestedStation) => boolean, found: At
 }
 
 export function search(term: string, predicat: (station: SuggestedStation) => boolean = () => true): SuggestedStation[] {
-  const found: Attributes = {};
+  const found: StringMap<any> = {};
   function step(term: string, node: any, results: any[]): any[] {
     if(node) {
       const word = term.split('');
