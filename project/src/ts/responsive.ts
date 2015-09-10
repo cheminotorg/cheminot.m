@@ -4,12 +4,14 @@ import native = require('native');
 let ticking = false;
 
 function update() {
-  const [height, width] = Toolkit.viewportSize();
-  const wsize = (width * 100) / 320;
-  const hsize = (height * 100) / 568;
-  const html = <HTMLElement> document.querySelector('html');
-  html.style.fontSize = (wsize < hsize ? wsize : hsize) + '%';
-  ticking = false;
+  window.setTimeout(function() {
+    const [height, width] = Toolkit.viewportSize();
+    const wsize = (width * 100) / 320;
+    const hsize = (height * 100) / 568;
+    const html = <HTMLElement> document.querySelector('html');
+    html.style.fontSize = (wsize < hsize ? wsize : hsize) + '%';
+    ticking = false;
+  }, 300);
 }
 
 function requestTick() {
