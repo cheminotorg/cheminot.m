@@ -26,7 +26,7 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         Toolkit.$.bindonce('cheminot:alert:display', _.partial(ctrl.onDisplay, ctrl));
         Toolkit.$.bindonce('cheminot:alert:button', (e: any) => {
@@ -63,7 +63,11 @@ export const component: m.Component<Ctrl> = {
         ctrl.displayed(true);
         if(e.detail.title) ctrl.title(e.detail.title);
         ctrl.body(e.detail.body);
-        ctrl.buttons(e.detail.buttons);
+        if(e.detail.buttons) {
+          ctrl.buttons(e.detail.buttons)
+        } else {
+          ctrl.buttons([Buttons.OK])
+        };
         ctrl.classList(e.detail.classList);
         m.redraw.strategy("diff");
         m.redraw();
@@ -120,7 +124,7 @@ export function prompt(content: string | m.VirtualElement<Ctrl>, buttons: m.Virt
 export function createButton(key: string, label: string, classList: string[] = []): F<m.VirtualElement<Ctrl>> {
   return () => {
     const attrs: m.Attributes = {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
           Toolkit.$.touchend(el, (e) => {
             Toolkit.$.trigger('cheminot:alert:button', { key: key, event: e });

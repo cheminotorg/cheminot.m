@@ -125,13 +125,13 @@ export module Cheminot {
     return d.promise;
   }
 
-  export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: Date): Q.Promise<ArrivalTimes> {
-    const key = Cache.tripKey(vsId, veId, at, te);
-    return Cache.getOrSetTrip(key, () => {
+  function fetchBestDirectTrip(vsId: string, veId: string, at: Date, te: Date): F<Q.Promise<ArrivalTimes>> {
+    return () => {
       const d = Q.defer<ArrivalTimes>();
+      const id = Cache.tripKey(vsId, veId, at, te);
       const success = (result: [boolean, ArrivalTime[]]) => {
         const arrivalTimes = result[1], hasDirect = result[0];
-        const trip = { id: key, arrivalTimes: arrivalTimes, isDirect: hasDirect };
+        const trip = { id: id, arrivalTimes: arrivalTimes, isDirect: hasDirect };
         d.resolve(trip);
       }
       const error = (e: string) => d.reject(e);
@@ -143,7 +143,16 @@ export module Cheminot {
         cordova.plugins.Cheminot.lookForBestDirectTrip(vsId, veId, at, te, success, error);
       }
       return d.promise;
-    });
+    }
+  }
+
+  export function lookForBestDirectTrip(vsId: string, veId: string, at: Date, te: Date, useCache: boolean = true): Q.Promise<ArrivalTimes> {
+    const key = Cache.tripKey(vsId, veId, at, te);
+    if(useCache) {
+      return Cache.getOrSetTrip(key, fetchBestDirectTrip(vsId, veId, at, te));
+    } else {
+      return fetchBestDirectTrip(vsId, veId, at, te)();
+    }
   }
 
   export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number): Q.Promise<ArrivalTimes> {

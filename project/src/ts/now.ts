@@ -11,11 +11,11 @@ import _ = require('lodash');
 import Cache = require('cache');
 import i18n = require('i18n');
 
+let timerId: number;
+
 export type Ctrl = {
   scope: () => HTMLElement;
   displayed: () => boolean;
-  isLoading: (value?: boolean) => boolean;
-  timerId: (value?: number) => number;
   departures: (value?: Departure[]) => Departure[];
   itemHeight: (value?: number) => number;
   onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => void;
@@ -44,7 +44,7 @@ function renderDepartureItem(ctrl: Ctrl, departure: Departure, attrs: m.Attribut
 function renderDepartureItems(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   return ctrl.departures().map((departure) => {
     const attrs: m.Attributes = {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
           Toolkit.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
         }
@@ -59,7 +59,7 @@ function renderFakeDepartureItem(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const departure = Common.tripToDeparture(Mock.getTrip());
   const attrs: m.Attributes = {
     'class': 'fake',
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         if(!ctrl.itemHeight()) ctrl.itemHeight(el.offsetHeight);
       }
@@ -77,38 +77,38 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
   const attrs = {
     key: 'now-list',
-
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       const loop = (departures: Departure[]) => {
         ctrl.departures(departures);
-        const timerId = setTimeout(() => {
-          ctrl.isLoading(true);
+        if(timerId) clearTimeout(timerId);
+        timerId = setTimeout(() => {
           m.redraw();
-          const expired = ctrl.departures().map(departure => departure.id);
           lookForNextDepartures(ctrl).then((departures) => {
-            Cache.setNextDepartures(departures);
-            Cache.removeByKeys(expired);
+            ctrl.departures(departures);
           }).fin(() => {
-            ctrl.isLoading(false);
-            ctrl.timerId(null);
+            timerId = null;
             m.redraw();
           });
-        }, 1000 * 10);
-        ctrl.timerId(timerId);
+        }, Preferences.Now.refresh);
         m.redraw();
         return departures;
       }
 
-      if(!isUpdate && ctrl.timerId()) {
-        clearTimeout(ctrl.timerId());
-        ctrl.timerId(null);
+      if(!isUpdate && timerId) {
+        clearTimeout(timerId);
+        timerId = null;
       }
 
-      if(ctrl.displayed() && !ctrl.timerId()) {
+      if(ctrl.displayed() && !timerId) {
         if(!isUpdate) {
-          Cache.getOrSetNextDepartures(() => lookForNextDepartures(ctrl)).then(loop);
+          Cache.getOrSetNextDepartures(() => lookForNextDepartures(ctrl)).then(loop).catch((e) => {
+            console.log(e);
+          });
         } else {
-          lookForNextDepartures(ctrl).then(loop);
+          Cache.setNextDepartures(ctrl.departures());
+          lookForNextDepartures(ctrl).then(loop).catch((e) => {
+            console.log(e);
+          });
         }
       }
     }
@@ -119,7 +119,7 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
 function renderNothing(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const addStarBtnAttrs: m.Attributes = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         Toolkit.$.touchend(el, _.partial(ctrl.onGoToSearchTouched, ctrl));
       }
@@ -152,25 +152,6 @@ export const component: m.Component<Ctrl> = {
     return {
       scope: scope,
       displayed: () => Routes.matchNow(m.route()),
-      timerId: (id?: number) => {
-        if(id) {
-          Cache.setNowTimerId(id);
-        } else if(_.isUndefined(id)) {
-          return Cache.getNowTimerId();
-        } else {
-          Cache.clearNowTimerId();
-        }
-      },
-      isLoading: Toolkit.m.prop(false, (isLoading) => {
-        const list = <HTMLElement> scope().querySelector('.departures');
-        if(list) {
-          if(isLoading) {
-            list.classList.add('loading');
-          } else {
-            list.classList.remove('loading');
-          }
-        }
-      }),
       departures: m.prop([]),
       itemHeight: m.prop(0),
       onGoToSearchTouched: (ctrl: Ctrl, e: Event) => {
@@ -189,25 +170,23 @@ export const component: m.Component<Ctrl> = {
 
 function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
   const starred = Preferences.starred();
-  const step = (at: Date): Q.Promise<Departure[]> => {
-    return Toolkit.Promise.sequence(Preferences.starred(), (s) => {
-      if(!isScreenFull(ctrl) && ctrl.displayed()) {
+  const step = (at: Date, departures: Departure[]): Q.Promise<Departure[]> => {
+    return Toolkit.Promise.foldLeftSequentially(Preferences.starred(), departures, (acc, s) => {
+      if(!isScreenFull(ctrl, acc) && ctrl.displayed()) {
         const te = Common.departureBound(at);
         return native.Cheminot.lookForBestDirectTrip(s.startId, s.endId, at, te).then((trip) => {
           const departure = Common.tripToDeparture(trip);
-          ctrl.departures().push(departure);
-        }).catch((e) => {
-          console.log(e);
+          acc.push(departure);
+          return acc;
         });
       } else {
-        return Toolkit.Promise.done();
+        return ctrl.displayed() ? Toolkit.Promise.pure<Departure[]>(departures) : Toolkit.Promise.pure<Departure[]>([]);
       }
-    }).then(() => {
-      const updated = _.sortBy(ctrl.departures(), (departure) => {
+    }).then((departures) => {
+      const updated = _.sortBy(departures, (departure) => {
         return departure.startTime.getTime();
       });
-      ctrl.departures(updated);
-      if(!ctrl.displayed() || isScreenFull(ctrl)) {
+      if(!ctrl.displayed() || isScreenFull(ctrl, departures)) {
         if(!ctrl.displayed()) {
           throw new Error("aborted");
         } else {
@@ -215,19 +194,18 @@ function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
         }
       } else {
         const nextDeparture = Toolkit.DateTime.addMinutes(_.last(updated).startTime, 1);
-        return step(nextDeparture);
+        return step(nextDeparture, departures);
       }
     });
   }
-  ctrl.departures([]);
-  return step(new Date());
+  return step(new Date(), []);
 }
 
-function isScreenFull(ctrl: Ctrl): boolean {
+function isScreenFull(ctrl: Ctrl, departures: Departure[]): boolean {
   const header = <HTMLElement> document.querySelector('#header');
   const topBar = <HTMLElement> ctrl.scope().querySelector('.top-bar');
   const [viewportHeight, viewportWidth] = Toolkit.viewportSize();
   const height = Math.max(viewportHeight, viewportWidth);
   if(!header || !topBar) return false;
-  return (header.offsetHeight + topBar.offsetHeight + (ctrl.itemHeight() * ctrl.departures().length)) >= height;
+  return (header.offsetHeight + topBar.offsetHeight + (ctrl.itemHeight() * departures.length)) >= height;
 }

@@ -77,7 +77,7 @@ export const component = {
 
   view(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
     const attributes = {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if (!isUpdate) {
           document.querySelector('#viewport').classList.add('ready');
           setTimeout(() => {

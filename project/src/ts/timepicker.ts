@@ -28,7 +28,7 @@ function renderTitle(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function renderHour(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         Toolkit.$.touchend(el, _.partial(ctrl.onHourChange, ctrl));
       }
@@ -44,7 +44,7 @@ function renderHour(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function renderMinute(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         Toolkit.$.touchend(el, _.partial(ctrl.onMinuteChange, ctrl));
       }
@@ -61,7 +61,7 @@ function renderMinute(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const getAttrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
     return {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
           Toolkit.$.touchend(el, _.partial(handler, ctrl));
         }

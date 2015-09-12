@@ -176,6 +176,6 @@ export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, 
 
 export function lookForBestDirectTrip (vsId: string, veId: string, at: Date, te: Date, success: (result: [boolean, ArrivalTime[]]) => void, error: (err: string) => void): void {
   return lookForBestTrip(vsId, veId, at, te, 0, (stopTimes) => {
-    success && success([vsId === CHARTRES, vsId == CHARTRES ? stopTimes : []]);
+    success && success([vsId === CHARTRES, stopTimes]);
   }, error);
 }

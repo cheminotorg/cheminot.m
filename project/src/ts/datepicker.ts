@@ -29,7 +29,7 @@ function renderTitle(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function renderDay(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         Toolkit.$.touchend(el, _.partial(ctrl.onDayChange, ctrl));
       }
@@ -45,7 +45,7 @@ function renderDay(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function renderMonth(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         Toolkit.$.touchend(el, _.partial(ctrl.onMonthChange, ctrl));
       }
@@ -61,7 +61,7 @@ function renderMonth(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function renderYear(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         Toolkit.$.touchend(el, _.partial(ctrl.onYearChange, ctrl));
       }
@@ -78,7 +78,7 @@ function renderYear(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
     return {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
           Toolkit.$.touchend(el, _.partial(handler, ctrl));
         }

@@ -10,28 +10,28 @@ clear-button() {
     cursor: pointer
 }
 
-reset_button() {
+reset_button(color=grey-light, s=null) {
     clear-button()
-    icon_cheminot('cross', grey-light)
+    icon_cheminot('cross', color, s)
     width: size(24px);
 }
 
-backward_button() {
+backward_button(color=white, size=null) {
     clear-button()
-    icon_cheminot('left', white)
+    icon_cheminot('left', color, size)
 }
 
-up_button(color=white) {
+up_button(color=white, size=null) {
     clear-button()
-    icon_cheminot('up', color)
+    icon_cheminot('up', color, size)
 }
 
-down_button(color=white) {
+down_button(color=white, size=null) {
     clear-button()
-    icon_cheminot('down', color)
+    icon_cheminot('down', color, size)
 }
 
-forward_button(color=grey) {
+forward_button(color=grey, size=null) {
     clear-button()
-    icon_cheminot('right', color, 180deg)
+    icon_cheminot('right', color, size)
 }

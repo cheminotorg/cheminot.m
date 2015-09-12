@@ -203,23 +203,27 @@
         }
 
         .submit {
+
+            span {
+                line-height: size(26px)
+            }
+
             .go {
                 position: absolute
                 top: 0
                 height: 100%
                 right: size(14px)
-                font-size: size(24px)
             }
 
             &.disabled .go {
-                forward_button(color=grey)
+                forward_button(grey, size(24px))
             }
 
             &.enabled {
                 color: blue
 
                 .go {
-                    forward_button(color=blue)
+                    forward_button(blue, size(24px))
                 }
             }
         }

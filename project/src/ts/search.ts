@@ -86,7 +86,7 @@ function renderTabs(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function renderInputsStation(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const inputStationWrapperAttrs = {
-    config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
+    config: (el: HTMLElement, isUpdate: boolean, context: m.Context) => {
       if(!isUpdate) {
         Toolkit.$.touchendOne(el, _.partial(ctrl.onInputStationTouched, ctrl));
       }
@@ -130,7 +130,7 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   };
 
   const formAttrs = {
-    config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
+    config: (el: HTMLElement, isUpdate: boolean, context: m.Context) => {
       if(!isUpdate) {
         el.addEventListener('submit', _.partial(ctrl.onInputStationSubmit, ctrl));
       }
@@ -157,7 +157,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const term = (ctrl.isInputStationEndDisabled() ? ctrl.inputStationStartTerm() : ctrl.inputStationEndTerm()).toLowerCase();
   const stationAttrs = function(index: number) {
     return {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
           Toolkit.$.touchend(el, _.partial(ctrl.onStationSelected, ctrl));
         }
@@ -170,7 +170,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   }
 
   const suggestionsAttrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         Toolkit.$.touchstart(el, _.partial(ctrl.onScrollStations, ctrl));
       }
@@ -207,7 +207,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 function renderDateTime(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
   const inputTimeAttrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         Toolkit.$.touchend(el, _.partial(ctrl.onTimeTouched, ctrl));
       }
@@ -478,14 +478,18 @@ export const component: m.Component<Ctrl> = {
     }
 
     native.onBackButton('search', () => {
-      if(ctrl.displayed() && ctrl.isViewportUp()) {
-        m.startComputation();
-        const inputStation = ctrl.isInputStationStartDisabled() ? getInputStationEnd(ctrl) : getInputStationStart(ctrl);
-        resetInputStationsPosition(ctrl, inputStation);
-        setInputStationValue(ctrl, inputStation, '');
-        setInputStationSelected(ctrl, inputStation, '');
-        ctrl.stations([]);
-        m.endComputation();
+      if(ctrl.displayed()) {
+        if(ctrl.isViewportUp()) {
+          m.startComputation();
+          const inputStation = ctrl.isInputStationStartDisabled() ? getInputStationEnd(ctrl) : getInputStationStart(ctrl);
+          resetInputStationsPosition(ctrl, inputStation);
+          setInputStationValue(ctrl, inputStation, '');
+          setInputStationSelected(ctrl, inputStation, '');
+          ctrl.stations([]);
+          m.endComputation();
+        } else {
+          history.back();
+        }
       }
     });
 

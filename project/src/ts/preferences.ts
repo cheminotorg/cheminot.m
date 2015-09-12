@@ -42,3 +42,7 @@ export function starred(): {startId: string, endId: string}[] {
     };
   });
 }
+
+export module Now {
+  export const refresh: number = 10 * 1000;
+}

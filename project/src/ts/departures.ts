@@ -76,7 +76,7 @@ function renderLoading(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const label = ctrl.isComputingLongTrip() ? i18n.get('trip-not-direct') : i18n.get('loading');
 
   const attrs: m.Attributes = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         el.classList.add('fade-in')
       }
@@ -106,7 +106,7 @@ function renderFakeDepartureItem(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const departure = Common.tripToDeparture(Mock.getTrip());
   const attrs: m.Attributes = {
     'class': 'fake',
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
         ctrl.itemHeight(el.offsetHeight);
       }
@@ -118,7 +118,7 @@ function renderFakeDepartureItem(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 function renderDepartureList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   return ctrl.departures().map((departure, index) => {
     const attrs: m.Attributes = {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
           Toolkit.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
         }
@@ -132,7 +132,7 @@ function renderDepartureList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
 function renderTrace(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(ctrl.displayed()) {
         ctrl.iscroll().refresh();
         if(!isUpdate) {
@@ -179,7 +179,7 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
   const attrs = {
     key: 'departures-list',
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(ctrl.displayed()) {
         ctrl.iscroll().refresh();
         if(!isUpdate) {
