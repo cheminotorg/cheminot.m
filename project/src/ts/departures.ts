@@ -167,7 +167,7 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
     }
     acc.elements.push(dom);
     return acc;
-  }, { lastDay: new Date(), elements: [] });
+  }, { lastDay: Toolkit.DateTime.now(), elements: [] });
 
   if(ctrl.isPullUpDisplayed()) {
     departures.elements.push(renderPullup(ctrl));

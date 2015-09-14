@@ -11,7 +11,7 @@ export function gitVersion(success: (sha: string) => void, error: (err: string) 
 export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
   success({
     version: 'xxxxxxx',
-    createdAt: new Date()
+    createdAt: Toolkit.DateTime.now()
   });
 }
 export function getStop(stopId: string, success: (station: Station) => void, error: (err: string) => void): void {
@@ -23,7 +23,7 @@ export function getStop(stopId: string, success: (station: Station) => void, err
   });
 }
 
-export function getTrip(at: Date = new Date()): ArrivalTimes {
+export function getTrip(at: Date = Toolkit.DateTime.now()): ArrivalTimes {
   return {
     id: 'xxxxx',
     arrivalTimes: getArrivalTimes(at),

@@ -84,6 +84,10 @@ export module Cheminot {
     return Settings.bundleId.indexOf('prod') > -1;
   }
 
+  export function isStage(): boolean {
+    return Settings.bundleId.indexOf('stage') > -1;
+  }
+
   export function gitVersion(): Q.Promise<string> {
     const d = Q.defer<string>();
     const success = (sha: string) => d.resolve(sha);

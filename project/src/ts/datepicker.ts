@@ -123,13 +123,13 @@ export const component: m.Component<Ctrl> = {
       displayed: m.prop(false),
 
       onDisplay: (ctrl: Ctrl, e: any) => {
-        const date: Date = e.detail.date || new Date();
+        const date: Date = e.detail.date || Toolkit.DateTime.now();
         ctrl.dateSelected(date);
         ctrl.displayed(true);
         m.redraw();
       },
 
-      dateSelected: m.prop(new Date()),
+      dateSelected: m.prop(Toolkit.DateTime.now()),
 
       onOkTouched: (ctrl: Ctrl, e: Event) => {
         vibrate();

@@ -37,6 +37,18 @@ export module Number {
 
 export module DateTime {
 
+  if(native.Cheminot.isMocked() || native.Cheminot.isStage()) {
+    setInterval(() => {
+      if(window.NOW) {
+        window.NOW = addSeconds(window.NOW, 1);
+      }
+    }, 999);
+  }
+
+  export function now(): Date {
+    return window.NOW || new Date();
+  }
+
   export function diff(from: Date, to: Date): number {
     return moment(to).diff(moment(from));
   }
@@ -57,6 +69,10 @@ export module DateTime {
 
   export function addMinutes(date: Date, n: number): Date {
     return moment(date).add(n, 'minutes').toDate();
+  }
+
+  export function addSeconds(date: Date, n: number): Date {
+    return moment(date).add(n, 'seconds').toDate();
   }
 
   export function addHours(date: Date, n: number): Date {

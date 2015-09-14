@@ -267,7 +267,7 @@ export const component: m.Component<Ctrl> = {
     const currentTab = m.prop(tab);
     const at = (() => {
       const x = parseInt(m.route.param('at'), 10);
-      return (x ? new Date(x) : new Date());
+      return (x ? new Date(x) : Toolkit.DateTime.now());
     })();
     const displayed = () => Routes.matchSearch(currentTab(), m.route(), startTerm, endTerm, at);
 
@@ -289,10 +289,10 @@ export const component: m.Component<Ctrl> = {
 
         if(isTodayTab(tab)) {
           ctrl.isTodayTabSelected(true)
-          ctrl.inputDateSelected(new Date());
+          ctrl.inputDateSelected(Toolkit.DateTime.now());
         } else if(isTomorrowTab(tab)) {
           ctrl.isTomorrowTabSelected(true);
-          ctrl.inputDateSelected(Toolkit.DateTime.addDays(new Date(), 1));
+          ctrl.inputDateSelected(Toolkit.DateTime.addDays(Toolkit.DateTime.now(), 1));
         } else if(isOtherTab(tab)) {
           ctrl.isOtherTabSelected(true);
         }

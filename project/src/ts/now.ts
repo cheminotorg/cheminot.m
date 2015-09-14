@@ -16,7 +16,6 @@ let timerId: number;
 export type Ctrl = {
   scope: () => HTMLElement;
   displayed: () => boolean;
-  now: (value?: Date) => Date;
   departures: (value?: Departure[]) => Departure[];
   itemHeight: (value?: number) => number;
   onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => void;
@@ -24,7 +23,7 @@ export type Ctrl = {
 }
 
 function renderDepartureItem(ctrl: Ctrl, departure: Departure, attrs: m.Attributes): m.VirtualElement<Ctrl> {
-  const remaining = Toolkit.DateTime.diff(ctrl.now(), departure.startTime);
+  const remaining = Toolkit.DateTime.diff(Toolkit.DateTime.now(), departure.startTime);
   const formattedRemaining = Common.Departure.formatDuration(remaining, (hours, minutes) => {
     if(hours > 0) {
       return 'Dans ' + hours + 'h' + Toolkit.pad(minutes, 2);
@@ -32,7 +31,7 @@ function renderDepartureItem(ctrl: Ctrl, departure: Departure, attrs: m.Attribut
       if(minutes < 1) {
         return i18n.get('less-one-minute');
       } else {
-        return 'Dans ' + Toolkit.pad(minutes, 2) + ' min';
+        return 'Dans ' + minutes + ' min';
       }
     }
   });
@@ -53,6 +52,8 @@ function renderDepartureItems(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
       config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
           Toolkit.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
+          const remaining = Toolkit.DateTime.diff(Toolkit.DateTime.now(), departure.startTime);
+          setTimeout(() => m.redraw(), remaining);
         }
       },
       key: departure.id
@@ -97,8 +98,6 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
         m.redraw();
         return departures;
       }
-
-      if(isUpdate) console.log('isUpdate');
 
       if(!isUpdate && timerId) {
         clearTimeout(timerId);
@@ -158,7 +157,6 @@ export const component: m.Component<Ctrl> = {
       scope: scope,
       displayed: () => Routes.matchNow(m.route()),
       departures: m.prop(departures ? departures : []),
-      now: m.prop(new Date()),
       itemHeight: m.prop(0),
       onGoToSearchTouched: (ctrl: Ctrl, e: Event) => {
         m.route(Routes.search());
@@ -177,7 +175,6 @@ export const component: m.Component<Ctrl> = {
 function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
   const starred = Preferences.starred();
   const step = (at: Date, departures: Departure[]): Q.Promise<Departure[]> => {
-    ctrl.now(at);
     return Toolkit.Promise.foldLeftSequentially(Preferences.starred(), departures, (acc, s) => {
       if(!isScreenFull(ctrl, acc)) {
         const te = Common.departureBound(at);
@@ -205,7 +202,7 @@ function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
       }
     });
   }
-  return step(new Date(), []);
+  return step(Toolkit.DateTime.now(), []);
 }
 
 function isScreenFull(ctrl: Ctrl, departures: Departure[]): boolean {

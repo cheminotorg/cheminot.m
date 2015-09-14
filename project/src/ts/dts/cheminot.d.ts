@@ -112,6 +112,9 @@ declare type Analytics = {
 
 declare var analytics: Analytics
 
+interface Window {
+  NOW?: Date;
+}
 
 interface Navigator {
   splashscreen: Splashscreen;

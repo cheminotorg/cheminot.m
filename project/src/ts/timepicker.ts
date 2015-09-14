@@ -107,13 +107,13 @@ export const component: m.Component<Ctrl> = {
       displayed: m.prop(false),
 
       onDisplay: (ctrl: Ctrl, e: any) => {
-        const time: Date = e.detail.time || new Date();
+        const time: Date = e.detail.time || Toolkit.DateTime.now();
         ctrl.timeSelected(time);
         ctrl.displayed(true);
         m.redraw();
       },
 
-      timeSelected: m.prop(new Date()),
+      timeSelected: m.prop(Toolkit.DateTime.now()),
 
       onOkTouched: (ctrl: Ctrl, e: Event) => {
         vibrate();
