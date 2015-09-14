@@ -146,6 +146,6 @@ export module Result {
 export module Buttons {
   export const OK = createButton(Result.OK, 'OK', ['ok']);
   export const CANCEL = createButton(Result.CANCEL, 'ANNULER', ['cancel']);
-  export const YES = createButton(Result.YES, 'YES', ['yes']);
-  export const NO = createButton(Result.NO, 'NO', ['no']);
+  export const YES = createButton(Result.YES, 'OUI', ['yes']);
+  export const NO = createButton(Result.NO, 'NON', ['no']);
 }

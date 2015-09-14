@@ -168,7 +168,7 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
 }
 
 export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number, success: (stopTimes: ArrivalTime[]) => void, error: (err: string) => void): void {
-  const timeout = (vsId != CHARTRES) ? 1000 : 500;
+  const timeout = (vsId != CHARTRES) ? 500 : 250;
   window.setTimeout(function() {
     success(getArrivalTimes(at));
   }, timeout);

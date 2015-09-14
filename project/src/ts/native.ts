@@ -13,10 +13,9 @@ const handlers: BackButtonHandlers = {};
 
 export function onBackButton(key: string, f: () => void) {
   const h = handlers[key];
-  if(!h) {
-    handlers[key] = f;
-    document.addEventListener('backbutton', f, false);
-  }
+  if(h) document.body.removeEventListener(key, h);
+  document.body.addEventListener(key, f);
+  handlers[key] = f;
 };
 
 window.addEventListener("message", (message: MessageEvent) => {

@@ -1,16 +1,18 @@
 import Q = require('q');
 import _ = require('lodash');
 
-const LIMIT = 40;
+const LIMIT = 100;
 
-let cache: string[] = [];
+let dynamicCache: string[] = [];
+let staticCache: string[] = [];
 
-function setItem(key: string, data: any) {
+function setItem(key: string, data: any, useStaticCache: boolean = false) {
+  const cache = useStaticCache ? staticCache : dynamicCache;
   cache.push(key);
-  if(cache.length > LIMIT) {
-    const x = cache.length - LIMIT;
-    const toRemove = cache.slice(0, x);
-    cache = cache.slice(x);
+  if(dynamicCache.length > LIMIT) {
+    const x = dynamicCache.length - LIMIT;
+    const toRemove = dynamicCache.slice(0, x);
+    dynamicCache = dynamicCache.slice(x);
     removeByKeys(toRemove);
   }
   sessionStorage.setItem(key, JSON.stringify(data));
@@ -103,7 +105,7 @@ export function getAllTripsFrom(vs:string, ve: string, at: Date, max: number, ne
   return trips;
 }
 
-function getNextDepartures(): Departure[] {
+export function getNextDepartures(): Departure[] {
   const json = sessionStorage.getItem('now');
   if(json) {
     const departures = <Departure[]> JSON.parse(json);

@@ -23,16 +23,9 @@ header_height=size(54px)
         text-align: center
     }
 
-    .back-btn {
-        display: none
-        backward_button()
-        padding: 2%
-        width: size(24px);
-    }
-
     .stars {
         position: absolute
-        right: 6%
+        right: 4%
         top: 50%
         transform: translateY(-50%)
         clear-button()
@@ -41,15 +34,22 @@ header_height=size(54px)
         &.starred {
             icon_cheminot('heart', #FFF, size(24px))
         }
+
+        &::before {
+          padding: size(10px)
+        }
     }
 
     .search {
         position: absolute
-        right: 6%
+        right: 4%
         top: 50%
         transform: translateY(-50%)
         clear-button()
         icon_cheminot('search', #FFF, size(20px))
+        &::before {
+          padding: size(10px)
+        }
     }
 }
 

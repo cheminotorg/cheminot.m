@@ -488,7 +488,7 @@ export const component: m.Component<Ctrl> = {
           ctrl.stations([]);
           m.endComputation();
         } else {
-          history.back();
+          m.route(Routes.now());
         }
       }
     });

@@ -28,7 +28,8 @@ const messages: Messages = {
     'stars-empty': 'Aucun trajet en favoris',
     'add-star': 'Ajouter un trajet',
     'unstar-trip-back': 'Voulez-vous également retirer le trajet retour des favoris ?',
-    'star-trip-back': 'Voulez-vous également mettre le trajet retour en favoris ?'
+    'star-trip-back': 'Voulez-vous également mettre le trajet retour en favoris ?',
+    'less-one-minute': 'Imminent'
   }
 };
 

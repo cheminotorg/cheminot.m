@@ -29,7 +29,7 @@ export const component: m.Component<Ctrl> = {
 
     if(Routes.matchTrip(m.route())) {
       tripId = m.route.param("id");
-      const [vs, ve] = Cache.decomposeTripKey(tripId);
+      const [vs, ve, at, te, max] = Cache.decomposeTripKey(tripId);
       isStarred = Preferences.isStarred(vs, ve);
     }
 
@@ -76,7 +76,6 @@ export const component: m.Component<Ctrl> = {
   },
 
   view(ctrl: Ctrl) {
-
     const loader = m('div.holo', {}, [
       m('div.outer', {}),
       m('div.inner', {})
@@ -99,14 +98,17 @@ export const component: m.Component<Ctrl> = {
     }
 
     if(ctrl.isTripView()) {
-      const starsAttrs: m.Attributes = {
-        config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
-          if(!isUpdate) {
-            Toolkit.$.touchend(el, _.partial(ctrl.onStarred, ctrl));
+      const [vs, ve, at, te, max] = Cache.decomposeTripKey(ctrl.tripId());
+      if(max === 0) { // Only direct trip can be starred
+        const starsAttrs: m.Attributes = {
+          config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
+            if(!isUpdate) {
+              Toolkit.$.touchend(el, _.partial(ctrl.onStarred, ctrl));
+            }
           }
-        }
-      };
-      v.push(m('button.stars' + (ctrl.starred() ? '.starred' : ''), starsAttrs));
+        };
+        v.push(m('button.stars' + (ctrl.starred() ? '.starred' : ''), starsAttrs));
+      }
     }
 
     return v;
