@@ -23,6 +23,11 @@ export function handleError(event: any, source?: string, fileno?: number, column
   });
 }
 
+export function debug<T>(t: T): T {
+  Log.debug(t);
+  return t;
+}
+
 export function pad(n: number, width: number): string {
   const sn = n + '';
   return sn.length >= width ? sn : new Array(width - sn.length + 1).join('0') + sn;
@@ -42,7 +47,7 @@ export module DateTime {
       if(window.NOW) {
         window.NOW = addSeconds(window.NOW, 1);
       }
-    }, 999);
+    }, 1000);
   }
 
   export function now(): Date {

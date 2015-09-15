@@ -85,18 +85,14 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const attrs = {
     key: 'now-list',
     config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
-      const loop = (departures: Departure[]) => {
-        ctrl.departures(departures);
+      const loop = () => {
         if(timerId) clearTimeout(timerId);
         timerId = setTimeout(() => {
-          m.redraw();
           lookForNextDepartures(ctrl).then(ctrl.departures).fin(() => {
             timerId = null;
             m.redraw();
           });
         }, Preferences.Now.refresh);
-        m.redraw();
-        return departures;
       }
 
       if(!isUpdate && timerId) {
@@ -108,10 +104,16 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
       if(ctrl.displayed() && !timerId) {
         if(!isUpdate) {
-          Cache.getOrSetNextDepartures(() => lookForNextDepartures(ctrl)).then(loop).catch(onError)
+          Cache.getOrSetNextDepartures(() => {
+            return lookForNextDepartures(ctrl)
+          }).then((departures) => {
+            ctrl.departures(departures);
+            loop();
+            m.redraw();
+          }).catch(onError);
         } else {
           Cache.setNextDepartures(ctrl.departures());
-          lookForNextDepartures(ctrl).then(loop).catch(onError);
+          loop();
         }
       }
     }
@@ -152,11 +154,11 @@ export const component: m.Component<Ctrl> = {
 
   controller(): Ctrl {
     const scope = () => <HTMLElement> document.querySelector('#now');
-    const departures = Cache.getNextDepartures();
+    Cache.clearNextDepartures();
     return {
       scope: scope,
       displayed: () => Routes.matchNow(m.route()),
-      departures: m.prop(departures ? departures : []),
+      departures: m.prop([]),
       itemHeight: m.prop(0),
       onGoToSearchTouched: (ctrl: Ctrl, e: Event) => {
         m.route(Routes.search());
