@@ -228,6 +228,34 @@ export module Detectizr {
   }
 }
 
+export module Arr {
+
+  export function zipWithIndex<T>(aaa: T[]): [T, number][] {
+    return _.zip(aaa, _.range(0, aaa.length));
+  }
+
+  export function lastn<T>(aaa: T[], x: number, y: number): T {
+    if(y > x) throw new Error('y should be inferior or equal to x');
+    const formula = (z: number) => (x * z) + y;
+    return _.range(0, aaa.length).reduce((x, i) => {
+      const index = formula(i) - 1;
+      return aaa[index] ? aaa[index] : x;
+    }, null);
+  }
+
+  function unfold<A, B>(z: B, f: (x: B) => [A, B]): A[] {
+    const x = f(z);
+    if(x) {
+      const [elem, next] = x;
+      const acc = unfold(next, f);
+      acc.push(elem);
+      return acc;
+    } else {
+      return [];
+    }
+  }
+}
+
 export module Promise {
 
   export function done(): Q.Promise<void> {

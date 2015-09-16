@@ -176,11 +176,16 @@ export const component: m.Component<Ctrl> = {
 
 function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
   const starred = Preferences.starred();
-  const step = (at: Date, departures: Departure[]): Q.Promise<Departure[]> => {
-    return Toolkit.Promise.foldLeftSequentially(Preferences.starred(), departures, (acc, s) => {
+  const now = Toolkit.DateTime.now();
+  const step = (departures: Departure[]): Q.Promise<Departure[]> => {
+    const stars = Preferences.starred();
+    return Toolkit.Promise.foldLeftSequentially(Toolkit.Arr.zipWithIndex(stars), departures, (acc, x) => {
+      const [starred, i] = x;
+      const lastDeparture = Toolkit.Arr.lastn(departures, stars.length, i + 1);
+      const at = lastDeparture ? Toolkit.DateTime.addMinutes(lastDeparture.startTime, 1) : now;
       if(!isScreenFull(ctrl, acc)) {
         const te = Common.departureBound(at);
-        return native.Cheminot.lookForBestDirectTrip(s.startId, s.endId, at, te).then((trip) => {
+        return native.Cheminot.lookForBestDirectTrip(starred.startId, starred.endId, at, te).then((trip) => {
           const departure = Common.tripToDeparture(trip);
           acc.push(departure);
           return acc;
@@ -199,12 +204,11 @@ function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
           return Q(updated);
         }
       } else {
-        const nextDeparture = Toolkit.DateTime.addMinutes(_.last(updated).startTime, 1);
-        return step(nextDeparture, departures);
+        return step(departures);
       }
     });
   }
-  return step(Toolkit.DateTime.now(), []);
+  return step([]);
 }
 
 function isScreenFull(ctrl: Ctrl, departures: Departure[]): boolean {
@@ -214,7 +218,7 @@ function isScreenFull(ctrl: Ctrl, departures: Departure[]): boolean {
   const [viewportHeight, viewportWidth] = Toolkit.viewportSize();
   const height = Math.max(viewportHeight, viewportWidth);
   if(!header || !topBar) return false;
-  return (header.offsetHeight + topBar.offsetHeight + (ctrl.itemHeight() * departures.length)) >= height;
+  return (header.offsetHeight + topBar.offsetHeight + (ctrl.itemHeight() * (departures.length - 1))) >= height;
 }
 
 document.addEventListener("resume", () => {
