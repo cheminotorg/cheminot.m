@@ -216,3 +216,7 @@ function isScreenFull(ctrl: Ctrl, departures: Departure[]): boolean {
   if(!header || !topBar) return false;
   return (header.offsetHeight + topBar.offsetHeight + (ctrl.itemHeight() * departures.length)) >= height;
 }
+
+document.addEventListener("resume", () => {
+  m.redraw();
+}, false);
