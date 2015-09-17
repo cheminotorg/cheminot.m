@@ -18,7 +18,6 @@ interface IScrollOptions {
 	topOffset?: number;
 	checkDOMChanges?: boolean;
 	handleClick?: boolean;
-    probeType?: number;
 
 	// Scrollbar
 	hScrollbar?: boolean;
