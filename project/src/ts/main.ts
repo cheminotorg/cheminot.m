@@ -17,12 +17,12 @@ import App = require('app');
 import Routes = require('routes');
 import Suggestions = require('suggestions');
 import native = require('native');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import moment = require('moment');
 import Locale = require('locale');
 import Responsive = require('responsive');
 
-window.onerror = Utils.handleError;
+window.onerror = Toolkit.handleError;
 
 Responsive.init();
 
@@ -32,17 +32,18 @@ Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions
     Settings.db = meta;
     Settings.cheminotcVersion = cheminotcVersion;
     m.route.mode = 'hash';
-    m.route(document.body, "/", {
-      "/": App.get(),
-      "/query/:tab/:start/:end/:at": App.get(),
-      "/departures/:start/:end/:at": App.get(),
-      "/trip/:id": App.get()
+    m.route(document.body, '/', {
+      "/": App.component,
+      "/search": App.component,
+      "/search/:tab/:start/:end/:at": App.component,
+      "/departures/:start/:end/:at": App.component,
+      "/trip/:id": App.component
     });
   });
 }).catch((e) => {
-  Utils.handleError(e)
+  Toolkit.handleError(e)
 });
 
-Utils.$.bind('cheminot:ready', () => {
+Toolkit.$.bindonce('cheminot:ready', () => {
   navigator.splashscreen.hide()
 });

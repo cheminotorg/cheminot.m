@@ -3,9 +3,9 @@ import moment = require('moment');
 import i18n = require('i18n');
 import _ = require('lodash');
 import Q = require('q');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 
-var deferred: Q.Deferred<Date>;
+let deferred: Q.Deferred<Date>;
 
 export type Ctrl = {
   timeSelected: (value?: Date) => Date;
@@ -22,15 +22,15 @@ function vibrate() {
   navigator.vibrate && navigator.vibrate(30);
 }
 
-function renderTitle(ctrl: Ctrl): m.VirtualElement {
+function renderTitle(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   return m('div.title', {}, "Définir l'heure");
 }
 
-function renderHour(ctrl: Ctrl): m.VirtualElement {
-  var attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+function renderHour(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const attrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onHourChange, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onHourChange, ctrl));
       }
     }
   };
@@ -42,11 +42,11 @@ function renderHour(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function renderMinute(ctrl: Ctrl): m.VirtualElement {
-  var attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+function renderMinute(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const attrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onMinuteChange, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onMinuteChange, ctrl));
       }
     }
   };
@@ -58,47 +58,40 @@ function renderMinute(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function renderButtons(ctrl: Ctrl): m.VirtualElement {
-  var getAttrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
+function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const getAttrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
     return {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(handler, ctrl));
+          Toolkit.$.touchend(el, _.partial(handler, ctrl));
         }
       }
     }
   };
 
-  var onok = getAttrs(ctrl.onOkTouched);
-  var onclear = getAttrs(ctrl.onClearTouched);
-  var oncancel = getAttrs(ctrl.onCancelTouched);
+  const onok = getAttrs(ctrl.onOkTouched);
+  const onclear = getAttrs(ctrl.onClearTouched);
+  const oncancel = getAttrs(ctrl.onCancelTouched);
 
   return m('div.actions', {}, [
     m('button.ok', onok, 'ok'),
-    m('button.clear', onclear, i18n.fr('clear')),
-    m('button.cancel', oncancel, i18n.fr('cancel'))
+    m('button.clear', onclear, i18n.get('clear')),
+    m('button.cancel', oncancel, i18n.get('cancel'))
   ]);
 }
 
-function render(ctrl: Ctrl): m.VirtualElement[] {
+function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
-  var attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
-    if((name + ':' + value) == 'class:fade-in') {
-      return ctrl.displayed();
+  const attrs = Toolkit.m.attributes
+  ({ 'class:fade-in': ctrl.displayed()})
+  ({ 'class': 'fade-in' }, (el: HTMLElement, isUpdate: boolean) => {
+    if(!isUpdate) {
+      Toolkit.$.bindonce('cheminot:timepicker', _.partial(ctrl.onDisplay, ctrl));
     }
-    return true;
   });
 
-  var eventAttrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate) {
-        Utils.$.bind('cheminot:timepicker', _.partial(ctrl.onDisplay, ctrl));
-      }
-    }
-  };
-
   return [
-    m('div.modal.time-picker', _.merge(attrs, eventAttrs), [
+    m('div.modal.time-picker', attrs, [
       renderTitle(ctrl),
       m('div.controls', {}, [
         renderHour(ctrl),
@@ -107,20 +100,20 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
       renderButtons(ctrl)])];
 }
 
-var timePicker: m.Module<Ctrl> = {
+export const component: m.Component<Ctrl> = {
   controller(): Ctrl {
 
     return {
       displayed: m.prop(false),
 
       onDisplay: (ctrl: Ctrl, e: any) => {
-        var time: Date = e.detail.time || new Date();
+        const time: Date = e.detail.time || Toolkit.DateTime.now();
         ctrl.timeSelected(time);
         ctrl.displayed(true);
         m.redraw();
       },
 
-      timeSelected: m.prop(new Date()),
+      timeSelected: m.prop(Toolkit.DateTime.now()),
 
       onOkTouched: (ctrl: Ctrl, e: Event) => {
         vibrate();
@@ -144,8 +137,8 @@ var timePicker: m.Module<Ctrl> = {
 
       onHourChange: (ctrl: Ctrl, e: Event) => {
         vibrate();
-        var button = <HTMLElement> e.currentTarget;
-        var date = ctrl.timeSelected();
+        const button = <HTMLElement> e.currentTarget;
+        const date = ctrl.timeSelected();
         if(button.classList.contains('up')) {
           ctrl.timeSelected(moment(date).add(1, 'hour').toDate());
         } else {
@@ -156,8 +149,8 @@ var timePicker: m.Module<Ctrl> = {
 
       onMinuteChange: (ctrl: Ctrl, e: Event) => {
         vibrate();
-        var button = <HTMLElement> e.currentTarget;
-        var time = ctrl.timeSelected();
+        const button = <HTMLElement> e.currentTarget;
+        const time = ctrl.timeSelected();
         if(button.classList.contains('up')) {
           ctrl.timeSelected(moment(time).add(1, 'minute').toDate());
         } else {
@@ -173,12 +166,8 @@ var timePicker: m.Module<Ctrl> = {
   }
 }
 
-export function get(): m.Module<Ctrl> {
-  return timePicker;
-}
-
 export function show(time?: Date): Q.Promise<Date> {
   deferred = Q.defer<Date>();
-  Utils.$.trigger('cheminot:timepicker', { time: time });
+  Toolkit.$.trigger('cheminot:timepicker', { time: time });
   return deferred.promise;
 }

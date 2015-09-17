@@ -1,8 +1,8 @@
 import _ = require('lodash');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import moment = require('moment');
 
-var CHARTRES = 'StopPoint:OCETrain TER-87394007';
+const CHARTRES = 'StopPoint:OCETrain TER-87394007';
 
 export function gitVersion(success: (sha: string) => void, error: (err: string) => void): void {
   success('xxxxxxx');
@@ -11,11 +11,19 @@ export function gitVersion(success: (sha: string) => void, error: (err: string) 
 export function init(success: (meta: Meta) => void, error: (err: string) => void): void {
   success({
     version: 'xxxxxxx',
-    createdAt: new Date()
+    createdAt: Toolkit.DateTime.now()
+  });
+}
+export function getStop(stopId: string, success: (station: Station) => void, error: (err: string) => void): void {
+  success({
+    id: stopId,
+    name: 'Paris',
+    lat: 0.22312312,
+    lng: 44.9213123
   });
 }
 
-export function getTrip(at: Date = new Date()): ArrivalTimes {
+export function getTrip(at: Date = Toolkit.DateTime.now()): ArrivalTimes {
   return {
     id: 'xxxxx',
     arrivalTimes: getArrivalTimes(at),
@@ -24,18 +32,17 @@ export function getTrip(at: Date = new Date()): ArrivalTimes {
 }
 
 export function getArrivalTimes(at: Date): ArrivalTime[] {
-  var last: Date;
-
-  var time = () => {
+  let last: Date;
+  const time = () => {
     if(last) {
-      last = Utils.DateTime.addHours(last, 1);
+      last = Toolkit.DateTime.addHours(last, 1);
     } else {
-      last = Utils.DateTime.addHours(at, 1);
+      last = Toolkit.DateTime.addHours(at, 1);
     }
     return last;
   }
 
-  var leMansParis = [
+  const leMansParis = [
     {
       stopId: 'StopPoint:OCETrain TER-87396002',
       stopName: 'Le Mans',
@@ -161,7 +168,7 @@ export function getArrivalTimes(at: Date): ArrivalTime[] {
 }
 
 export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number, success: (stopTimes: ArrivalTime[]) => void, error: (err: string) => void): void {
-  var timeout = (vsId != CHARTRES) ? 1000 : 500;
+  const timeout = (vsId != CHARTRES) ? 500 : 250;
   window.setTimeout(function() {
     success(getArrivalTimes(at));
   }, timeout);
@@ -169,6 +176,6 @@ export function lookForBestTrip(vsId: string, veId: string, at: Date, te: Date, 
 
 export function lookForBestDirectTrip (vsId: string, veId: string, at: Date, te: Date, success: (result: [boolean, ArrivalTime[]]) => void, error: (err: string) => void): void {
   return lookForBestTrip(vsId, veId, at, te, 0, (stopTimes) => {
-    success && success([vsId === CHARTRES, vsId == CHARTRES ? stopTimes : []]);
+    success && success([vsId === CHARTRES, stopTimes]);
   }, error);
 }

@@ -5,7 +5,7 @@
     position: absolute
 }
 
-#home {
+#search {
 
     .tabs {
 
@@ -50,14 +50,14 @@
     .start-end {
         position: relative
         background: #FFF
-        border-top: size(10px) solid grey-blue
+        border-top: size(10px) solid grey-blue-light
 
         form {
             .input {
                 position: relative
                 z-index: 2
                 width: 100%
-                border-top: 1px solid grey-blue
+                border-top: 1px solid grey-blue-light
 
                 &.animating {
                     position: absolute
@@ -69,7 +69,7 @@
                 }
 
                 &:last-child {
-                    border-bottom: size(10px) solid grey-blue
+                    border-bottom: size(10px) solid grey-blue-light
                 }
 
                 .above {
@@ -86,8 +86,10 @@
                     display: none
                     top: 0
                     height: 100%
-                    reset_button()
                     right: size(14px)
+                    font-size: size(24px)
+
+                    reset_button()
 
                     &.focus {
                         display: block
@@ -115,13 +117,23 @@
 
                 li {
                     position: relative
+                    height: size(66px)
+                    font-size: size(18px)
+                    color: grey
+                    padding: 0 size(8px)
+                    border-bottom: size(2px) solid grey-blue-light
+                    box-sizing: border-box
+                    width: 100%
 
                     &.empty {
                         color: orange
                         text-align: center
                     }
 
-                    div {
+                    > div {
+                        position: absolute
+                        top: 50%
+                        transform: translateY(-50%)
                         width: 100%
 
                         .match {
@@ -137,6 +149,22 @@
 
         li {
             position: relative
+            height: size(66px)
+            font-size: size(18px)
+            color: grey
+            padding: 0 size(8px)
+            box-sizing: border-box
+            width: 100%
+
+            > div {
+                position: absolute
+                left: 0
+                top: 50%
+                transform: translateY(-50%)
+                width: 100%
+                padding: 0 size(8px)
+                box-sizing: border-box
+            }
         }
 
         input[type=date], input[type=time] {
@@ -149,22 +177,20 @@
         }
 
         .date, .time {
-            padding-right: size(14px)
-
-            > span {
+            span {
                 display: inline-block
             }
 
             .label {
                 color: dark-blue
-                width: 60%
-                text-align: left
             }
 
             .value {
+                position: absolute
+                top: 0
+                height: 100%
+                right: size(14px)
                 color: blue
-                width: 40%
-                text-align: right
             }
         }
 
@@ -177,6 +203,11 @@
         }
 
         .submit {
+
+            span {
+                line-height: size(26px)
+            }
+
             .go {
                 position: absolute
                 top: 0
@@ -184,17 +215,15 @@
                 right: size(14px)
             }
 
-            &.disabled {
-                .go {
-                    forward_button(enabled=false)
-                }
+            &.disabled .go {
+                forward_button(grey, size(24px))
             }
 
             &.enabled {
                 color: blue
 
                 .go {
-                    forward_button(enabled=true)
+                    forward_button(blue, size(24px))
                 }
             }
         }

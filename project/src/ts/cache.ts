@@ -1,36 +1,69 @@
 import Q = require('q');
-import Utils = require('utils');
 import _ = require('lodash');
 
-export function key(vs: string, ve: string, at: Date, te: Date, max: number = 0): string {
+const LIMIT = 100;
+
+let dynamicCache: string[] = [];
+let staticCache: string[] = [];
+
+function setItem(key: string, data: any, useStaticCache: boolean = false) {
+  const cache = useStaticCache ? staticCache : dynamicCache;
+  cache.push(key);
+  if(dynamicCache.length > LIMIT) {
+    const x = dynamicCache.length - LIMIT;
+    const toRemove = dynamicCache.slice(0, x);
+    dynamicCache = dynamicCache.slice(x);
+    removeByKeys(toRemove);
+  }
+  sessionStorage.setItem(key, JSON.stringify(data));
+}
+
+export function tripKey(vs: string, ve: string, at: Date, te: Date, max: number = 0): string {
   at.setMilliseconds(0);
   te.setMilliseconds(0);
   return [vs, ve, at.getTime(), te.getTime(), max].join('|');
 }
 
+export function decomposeTripKey(id: string): [string, string, number, number, number] {
+  const [vs, ve, at, te, max] = id.split('|');
+  return [vs, ve, parseInt(at, 10), parseInt(te, 10), parseInt(max, 10)];
+}
+
+export function removeByKeys(keys: string[]): void {
+  keys.forEach(key => sessionStorage.removeItem(key));
+}
+
+export function removeByKey(key: string): void {
+  removeByKeys([key]);
+}
+
 export function setTrip(key: string, trip: ArrivalTimes): void {
-  sessionStorage.setItem(key, JSON.stringify(trip));
+  setItem(key, trip);
 }
 
 export function getTrip(key: string): ArrivalTimes {
-  var trip = sessionStorage.getItem(key);
+  const trip = sessionStorage.getItem(key);
   if(trip) {
-    var t:any = JSON.parse(trip);
-    t.arrivalTimes = t.arrivalTimes.map((arrivalTime:any) => {
-      arrivalTime.departure = new Date(arrivalTime.departure);
-      arrivalTime.arrival = new Date(arrivalTime.arrival);
-      return arrivalTime;
-    });
-    return t;
+    return deserializeTrip(trip);
   } else {
     return null;
   }
 }
 
+function deserializeTrip(trip: string): ArrivalTimes {
+  const t:any = JSON.parse(trip);
+  t.arrivalTimes = t.arrivalTimes.map((arrivalTime:any) => {
+    arrivalTime.departure = new Date(arrivalTime.departure);
+    arrivalTime.arrival = new Date(arrivalTime.arrival);
+    return arrivalTime;
+  });
+  return t;
+}
+
 export function getOrSetTrip(key: string, f: () => Q.Promise<ArrivalTimes>): Q.Promise<ArrivalTimes> {
-  var trip = getTrip(key);
+  const trip = getTrip(key);
   if(trip) {
-    return Utils.Promise.pure(trip);
+    return Q(trip);
   } else {
     return f().then((arrivalTimes) => {
       setTrip(key, arrivalTimes);
@@ -40,9 +73,10 @@ export function getOrSetTrip(key: string, f: () => Q.Promise<ArrivalTimes>): Q.P
 }
 
 export function getAllTripsFrom(vs:string, ve: string, at: Date, max: number, nextDeparture: (d: Date) => Date, departureBound: (d: Date) => Date): ArrivalTimes[] {
-  var trips: ArrivalTimes[] = [];
-  var lastDeparture: Date;
-  var te: Date;
+  const trips: ArrivalTimes[] = [];
+  let lastDeparture: Date;
+  let te: Date;
+  let trip: ArrivalTimes;
   do {
     if(lastDeparture) {
       lastDeparture = nextDeparture(lastDeparture);
@@ -52,10 +86,10 @@ export function getAllTripsFrom(vs:string, ve: string, at: Date, max: number, ne
       te = departureBound(at);
     }
 
-    var k = key(vs, ve, lastDeparture, te, max);
-    var trip = getTrip(k);
+    const k = tripKey(vs, ve, lastDeparture, te, max);
+    trip = getTrip(k);
     if(trip && trip.arrivalTimes.length) {
-      var stopTime = _.head(trip.arrivalTimes);
+      let stopTime = _.head(trip.arrivalTimes);
       if(lastDeparture.getTime() > stopTime.departure.getTime()) {
         trip = null;
       } else {
@@ -69,4 +103,35 @@ export function getAllTripsFrom(vs:string, ve: string, at: Date, max: number, ne
     }
   } while(!!trip);
   return trips;
+}
+
+export function getNextDepartures(): Departure[] {
+  const json = sessionStorage.getItem('now');
+  if(json) {
+    const departures = <Departure[]> JSON.parse(json);
+    return departures;
+  } else {
+    return null;
+  }
+}
+
+export function getOrSetNextDepartures(f: () => Q.Promise<Departure[]>): Q.Promise<Departure[]> {
+  const departures = getNextDepartures();
+  if(departures) {
+    return Q(departures);
+  } else {
+    return f().then((departures) => {
+      setNextDepartures(departures);
+      return departures;
+    });
+  }
+}
+
+export function setNextDepartures(departures: Departure[]) {
+  const key = 'now';
+  setItem(key, departures);
+}
+
+export function clearNextDepartures() {
+  sessionStorage.removeItem('now');
 }

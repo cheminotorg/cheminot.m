@@ -1,4 +1,4 @@
-#!/bin/bash$
+#!/bin/bash
 
 rsync -av ../m.cheminot.plugin/ app/plugins/m.cheminot.plugin/
 rsync -av ../m.cheminot.plugin/src/android/jni/ app/platforms/android/jni/

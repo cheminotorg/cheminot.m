@@ -1626,7 +1626,7 @@ declare module _ {
         * @param context 'this' object in `iterator`, optional.
         * @return Copy of `array` where all elements are unique.
         **/
-        uniq<T, TSort>(array: Array<T>, isSorted?: boolean): T[];
+        uniq<T>(array: Array<T>, isSorted?: boolean): T[];
 
         /**
         * @see _.uniq

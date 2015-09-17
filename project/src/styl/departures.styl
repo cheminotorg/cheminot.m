@@ -8,10 +8,9 @@ pin() {
         background: #FFF
         padding: size(10px)
 
-        icon_cheminot('pin', #FFF)
+        icon_cheminot('pin', #FFF, size(40px))
 
         &::before {
-            font-size: size(40px)
             color: green
             position: absolute
             top: 50%
@@ -91,7 +90,7 @@ pin() {
     }
 
     #wrapper {
-        background: grey-blue
+        background: grey-blue-light
         position: absolute
         width: 100%
         overflow: hidden
@@ -131,11 +130,14 @@ pin() {
 
             > li {
                 margin: size(-1px)
-                border-bottom: size(2px) solid grey-blue
                 box-sizing: border-box
                 color: dark-blue
                 background: #FFF
                 transform: translate3d(0,0,0)
+
+                &:not(.last) {
+                    border-bottom: size(2px) solid grey-blue
+                }
 
                 .wrapper {
                     max-width: size(400px)
@@ -192,15 +194,13 @@ pin() {
                 .alarm-clock {
                     min-width: size(25px)
                     display: inline-block
-                    font-size: size(23px)
-                    icon_cheminot('clock', grey-light)
+                    icon_cheminot('clock', grey-light, size(23px))
                 }
 
                 .to {
-                    icon_cheminot('right', blue)
+                    icon_cheminot('right', blue, size(21px))
                     margin: 0 size(5px) 0 size(5px)
                     vertical-align: size(2px)
-                    font-size: size(21px)
                 }
 
                 &:not(.pull-up):not(.day) {

@@ -8,7 +8,7 @@ header_height=size(54px)
     box-sizing: border-box
     transition: .2s
     transition-property: height
-    height: header_height
+    height: size(54px)
     font-size: size(20px)
 
     &.fold {
@@ -23,11 +23,33 @@ header_height=size(54px)
         text-align: center
     }
 
-    .back-btn {
-        display: none
-        backward_button()
-        padding: 2%
-        width: size(24px);
+    .stars {
+        position: absolute
+        right: 4%
+        top: 50%
+        transform: translateY(-50%)
+        clear-button()
+        icon_cheminot('heart-empty', #FFF, size(24px))
+
+        &.starred {
+            icon_cheminot('heart', #FFF, size(24px))
+        }
+
+        &::before {
+          padding: size(10px)
+        }
+    }
+
+    .search {
+        position: absolute
+        right: 4%
+        top: 50%
+        transform: translateY(-50%)
+        clear-button()
+        icon_cheminot('search', #FFF, size(20px))
+        &::before {
+          padding: size(10px)
+        }
     }
 }
 

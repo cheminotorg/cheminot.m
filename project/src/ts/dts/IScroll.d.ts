@@ -8,6 +8,7 @@ interface IScrollOptions {
 	//vScroll?: boolean;
 	x?: number;
 	y?: number;
+    probeType?: number;
 	bounce?: boolean;
 	bounceLock?: boolean;
 	momentum?: boolean;

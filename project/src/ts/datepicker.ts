@@ -3,9 +3,9 @@ import moment = require('moment');
 import i18n = require('i18n');
 import _ = require('lodash');
 import Q = require('q');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 
-var deferred: Q.Deferred<Date>;
+let deferred: Q.Deferred<Date>;
 
 export type Ctrl = {
   dateSelected: (value?: Date) => Date;
@@ -23,15 +23,15 @@ function vibrate() {
   navigator.vibrate && navigator.vibrate(30);
 }
 
-function renderTitle(ctrl: Ctrl): m.VirtualElement {
+function renderTitle(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   return m('div.title', {}, "Définir la date");
 }
 
-function renderDay(ctrl: Ctrl): m.VirtualElement {
-  var attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+function renderDay(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const attrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onDayChange, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onDayChange, ctrl));
       }
     }
   };
@@ -43,11 +43,11 @@ function renderDay(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function renderMonth(ctrl: Ctrl): m.VirtualElement {
-  var attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+function renderMonth(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const attrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onMonthChange, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onMonthChange, ctrl));
       }
     }
   };
@@ -59,11 +59,11 @@ function renderMonth(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function renderYear(ctrl: Ctrl): m.VirtualElement {
-  var attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+function renderYear(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const attrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
-        Utils.$.touchend(el, _.partial(ctrl.onYearChange, ctrl));
+        Toolkit.$.touchend(el, _.partial(ctrl.onYearChange, ctrl));
       }
     }
   };
@@ -75,46 +75,39 @@ function renderYear(ctrl: Ctrl): m.VirtualElement {
   ]);
 }
 
-function renderButtons(ctrl: Ctrl): m.VirtualElement {
-  var getAttrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
+function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  const attrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
     return {
-      config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
-          Utils.$.touchend(el, _.partial(handler, ctrl));
+          Toolkit.$.touchend(el, _.partial(handler, ctrl));
         }
       }
     }
   };
 
-  var onok = getAttrs(ctrl.onOkTouched);
-  var onclear = getAttrs(ctrl.onClearTouched);
-  var oncancel = getAttrs(ctrl.onCancelTouched);
+  const onok = attrs(ctrl.onOkTouched);
+  const onclear = attrs(ctrl.onClearTouched);
+  const oncancel = attrs(ctrl.onCancelTouched);
 
   return m('div.actions', {}, [
     m('button.ok', onok, 'ok'),
-    m('button.clear', onclear, i18n.fr('clear')),
-    m('button.cancel', oncancel, i18n.fr('cancel'))
+    m('button.clear', onclear, i18n.get('clear')),
+    m('button.cancel', oncancel, i18n.get('cancel'))
   ]);
 }
 
-function render(ctrl: Ctrl): m.VirtualElement[] {
-  var attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
-    if((name + ':' + value) == 'class:fade-in') {
-      return ctrl.displayed();
+function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
+  const attrs = Toolkit.m.attributes
+  ({ 'class:fade-in': ctrl.displayed() })
+  ({ class: 'fade-in'}, (el: HTMLElement, isUpdate: boolean) => {
+    if(!isUpdate) {
+      Toolkit.$.bindonce('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl));
     }
-    return true;
   });
 
-  var eventAttrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
-      if(!isUpdate) {
-        Utils.$.bind('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl));
-      }
-    }
-  };
-
   return [
-    m('div.modal.date-picker', _.merge(attrs, eventAttrs), [
+    m('div.modal.date-picker', attrs, [
       renderTitle(ctrl),
       m('div.controls', {}, [
         renderDay(ctrl),
@@ -124,19 +117,19 @@ function render(ctrl: Ctrl): m.VirtualElement[] {
       renderButtons(ctrl)])];
 }
 
-var datePicker: m.Module<Ctrl> = {
+export const component: m.Component<Ctrl> = {
   controller(): Ctrl {
     return {
       displayed: m.prop(false),
 
       onDisplay: (ctrl: Ctrl, e: any) => {
-        var date: Date = e.detail.date || new Date();
+        const date: Date = e.detail.date || Toolkit.DateTime.now();
         ctrl.dateSelected(date);
         ctrl.displayed(true);
         m.redraw();
       },
 
-      dateSelected: m.prop(new Date()),
+      dateSelected: m.prop(Toolkit.DateTime.now()),
 
       onOkTouched: (ctrl: Ctrl, e: Event) => {
         vibrate();
@@ -160,8 +153,8 @@ var datePicker: m.Module<Ctrl> = {
 
       onDayChange: (ctrl: Ctrl, e: Event) => {
         vibrate();
-        var button = <HTMLElement> e.currentTarget;
-        var date = ctrl.dateSelected();
+        const button = <HTMLElement> e.currentTarget;
+        const date = ctrl.dateSelected();
         if(button.classList.contains('up')) {
           ctrl.dateSelected(moment(date).add(1, 'day').toDate());
         } else {
@@ -172,8 +165,8 @@ var datePicker: m.Module<Ctrl> = {
 
       onMonthChange: (ctrl: Ctrl, e: Event) => {
         vibrate();
-        var button = <HTMLElement> e.currentTarget;
-        var date = ctrl.dateSelected();
+        const button = <HTMLElement> e.currentTarget;
+        const date = ctrl.dateSelected();
         if(button.classList.contains('up')) {
           ctrl.dateSelected(moment(date).add(1, 'month').toDate());
         } else {
@@ -184,8 +177,8 @@ var datePicker: m.Module<Ctrl> = {
 
       onYearChange: (ctrl: Ctrl, e: Event) => {
         vibrate();
-        var button = <HTMLElement> e.currentTarget;
-        var date = ctrl.dateSelected();
+        const button = <HTMLElement> e.currentTarget;
+        const date = ctrl.dateSelected();
         if(button.classList.contains('up')) {
           ctrl.dateSelected(moment(date).add(1, 'year').toDate());
         } else {
@@ -201,12 +194,8 @@ var datePicker: m.Module<Ctrl> = {
   }
 }
 
-export function get(): m.Module<Ctrl> {
-  return datePicker;
-}
-
 export function show(date?: Date): Q.Promise<Date> {
   deferred = Q.defer<Date>();
-  Utils.$.trigger('cheminot:datepicker', { date: date });
+  Toolkit.$.trigger('cheminot:datepicker', { date: date });
   return deferred.promise;
 }

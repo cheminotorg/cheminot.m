@@ -1,6 +1,22 @@
-declare type Attributes = {
-  [index: string]: any;
+declare type EventHandler = (e: Event) => void;
+
+declare type StringMap<V> = {
+  [index: string]: V;
 }
+
+declare type NumberMap<V> = {
+  [index: number]: V;
+}
+
+declare type JsObject = StringMap<JsValue>;
+
+declare type JsValue = number | boolean | string | Object | Array<number|boolean|string|Object>;
+
+declare type F<V> = () => V;
+
+declare type F1<U, V> = (u: U) => V;
+
+declare type F2<U, V, W> = (u: U, v: V) => W;
 
 declare type SuggestedStation = {
   id: string;
@@ -22,9 +38,11 @@ declare type ArrivalTimes = {
 
 declare type Departure = {
   startId: string;
+  startName: string;
   endId: string;
   startTime: Date;
   endTime: Date;
+  endName: string;
   nbSteps: number;
   id: string;
 }
@@ -69,6 +87,7 @@ declare module cordova {
     module Cheminot {
       function gitVersion(success: (sha: string) => void, error: (e: string) => void): void;
       function init(success: (meta: Meta) => void, error: (e: string) => void): void;
+      function getStop(stopId: string, success: (station: Station) => void, error: (e: string) => void): void;
       function lookForBestTrip(start: string, end: string, at: Date, te: Date, max: number, success: (arrivalTime: ArrivalTime[]) => void, error: (e: string) => void): void;
       function lookForBestDirectTrip(start: string, end: string, at: Date, te: Date, success: (result: [boolean, ArrivalTime[]]) => void, error: (e: string) => void): void;
       function abort(success: () => void, error: (e: string) => void): void;
@@ -93,6 +112,9 @@ declare type Analytics = {
 
 declare var analytics: Analytics
 
+interface Window {
+  NOW?: Date;
+}
 
 interface Navigator {
   splashscreen: Splashscreen;

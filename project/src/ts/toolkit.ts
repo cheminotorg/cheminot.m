@@ -1,5 +1,6 @@
 import moment = require('moment');
 import Q = require('q');
+import mithril = require('mithril');
 import _ = require('lodash');
 import native = require('native');
 import Alert = require('alert');
@@ -16,14 +17,19 @@ export function handleError(event: any, source?: string, fileno?: number, column
   const description = `[${Settings.gitVersion}] ${event} at ${source} [${fileno}, ${columnNumber}]`;
   console.error(event.stack ? event.stack : event);
   native.GoogleAnalytics.trackException(description, true);
-  Alert.error(i18n.fr('unexpected-error')).fin(() => {
+  Alert.error(i18n.get('unexpected-error')).fin(() => {
     window.location.hash="#";
     window.location.reload();
   });
 }
 
+export function debug<T>(t: T): T {
+  Log.debug(t);
+  return t;
+}
+
 export function pad(n: number, width: number): string {
-  var sn = n + '';
+  const sn = n + '';
   return sn.length >= width ? sn : new Array(width - sn.length + 1).join('0') + sn;
 }
 
@@ -36,26 +42,42 @@ export module Number {
 
 export module DateTime {
 
+  if(native.Cheminot.isMocked() || native.Cheminot.isStage()) {
+    setInterval(() => {
+      if(window.NOW) {
+        window.NOW = addSeconds(window.NOW, 1);
+      }
+    }, 1000);
+  }
+
+  export function now(): Date {
+    return window.NOW || new Date();
+  }
+
   export function diff(from: Date, to: Date): number {
     return moment(to).diff(moment(from));
   }
 
   export function setSameTime(reference: Date, time: Date): Date {
-    var h = time.getHours();
-    var m = time.getMinutes();
-    var s = time.getSeconds();
+    const h = time.getHours();
+    const m = time.getMinutes();
+    const s = time.getSeconds();
     return moment(reference).hours(h).minutes(m).seconds(s).toDate()
   }
 
   export function setSameDay(reference: Date, date: Date): Date {
-    var d = date.getDate();
-    var m = date.getMonth();
-    var y = date.getFullYear();
+    const d = date.getDate();
+    const m = date.getMonth();
+    const y = date.getFullYear();
     return moment(reference).date(d).month(m).year(y).toDate()
   }
 
   export function addMinutes(date: Date, n: number): Date {
     return moment(date).add(n, 'minutes').toDate();
+  }
+
+  export function addSeconds(date: Date, n: number): Date {
+    return moment(date).add(n, 'seconds').toDate();
   }
 
   export function addHours(date: Date, n: number): Date {
@@ -67,11 +89,75 @@ export module DateTime {
   }
 }
 
+export module Obj {
+
+  export function put(obj: Object, path: string, value: JsValue): Object {
+    const sp = path.split('.');
+    sp.reduce((acc: JsObject, p: string, index: number) => {
+      const v = acc[p];
+      if(index + 1 >= sp.length) {
+        const x = acc[p];
+        if(typeof x === 'string') {
+          const alreadyExisting = acc[p];
+          if(typeof alreadyExisting === 'string') {
+            const xxx: string[] = alreadyExisting.split(' ');
+            if(typeof value === 'string') {
+              const yyy = value.split(' ');
+              acc[p] = _.uniq<string>(xxx.concat(yyy)).join(' ');
+            } else {
+              acc[p] = value;
+            }
+          } else {
+            acc[p] = value;
+          }
+        } else {
+          acc[p] = value;
+        }
+        return acc;
+      } else if(_.isNull(v) || _.isUndefined(v) || !_.isObject(v)) {
+        acc[p] = {};
+        return acc[p];
+      } else {
+        return acc;
+      }
+    }, obj);
+    return obj;
+  }
+
+  function buildPath(rootPath: string, key: string) {
+    return rootPath ? (rootPath + '.' + key) : key;
+  }
+
+  export function filter(obj: Object, predicat: (path: string) => boolean): Object {
+    const step = (z: Object = {}, rootPath: string = '', tree: JsObject = {}): Object => {
+      return Object.keys(tree).reduce((acc: Object, key: string) => {
+        const value: JsValue = tree[key];
+        const path = buildPath(rootPath, key);
+        if(_.isPlainObject(value)) {
+          const o = <JsObject>value;
+          return step(acc, path, o);
+        } else if(_.isNull(value) || _.isUndefined(value)) {
+          return acc;
+        } else {
+          if(typeof value === 'string') {
+            return value.split(' ').reduce((xxx, v) => {
+              return predicat(buildPath(path, v)) ? put(xxx, path, v) : xxx;
+            }, acc);
+          } else {
+            return predicat(path) ? put(acc, path, value) : acc;
+          }
+        }
+      }, z);
+    }
+    return step({}, '', <JsObject>obj);
+  }
+}
+
 export module m {
 
   export function prop(value?: any, f?: (value: any) => void, scope?: any): (value?: any) => any {
     function _prop(store?: any, f?: (value: any) => void, scope?: any) {
-      var prop = function(s?: any) {
+      const prop = function(s?: any) {
         if (s !== undefined) store = s;
         f !== undefined && s !==undefined && f.call(scope, s);
         return store;
@@ -82,17 +168,14 @@ export module m {
     return _prop(value, f, scope);
   }
 
-  export function handleAttributes(attributes: Attributes, validate: (name: string, value: string) => boolean): Attributes {
-    for(var key in attributes) {
-      var attributeValue = attributes[key];
-      if(_.isString(attributeValue)) {
-        var values = attributes[key].split(' ');
-        attributes[key] = values.filter((value:any) => validate(key, value)).join(' ');
-      } else {
-        attributes[key] = validate(key, attributeValue) ? attributeValue : null;
-      }
+  export function attributes(mask: StringMap<boolean>): (obj: Object, config?: (el: HTMLElement, isUpdate: boolean) => void) => Object {
+    return (obj: mithril.Attributes, config?: (el: HTMLElement, isUpdate: boolean) => void) => {
+      if(config) obj.config = config;
+      return Obj.filter(obj, (path) => {
+        const x = mask[path.replace(/\./g, ':')];
+        return _.isUndefined(x) || _.isNull(x) || !!x;
+      });
     }
-    return attributes;
   }
 }
 
@@ -145,31 +228,69 @@ export module Detectizr {
   }
 }
 
+export module Arr {
+
+  export function zipWithIndex<T>(aaa: T[]): [T, number][] {
+    return _.zip(aaa, _.range(0, aaa.length));
+  }
+
+  export function lastn<T>(aaa: T[], x: number, y: number): T {
+    if(y > x) throw new Error('y should be inferior or equal to x');
+    const formula = (z: number) => (x * z) + y;
+    return _.range(0, aaa.length).reduce((x, i) => {
+      const index = formula(i) - 1;
+      return aaa[index] ? aaa[index] : x;
+    }, null);
+  }
+
+  function unfold<A, B>(z: B, f: (x: B) => [A, B]): A[] {
+    const x = f(z);
+    if(x) {
+      const [elem, next] = x;
+      const acc = unfold(next, f);
+      acc.push(elem);
+      return acc;
+    } else {
+      return [];
+    }
+  }
+}
+
 export module Promise {
 
   export function done(): Q.Promise<void> {
     return Q<void>(null);
   }
 
+  export function pure<T>(t: T): Q.Promise<T> {
+    return Q<T>(t);
+  }
+
   export function withMinimumDelay<T>(promise: Q.Promise<T>, delay: number): Q.Promise<T> {
-    var timeout = Q.defer<T>();
+    const timeout = Q.defer<T>();
     setTimeout(() => timeout.resolve(null), delay);
     return Q.spread([promise, timeout.promise], (result: T) => {
       return result;
     }, () => { return promise });
   }
 
-  export function pure<T>(t: T): Q.Promise<T> {
-    return Q<T>(t);
+  export function foldLeftSequentially<A, B>(seq: Array<A>, z: B, f: (x: B, y: A) => Q.Promise<B>): Q.Promise<B> {
+    if(seq.length === 0) {
+      return Q(z);
+    } else {
+      let h = seq[0];
+      let t = seq.slice(1);
+      return f(z, h).then((acc) => foldLeftSequentially(t, acc, f));
+    }
   }
 
-  export function sequence<T>(seq: Array<T>, f: (t: T) => Q.Promise<T>): Q.Promise<Array<T>> {
+  export function sequence<T, U>(seq: Array<T>, f: (t: T) => Q.Promise<U>): Q.Promise<Array<U>> {
     if(seq.length === 0) {
       return Q([]);
     } else {
-      var h = seq[0];
-      var t = seq.slice(1);
-      return f(h).then<Array<T>>((t1) => {
+      const h = seq[0];
+      const t = seq.slice(1);
+      return f(h).then<Array<U>>((t1) => {
         return sequence(t, f).then((t2) => {
           return [t1].concat(t2)
         });
@@ -181,7 +302,7 @@ export module Promise {
 export module Transition {
 
   export function transitionEnd(): string {
-    var transitionend = "transitionend"
+    let transitionend = "transitionend"
     if('WebkitTransition' in document.body.style
        && !("OTransition" in document.body.style) ) {
       transitionend = 'webkitTransitionEnd';
@@ -216,8 +337,13 @@ export module $ {
     }
   }
 
-  export function bind(event: string, handler: (e: Event) => void): void {
+  const bindHandlers: StringMap<EventHandler> = {};
+
+  export function bindonce(event: string, handler: (e: Event) => void): void {
+    const h = bindHandlers[event];
+    if(h) document.body.removeEventListener(event, h);
     document.body.addEventListener(event, handler);
+    bindHandlers[event] = handler;
   }
 
   export function trigger(event: string, data?: any): void {
@@ -233,7 +359,8 @@ export module $ {
   }
 
   export function longtouch(el: HTMLElement, ms: number, handler: (e: Event) => void): Element {
-    var t: number;
+    let t: number;
+
     el.addEventListener('touchstart', (e) => {
       if(!el.classList.contains('press')) {
         el.classList.add('press');

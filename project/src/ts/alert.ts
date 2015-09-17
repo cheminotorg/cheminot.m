@@ -1,67 +1,73 @@
 import m = require('mithril');
 import Q = require('q');
-import Utils = require('utils');
+import Toolkit = require('toolkit');
 import _ = require('lodash');
 import moment = require('moment');
 
-var deferred: Q.Deferred<void>;
+let deferred: Q.Deferred<string>;
 
 export type Ctrl = {
-  onOkTouched: (ctrl: Ctrl, e: Event) => void;
-  body: (value?: m.VirtualElement) => m.VirtualElement;
+  onButtonTouched: (ctrl: Ctrl, key: string, e: Event) => void;
+  body: (value?: m.VirtualElement<Ctrl>) => m.VirtualElement<Ctrl>;
+  buttons: (value?: F<m.VirtualElement<Ctrl>>[]) => F<m.VirtualElement<Ctrl>>[];
   title: (value?: string) => string;
   onDisplay: (ctrl: Ctrl, e: Event) => void;
   displayed: (value?: boolean) => boolean;
   classList: (value?: string[]) => string[];
 }
 
-function renderTitle(ctrl: Ctrl): m.VirtualElement {
+function renderTitle(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   return m('div.title', {}, ctrl.title());
 }
 
-function renderButtons(ctrl: Ctrl): m.VirtualElement {
-  var attrs: Attributes = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: any) {
+function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
+  return m('div.actions', {}, ctrl.buttons().map((b) => b()));
+}
+
+function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
+  const attrs = {
+    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
-        Utils.$.bind('cheminot:alert', _.partial(ctrl.onDisplay, ctrl));
-        Utils.$.touchend(el, _.partial(ctrl.onOkTouched, ctrl));
+        Toolkit.$.bindonce('cheminot:alert:display', _.partial(ctrl.onDisplay, ctrl));
+        Toolkit.$.bindonce('cheminot:alert:button', (e: any) => {
+          ctrl.onButtonTouched(ctrl, e.detail.key, e.detail.event);
+        });
       }
     }
   }
-  return m('div.actions', {}, m('button.ok', attrs, "OK"));
-}
 
-function render(ctrl: Ctrl): m.VirtualElement[] {
-  var attrs = Utils.m.handleAttributes({ class: 'fade-in'}, (name, value) => {
-    if((name + ':' + value) == 'class:fade-in') {
-      return ctrl.displayed();
-    }
-    return true;
-  });
+  const fadeInClass = (ctrl.displayed() ? '.fade-in' : '');
+  const classList = ctrl.classList().length ? ('.' + ctrl.classList().join('.') + fadeInClass) : fadeInClass;
 
   return [
-    m(`div.modal.alert${'.' + ctrl.classList().join('.')}`, attrs, [
+    m('div.modal.alert' + classList, attrs, [
       renderTitle(ctrl),
       ctrl.body(),
       renderButtons(ctrl)])];
 }
 
-var alert: m.Module<Ctrl> = {
+export const component: m.Component<Ctrl> = {
   controller(): Ctrl {
     return {
       title: m.prop('Cheminot'),
       classList: m.prop([]),
       body: m.prop(m('div.body')),
+      buttons: m.prop([]),
       displayed: m.prop(false),
-      onOkTouched: (ctrl: Ctrl, e: Event) => {
+      onButtonTouched: (ctrl: Ctrl, key: string, e: Event) => {
         ctrl.displayed(false);
-        deferred.resolve(null);
+        deferred.resolve(key);
         m.redraw();
       },
       onDisplay: (ctrl: Ctrl, e: any) => {
         ctrl.displayed(true);
         if(e.detail.title) ctrl.title(e.detail.title);
         ctrl.body(e.detail.body);
+        if(e.detail.buttons) {
+          ctrl.buttons(e.detail.buttons)
+        } else {
+          ctrl.buttons([Buttons.OK])
+        };
         ctrl.classList(e.detail.classList);
         m.redraw.strategy("diff");
         m.redraw();
@@ -74,13 +80,9 @@ var alert: m.Module<Ctrl> = {
   }
 }
 
-export function get(): m.Module<Ctrl> {
-  return alert;
-}
-
-export function about(classList: string[] = []): Q.Promise<void> {
-  var formatDay = (dateTime: Date) => moment(dateTime).format('dddd D MMMM YYYY');
-  var body = m('table', {}, [
+export function about(classList: string[] = []): Q.Promise<string> {
+  const formatDay = (dateTime: Date) => moment(dateTime).format('dddd D MMMM YYYY');
+  const body = m('table', {}, [
     m('tr', {}, [m('td', {}, 'bundleId'), m('td', Settings.bundleId)]),
     m('tr', {}, [m('td', {}, 'version'), m('td', {}, Settings.version)]),
     m('tr', {}, [m('td', {}, 'cheminotc'), m('td', {}, Settings.cheminotcVersion)]),
@@ -91,20 +93,59 @@ export function about(classList: string[] = []): Q.Promise<void> {
   return info(body, classList.concat(['about']));
 }
 
-function bodyElement(text: string): m.VirtualElement {
+function bodyElement(text: string): m.VirtualElement<Ctrl> {
   return m('p.body', {}, text);
 }
 
-export function info(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<void> {
-  deferred = Q.defer<void>();
-  var body = (typeof content === "string") ? bodyElement(content) : content;
-  Utils.$.trigger('cheminot:alert', { body: body, classList: classList });
+export function info(content: string | m.VirtualElement<Ctrl>, classList: string[] = []): Q.Promise<string> {
+  deferred = Q.defer<string>();
+  const body = (typeof content === "string") ? bodyElement(content) : content;
+  Toolkit.$.trigger('cheminot:alert:display', { body: body, classList: classList });
   return deferred.promise;
 }
 
-export function error(content: string | m.VirtualElement, classList: string[] = []): Q.Promise<void> {
-  deferred = Q.defer<void>();
-  var body = (typeof content === "string") ? bodyElement(content) : content;
-  Utils.$.trigger('cheminot:alert', { body: body, classList: classList.concat(['error']) });
+export function error(content: string | m.VirtualElement<Ctrl>, classList: string[] = []): Q.Promise<string> {
+  deferred = Q.defer<string>();
+  const body = (typeof content === "string") ? bodyElement(content) : content;
+  Toolkit.$.trigger('cheminot:alert:display', { body: body, classList: classList.concat(['error']) });
   return deferred.promise;
+}
+
+export function prompt(content: string | m.VirtualElement<Ctrl>, buttons: m.VirtualElement<Ctrl>[] = [], classList: string[] = []): Q.Promise<string> {
+  deferred = Q.defer<string>();
+  const body = (typeof content === "string") ? bodyElement(content) : content;
+  const btns = buttons.length ? buttons : [Buttons.YES, Buttons.NO];
+  Toolkit.$.trigger('cheminot:alert:display', { body: body, classList: classList, buttons: btns});
+  return deferred.promise;
+}
+
+/// BUTTONS
+
+export function createButton(key: string, label: string, classList: string[] = []): F<m.VirtualElement<Ctrl>> {
+  return () => {
+    const attrs: m.Attributes = {
+      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
+        if(!isUpdate) {
+          Toolkit.$.touchend(el, (e) => {
+            Toolkit.$.trigger('cheminot:alert:button', { key: key, event: e });
+          });
+        }
+      }
+    }
+    return m(`button.${classList.join('.')}`, attrs, label)
+  }
+}
+
+export module Result {
+  export const OK = 'ok';
+  export const CANCEL = 'cancel';
+  export const YES = 'yes';
+  export const NO = 'no';
+}
+
+export module Buttons {
+  export const OK = createButton(Result.OK, 'OK', ['ok']);
+  export const CANCEL = createButton(Result.CANCEL, 'ANNULER', ['cancel']);
+  export const YES = createButton(Result.YES, 'OUI', ['yes']);
+  export const NO = createButton(Result.NO, 'NON', ['no']);
 }
