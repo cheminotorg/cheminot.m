@@ -184,8 +184,7 @@ function lookForNextDepartures(ctrl: Ctrl): Q.Promise<Departure[]> {
       const lastDeparture = Toolkit.Arr.lastn(departures, stars.length, i + 1);
       const at = lastDeparture ? Toolkit.DateTime.addMinutes(lastDeparture.startTime, 1) : now;
       if(!isScreenFull(ctrl, acc)) {
-        const te = Common.departureBound(at);
-        return native.Cheminot.lookForBestDirectTrip(starred.startId, starred.endId, at, te).then((trip) => {
+        return native.Cheminot.lookForBestDirectTrip(starred.startId, starred.endId, at).then((trip) => {
           const departure = Common.tripToDeparture(trip);
           acc.push(departure);
           return acc;

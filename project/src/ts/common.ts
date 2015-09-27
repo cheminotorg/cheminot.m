@@ -5,7 +5,7 @@ import Q = require('q');
 import moment = require('moment');
 
 export function departureBound(departure: Date): Date {
-  return Toolkit.DateTime.addHours(departure, 24);
+  return Toolkit.DateTime.addHours(departure, 12);
 }
 
 export function tripToDeparture(trip: ArrivalTimes): Departure {

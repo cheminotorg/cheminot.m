@@ -377,22 +377,21 @@ function traceLongTrip(ctrl: Ctrl) {
 
 function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
   ctrl.isComputationInProgress(true);
-  const step = (ctrl: Ctrl, at: Date, retries: number = 2): Q.Promise<StatusCode> => {
+  const step = (ctrl: Ctrl, at: Date): Q.Promise<StatusCode> => {
     if(isMoreItemsNeeded(ctrl)) {
-      const te = departureBound(at);
       let eventuallyTrip: Q.Promise<ArrivalTimes>;
       if(!ctrl.isComputingLongTrip()) {
-        eventuallyTrip = native.Cheminot.lookForBestDirectTrip(ctrl.startStationId(), ctrl.endStationId(), at, te).then((trip) => {
+        eventuallyTrip = native.Cheminot.lookForBestDirectTrip(ctrl.startStationId(), ctrl.endStationId(), at).then((trip) => {
           if(!trip.arrivalTimes.length && !trip.isDirect) {
             ctrl.isComputingLongTrip(true);
             if(!ctrl.isPullUpDisplayed()) showTrace(ctrl);
             m.redraw();
             traceLongTrip(ctrl);
-            return native.Cheminot.lookForBestTrip(ctrl.startStationId(), ctrl.endStationId(), at, te, 1);
+            return native.Cheminot.lookForBestTrip(ctrl.startStationId(), ctrl.endStationId(), at, 1);
           } else return Q(trip);
         });
       } else {
-        eventuallyTrip = native.Cheminot.lookForBestTrip(ctrl.startStationId(), ctrl.endStationId(), at, te, 1);
+        eventuallyTrip = native.Cheminot.lookForBestTrip(ctrl.startStationId(), ctrl.endStationId(), at, 1);
       }
       return eventuallyTrip.then((trip) => {
         if(trip.arrivalTimes.length > 0) {
@@ -406,13 +405,7 @@ function lookForNextDepartures(ctrl: Ctrl, at: Date): Q.Promise<StatusCode> {
           ctrl.lastDepartureTime(departure.startTime);
           return step(ctrl, nextDeparture(ctrl.lastDepartureTime()));
         } else {
-          --retries;
-          if(retries <= 0) {
-            return Q(StatusCode.NO_MORE);
-          } else {
-            ctrl.lastDepartureTime(te);
-            return step(ctrl, nextDeparture(ctrl.lastDepartureTime()), retries);
-          }
+          return Q(StatusCode.NO_MORE);
         }
       });
     } else {
