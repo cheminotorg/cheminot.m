@@ -455,12 +455,22 @@ function isScreenFull(ctrl: Ctrl): boolean {
   const header = <HTMLElement> document.querySelector('#header');
   const [viewportHeight, viewportWidth] = Toolkit.viewportSize();
   const height = Math.max(viewportHeight, viewportWidth);
-  const isFull = (header.offsetHeight + (ctrl.itemHeight() * ctrl.departures().length)) >= height;
-  if(isFull && ctrl.nbItemsPerScreen() == 0) {
-    ctrl.nbItemsPerScreen(ctrl.departures().length);
+  const isFull = (n: number): boolean => {
+    return (header.offsetHeight + (ctrl.itemHeight() * n)) >= height;
   }
-  ctrl.isPullUpDisplayed(isFull);
-  return isFull;
+  const full = isFull(ctrl.departures().length);
+  if(full && ctrl.nbItemsPerScreen() == 0) {
+    const nbItemsPerScreen = (function step(n: number): number {
+      if(isFull(n)) {
+        return step(n-1);
+      } else {
+        return n + 1;
+      }
+    })(ctrl.departures().length);
+    ctrl.nbItemsPerScreen(nbItemsPerScreen);
+  }
+  ctrl.isPullUpDisplayed(full);
+  return full;
 }
 
 function computePullUpBar(iscroll: IScroll): number {
