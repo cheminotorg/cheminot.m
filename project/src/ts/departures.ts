@@ -183,7 +183,7 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
       if(ctrl.displayed()) {
         ctrl.iscroll().refresh();
         if(!isUpdate) {
-          let cached = Cache.getAllTripsFrom(ctrl.startStationId(), ctrl.endStationId(), ctrl.at(), 0, nextDeparture, departureBound).map((departure) => {
+          const cached = Cache.getAllTripsFrom(ctrl.startStationId(), ctrl.endStationId(), ctrl.at(), 0, nextDeparture, departureBound).map((departure) => {
             return Common.tripToDeparture(departure);
           });
           cached.forEach((departure) => ctrl.departures().push(departure));
@@ -452,10 +452,10 @@ function isMoreItemsNeeded(ctrl: Ctrl): boolean {
 }
 
 function isScreenFull(ctrl: Ctrl): boolean {
-  let header = <HTMLElement> document.querySelector('#header');
-  let [viewportHeight, viewportWidth] = Toolkit.viewportSize();
-  let height = Math.max(viewportHeight, viewportWidth);
-  let isFull = (header.offsetHeight + (ctrl.itemHeight() * ctrl.departures().length)) >= height;
+  const header = <HTMLElement> document.querySelector('#header');
+  const [viewportHeight, viewportWidth] = Toolkit.viewportSize();
+  const height = Math.max(viewportHeight, viewportWidth);
+  const isFull = (header.offsetHeight + (ctrl.itemHeight() * ctrl.departures().length)) >= height;
   if(isFull && ctrl.nbItemsPerScreen() == 0) {
     ctrl.nbItemsPerScreen(ctrl.departures().length);
   }
