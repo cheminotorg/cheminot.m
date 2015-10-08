@@ -151,22 +151,22 @@ export module Cheminot {
   }
 
   export function lookForBestDirectTrip(vsId: string, veId: string, at: Date): Q.Promise<ArrivalTimes> {
-    const key = Cache.tripKey(vsId, veId, at, Common.departureBound(at));
-    const step = (t: Date, retries: number): Q.Promise<ArrivalTimes> => {
+    const step = (ts: Date, retries: number): Q.Promise<ArrivalTimes> => {
       if(retries > 0) {
-        const u = Common.departureBound(t);
-        return Cache.getOrSetTrip(key, fetchBestDirectTrip(vsId, veId, t, u)).then((trip) => {
+        const te = Common.departureBound(ts);
+        const key = Cache.tripKey(vsId, veId, ts, te);
+        return Cache.getOrSetTrip(key, fetchBestDirectTrip(vsId, veId, ts, te)).then((trip) => {
           if(trip.arrivalTimes.length > 0) {
             return Q(trip);
           } else {
-            return step(u, retries - 1);
+            return step(te, retries - 1);
           }
         });
       } else {
         throw new Error('Unable to look for best direct trip');
       }
     }
-    return step(at, 3);
+    return step(at, 10);
   }
 
   function fetchBestTrip(vsId: string, veId: string, at: Date, te: Date, max: number): F<Q.Promise<ArrivalTimes>> {
@@ -190,22 +190,22 @@ export module Cheminot {
   }
 
   export function lookForBestTrip(vsId: string, veId: string, at: Date, max: number): Q.Promise<ArrivalTimes> {
-    const key = Cache.tripKey(vsId, veId, at, Common.departureBound(at), max);
-    const step = (t: Date, retries: number): Q.Promise<ArrivalTimes> => {
+    const step = (ts: Date, retries: number): Q.Promise<ArrivalTimes> => {
       if(retries > 0) {
-        const u = Common.departureBound(t);
-        return Cache.getOrSetTrip(key, fetchBestTrip(vsId, veId, t, u, max)).then((trip) => {
+        const te = Common.departureBound(ts);
+        const key = Cache.tripKey(vsId, veId, ts, te, max);
+        return Cache.getOrSetTrip(key, fetchBestTrip(vsId, veId, ts, te, max)).then((trip) => {
           if(trip.arrivalTimes.length > 0) {
             return Q(trip);
           } else {
-            return step(u, retries - 1);
+            return step(te, retries - 1);
           }
         });
       } else {
         throw new Error('Unable to look for best trip');
       }
     }
-    return step(at, 3);
+    return step(at, 10);
   }
 
   export function abort(): Q.Promise<void> {
