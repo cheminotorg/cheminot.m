@@ -13,5 +13,6 @@ cp ../cheminot.db/db/current/* app/platforms/android/assets/
 cp ../cheminot.db/db/current/stops_ttree.json project/www/data/stops_ttree.json
 
 rm app/platforms/android/assets/stops_ttree*
+rm app/platforms/android/assets/cheminotdb.zip
 
 echo "\nDONE!"
