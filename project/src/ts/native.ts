@@ -233,17 +233,10 @@ export module Cheminot {
 
 export module GoogleAnalytics {
 
-  export function debugMode(): Q.Promise<void> {
-    const d = Q.defer<void>();
-    analytics.debugMode(() => d.resolve(null), (e) => d.reject(e));
-    return d.promise;
-  }
-
   export function startTrackerWithId(id: string): Q.Promise<void> {
     const d = Q.defer<void>();
-    if(!Cheminot.isProd()) {
-      const debug = (!Cheminot.isProd()) ? debugMode() : Toolkit.Promise.done();
-      debug.fin(() => analytics.startTrackerWithId(id, () => d.resolve(null), (e) => d.reject(e)));
+    if(Cheminot.isProd()) {
+      analytics.startTrackerWithId(id, () => d.resolve(null), (e) => d.reject(e));
     } else {
       d.resolve(null);
     }
@@ -252,7 +245,7 @@ export module GoogleAnalytics {
 
   export function trackView(screen: string): Q.Promise<void> {
     const d = Q.defer<void>();
-    if(!Cheminot.isProd()) {
+    if(Cheminot.isProd()) {
       analytics.trackView(screen, () => d.resolve(null), (e) => d.reject(e));
     } else {
       d.resolve(null);
@@ -262,7 +255,7 @@ export module GoogleAnalytics {
 
   export function trackException(description: string, fatal: boolean): Q.Promise<void> {
     const d = Q.defer<void>();
-    if(!Cheminot.isProd()) {
+    if(Cheminot.isProd()) {
       analytics.trackException(description, fatal, () => d.resolve(null), (e) => d.reject(e));
     } else {
       d.resolve(null);
@@ -272,7 +265,7 @@ export module GoogleAnalytics {
 
   export function trackEvent(category: string, action: string, label: string, value: number): Q.Promise<void> {
     const d = Q.defer<void>();
-    if(!Cheminot.isProd()) {
+    if(Cheminot.isProd()) {
       analytics.trackEvent(category, action, label, value, () => d.resolve(null), (e) => d.reject(e));
     } else {
       d.resolve(null);
@@ -282,7 +275,7 @@ export module GoogleAnalytics {
 
   export function trackTiming(category: string, interval: number, name: string, label: string): Q.Promise<void> {
     const d = Q.defer<void>();
-    if(!Cheminot.isProd()) {
+    if(Cheminot.isProd()) {
       analytics.trackTiming(category, interval, name, label, () => d.resolve(null), (e) => d.reject(e));
     } else {
       d.resolve(null);
