@@ -68,8 +68,8 @@
       },
       "prod": {
         "id": "m.cheminot.prod",
-        "version": "0.1.8",
-        "version_code": "000108",
+        "version": "0.1.9",
+        "version_code": "000109",
         "product_name": "Cheminot",
         "product_file_name": "cheminot_prod",
         "release": true,
