@@ -515,6 +515,10 @@ declare module "mithril" {
 
       key?: string;
 
+      type?: string;
+
+      id?: string;
+
       /**
        * The class name(s) for this virtual element, as a space-separated list.
        */

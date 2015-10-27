@@ -144,7 +144,7 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement<Ctrl> {
                m("input", _.merge({ name: "start", autocomplete: "off", placeholder: i18n.get('departure') }, initInputStationAttrs(true))),
                m("button", initResetStationAttrs(true))
              ]),
-             m('input.submit', { type: 'submit' }),
+             m("input.submit", { type: 'submit' }, []),
              m("div", { class: "input end"}, [
                m("div.above", inputStationWrapperAttrs),
                m("input", _.merge({ name: "end", autocomplete: "off", placeholder: i18n.get('arrival') }, initInputStationAttrs(false))),

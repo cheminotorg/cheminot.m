@@ -61,7 +61,7 @@ var Assets = {
 };
 
 gulp.task('clean:vendors', function(cb) {
-  del([Assets.vendors.dest], cb);
+  return del([Assets.vendors.dest], cb);
 });
 
 gulp.task('vendors', ['clean:vendors'], function() {
@@ -87,7 +87,7 @@ gulp.task('vendors', ['clean:vendors'], function() {
 });
 
 gulp.task('clean:js', function(cb) {
-  del(Assets.ts.dest.files, cb);
+  return del(Assets.ts.dest.files, cb);
 });
 
 gulp.task('ts', ['clean:js'], function() {
@@ -105,7 +105,7 @@ gulp.task('ts', ['clean:js'], function() {
 });
 
 gulp.task('clean:css', function(cb) {
-  del([Assets.styl.dest.dir], cb);
+  return del([Assets.styl.dest.dir], cb);
 });
 
 gulp.task('styl', ['clean:css'], function() {
@@ -159,26 +159,26 @@ gulp.task('default', ['watch']);
 gulp.task('compile', ['ts', 'styl']);
 
 gulp.task('compress:demo:js', function() {
-  gulp.src(['project/www/js/main.js'])
+  return gulp.src(['project/www/js/main.js'])
     .pipe(gzip())
     .pipe(gulp.dest('project/www/js/'));
 });
 
 gulp.task('compress:demo:data', function() {
-  gulp.src(['project/www/data/*.json'])
+  return gulp.src(['project/www/data/*.json'])
     .pipe(gzip())
     .pipe(gulp.dest('project/www/data/'));
 });
 
 gulp.task('clean:demo', function(cb) {
-  del(Assets.ts.dest.files.concat(['!project/www/js/main.js']), cb);
+  return del(Assets.ts.dest.files.concat(['!project/www/js/main.js']), cb);
 });
 
 gulp.task('compile:demo', function(cb) {
   if(options.mode == 'prod') {
-    runSequence(['requirejs', 'styl'], ['compress:demo:data', 'compress:demo:js'], 'clean:demo', cb);
+    return runSequence(['requirejs', 'styl'], ['compress:demo:data', 'compress:demo:js'], 'clean:demo', cb);
   } else {
-    runSequence('compile', cb);
+    return runSequence('compile', cb);
   }
 });
 
