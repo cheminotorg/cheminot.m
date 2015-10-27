@@ -1,11 +1,11 @@
 {
   "name": "Cheminot",
-  "id": "m.cheminot",
+  "id": "org.cheminot",
   "description": "Consulter les horaires des trains hors ligne.",
   "version": "0.1.1",
   "platforms": [
-    "browser@3.6.0",
-    "android@3.7.2"
+    "browser@4.0.0",
+    "android@4.1.1"
   ],
   "cordova": {
     "preferences": {
@@ -24,8 +24,16 @@
     "android": {
       "manifest": {
         "uses-permission": [
-          { "$": { "android:name":"android.permission.VIBRATE" } },
-          { "$": { "android:name":"android.permission.SEND_SMS" } }
+          {
+            "$": {
+              "android:name": "android.permission.VIBRATE"
+            }
+          },
+          {
+            "$": {
+              "android:name": "android.permission.SEND_SMS"
+            }
+          }
         ]
       }
     },
