@@ -156,7 +156,7 @@ export module Cheminot {
         const te = Common.departureBound(ts);
         const key = Cache.tripKey(vsId, veId, ts, te);
         return Cache.getOrSetTrip(key, fetchBestDirectTrip(vsId, veId, ts, te)).then((trip) => {
-          if(trip.arrivalTimes.length > 0) {
+          if(trip.arrivalTimes.length > 0 || !trip.isDirect) {
             return Q(trip);
           } else {
             return step(te, retries - 1);
