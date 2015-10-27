@@ -15,7 +15,6 @@
       "ShowSplashScreenSpinner": false,
       "HideKeyboardFormAccessoryBar": false,
       "SplashScreen": "screen",
-      "BackgroundColor": "0xffffffff",
       "AutoHideSplashScreen": false,
       "KeyboardShrinksView": true,
       "KeepRunning": true,
@@ -55,10 +54,10 @@
     "browser": "./project/bin/check_browser.js"
   },
   "plugins": {
-    "org.apache.cordova.splashscreen": "https://github.com/apache/cordova-plugin-splashscreen.git#r0.3.4",
     "m.cheminot.plugin": "https://github.com/srenault/m.cheminot.plugin.git",
     "com.danielcwilson.plugins.googleanalytics": "com.danielcwilson.plugins.googleanalytics#r0.6.1",
-    "com.ionic.keyboard": "com.ionic.keyboard#r1.0.4"
+    "com.ionic.keyboard": "com.ionic.keyboard#r1.0.4",
+    "cordova-plugin-splashscreen": "cordova-plugin-splashscreen@2.1.0"
   },
   "configurations": {
     "android": {
