@@ -17,7 +17,6 @@ export function handleError(event: any, source?: string, fileno?: number, column
   const description = `[${Settings.gitVersion}] ${event} at ${source} [${fileno}, ${columnNumber}]`;
   console.error(event.stack ? event.stack : event);
   native.GoogleAnalytics.trackException(description, true);
-  Alert.error(i18n.get('unexpected-error'));
 }
 
 export function debug<T>(t: T): T {
