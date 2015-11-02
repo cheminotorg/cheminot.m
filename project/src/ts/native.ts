@@ -81,6 +81,10 @@ export module Cheminot {
     return document.querySelector('body').hasAttribute('data-demo');
   }
 
+  export function isBrowser(): boolean {
+    return document.querySelector('body').getAttribute('data-platform') === 'browser';
+  }
+
   export function isProd(): boolean {
     return Settings.bundleId.indexOf('prod') > -1;
   }
