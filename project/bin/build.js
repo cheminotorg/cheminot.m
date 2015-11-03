@@ -25,7 +25,10 @@ function mapSettings(settings, platform, configurationName) {
   var flatSettings = {};
 
   for (var k in settings) {
-    if (k !== "configurations") {
+    if (k == 'cordova' && configurationName == 'demo') {
+      flatSettings[k] = settings[k];
+      flatSettings[k]['preferences']['SplashScreen'] = 'images/splashscreen.svg';
+    } else if (k !== "configurations") {
       flatSettings[k] = settings[k];
     } else {
       for (var l in settings[k][platform][configurationName]) {

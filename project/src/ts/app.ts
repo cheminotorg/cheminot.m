@@ -87,7 +87,7 @@ export const component = {
         }
       }
     }
-    return [m('main#viewport', attributes, [
+    return [m('div', attributes, [
       Modals.component.view(ctrl.modals),
       renderHeader(ctrl.header),
       renderSearch(ctrl.search),

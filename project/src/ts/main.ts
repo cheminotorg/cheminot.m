@@ -32,7 +32,7 @@ Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions
     Settings.db = meta;
     Settings.cheminotcVersion = cheminotcVersion;
     m.route.mode = 'hash';
-    m.route(document.body, '/', {
+    m.route(document.querySelector('#viewport'), '/', {
       "/": App.component,
       "/search": App.component,
       "/search/:tab/:start/:end/:at": App.component,
