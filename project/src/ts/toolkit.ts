@@ -6,6 +6,8 @@ import native = require('native');
 import Alert = require('alert');
 import i18n = require('i18n');
 
+export const noop = () => {};
+
 export function viewportSize(): [number, number] {
   return [
     Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
@@ -17,11 +19,6 @@ export function handleError(event: any, source?: string, fileno?: number, column
   const description = `[${Settings.gitVersion}] ${event} at ${source} [${fileno}, ${columnNumber}]`;
   console.error(event.stack ? event.stack : event);
   native.GoogleAnalytics.trackException(description, true);
-}
-
-export function debug<T>(t: T): T {
-  Log.debug(t);
-  return t;
 }
 
 export function pad(n: number, width: number): string {
@@ -172,30 +169,6 @@ export module m {
         return _.isUndefined(x) || _.isNull(x) || !!x;
       });
     }
-  }
-}
-
-export module Log {
-
-  export function error<A>(message: A) {
-    if(self.console) {
-      console.error(message);
-    } else if(self.alert) {
-      alert(message);
-    }
-  }
-
-  export function info<A>(message: A) {
-    if(self.console) {
-      console.log(message);
-    } else if(self.alert) {
-      alert('INFO : ' + message);
-    }
-  }
-
-  export function debug<A>(message: A): A {
-    info(message);
-    return message;
   }
 }
 
