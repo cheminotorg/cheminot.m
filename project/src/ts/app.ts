@@ -9,6 +9,7 @@ import _ = require('lodash');
 import moment = require('moment');
 import Modals = require('modals');
 import Alert = require('alert');
+import Touch = require('ui/touch');
 
 export type Ctrl = {
   modals: Modals.Ctrl;
@@ -22,9 +23,7 @@ export type Ctrl = {
 function renderHeader(ctrl: Header.Ctrl): m.VirtualElement<Header.Ctrl> {
   const attrs = Toolkit.m.attributes({})({ id: "header" }, (el: HTMLElement, isUpdate: boolean) => {
     if(!isUpdate) {
-      Toolkit.$.longtouch(el, 3000, () => {
-        Alert.about();
-      });
+      Touch.onlong(el, () => Alert.about());
     }
   });
 

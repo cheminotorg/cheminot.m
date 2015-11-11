@@ -326,31 +326,4 @@ export module $ {
     });
     return el;
   }
-
-  export function longtouch(el: HTMLElement, ms: number, handler: (e: Event) => void): Element {
-    let t: number;
-
-    el.addEventListener('touchstart', (e) => {
-      if(!el.classList.contains('press')) {
-        el.classList.add('press');
-        t = setTimeout(() => {
-          el.classList.add('press-done');
-          if(el.classList.contains('press')) {
-            navigator.vibrate && navigator.vibrate(300);
-          }
-        }, ms);
-      }
-    });
-
-    el.addEventListener('touchend', (e) =>{
-      if(el.classList.contains('press-done')) {
-        handler(e);
-      }
-      clearTimeout(t);
-      el.classList.remove('press');
-      el.classList.remove('press-done');
-    });
-
-    return el;
-  }
 }

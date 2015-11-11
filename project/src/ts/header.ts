@@ -6,6 +6,7 @@ import Cache = require('cache');
 import Preferences = require('preferences');
 import Alert = require('alert');
 import i18n = require('i18n');
+import mdl = require('ui/mdl');
 
 export type Ctrl = {
   starred: (value?: boolean) => boolean;
@@ -96,6 +97,11 @@ export const component: m.Component<Ctrl> = {
       };
       v.push(m('button.search', attrs));
     }
+
+
+    const button = mdl.button("Test", (e: TouchEvent) => console.log('onTouch'), () => console.log('onHold'));
+
+    v.push(button);
 
     if(ctrl.isTripView()) {
       const [vs, ve, at, te, max] = Cache.decomposeTripKey(ctrl.tripId());

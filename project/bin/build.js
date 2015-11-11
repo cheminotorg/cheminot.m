@@ -25,7 +25,7 @@ function mapSettings(settings, platform, configurationName) {
   var flatSettings = {};
 
   for (var k in settings) {
-    if (k == 'cordova' && configurationName == 'demo') {
+    if (k == 'cordova' && platform == 'browser') {
       flatSettings[k] = settings[k];
       flatSettings[k]['preferences']['SplashScreen'] = 'images/splashscreen.svg';
     } else if (k !== "configurations") {

@@ -77,9 +77,11 @@ declare var Settings: Settings;
 
 declare module cordova {
 
+  let platformId: string;
+
   module plugins {
     module Keyboard {
-      var isVisible: boolean;
+      let isVisible: boolean;
       function show(): void;
       function close(): void;
     }
@@ -108,6 +110,12 @@ declare type Analytics = {
   trackException(description: string, fatal: boolean, success: () => void, error: (e: string) => void): void;
   trackEvent(category: string, action: string, label: string, value: number, success: () => void, error: (e: string) => void): void;
   trackTiming(category: string, interval: number, name: string, label: string, success: () => void, error: (e: string) => void): void;
+}
+
+declare var componentHandler: ComponentHandler;
+
+declare type ComponentHandler = {
+  upgradeElement(el: HTMLElement): void;
 }
 
 declare var analytics: Analytics
