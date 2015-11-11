@@ -19,6 +19,6 @@ function btn(label: string, config: (el: HTMLElement, isUpdate: boolean, context
 
 export function button(label: string, tapHandler: (e: TouchEvent) => void, holdHandler: () => void = Toolkit.noop): m.VirtualElement<Button> {
 
-  return btn(label, Touch.m.on(tapHandler, holdHandler));
+  return btn(label, Touch.m.ontap(tapHandler, holdHandler));
 
 }

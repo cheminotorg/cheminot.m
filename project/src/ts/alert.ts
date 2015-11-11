@@ -3,6 +3,7 @@ import Q = require('q');
 import Toolkit = require('toolkit');
 import _ = require('lodash');
 import moment = require('moment');
+import Touch = require('ui/touch');
 
 let deferred: Q.Deferred<string>;
 
@@ -124,13 +125,9 @@ export function prompt(content: string | m.VirtualElement<Ctrl>, buttons: m.Virt
 export function createButton(key: string, label: string, classList: string[] = []): F<m.VirtualElement<Ctrl>> {
   return () => {
     const attrs: m.Attributes = {
-      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
-        if(!isUpdate) {
-          Toolkit.$.touchend(el, (e) => {
-            Toolkit.$.trigger('cheminot:alert:button', { key: key, event: e });
-          });
-        }
-      }
+      config: Touch.m.ontap((e) => {
+        Toolkit.$.trigger('cheminot:alert:button', { key: key, event: e })
+      })
     }
     return m(`button.${classList.join('.')}`, attrs, label)
   }

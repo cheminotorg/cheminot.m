@@ -13,6 +13,7 @@ import Cache = require('cache');
 import i18n = require('i18n');
 import Alert = require('alert');
 import Zanimo = require('Zanimo');
+import Touch = require('ui/touch');
 
 export type Ctrl = {
   scope: () => HTMLElement;
@@ -118,11 +119,7 @@ function renderFakeDepartureItem(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 function renderDepartureList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   return ctrl.departures().map((departure, index) => {
     const attrs: m.Attributes = {
-      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
-        if(!isUpdate) {
-          Toolkit.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
-        }
-      },
+      config: Touch.m.ontap(_.partial(ctrl.onDepartureSelected, ctrl, departure)),
       key: departure.id,
       class: (index + 1 === ctrl.departures().length) ? 'last' : ''
     };

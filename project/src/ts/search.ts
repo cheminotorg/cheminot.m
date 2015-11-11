@@ -11,6 +11,7 @@ import i18n = require('i18n');
 import native = require('native');
 import DatePicker = require('datepicker');
 import TimePicker = require('timepicker');
+import Touch = require('ui/touch');
 
 export type Ctrl = {
   scope: () => HTMLElement;
@@ -55,11 +56,7 @@ function formatTime(date: Date) {
 /// RENDER TABS
 
 function renderTabs(ctrl: Ctrl): m.VirtualElement<Ctrl> {
-  const config = (el: HTMLElement, isUpdate: boolean) => {
-    if(!isUpdate) {
-      Toolkit.$.touchend(el, _.partial(ctrl.onTabTouched, ctrl));
-    }
-  }
+  const config = Touch.m.ontap(_.partial(ctrl.onTabTouched, ctrl));
 
   const todayAttrs = Toolkit.m.attributes
   ({ 'class:selected': ctrl.isTodayTabSelected() })
@@ -86,11 +83,7 @@ function renderTabs(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function renderInputsStation(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const inputStationWrapperAttrs = {
-    config: (el: HTMLElement, isUpdate: boolean, context: m.Context) => {
-      if(!isUpdate) {
-        Toolkit.$.touchendOne(el, _.partial(ctrl.onInputStationTouched, ctrl));
-      }
-    }
+    config: Touch.m.ontap(_.partial(ctrl.onInputStationTouched, ctrl))
   };
 
   const initInputStationAttrs = (isStartStation: boolean) => {
@@ -120,11 +113,7 @@ function renderInputsStation(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
     const attrs = Toolkit.m.attributes
     ({ 'class:focus': isSelected || isEnabled })
-    ({ class: 'font reset focus', type: 'button' }, (el: HTMLElement, isUpdate: boolean) => {
-      if(!isUpdate) {
-        Toolkit.$.touchend(el, _.partial(ctrl.onResetStationTouched, ctrl));
-      }
-    });
+    ({ class: 'font reset focus', type: 'button' }, Touch.m.ontap(_.partial(ctrl.onResetStationTouched, ctrl)));
 
     return attrs;
   };
@@ -159,7 +148,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
-          Toolkit.$.touchend(el, _.partial(ctrl.onStationSelected, ctrl));
+          Touch.ontap(el, _.partial(ctrl.onStationSelected, ctrl))(context)
         }
         if((index + 1) === ctrl.stations().length) {
           ctrl.adaptWrapperTop(ctrl);
@@ -207,28 +196,16 @@ function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 function renderDateTime(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
   const inputTimeAttrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
-      if(!isUpdate) {
-        Toolkit.$.touchend(el, _.partial(ctrl.onTimeTouched, ctrl));
-      }
-    }
+    config: Touch.m.ontap(_.partial(ctrl.onTimeTouched, ctrl))
   };
 
   const dateSelectorAttrs = Toolkit.m.attributes
   ({ 'class:other':  ctrl.isOtherTabSelected() })
-  ({ 'class': 'date other' }, (el: HTMLElement, isUpdate: boolean) => {
-    if(!isUpdate) {
-      Toolkit.$.touchend(el, _.partial(ctrl.onDateTouched, ctrl));
-    }
-  });
+  ({ 'class': 'date other' }, Touch.m.ontap(_.partial(ctrl.onDateTouched, ctrl)));
 
   const submitAttrs = Toolkit.m.attributes
   ({ 'class:enabled': canBeSubmitted(ctrl), 'class:disabled': !canBeSubmitted(ctrl)})
-  ({ 'class': 'submit enabled disabled'}, (el: HTMLElement, isUpdate: boolean) => {
-    if(!isUpdate) {
-      Toolkit.$.touchend(el, _.partial(ctrl.onSubmitTouched, ctrl));
-    }
-  });
+  ({ 'class': 'submit enabled disabled'}, Touch.m.ontap(_.partial(ctrl.onSubmitTouched, ctrl)));
 
   return m("ul", { class: 'datetime'}, [
     m("li", dateSelectorAttrs, [
@@ -587,13 +564,7 @@ function resetInputStationsPosition(ctrl: Ctrl, inputStation: HTMLInputElement):
   m.redraw();
   return native.Keyboard.close().then(() => {
     moveDownViewport(ctrl).then(() => {
-      showInput(ctrl).then(() => {
-        showDateTimePanel(ctrl).then(() => {
-          const inputWrapper = <HTMLElement> resetButton.parentElement;
-          const above = <HTMLElement> inputWrapper.querySelector('.above');
-          Toolkit.$.touchendOne(above, _.partial(ctrl.onInputStationTouched, ctrl));
-        });
-      });
+      showInput(ctrl).then(() => showDateTimePanel(ctrl));
     });
   });
 }

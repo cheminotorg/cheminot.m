@@ -7,6 +7,7 @@ import Preferences = require('preferences');
 import Alert = require('alert');
 import i18n = require('i18n');
 import mdl = require('ui/mdl');
+import Touch = require('ui/touch');
 
 export type Ctrl = {
   starred: (value?: boolean) => boolean;
@@ -89,11 +90,7 @@ export const component: m.Component<Ctrl> = {
 
     if(ctrl.isNowView() && Preferences.hasStars()) {
       const attrs: m.Attributes = {
-        config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
-          if(!isUpdate) {
-            Toolkit.$.touchend(el, _.partial(ctrl.onSearch, ctrl));
-          }
-        }
+        config: Touch.m.ontap(_.partial(ctrl.onStarred, ctrl))
       };
       v.push(m('button.search', attrs));
     }
@@ -107,11 +104,7 @@ export const component: m.Component<Ctrl> = {
       const [vs, ve, at, te, max] = Cache.decomposeTripKey(ctrl.tripId());
       if(max === 0) { // Only direct trip can be starred
         const starsAttrs: m.Attributes = {
-          config: (el: HTMLElement, isUpdate: boolean, context: Object) => {
-            if(!isUpdate) {
-              Toolkit.$.touchend(el, _.partial(ctrl.onStarred, ctrl));
-            }
-          }
+          config: Touch.m.ontap(_.partial(ctrl.onStarred, ctrl))
         };
         v.push(m('button.stars' + (ctrl.starred() ? '.starred' : ''), starsAttrs));
       }

@@ -5,7 +5,7 @@ const HOLD_DURATION = 600;
 const SCROLL_TOLERANCE = 8;
 const ACTIVE_CLASS = 'active';
 
-type UnbindFunction = () => void;
+type UnbindFunction = (context: mithril.Context) => void;
 
 function hasContextMenu() {
   return cordova.platformId !== 'ios';
@@ -18,7 +18,7 @@ declare type Boundaries = {
   maxY: number;
 }
 
-export function TouchHandler(el: HTMLElement, tapHandler: (e: Event) => void, holdHandler: () => void, scrollX: boolean, scrollY: boolean, touchEndFeedback: boolean): UnbindFunction {
+export function TouchHandler(el: HTMLElement, tapHandler: (e: Event) => void, holdHandler: () => void, scrollX: boolean, scrollY: boolean, touchEndFeedback: boolean): () => void {
   let startX: number, startY: number, boundaries: Boundaries, active: boolean, holdTimeoutID: number;
 
   if (typeof tapHandler !== 'function')
@@ -120,31 +120,35 @@ export function TouchHandler(el: HTMLElement, tapHandler: (e: Event) => void, ho
   };
 }
 
-export function on(el: HTMLElement, tapHandler: (e: Event) => void, holdHandler:() => void = Toolkit.noop, scrollX: boolean = false, scrollY: boolean = false, touchEndFeedback: boolean = true): UnbindFunction {
-  return TouchHandler(el, tapHandler, holdHandler, scrollX, scrollY, touchEndFeedback);
+export function ontap(el: HTMLElement, tapHandler: (e: Event) => void, holdHandler:() => void = Toolkit.noop, scrollX: boolean = false, scrollY: boolean = false, touchEndFeedback: boolean = true): UnbindFunction {
+  const unbind = TouchHandler(el, tapHandler, holdHandler, scrollX, scrollY, touchEndFeedback);
+  return (context: mithril.Context) => {
+    context.onunload = () => {
+      unbind();
+    }
+  };
 }
 
-export function onlong(el: HTMLElement, holdHandler:() => void = Toolkit.noop, scrollX: boolean = false, scrollY: boolean = false, touchEndFeedback: boolean = true): UnbindFunction {
-  return on(el, Toolkit.noop, holdHandler, scrollX, scrollY, touchEndFeedback);
+export function onlongtap(el: HTMLElement, holdHandler:() => void = Toolkit.noop, scrollX: boolean = false, scrollY: boolean = false, touchEndFeedback: boolean = true): UnbindFunction {
+  return ontap(el, Toolkit.noop, holdHandler, scrollX, scrollY, touchEndFeedback);
 }
 
-export function onX(el: HTMLElement, tapHandler: (e: TouchEvent) => void, holdHandler: () => void, touchEndFeedback: boolean = true): UnbindFunction {
-  return on(el, tapHandler, holdHandler, true, false, touchEndFeedback);
+export function ontapX(el: HTMLElement, tapHandler: (e: TouchEvent) => void, holdHandler: () => void, touchEndFeedback: boolean = true): UnbindFunction {
+  return ontap(el, tapHandler, holdHandler, true, false, touchEndFeedback);
 };
 
-export function onY(el: HTMLElement, tapHandler: (e: TouchEvent) => void, holdHandler: () => void, touchEndFeedback: boolean = true): UnbindFunction {
-  return on(el, tapHandler, holdHandler, false, true, touchEndFeedback);
+export function ontapY(el: HTMLElement, tapHandler: (e: TouchEvent) => void, holdHandler: () => void, touchEndFeedback: boolean = true): UnbindFunction {
+  return ontap(el, tapHandler, holdHandler, false, true, touchEndFeedback);
 };
 
 export module m {
 
-  export function on(tapHandler: (e: Event) => void, holdHandler:() => void = Toolkit.noop, scrollX: boolean = false, scrollY: boolean = false, touchEndFeedback: boolean = true) {
+  export function ontap(tapHandler: (e: Event) => void, holdHandler:() => void = Toolkit.noop, scrollX: boolean = false, scrollY: boolean = false, touchEndFeedback: boolean = true) {
     return (el: HTMLElement, isUpdate: boolean, context: mithril.Context) => {
       if (!isUpdate) {
-        var unbind = TouchHandler(el, tapHandler, holdHandler, scrollX, scrollY, touchEndFeedback);
+        const unbind = TouchHandler(el, tapHandler, holdHandler, scrollX, scrollY, touchEndFeedback);
         context.onunload = () => {
           unbind();
-          unbind = null;
         };
       }
     };

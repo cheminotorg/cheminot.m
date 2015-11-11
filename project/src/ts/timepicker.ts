@@ -4,6 +4,7 @@ import i18n = require('i18n');
 import _ = require('lodash');
 import Q = require('q');
 import Toolkit = require('toolkit');
+import Touch = require('ui/touch');
 
 let deferred: Q.Deferred<Date>;
 
@@ -28,11 +29,7 @@ function renderTitle(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function renderHour(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
-      if(!isUpdate) {
-        Toolkit.$.touchend(el, _.partial(ctrl.onHourChange, ctrl));
-      }
-    }
+    config: Touch.m.ontap(_.partial(ctrl.onHourChange, ctrl))
   };
 
   return m('div.hour', {} , [
@@ -44,11 +41,7 @@ function renderHour(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
 function renderMinute(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const attrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
-      if(!isUpdate) {
-        Toolkit.$.touchend(el, _.partial(ctrl.onMinuteChange, ctrl));
-      }
-    }
+    config: Touch.m.ontap(_.partial(ctrl.onMinuteChange, ctrl))
   };
 
   return m('div.minute', {}, [
@@ -61,11 +54,7 @@ function renderMinute(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const getAttrs = (handler: (ctrl: Ctrl, e: Event) => void) => {
     return {
-      config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
-        if(!isUpdate) {
-          Toolkit.$.touchend(el, _.partial(handler, ctrl));
-        }
-      }
+      config: Touch.m.ontap(_.partial(handler, ctrl))
     }
   };
 

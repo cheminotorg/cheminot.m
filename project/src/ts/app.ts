@@ -23,7 +23,7 @@ export type Ctrl = {
 function renderHeader(ctrl: Header.Ctrl): m.VirtualElement<Header.Ctrl> {
   const attrs = Toolkit.m.attributes({})({ id: "header" }, (el: HTMLElement, isUpdate: boolean) => {
     if(!isUpdate) {
-      Touch.onlong(el, () => Alert.about());
+      Touch.onlongtap(el, () => Alert.about());
     }
   });
 

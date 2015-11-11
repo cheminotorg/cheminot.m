@@ -10,6 +10,7 @@ import Q = require('q');
 import _ = require('lodash');
 import Cache = require('cache');
 import i18n = require('i18n');
+import Touch = require('ui/touch');
 
 let timerId: number;
 
@@ -51,7 +52,7 @@ function renderDepartureItems(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
     const attrs: m.Attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
-          Toolkit.$.touchend(el, _.partial(ctrl.onDepartureSelected, ctrl, departure));
+          Touch.ontap(el, _.partial(ctrl.onDepartureSelected, ctrl, departure))(context);
           const remaining = Toolkit.DateTime.diff(Toolkit.DateTime.now(), departure.startTime);
           setTimeout(() => m.redraw(), remaining);
         }
@@ -124,11 +125,7 @@ function renderDeparturesList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
 function renderNothing(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const addStarBtnAttrs: m.Attributes = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
-      if(!isUpdate) {
-        Toolkit.$.touchend(el, _.partial(ctrl.onGoToSearchTouched, ctrl));
-      }
-    },
+    config: Touch.m.ontap(_.partial(ctrl.onGoToSearchTouched, ctrl))
   };
   return [m('div.nothing', {}, [
     m('div.description', {}, m('p', {}, i18n.get('stars-empty'))),

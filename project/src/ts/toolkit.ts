@@ -161,7 +161,7 @@ export module m {
     return _prop(value, f, scope);
   }
 
-  export function attributes(mask: StringMap<boolean>): (obj: Object, config?: (el: HTMLElement, isUpdate: boolean) => void) => Object {
+  export function attributes(mask: StringMap<boolean>): (obj: Object, config?: (el: HTMLElement, isUpdate: boolean, context: mithril.Context) => void) => Object {
     return (obj: mithril.Attributes, config?: (el: HTMLElement, isUpdate: boolean) => void) => {
       if(config) obj.config = config;
       return Obj.filter(obj, (path) => {
@@ -287,22 +287,6 @@ export module $ {
       el.addEventListener('touchstart', handler);
     } else {
       el.addEventListener('click', handler);
-    }
-  }
-
-  export function touchend(el: HTMLElement, handler: (e: Event) => void): void {
-    if(Detectizr.isMobile()) {
-      el.addEventListener('touchend', handler);
-    } else {
-      el.addEventListener('click', handler);
-    }
-  }
-
-  export function touchendOne(el: HTMLElement, handler: (e: Event) => void): void {
-    if(Detectizr.isMobile()) {
-      one(el, 'touchend', handler);
-    } else {
-      one(el, 'click', handler);
     }
   }
 
