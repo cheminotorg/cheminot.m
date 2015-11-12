@@ -90,15 +90,11 @@ export const component: m.Component<Ctrl> = {
 
     if(ctrl.isNowView() && Preferences.hasStars()) {
       const attrs: m.Attributes = {
+        class: 'search',
         config: Touch.m.ontap(_.partial(ctrl.onSearch, ctrl))
       };
-      v.push(m('button.search', attrs));
+      v.push(mdl.Button.search(attrs));
     }
-
-
-    const button = mdl.button("Test", (e: TouchEvent) => console.log('onTouch'), () => console.log('onHold'));
-
-    v.push(button);
 
     if(ctrl.isTripView()) {
       const [vs, ve, at, te, max] = Cache.decomposeTripKey(ctrl.tripId());

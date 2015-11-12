@@ -11,6 +11,7 @@ import _ = require('lodash');
 import Cache = require('cache');
 import i18n = require('i18n');
 import Touch = require('ui/touch');
+import mdl = require('ui/mdl');
 
 let timerId: number;
 
@@ -37,7 +38,7 @@ function renderDepartureItem(ctrl: Ctrl, departure: Departure, attrs: m.Attribut
     }
   });
 
-  return m('li', attrs, [
+  return mdl.listItem(attrs, [
       m('div.trip', {}, [
         m('span.start', {}, departure.startName),
         m('span.end', {}, departure.endName)
@@ -54,6 +55,7 @@ function renderDepartureItems(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
         if(!isUpdate) {
           Touch.ontap(el, _.partial(ctrl.onDepartureSelected, ctrl, departure))(context);
           const remaining = Toolkit.DateTime.diff(Toolkit.DateTime.now(), departure.startTime);
+          componentHandler.upgradeElement(el);
           setTimeout(() => m.redraw(), remaining);
         }
       },

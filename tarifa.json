@@ -56,9 +56,9 @@
   },
   "plugins": {
     "m.cheminot.plugin": "https://github.com/srenault/m.cheminot.plugin.git",
-    "com.danielcwilson.plugins.googleanalytics": "com.danielcwilson.plugins.googleanalytics#r0.6.1",
     "com.ionic.keyboard": "com.ionic.keyboard#r1.0.4",
-    "cordova-plugin-splashscreen": "cordova-plugin-splashscreen@2.1.0"
+    "cordova-plugin-splashscreen": "cordova-plugin-splashscreen@2.1.0",
+    "com.danielcwilson.plugins.googleanalytics": "com.danielcwilson.plugins.googleanalytics#r0.6.1"
   },
   "configurations": {
     "android": {

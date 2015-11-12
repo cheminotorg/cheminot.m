@@ -12,6 +12,7 @@ import native = require('native');
 import DatePicker = require('datepicker');
 import TimePicker = require('timepicker');
 import Touch = require('ui/touch');
+import mdl = require('ui/mdl');
 
 export type Ctrl = {
   scope: () => HTMLElement;
@@ -25,7 +26,6 @@ export type Ctrl = {
   onTimeTouched: (ctrl: Ctrl, e: Event) => void;
   onInputStationKeyUp: (ctrl: Ctrl, e: Event) => void;
   onScrollStations: (ctrl: Ctrl, e: Event) => void;
-  isScrollingStations: (value?: boolean) => boolean;
   inputStationStartTerm: (value?: string) => string;
   inputStationEndTerm: (value?: string) => string;
   inputStationStartSelected: (value?: string) => string;
@@ -164,7 +164,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     const left = name.substring(0, matchedAt);
     const match = name.substring(matchedAt, matchedAt + term.length)
     const right = name.substring(matchedAt + term.length)
-    return m('li', _.merge({ "data-id": station.id, "data-name": name }, stationAttrs(index)),
+    return mdl.listItem(_.merge({ "data-id": station.id, "data-name": name }, stationAttrs(index)),
              m('div', {},
                m('span', {}, [
                  left,
@@ -344,27 +344,9 @@ export const component: m.Component<Ctrl> = {
 
       isViewportUp: m.prop(false),
 
-      isScrollingStations: Toolkit.m.prop(false, (isScrolling) => {
-        if(isScrolling) {
-          document.body.classList.add('scrolling');
-        } else {
-          document.body.classList.remove('scrolling');
-        }
-      }),
-
       iscroll: _.once(function() {
         const wrapper = this.scope().querySelector('#wrapper');
         const iscroll = new IScroll(wrapper);
-
-        iscroll.on('scrollStart', () => {
-          this.isScrollingStations(true);
-          iscroll.options.momentum = !native.Keyboard.isVisible();
-        });
-
-        iscroll.on('scrollEnd', () => {
-          this.isScrollingStations(false);
-          iscroll.options.momentum = !native.Keyboard.isVisible();
-        });
         return iscroll;
       }),
 
@@ -378,21 +360,19 @@ export const component: m.Component<Ctrl> = {
       stations: m.prop([]),
 
       onStationSelected: (ctrl: Ctrl, e: Event) => {
-        if(!ctrl.isScrollingStations()) {
-          const station = <HTMLElement> e.currentTarget;
-          const id = station.getAttribute('data-id');
-          const name = station.getAttribute('data-name');
-          const inputStation = currentInputStation(ctrl);
-          ctrl.stations([]);
-          setInputStationValue(ctrl, inputStation, name);
-          setInputStationSelected(ctrl, inputStation, id);
-          resetInputStationsPosition(ctrl, inputStation);
-          window.parent.postMessage({
-            event: 'cheminot:selectstop',
-            stopId: id
-          }, window.location.origin);
-          m.redraw();
-        }
+        const station = <HTMLElement> e.currentTarget;
+        const id = station.getAttribute('data-id');
+        const name = station.getAttribute('data-name');
+        const inputStation = currentInputStation(ctrl);
+        ctrl.stations([]);
+        setInputStationValue(ctrl, inputStation, name);
+        setInputStationSelected(ctrl, inputStation, id);
+        resetInputStationsPosition(ctrl, inputStation);
+        window.parent.postMessage({
+          event: 'cheminot:selectstop',
+          stopId: id
+        }, window.location.origin);
+        m.redraw();
       },
 
       onInputStationSubmit: (ctrl: Ctrl, e: Event) => {

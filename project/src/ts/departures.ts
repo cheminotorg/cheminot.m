@@ -14,6 +14,7 @@ import i18n = require('i18n');
 import Alert = require('alert');
 import Zanimo = require('Zanimo');
 import Touch = require('ui/touch');
+import mdl = require('ui/mdl');
 
 export type Ctrl = {
   scope: () => HTMLElement;
@@ -33,7 +34,6 @@ export type Ctrl = {
   currentPageSize: (value?: number) => number;
   at: (value?: Date) => Date;
   isComputingLongTrip: (value?: boolean) => boolean;
-  isScrollingDepartures: (value?: boolean) => boolean;
   isComputationInProgress: (value?: boolean) => boolean;
   iscroll: () => IScroll;
 }
@@ -91,7 +91,7 @@ function renderLoading(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 }
 
 function renderDepartureItem(departure: Departure, attrs: m.Attributes): m.VirtualElement<Ctrl> {
-  return m('li', attrs, [
+  return mdl.listItem(attrs, [
     m('div.wrapper', {}, [
       m('div.meta', {}, renderMeta(departure)),
       m('div.start-end', {}, [
@@ -235,10 +235,6 @@ export const component: m.Component<Ctrl> = {
           }
         });
 
-        iscroll.on('scrollStart', () => {
-          this.isScrollingDepartures(true);
-        });
-
         iscroll.on('scroll', () => {
           if(!this.isPullUpLoading()) {
             this.pullUpProgress(computePullUpBar(iscroll));
@@ -254,7 +250,6 @@ export const component: m.Component<Ctrl> = {
         });
 
         iscroll.on('scrollEnd', () => {
-          this.isScrollingDepartures(false);
           if(this.isPullUpFlip() && !this.isPullUpLoading()) {
             this.isPullUpLoading(true);
             this.pullUpLabel(i18n.get('loading'));
@@ -283,14 +278,12 @@ export const component: m.Component<Ctrl> = {
       currentPageSize: m.prop(0),
 
       onDepartureSelected: (ctrl: Ctrl, departure: Departure, e: Event) => {
-        if(!ctrl.isScrollingDepartures()) {
-          if(ctrl.isComputationInProgress()) {
-            native.Cheminot.abort();
-            hideHolo(ctrl);
-          }
-          ctrl.isComputationInProgress(false);
-          m.route(Routes.trip(departure.id));
+        if(ctrl.isComputationInProgress()) {
+          native.Cheminot.abort();
+          hideHolo(ctrl);
         }
+        ctrl.isComputationInProgress(false);
+        m.route(Routes.trip(departure.id));
       },
 
       isPullUpDisplayed: m.prop(false),
@@ -317,15 +310,7 @@ export const component: m.Component<Ctrl> = {
 
       isComputingLongTrip: m.prop(false),
 
-      isComputationInProgress: m.prop(false),
-
-      isScrollingDepartures: Toolkit.m.prop(false, (isScrolling) => {
-        if(isScrolling) {
-          document.body.classList.add('scrolling');
-        } else {
-          document.body.classList.remove('scrolling');
-        }
-      })
+      isComputationInProgress: m.prop(false)
     };
 
     if(ctrl.displayed()) {

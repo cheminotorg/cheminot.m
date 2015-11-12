@@ -2,23 +2,71 @@ import Touch = require('ui/touch');
 import m = require('mithril');
 import Toolkit = require('toolkit');
 
-export type Button = {}
+function mergeClassList(attributes: m.Attributes, classList: string[]): m.Attributes {
 
-function btn(label: string, config: (el: HTMLElement, isUpdate: boolean, context: m.Context) => void): m.VirtualElement<Button> {
+  const cl = classList.join(' ');
 
-  const classList = ['button', 'mdl-button', 'mdl-js-button', 'mdl-button--raised', 'mdl-js-ripple-effect', 'mdl-button--accent'].join('.');
+  attributes.class = attributes.class ? attributes.class + ' ' + cl : cl;
 
-  return m(classList, { config: (el: HTMLElement, isUpdate: boolean, context: m.Context) => {
+  return attributes;
+
+}
+
+function component<T, U, V>(tag: string, classList: string[], attributes: m.Attributes, ...children: Array<string | m.VirtualElement<T> | m.Component<T>>): m.VirtualElement<V> {
+
+  attributes = mergeClassList(attributes, classList);
+
+  const mdlConfig = (el: HTMLElement, isUpdate: boolean, context: m.Context, vdom: m.VirtualElement<V>) => {
 
     if(!isUpdate) componentHandler.upgradeElement(el);
 
-    config && config(el, isUpdate, context);
+  }
 
-  }}, label);
+  if(attributes.config) {
+
+    const originalConfig: m.ElementConfig = attributes.config;
+
+    attributes.config = (el: HTMLElement, isUpdate: boolean, context: m.Context, vdom: m.VirtualElement<ListItem>) => {
+
+      originalConfig(el, isUpdate, context, vdom);
+
+      mdlConfig(el, isUpdate, context, vdom);
+
+    }
+  } else {
+
+    attributes.config = mdlConfig;
+
+  }
+
+  return m(tag, attributes, children);
 }
 
-export function button(label: string, tapHandler: (e: TouchEvent) => void, holdHandler: () => void = Toolkit.noop): m.VirtualElement<Button> {
+export type Button = {}
 
-  return btn(label, Touch.m.ontap(tapHandler, holdHandler));
+export function button<T>(attributes: m.Attributes, ...children: Array<string | m.VirtualElement<T> | m.Component<T>>): m.VirtualElement<Button> {
 
+  const classList = ['button', 'mdl-button', 'mdl-js-button', 'mdl-button--raised', 'mdl-js-ripple-effect', 'mdl-button--accent'];
+
+  return component('button', classList, attributes, children);
+}
+
+export module Button {
+
+  export function search(attributes: m.Attributes): m.VirtualElement<Button> {
+
+    const classList = ['mdl-button', 'mdl-js-button', 'mdl-button--icon'];
+
+    return component('button', classList, attributes, m('i.material-icons', {}, 'search'));
+  }
+}
+
+
+export type ListItem = {}
+
+export function listItem<T>(attributes: m.Attributes, ...children: Array<string | m.VirtualElement<T> | m.Component<T>>): m.VirtualElement<ListItem> {
+
+  const classList = ['mdl-list__item', 'mdl-js-list__item', 'mdl-js-ripple-effect'];
+
+  return component('li', classList, attributes, children);
 }
