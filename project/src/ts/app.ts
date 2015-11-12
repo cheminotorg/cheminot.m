@@ -81,7 +81,7 @@ export const component = {
           document.querySelector('#viewport').classList.add('ready');
           setTimeout(() => {
             window.parent.postMessage({ event: 'cheminot:ready' }, window.location.origin);
-            Toolkit.$.trigger('cheminot:ready')
+            Toolkit.Event.trigger('cheminot:ready')
           }, 200);
         }
       }

@@ -73,9 +73,9 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
 
   const attrs = Toolkit.m.attributes
   ({ 'class:fade-in': ctrl.displayed()})
-  ({ 'class': 'fade-in' }, (el: HTMLElement, isUpdate: boolean) => {
+  ({ 'class': 'fade-in' }, (el: HTMLElement, isUpdate: boolean, context: m.Context) => {
     if(!isUpdate) {
-      Toolkit.$.bindonce('cheminot:timepicker', _.partial(ctrl.onDisplay, ctrl));
+      Toolkit.Event.bind('cheminot:timepicker', _.partial(ctrl.onDisplay, ctrl))(context);
     }
   });
 
@@ -157,6 +157,6 @@ export const component: m.Component<Ctrl> = {
 
 export function show(time?: Date): Q.Promise<Date> {
   deferred = Q.defer<Date>();
-  Toolkit.$.trigger('cheminot:timepicker', { time: time });
+  Toolkit.Event.trigger('cheminot:timepicker', { time: time });
   return deferred.promise;
 }

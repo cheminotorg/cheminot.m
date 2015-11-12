@@ -280,34 +280,18 @@ export module Transition {
   }
 }
 
-export module $ {
+export module Event {
 
-  export function touchstart(el: HTMLElement, handler: (e: Event) => void): void {
-    if(Detectizr.isMobile()) {
-      el.addEventListener('touchstart', handler);
-    } else {
-      el.addEventListener('click', handler);
-    }
-  }
-
-  const bindHandlers: StringMap<EventHandler> = {};
-
-  export function bindonce(event: string, handler: (e: Event) => void): void {
-    const h = bindHandlers[event];
-    if(h) document.body.removeEventListener(event, h);
+  export function bind(event: string, handler: (e: Event) => void): (context: mithril.Context) => void {
     document.body.addEventListener(event, handler);
-    bindHandlers[event] = handler;
+    return (context: mithril.Context) => {
+      context.onunload = () => {
+        document.body.removeEventListener(event, handler);
+      }
+    }
   }
 
   export function trigger(event: string, data?: any): void {
     document.body.dispatchEvent(new CustomEvent(event, { detail: data }));
-  }
-
-  export function one(el: HTMLElement, event: string, handler: (e: Event) => void): HTMLElement {
-    el.addEventListener(event, function h(e) {
-      handler(e);
-      el.removeEventListener(event, h);
-    });
-    return el;
   }
 }

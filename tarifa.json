@@ -19,7 +19,7 @@
       "KeepRunning": true,
       "SplashScreenDelay": 60000,
       "SplashScreen": "screen",
-      "SplashScreenBackgroundColor": "2F8EDD"
+      "SplashScreenBackgroundColor": "#2F8EDD"
     },
     "android": {
       "manifest": {

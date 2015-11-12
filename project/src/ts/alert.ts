@@ -29,10 +29,10 @@ function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const attrs = {
     config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
       if(!isUpdate) {
-        Toolkit.$.bindonce('cheminot:alert:display', _.partial(ctrl.onDisplay, ctrl));
-        Toolkit.$.bindonce('cheminot:alert:button', (e: any) => {
+        Toolkit.Event.bind('cheminot:alert:display', _.partial(ctrl.onDisplay, ctrl))(context);
+        Toolkit.Event.bind('cheminot:alert:button', (e: any) => {
           ctrl.onButtonTouched(ctrl, e.detail.key, e.detail.event);
-        });
+        })(context);
       }
     }
   }
@@ -101,14 +101,14 @@ function bodyElement(text: string): m.VirtualElement<Ctrl> {
 export function info(content: string | m.VirtualElement<Ctrl>, classList: string[] = []): Q.Promise<string> {
   deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
-  Toolkit.$.trigger('cheminot:alert:display', { body: body, classList: classList });
+  Toolkit.Event.trigger('cheminot:alert:display', { body: body, classList: classList });
   return deferred.promise;
 }
 
 export function error(content: string | m.VirtualElement<Ctrl>, classList: string[] = []): Q.Promise<string> {
   deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
-  Toolkit.$.trigger('cheminot:alert:display', { body: body, classList: classList.concat(['error']) });
+  Toolkit.Event.trigger('cheminot:alert:display', { body: body, classList: classList.concat(['error']) });
   return deferred.promise;
 }
 
@@ -116,7 +116,7 @@ export function prompt(content: string | m.VirtualElement<Ctrl>, buttons: m.Virt
   deferred = Q.defer<string>();
   const body = (typeof content === "string") ? bodyElement(content) : content;
   const btns = buttons.length ? buttons : [Buttons.YES, Buttons.NO];
-  Toolkit.$.trigger('cheminot:alert:display', { body: body, classList: classList, buttons: btns});
+  Toolkit.Event.trigger('cheminot:alert:display', { body: body, classList: classList, buttons: btns});
   return deferred.promise;
 }
 
@@ -126,7 +126,7 @@ export function createButton(key: string, label: string, classList: string[] = [
   return () => {
     const attrs: m.Attributes = {
       config: Touch.m.ontap((e) => {
-        Toolkit.$.trigger('cheminot:alert:button', { key: key, event: e })
+        Toolkit.Event.trigger('cheminot:alert:button', { key: key, event: e })
       })
     }
     return m(`button.${classList.join('.')}`, attrs, label)

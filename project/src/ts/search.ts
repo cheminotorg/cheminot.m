@@ -158,14 +158,6 @@ function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     }
   }
 
-  const suggestionsAttrs = {
-    config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
-      if(!isUpdate) {
-        Toolkit.$.touchstart(el, _.partial(ctrl.onScrollStations, ctrl));
-      }
-    }
-  }
-
   const stopsList = ctrl.stations().map((station, index) => {
     const name = Suggestions.adaptSaintWord(term, station) || Suggestions.adaptCompoundWord(term, station) || station.name;
     const matchedAt = name.toLowerCase().indexOf(term.toLowerCase());
@@ -188,7 +180,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 
   return m("div", { class: "stations" },
            m("div", { id: "wrapper" },
-             m("ul", _.merge({ class: "suggestions" }, suggestionsAttrs), items)));
+             m("ul", { class: "suggestions" }, items)));
 }
 
 /// RENDER DATETIME SELECTOR

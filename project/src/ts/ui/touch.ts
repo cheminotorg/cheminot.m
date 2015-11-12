@@ -147,9 +147,7 @@ export module m {
     return (el: HTMLElement, isUpdate: boolean, context: mithril.Context) => {
       if (!isUpdate) {
         const unbind = TouchHandler(el, tapHandler, holdHandler, scrollX, scrollY, touchEndFeedback);
-        context.onunload = () => {
-          unbind();
-        };
+        context.onunload = () => unbind();
       }
     };
   }

@@ -41,9 +41,9 @@ Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions
     });
   });
 }).catch((e) => {
-  Toolkit.handleError(e)
+  Toolkit.handleError(e);
 });
 
-Toolkit.$.bindonce('cheminot:ready', () => {
-  navigator.splashscreen.hide()
+Toolkit.Event.bind('cheminot:ready', () => {
+  navigator.splashscreen.hide();
 });

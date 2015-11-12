@@ -85,9 +85,9 @@ function renderButtons(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 function render(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   const attrs = Toolkit.m.attributes
   ({ 'class:fade-in': ctrl.displayed() })
-  ({ class: 'fade-in'}, (el: HTMLElement, isUpdate: boolean) => {
+  ({ class: 'fade-in'}, (el: HTMLElement, isUpdate: boolean, context: m.Context) => {
     if(!isUpdate) {
-      Toolkit.$.bindonce('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl));
+      Toolkit.Event.bind('cheminot:datepicker', _.partial(ctrl.onDisplay, ctrl))(context);
     }
   });
 
@@ -181,6 +181,6 @@ export const component: m.Component<Ctrl> = {
 
 export function show(date?: Date): Q.Promise<Date> {
   deferred = Q.defer<Date>();
-  Toolkit.$.trigger('cheminot:datepicker', { date: date });
+  Toolkit.Event.trigger('cheminot:datepicker', { date: date });
   return deferred.promise;
 }
