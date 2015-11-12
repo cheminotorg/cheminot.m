@@ -90,7 +90,7 @@ export const component: m.Component<Ctrl> = {
 
     if(ctrl.isNowView() && Preferences.hasStars()) {
       const attrs: m.Attributes = {
-        config: Touch.m.ontap(_.partial(ctrl.onStarred, ctrl))
+        config: Touch.m.ontap(_.partial(ctrl.onSearch, ctrl))
       };
       v.push(m('button.search', attrs));
     }
