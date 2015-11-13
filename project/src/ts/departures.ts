@@ -225,7 +225,7 @@ export const component: m.Component<Ctrl> = {
         const top = header.offsetTop + header.offsetHeight;
         wrapper.style.top = top + 'px';
 
-        const iscroll = new IScroll(wrapper, { probeType: 1});
+        const iscroll = new IScroll(wrapper, { probeType: 1 });
 
         iscroll.on('refresh', () => {
           if(this.isPullUpLoading() && !this.isComputationInProgress()) {

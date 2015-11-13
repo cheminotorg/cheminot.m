@@ -45,5 +45,6 @@ Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions
 });
 
 Toolkit.Event.bind('cheminot:ready', () => {
+  document.querySelector('#viewport').classList.add('ready');
   navigator.splashscreen.hide();
 });

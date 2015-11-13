@@ -78,11 +78,10 @@ export const component = {
     const attributes = {
       config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if (!isUpdate) {
-          document.querySelector('#viewport').classList.add('ready');
           setTimeout(() => {
             window.parent.postMessage({ event: 'cheminot:ready' }, window.location.origin);
             Toolkit.Event.trigger('cheminot:ready')
-          }, 200);
+          }, 500);
         }
       }
     }
