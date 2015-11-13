@@ -100,9 +100,19 @@ export const component: m.Component<Ctrl> = {
       const [vs, ve, at, te, max] = Cache.decomposeTripKey(ctrl.tripId());
       if(max === 0) { // Only direct trip can be starred
         const starsAttrs: m.Attributes = {
+          class: 'stars',
           config: Touch.m.ontap(_.partial(ctrl.onStarred, ctrl))
         };
-        v.push(m('button.stars' + (ctrl.starred() ? '.starred' : ''), starsAttrs));
+
+        if(ctrl.starred()) {
+
+          v.push(mdl.Button.favorite(starsAttrs));
+
+        } else {
+
+          v.push(mdl.Button.favoriteBorder(starsAttrs));
+
+        }
       }
     }
 

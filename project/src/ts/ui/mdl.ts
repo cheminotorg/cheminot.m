@@ -53,11 +53,26 @@ export function button<T>(attributes: m.Attributes, ...children: Array<string | 
 
 export module Button {
 
-  export function search(attributes: m.Attributes): m.VirtualElement<Button> {
+  export function apply(icon: string, attributes: m.Attributes): m.VirtualElement<Button> {
 
     const classList = ['mdl-button', 'mdl-js-button', 'mdl-button--icon'];
 
-    return component('button', classList, attributes, m('i.material-icons', {}, 'search'));
+    return component('button', classList, attributes, m('i.material-icons', {}, icon));
+  }
+
+  export function search(attributes: m.Attributes): m.VirtualElement<Button> {
+
+    return apply('search', attributes);
+  }
+
+  export function favorite(attributes: m.Attributes): m.VirtualElement<Button> {
+
+    return apply('favorite', attributes);
+  }
+
+  export function favoriteBorder(attributes: m.Attributes): m.VirtualElement<Button> {
+
+    return apply('favorite_border', attributes);
   }
 }
 

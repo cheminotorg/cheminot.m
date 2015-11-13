@@ -26,24 +26,7 @@ body.ready #header {
         text-align: center
     }
 
-    .stars {
-        position: absolute
-        right: 4%
-        top: 50%
-        transform: translateY(-50%)
-        clear-button()
-        icon_cheminot('heart-empty', #FFF, size(24px))
-
-        &.starred {
-            icon_cheminot('heart', #FFF, size(24px))
-        }
-
-        &::before {
-          padding: size(10px)
-        }
-    }
-
-    .search {
+    .stars, .search {
         position: absolute
         right: 4%
         top: 50%
