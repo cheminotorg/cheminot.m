@@ -11,8 +11,8 @@ import i18n = require('i18n');
 import native = require('native');
 import DatePicker = require('datepicker');
 import TimePicker = require('timepicker');
-import Touch = require('ui/touch');
-import mdl = require('ui/mdl');
+import Touch = require('touch');
+import mdl = require('mdl');
 
 export type Ctrl = {
   scope: () => HTMLElement;

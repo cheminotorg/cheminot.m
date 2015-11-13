@@ -1,16 +1,6 @@
-import Touch = require('ui/touch');
+import Touch = require('touch');
 import m = require('mithril');
 import Toolkit = require('toolkit');
-
-function mergeClassList(attributes: m.Attributes, classList: string[]): m.Attributes {
-
-  const cl = classList.join(' ');
-
-  attributes.class = attributes.class ? attributes.class + ' ' + cl : cl;
-
-  return attributes;
-
-}
 
 function component<T, U, V>(tag: string, classList: string[], attributes: m.Attributes, ...children: Array<string | m.VirtualElement<T> | m.Component<T>>): m.VirtualElement<V> {
 
@@ -40,6 +30,16 @@ function component<T, U, V>(tag: string, classList: string[], attributes: m.Attr
   }
 
   return m(tag, attributes, children);
+}
+
+function mergeClassList(attributes: m.Attributes, classList: string[]): m.Attributes {
+
+  const cl = classList.join(' ');
+
+  attributes.class = attributes.class ? attributes.class + ' ' + cl : cl;
+
+  return attributes;
+
 }
 
 export type Button = {}

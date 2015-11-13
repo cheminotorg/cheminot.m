@@ -9,7 +9,7 @@ import _ = require('lodash');
 import moment = require('moment');
 import Modals = require('modals');
 import Alert = require('alert');
-import Touch = require('ui/touch');
+import Touch = require('touch');
 
 export type Ctrl = {
   modals: Modals.Ctrl;

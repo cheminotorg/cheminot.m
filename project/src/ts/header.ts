@@ -6,8 +6,8 @@ import Cache = require('cache');
 import Preferences = require('preferences');
 import Alert = require('alert');
 import i18n = require('i18n');
-import mdl = require('ui/mdl');
-import Touch = require('ui/touch');
+import mdl = require('mdl');
+import Touch = require('touch');
 
 export type Ctrl = {
   starred: (value?: boolean) => boolean;
@@ -78,22 +78,19 @@ export const component: m.Component<Ctrl> = {
   },
 
   view(ctrl: Ctrl) {
-    const loader = m('div.holo', {}, [
-      m('div.outer', {}),
-      m('div.inner', {})
-    ]);
 
-    const v = [
+    const vdom = [
       m("h1", {}, "Cheminot"),
-      loader
-    ];
+      m('div.holo', {}, [
+        m('div.outer', {}),
+        m('div.inner', {})])];
 
     if(ctrl.isNowView() && Preferences.hasStars()) {
       const attrs: m.Attributes = {
         class: 'search',
         config: Touch.m.ontap(_.partial(ctrl.onSearch, ctrl))
       };
-      v.push(mdl.Button.search(attrs));
+      vdom.push(mdl.Button.search(attrs));
     }
 
     if(ctrl.isTripView()) {
@@ -105,17 +102,12 @@ export const component: m.Component<Ctrl> = {
         };
 
         if(ctrl.starred()) {
-
-          v.push(mdl.Button.favorite(starsAttrs));
-
+          vdom.push(mdl.Button.favorite(starsAttrs));
         } else {
-
-          v.push(mdl.Button.favoriteBorder(starsAttrs));
-
+          vdom.push(mdl.Button.favoriteBorder(starsAttrs));
         }
       }
     }
-
-    return v;
+    return vdom;
   }
 }

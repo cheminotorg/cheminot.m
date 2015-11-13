@@ -10,8 +10,8 @@ import Q = require('q');
 import _ = require('lodash');
 import Cache = require('cache');
 import i18n = require('i18n');
-import Touch = require('ui/touch');
-import mdl = require('ui/mdl');
+import Touch = require('touch');
+import mdl = require('mdl');
 
 let timerId: number;
 

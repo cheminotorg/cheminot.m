@@ -4,7 +4,7 @@ import i18n = require('i18n');
 import _ = require('lodash');
 import Q = require('q');
 import Toolkit = require('toolkit');
-import Touch = require('ui/touch');
+import Touch = require('touch');
 
 let deferred: Q.Deferred<Date>;
 
