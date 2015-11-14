@@ -148,7 +148,7 @@ function renderStations(ctrl: Ctrl): m.VirtualElement<Ctrl> {
     return {
       config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if(!isUpdate) {
-          Touch.ontap(el, _.partial(ctrl.onStationSelected, ctrl))(context)
+          Touch.ontapY(el, _.partial(ctrl.onStationSelected, ctrl))(context)
         }
         if((index + 1) === ctrl.stations().length) {
           ctrl.adaptWrapperTop(ctrl);

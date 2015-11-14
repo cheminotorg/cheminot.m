@@ -116,9 +116,20 @@ declare var componentHandler: ComponentHandler;
 
 declare type ComponentHandler = {
   upgradeElement(el: HTMLElement): void;
+  register(c: any): void;
 }
 
 declare var analytics: Analytics
+
+declare var MaterialListItem: any;
+
+interface CSSStyleDeclaration {
+  msTransform: string;
+}
+
+interface HTMLElement {
+  disabled: boolean;
+}
 
 interface Window {
   NOW?: Date;

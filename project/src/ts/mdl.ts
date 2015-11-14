@@ -1,4 +1,3 @@
-import Touch = require('touch');
 import m = require('mithril');
 import Toolkit = require('toolkit');
 
@@ -8,7 +7,7 @@ function component<T, U, V>(tag: string, classList: string[], attributes: m.Attr
 
   const mdlConfig = (el: HTMLElement, isUpdate: boolean, context: m.Context, vdom: m.VirtualElement<V>) => {
 
-    if(!isUpdate) componentHandler.upgradeElement(el);
+    if(!isUpdate && !Toolkit.isListItem(el)) componentHandler.upgradeElement(el);
 
   }
 

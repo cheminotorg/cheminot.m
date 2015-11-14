@@ -1,5 +1,6 @@
 import mithril = require('mithril');
 import Toolkit = require('toolkit');
+import Ripple = require('ripple');
 
 const HOLD_DURATION = 600;
 const SCROLL_TOLERANCE = 8;
@@ -19,7 +20,11 @@ declare type Boundaries = {
 }
 
 export function TouchHandler(el: HTMLElement, tapHandler: (e: Event) => void, holdHandler: () => void, scrollX: boolean, scrollY: boolean, touchEndFeedback: boolean): () => void {
-  let startX: number, startY: number, boundaries: Boundaries, active: boolean, holdTimeoutID: number;
+  let startX: number,
+  startY: number,
+  boundaries: Boundaries,
+  active: boolean,
+  holdTimeoutID: number;
 
   if (typeof tapHandler !== 'function')
     throw new Error('Handler 2nd argument must be a function!');
@@ -40,7 +45,14 @@ export function TouchHandler(el: HTMLElement, tapHandler: (e: Event) => void, ho
     };
     active = true;
     setTimeout(() => {
-      if (active) el.classList.add(ACTIVE_CLASS);
+      if (active) {
+        if(Toolkit.isListItem(el)) {
+          new MaterialListItem(el);
+          Ripple.trigger(el, e).fin(() => el.classList.add(ACTIVE_CLASS));
+        } else {
+          el.classList.add(ACTIVE_CLASS);
+        }
+      }
     }, 200);
     if (!hasContextMenu()) holdTimeoutID = setTimeout(onHold, HOLD_DURATION);
   }
@@ -137,7 +149,7 @@ export function ontapX(el: HTMLElement, tapHandler: (e: TouchEvent) => void, hol
   return ontap(el, tapHandler, holdHandler, true, false, touchEndFeedback);
 };
 
-export function ontapY(el: HTMLElement, tapHandler: (e: TouchEvent) => void, holdHandler: () => void, touchEndFeedback: boolean = true): UnbindFunction {
+export function ontapY(el: HTMLElement, tapHandler: (e: TouchEvent) => void, holdHandler: () => void = Toolkit.noop, touchEndFeedback: boolean = true): UnbindFunction {
   return ontap(el, tapHandler, holdHandler, false, true, touchEndFeedback);
 };
 
@@ -150,5 +162,9 @@ export module m {
         context.onunload = () => unbind();
       }
     };
+  }
+
+  export function ontapY(tapHandler: (e: Event) => void, holdHandler:() => void = Toolkit.noop, touchEndFeedback: boolean = true) {
+    return ontap(tapHandler, holdHandler, false, true, touchEndFeedback);
   }
 }

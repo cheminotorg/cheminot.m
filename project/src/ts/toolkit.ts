@@ -8,6 +8,10 @@ import i18n = require('i18n');
 
 export const noop = () => {};
 
+export function isListItem(node: HTMLElement): boolean {
+  return node.nodeName === 'LI';
+}
+
 export function viewportSize(): [number, number] {
   return [
     Math.max(document.documentElement.clientHeight, window.innerHeight || 0),

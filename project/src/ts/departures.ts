@@ -119,7 +119,7 @@ function renderFakeDepartureItem(ctrl: Ctrl): m.VirtualElement<Ctrl> {
 function renderDepartureList(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
   return ctrl.departures().map((departure, index) => {
     const attrs: m.Attributes = {
-      config: Touch.m.ontap(_.partial(ctrl.onDepartureSelected, ctrl, departure)),
+      config: Touch.m.ontapY(_.partial(ctrl.onDepartureSelected, ctrl, departure)),
       key: departure.id,
       class: (index + 1 === ctrl.departures().length) ? 'last' : ''
     };
