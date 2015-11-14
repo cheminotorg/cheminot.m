@@ -1,7 +1,10 @@
 import Toolkit = require('toolkit');
 import native = require('native');
+import Q = require('q');
 
 let ticking = false;
+
+const d = Q.defer<void>();
 
 function update() {
   window.setTimeout(function() {
@@ -11,6 +14,7 @@ function update() {
     const html = <HTMLElement> document.querySelector('html');
     html.style.fontSize = Math.round(wsize < hsize ? wsize : hsize) + '%';
     ticking = false;
+    d.resolve(null);
   }, 300);
 }
 
@@ -25,7 +29,7 @@ function onResize() {
   requestTick();
 }
 
-export function init() {
+export function init(): Q.Promise<void> {
 
   if(native.Cheminot.isDemo() && !Toolkit.Detectizr.isMobile()) {
 
@@ -36,4 +40,6 @@ export function init() {
   document.addEventListener("resume", () => onResize(), false);
 
   onResize();
-}
+
+  return d.promise
+;}

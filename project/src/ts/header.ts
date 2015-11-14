@@ -87,25 +87,19 @@ export const component: m.Component<Ctrl> = {
 
     if(ctrl.isNowView() && Preferences.hasStars()) {
       const attrs: m.Attributes = {
-        class: 'search',
         config: Touch.m.ontap(_.partial(ctrl.onSearch, ctrl))
       };
-      vdom.push(mdl.Button.search(attrs));
+      vdom.push(m('button.search', attrs));
     }
 
     if(ctrl.isTripView()) {
       const [vs, ve, at, te, max] = Cache.decomposeTripKey(ctrl.tripId());
       if(max === 0) { // Only direct trip can be starred
         const starsAttrs: m.Attributes = {
-          class: 'stars',
           config: Touch.m.ontap(_.partial(ctrl.onStarred, ctrl))
         };
 
-        if(ctrl.starred()) {
-          vdom.push(mdl.Button.favorite(starsAttrs));
-        } else {
-          vdom.push(mdl.Button.favoriteBorder(starsAttrs));
-        }
+        vdom.push(m('button.stars' + (ctrl.starred() ? '.starred' : ''), starsAttrs));
       }
     }
     return vdom;
