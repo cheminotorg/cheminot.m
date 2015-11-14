@@ -9,7 +9,7 @@ function update() {
     const wsize = (width * 100) / 320;
     const hsize = (height * 100) / 568;
     const html = <HTMLElement> document.querySelector('html');
-    html.style.fontSize = (wsize < hsize ? wsize : hsize) + '%';
+    html.style.fontSize = Math.round(wsize < hsize ? wsize : hsize) + '%';
     ticking = false;
   }, 300);
 }
