@@ -24,7 +24,7 @@ import Responsive = require('responsive');
 
 window.onerror = Toolkit.handleError;
 
-Q.all([Responsive.init(), native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions.init()]).spread((meta: Meta, cheminotcVersion: string) => {
+Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions.init(), Responsive.init()]).spread((meta: Meta, cheminotcVersion: string) => {
   Locale.init();
   return native.GoogleAnalytics.startTrackerWithId(Settings.ga_id).fin(() => {
     Settings.db = meta;
