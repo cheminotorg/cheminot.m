@@ -1,10 +1,9 @@
+declare module 'zanimo' {
 
-declare module 'Zanimo' {
+  function Zanimo(el: HTMLElement, attr: string, value: string, duration: number, easing?: string): Q.Promise<HTMLElement>;
 
-  function z(el: HTMLElement, attr: string, value: string, duration: number, easing?: string): Q.Promise<HTMLElement>;
-
-  module z {
+  module Zanimo {
   }
 
-  export = z;
+  export = Zanimo;
 }

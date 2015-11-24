@@ -1,10 +1,10 @@
-import Mock = require('mock');
-import Demo = require('demo');
 import Q = require('q');
-import Cache = require('cache');
 import _ = require('lodash');
-import Toolkit = require('toolkit');
-import Common = require('common');
+import Mock = require('./mock');
+import Demo = require('./demo');
+import Cache = require('./cache');
+import Toolkit = require('./toolkit');
+import Common = require('./common');
 
 type BackButtonHandlers = {
   [index: string]: () => void;

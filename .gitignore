@@ -28,3 +28,4 @@ gulp-tsc*
 #=============#
 
 private.json
+project/www/app.js

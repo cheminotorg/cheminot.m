@@ -1,6 +1,6 @@
 import mithril = require('mithril');
-import Toolkit = require('toolkit');
-import Ripple = require('ripple');
+import Toolkit = require('./toolkit');
+import Ripple = require('./ripple');
 
 const HOLD_DURATION = 600;
 const SCROLL_TOLERANCE = 8;

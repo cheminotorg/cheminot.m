@@ -1,15 +1,15 @@
 import m = require('mithril');
-import Header = require('header');
-import Search = require('search');
-import Departures = require('departures');
-import Trip = require('trip');
-import Now = require('now');
-import Toolkit = require('toolkit');
 import _ = require('lodash');
 import moment = require('moment');
-import Modals = require('modals');
-import Alert = require('alert');
-import Touch = require('touch');
+import Modals = require('./modals');
+import Header = require('./header');
+import Search = require('./search');
+import Departures = require('./departures');
+import Trip = require('./trip');
+import Now = require('./now');
+import Toolkit = require('./toolkit');
+import Alert = require('./alert');
+import Touch = require('./touch');
 
 export type Ctrl = {
   modals: Modals.Ctrl;

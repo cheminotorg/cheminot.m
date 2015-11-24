@@ -1,5 +1,5 @@
 import m = require('mithril');
-import Toolkit = require('toolkit');
+import Toolkit = require('./toolkit');
 
 function component<T, U, V>(tag: string, classList: string[], attributes: m.Attributes, ...children: Array<string | m.VirtualElement<T> | m.Component<T>>): m.VirtualElement<V> {
 

@@ -2,15 +2,125 @@
  * build.js
  */
 
-var Q = require('q'),
-    preprocess = require('preprocess'),
-    path = require('path'),
-    fs = require('fs'),
-    chokidar = require('chokidar'),
-    spawn = require('child_process').spawn,
-    gulp = require('../../gulpfile.js');
+var Q = require('q');
+var browserify = require('browserify');
+var watchify = require('watchify');
+var fs = require('fs');
+var chokidar = require('chokidar');
+var gulp = require('gulp');
+var buildFile = require('../gulpfile');
+var path = require('path');
+var tsify = require('tsify');
+var spawn = require('child_process').spawn;
+var gzip = require('gulp-gzip');
 
-function getGitVersion() {
+var w,
+    wwwWatcher,
+    stylWatcher,
+    htmlWatcher,
+    srcFolder = path.join(__dirname, '../src'),
+    wwwFolder = path.join(__dirname, '../www'),
+    dataFolder = path.join(wwwFolder, 'data'),
+    bundledJS = path.join(wwwFolder, 'js', 'app.js');
+
+module.exports.build = function build(platform, settings, config) {
+  var defer = Q.defer();
+
+  buildContext(settings, platform, config).then(function(context) {
+
+    gulp.add('html', function() {
+      return buildFile.buildHtml(srcFolder, wwwFolder, context);
+    });
+
+    gulp.add('css', function() {
+      return buildFile.buildStyl(srcFolder, wwwFolder);
+    });
+
+    gulp.add('scripts', function() {
+      return buildFile.buildScripts(srcFolder, wwwFolder);
+    });
+
+    if(config === 'demo') {
+
+      gulp.add('compress:js', function() {
+        return gulp.src(bundledJS)
+          .pipe(gzip())
+          .pipe(gulp.dest(path.join(wwwFolder, 'js')));
+      });
+
+      gulp.add('compress:data', function() {
+        return gulp.src(path.join(dataFolder, '*.json'))
+          .pipe(gzip())
+          .pipe(gulp.dest(dataFolder));
+      });
+
+      gulp.start(['html', 'css', 'scripts'], ['compress:js', 'compress:data'], function(err) {
+        if (err) defer.reject(err);
+        else defer.resolve();
+      });
+
+    } else {
+
+      gulp.start('html', 'css', 'scripts', function(err) {
+        if (err) defer.reject(err);
+        else defer.resolve();
+      });
+    }
+
+  });
+
+  return defer.promise;
+};
+
+module.exports.watch = function watch(f, settings, platform, config) {
+
+  buildContext(settings, platform, config).then(function(context) {
+
+    launchWatchify(f).then(function(bw) {
+      w = bw;
+
+      wwwWatcher = chokidar.watch(wwwFolder, {
+        ignored: /app\.js/,
+        persistent: true
+      });
+
+      stylWatcher = chokidar.watch(path.join(srcFolder, 'styl'), {
+        persistent: true
+      });
+
+      htmlWatcher = chokidar.watch(path.join(srcFolder, '*.html'), {
+        persistent: true
+      });
+
+      setTimeout(function() {
+        wwwWatcher.on('all', function(evt, p) {
+          f(p);
+        });
+
+        stylWatcher.on('change', function(p) {
+          console.log('styl file ' + p + ' updated');
+          buildFile.buildStyl(srcFolder, wwwFolder);
+        });
+
+        htmlWatcher.on('change', function(p) {
+          console.log('html file ' + p + ' updated');
+          buildFile.buildHtml(srcFolder, wwwFolder, context);
+        });
+      }, 4000);
+
+    });
+
+  });
+};
+
+module.exports.close = function() {
+  if (w) w.close();
+  if (wwwWatcher) wwwWatcher.close();
+  if (stylWatcher) stylWatcher.close();
+  if (htmlWatcher) htmlWatcher.close();
+};
+
+function gitVersion() {
   var d = Q.defer();
   var child = spawn('git', ['describe', '--long', '--always']);
   child.stdout.on('data', function(chunk) {
@@ -19,7 +129,7 @@ function getGitVersion() {
   return d.promise;
 }
 
-function mapSettings(settings, platform, configurationName) {
+function mapSettings(settings, platform, config) {
   var mapping = require('./mapping');
   var result = {};
   var flatSettings = {};
@@ -31,8 +141,8 @@ function mapSettings(settings, platform, configurationName) {
     } else if (k !== "configurations") {
       flatSettings[k] = settings[k];
     } else {
-      for (var l in settings[k][platform][configurationName]) {
-        flatSettings[l] = settings[k][platform][configurationName][l];
+      for (var l in settings[k][platform][config]) {
+        flatSettings[l] = settings[k][platform][config][l];
       }
     }
   }
@@ -42,54 +152,79 @@ function mapSettings(settings, platform, configurationName) {
       result[mapping[j]] = flatSettings[j];
     }
   }
-
   return result;
 }
 
-module.exports.build = function (platform, settings, configurationName) {
-  var d = Q.defer(),
-      settingsPath = path.join(__dirname, '../www/js/settings.js'),
-      htmlPath = {
-        src: path.join(__dirname, '../html/index.html'),
-        dest: path.join(__dirname, '../www/index.html')
-      };
+function buildContext(settings, platform, config) {
+  return gitVersion().then(function(sha) {
+    var context = mapSettings(settings, platform, config);
+    context.gitVersion = sha;
+    context.platform = platform;
+    context.mocked = config === 'default';
+    context.demo = config === 'demo';
+    return context;
+  });
+}
 
-  gulp.doneCallback = function() {
-    return getGitVersion().then(function(gitVersion) {
-      settings = mapSettings(settings, platform, configurationName);
-      settings.gitVersion = gitVersion;
-      var settingsContent = "Settings = " + JSON.stringify(settings) + ';';
-      fs.writeFileSync(settingsPath, settingsContent, {"encoding": "utf8"});
-      preprocess.preprocessFileSync(htmlPath.src, htmlPath.dest, {
-        PLATFORM : platform,
-        MOCKED: configurationName == 'default',
-        DEMO: configurationName == 'demo'
-      });
-      d.resolve();
-    });
+function bundle() {
+  var defer = Q.defer();
+  var opts = {
+    debug: true,
+    cache: {},
+    packageCache: {},
+    fullPaths: true
   };
 
-  switch(configurationName) {
-  case 'demo': gulp.start.apply(gulp, ['compile:demo']); break;
-  default: gulp.start.apply(gulp, ['compile']);
-  }
+  var b = browserify(path.join(srcFolder, 'ts', 'main.ts'), opts).plugin(tsify, {
+    module: 'commonjs',
+    noImplicitAny: true,
+    safe: true,
+    target: 'ES5'
+  });
 
-  return d.promise;
-};
+  if (fs.existsSync(bundledJS)) fs.unlinkSync(bundledJS);
 
-// WATCH
-var watcher;
-var www = path.join(__dirname, '../www');
+  var ws = fs.createWriteStream(bundledJS);
 
-module.exports.watch = function watch(f, settings, platform, config) {
-  watcher = chokidar.watch(www, { persistent: true });
-  setTimeout(function() {
-    watcher.on('all', function (evt, p) {
-      f(p);
+  b.bundle(rejectOnError(defer)).pipe(ws);
+
+  ws.on('finish', function() {
+    ws.end();
+    defer.resolve(b);
+  });
+
+  return defer.promise;
+}
+
+function launchWatchify(f) {
+  return bundle().then(function(b) {
+    var w = watchify(b);
+
+    b.bundle(function() {
+      w.on('log', log);
     });
-  }, 3000);
-};
 
-module.exports.close = function () {
-  if(watcher) watcher.close();
-};
+    w.on('update', function() {
+      var ws = fs.createWriteStream(bundledJS);
+
+      w.bundle(log).pipe(ws);
+
+      ws.on('finish', function() {
+        ws.end();
+        f(bundledJS);
+      });
+    });
+    return w;
+  });
+}
+
+function rejectOnError(d) {
+  return function(err) {
+    log(err);
+    if (err) d.reject(err);
+  };
+}
+
+function log(o) {
+  if (o) console.log('- browserify - ' + o);
+}

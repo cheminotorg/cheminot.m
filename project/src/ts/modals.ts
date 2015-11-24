@@ -1,8 +1,8 @@
 import m = require('mithril');
-import DatePicker = require('datepicker');
-import TimePicker = require('timepicker');
-import Alert = require('alert');
-import Toolkit = require('toolkit');
+import DatePicker = require('./datepicker');
+import TimePicker = require('./timepicker');
+import Alert = require('./alert');
+import Toolkit = require('./toolkit');
 
 export type Ctrl = {
   alert: Alert.Ctrl;

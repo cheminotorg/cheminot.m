@@ -26,11 +26,6 @@ else
     ln -s $TYPESCRIPT typescript
 
     echo "\n------------------------------"
-    echo "Building vendors"
-    echo "------------------------------"
-    "${ROOT}/node_modules/gulp/bin/gulp.js" vendors
-
-    echo "\n------------------------------"
     echo "Setup platforms"
     echo "------------------------------"
     cd $ROOT

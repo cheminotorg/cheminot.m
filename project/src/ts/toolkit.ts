@@ -2,9 +2,7 @@ import moment = require('moment');
 import Q = require('q');
 import mithril = require('mithril');
 import _ = require('lodash');
-import native = require('native');
-import Alert = require('alert');
-import i18n = require('i18n');
+import native = require('./native');
 
 export const noop = () => {};
 

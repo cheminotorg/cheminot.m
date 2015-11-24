@@ -1,17 +1,17 @@
-import m = require('mithril');
-import Routes = require('routes');
-import IScroll = require('IScroll');
-import native = require('native');
-import Preferences = require('preferences');
-import Common = require('common');
-import Toolkit = require('toolkit');
-import Mock = require('mock');
 import Q = require('q');
 import _ = require('lodash');
-import Cache = require('cache');
-import i18n = require('i18n');
-import Touch = require('touch');
-import mdl = require('mdl');
+import m = require('mithril');
+import IScroll = require('iscroll');
+import Routes = require('./routes');
+import native = require('./native');
+import Preferences = require('./preferences');
+import Common = require('./common');
+import Toolkit = require('./toolkit');
+import Mock = require('./mock');
+import Cache = require('./cache');
+import i18n = require('./i18n');
+import Touch = require('./touch');
+import mdl = require('./mdl');
 
 let timerId: number;
 

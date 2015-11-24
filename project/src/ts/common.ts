@@ -1,8 +1,8 @@
 import _ = require('lodash');
-import Toolkit = require('toolkit');
-import Cache = require('cache');
 import Q = require('q');
 import moment = require('moment');
+import Toolkit = require('./toolkit');
+import Cache = require('./cache');
 
 export function departureBound(departure: Date): Date {
   return Toolkit.DateTime.addHours(departure, 12);

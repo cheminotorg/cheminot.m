@@ -12,15 +12,15 @@
 
 import Q = require('q');
 import m = require('mithril');
-import qstart = require('qstart');
-import App = require('app');
-import Routes = require('routes');
-import Suggestions = require('suggestions');
-import native = require('native');
-import Toolkit = require('toolkit');
 import moment = require('moment');
-import Locale = require('locale');
-import Responsive = require('responsive');
+import qstart = require('qstart');
+import App = require('./app');
+import Routes = require('./routes');
+import Suggestions = require('./suggestions');
+import native = require('./native');
+import Toolkit = require('./toolkit');
+import Locale = require('./locale');
+import Responsive = require('./responsive');
 
 window.onerror = Toolkit.handleError;
 

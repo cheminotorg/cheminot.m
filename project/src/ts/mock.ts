@@ -1,6 +1,6 @@
 import _ = require('lodash');
-import Toolkit = require('toolkit');
 import moment = require('moment');
+import Toolkit = require('./toolkit');
 
 const CHARTRES = 'StopPoint:OCETrain TER-87394007';
 

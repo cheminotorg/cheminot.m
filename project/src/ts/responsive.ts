@@ -1,6 +1,7 @@
-import Toolkit = require('toolkit');
-import native = require('native');
 import Q = require('q');
+
+import Toolkit = require('./toolkit');
+import native = require('./native');
 
 let ticking = false;
 

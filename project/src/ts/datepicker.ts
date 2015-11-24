@@ -1,10 +1,10 @@
 import m = require('mithril');
 import moment = require('moment');
-import i18n = require('i18n');
 import _ = require('lodash');
 import Q = require('q');
-import Toolkit = require('toolkit');
-import Touch = require('touch');
+import i18n = require('./i18n');
+import Toolkit = require('./toolkit');
+import Touch = require('./touch');
 
 let deferred: Q.Deferred<Date>;
 

@@ -96,6 +96,6 @@ declare class IScroll {
 	on: (type: string, fn: () => void) => void;
 }
 
-declare module 'IScroll' {
+declare module 'iscroll' {
   export = IScroll;
 }

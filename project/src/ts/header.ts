@@ -1,13 +1,13 @@
 import m = require('mithril');
 import _ = require('lodash');
-import Routes = require('routes');
-import Toolkit = require('toolkit');
-import Cache = require('cache');
-import Preferences = require('preferences');
-import Alert = require('alert');
-import i18n = require('i18n');
-import mdl = require('mdl');
-import Touch = require('touch');
+import Routes = require('./routes');
+import Toolkit = require('./toolkit');
+import Cache = require('./cache');
+import Preferences = require('./preferences');
+import Alert = require('./alert');
+import i18n = require('./i18n');
+import mdl = require('./mdl');
+import Touch = require('./touch');
 
 export type Ctrl = {
   starred: (value?: boolean) => boolean;

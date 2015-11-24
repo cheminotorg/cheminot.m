@@ -1,10 +1,10 @@
 import m = require('mithril');
-import Routes = require('routes');
 import _ = require('lodash');
-import IScroll = require('IScroll');
+import IScroll = require('iscroll');
 import moment = require('moment');
-import native = require('native');
-import Cache = require('cache');
+import Routes = require('./routes');
+import native = require('./native');
+import Cache = require('./cache');
 
 export type Ctrl = {
   scope: () => HTMLElement;
