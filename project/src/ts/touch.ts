@@ -1,6 +1,8 @@
+import { default as Ripple } from 'mdl-ripple';
+
+//import * as Ripple from 'mdl-ripple';
 import mithril = require('mithril');
 import Toolkit = require('./toolkit');
-import Ripple = require('./ripple');
 
 const HOLD_DURATION = 600;
 const SCROLL_TOLERANCE = 8;
@@ -47,11 +49,9 @@ export function TouchHandler(el: HTMLElement, tapHandler: (e: Event) => void, ho
     setTimeout(() => {
       if (active) {
         if(Toolkit.isListItem(el)) {
-          new MaterialListItem(el);
-          Ripple.trigger(el, e).fin(() => el.classList.add(ACTIVE_CLASS));
-        } else {
-          el.classList.add(ACTIVE_CLASS);
+          Ripple(el, { ignoreEvents: true }).trigger(e);
         }
+        el.classList.add(ACTIVE_CLASS);
       }
     }, 200);
     if (!hasContextMenu()) holdTimeoutID = setTimeout(onHold, HOLD_DURATION);

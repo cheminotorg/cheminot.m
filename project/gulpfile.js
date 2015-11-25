@@ -65,9 +65,14 @@ function buildHtml(src, dest, context) {
 
 gulp.task('html', function() {
   return buildHtml('src', 'www', {
-    PLATFORM: 'default',
-    MOCKED: false,
-    DEMO: false
+    bundleId: 'xxxx',
+    version: 'xxxx',
+    appName: 'xxxx',
+    ga_id: 'xxxx',
+    gitVersion: 'xxxx',
+    platform: 'default',
+    mocked: false,
+    demo: false
   });
 });
 

@@ -7,14 +7,16 @@
   },
   "description": "Offline train mobile application",
   "dependencies": {
-    "q": "1.0.1",
-    "mithril": "0.2.0",
-    "zanimo": "1.1.3",
     "iscroll": "5.1.3",
-    "moment": "2.8.3",
     "lodash": "2.4.1",
+    "mdl-ripple": "0.0.5",
+    "mithril": "0.2.0",
+    "mithril-mdl": "1.1.0",
+    "moment": "2.8.3",
+    "q": "1.0.1",
+    "qajax": "1.0.2",
     "qstart": "0.2.0",
-    "qajax": "1.0.2"
+    "zanimo": "1.1.3"
   },
   "devDependencies": {
     "browserify": "latest",

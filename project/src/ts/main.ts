@@ -7,6 +7,7 @@
 /// <reference path='dts/qstart.d.ts'/>
 /// <reference path='dts/qajax.d.ts'/>
 /// <reference path='dts/cheminot.d.ts'/>
+/// <reference path='dts/mdlripple.d.ts'/>
 
 'use strict';
 
