@@ -37,16 +37,8 @@ export module Number {
 
 export module DateTime {
 
-  if(native.Cheminot.isMocked() || native.Cheminot.isStage()) {
-    setInterval(() => {
-      if(window.NOW) {
-        window.NOW = addSeconds(window.NOW, 1);
-      }
-    }, 1000);
-  }
-
   export function now(): Date {
-    return window.NOW || new Date();
+    return new Date();
   }
 
   export function diff(from: Date, to: Date): number {

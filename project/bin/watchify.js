@@ -13,7 +13,7 @@ function bundledJS(wwwFolder) {
 function bundle(srcFolder, wwwFolder) {
   var defer = Q.defer();
   var opts = {
-    debug: true,
+    debug: false,
     cache: {},
     packageCache: {},
     fullPaths: true

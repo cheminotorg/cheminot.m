@@ -131,10 +131,6 @@ interface HTMLElement {
   disabled: boolean;
 }
 
-interface Window {
-  NOW?: Date;
-}
-
 interface Navigator {
   splashscreen: Splashscreen;
   vibrate(ms: number): boolean;

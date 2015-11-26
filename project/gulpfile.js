@@ -105,8 +105,7 @@ gulp.task('styl', ['clean:css'], function() {
 //// Scripts
 
 function buildScripts(src, dest, watch) {
-  var opts = { debug: !isProd() };
-  var bro = browserify(path.join(src, 'ts', 'main.ts'), opts).plugin(tsify, {
+  var bro = browserify(path.join(src, 'ts', 'main.ts')).plugin(tsify, {
     module: 'commonjs',
     noImplicitAny: true,
     safe: true,
