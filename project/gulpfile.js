@@ -1,22 +1,19 @@
 var gulp = require('gulp'),
+    chalk = require('chalk'),
     ts = require('gulp-tsc'),
     stylus = require('gulp-stylus'),
     gutil = require('gulp-util'),
     del = require('del'),
-    watch = require('gulp-watch'),
-    rename = require('gulp-rename'),
     browserify = require('browserify'),
     watchify = require('watchify'),
     tsify = require('tsify'),
     streamify = require('gulp-streamify'),
     autoprefixer = require('gulp-autoprefixer'),
     runSequence = require('run-sequence'),
-    minifyCss = require('gulp-minify-css'),
     gzip = require('gulp-gzip'),
     minimist = require('minimist'),
     buffer = require('vinyl-buffer'),
     source = require('vinyl-source-stream'),
-    fs = require('fs'),
     preprocess = require('gulp-preprocess'),
     path = require('path');
 
@@ -30,29 +27,14 @@ function isProd() {
   return options.mode === 'prod';
 }
 
-var Assets = {
-  ts: {
-    src: {
-      files: ['src/ts/**/*.ts'],
-      main: ['src/ts/main.ts'],
-      dir: 'src/ts/'
-    },
-    dest: {
-      files : ['www/js/**/*.js', '!www/js/settings.js', 'www/js/**/*.gz', 'www/data/**/*.gz'],
-      dir: 'www/js/'
-    }
-  },
-  styl: {
-    src: {
-      files: ['src/styl/**/*.styl'],
-      dir: 'src/styl/',
-      main: ['src/styl/main.styl']
-    },
-    dest: {
-      files: ['www/css/**/*.css'],
-      dir: 'www/css/'
-    }
-  }
+function Log() {}
+
+Log.starting = function(task) {
+  gutil.log('Starting', '\'' + chalk.cyan(task) + '\...');
+};
+
+Log.finished = function(task) {
+  gutil.log('Finished', '\'' + chalk.cyan(task));
 };
 
 //// HTML
@@ -67,11 +49,11 @@ gulp.task('html', function() {
   return buildHtml('src', 'www', {
     bundleId: 'xxxx',
     version: 'xxxx',
-    appName: 'xxxx',
+    appName: 'Cheminot',
     ga_id: 'xxxx',
     gitVersion: 'xxxx',
     platform: 'default',
-    mocked: false,
+    mocked: true,
     demo: false
   });
 });
@@ -86,10 +68,10 @@ function buildStyl(src, dest) {
 }
 
 gulp.task('clean:css', function(cb) {
-  return del([Assets.styl.dest.dir], cb);
+  return del(['www/css/**/*.css'], cb);
 });
 
-gulp.task('css', ['clean:css'], function() {
+gulp.task('styl', ['clean:css'], function() {
   return buildStyl('src', 'www');
 });
 
@@ -115,9 +97,11 @@ function buildScripts(src, dest, watch) {
   }
 
   if (watch) {
-    bundler.on('update', function() {
-      console.log('-> bundling...');
-      rebundle();
+    bundler.on('update', function(p) {
+      Log.starting('ts');
+      rebundle().on('finish', function() {
+        Log.finished('ts');
+      });
     });
   }
 
@@ -125,56 +109,34 @@ function buildScripts(src, dest, watch) {
 }
 
 gulp.task('clean:js', function(cb) {
-  return del(Assets.ts.dest.files, cb);
+  return del(['www/js/**/*.js'], cb);
 });
 
 gulp.task('scripts', ['clean:js'], function() {
   return buildScripts('src', 'www');
 });
 
-// DEMO
-
-gulp.task('compress:demo:js', function() {
-  return gulp.src(['www/js/main.js'])
-    .pipe(gzip())
-    .pipe(gulp.dest('www/js/'));
-});
-
-gulp.task('compress:demo:data', function() {
-  return gulp.src(['www/data/*.json'])
-    .pipe(gzip())
-    .pipe(gulp.dest('www/data/'));
-});
-
-gulp.task('build:demo', function(cb) {
-  if(isProd()) {
-    return runSequence(['scripts', 'css'], ['compress:demo:data', 'compress:demo:js'], cb);
-  } else {
-    return runSequence('build', cb);
-  }
-});
-
 // Watch
 
-gulp.task('watch-html-styl', function() {
-  gulp.watch(Assets.styl.files, ['css']);
-  gulp.watch(['src/index.html'], ['html']);
+gulp.task('watch-styl', ['styl'], function() {
+  gulp.watch('src/styl/**/*.styl', ['styl']);
 });
 
+gulp.task('watch-html', ['html'], function() {
+  gulp.watch(['src/**/*.html'], ['html']);
+});
 
-gulp.task('watch-scripts', function() {
+gulp.task('watch-scripts', ['scripts'], function() {
   return buildScripts('src', 'www', true);
 });
 
-gulp.task('watch', ['html', 'css', 'watch-scripts', 'watch-html-styl']);
-
+gulp.task('watch', ['watch-scripts', 'watch-html', 'watch-styl']);
 
 // Default
 
-gulp.task('build', ['scripts', 'css']);
+gulp.task('build', ['scripts', 'css', 'html']);
 
 gulp.task('default', ['watch']);
-
 
 module.exports = {
   buildHtml: buildHtml,
