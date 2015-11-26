@@ -1,6 +1,4 @@
 import { default as Ripple } from 'mdl-ripple';
-
-//import * as Ripple from 'mdl-ripple';
 import mithril = require('mithril');
 import Toolkit = require('./toolkit');
 
