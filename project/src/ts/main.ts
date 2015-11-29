@@ -7,7 +7,8 @@
 /// <reference path='dts/qstart.d.ts'/>
 /// <reference path='dts/qajax.d.ts'/>
 /// <reference path='dts/cheminot.d.ts'/>
-/// <reference path='dts/mdlripple.d.ts'/>
+/// <reference path='dts/mithril-mdl.d.ts'/>
+/// <reference path='dts/mdl-ripple.d.ts'/>
 
 'use strict';
 
@@ -16,6 +17,7 @@ import m = require('mithril');
 import moment = require('moment');
 import qstart = require('qstart');
 import App = require('./app');
+import Android = require('./android');
 import Routes = require('./routes');
 import Suggestions = require('./suggestions');
 import native = require('./native');
@@ -25,25 +27,30 @@ import Responsive = require('./responsive');
 
 window.onerror = Toolkit.handleError;
 
-Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions.init(), Responsive.init()]).spread((meta: Meta, cheminotcVersion: string) => {
-  Locale.init();
-  return native.GoogleAnalytics.startTrackerWithId(Settings.ga_id).fin(() => {
-    Settings.db = meta;
-    Settings.cheminotcVersion = cheminotcVersion;
-    m.route.mode = 'hash';
-    m.route(document.querySelector('#viewport'), '/', {
-      "/": App.component,
-      "/search": App.component,
-      "/search/:tab/:start/:end/:at": App.component,
-      "/departures/:start/:end/:at": App.component,
-      "/trip/:id": App.component
-    });
-  });
-}).catch((e) => {
-  Toolkit.handleError(e);
-});
+native.ready().then(() => {
 
-Toolkit.Event.bind('cheminot:ready', () => {
-  document.querySelector('#viewport').classList.add('ready');
-  navigator.splashscreen.hide();
+  Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions.init(), Responsive.init()]).spread((meta: Meta, cheminotcVersion: string) => {
+    Locale.init();
+    return native.GoogleAnalytics.startTrackerWithId(Settings.ga_id).fin(() => {
+      Settings.db = meta;
+      Settings.cheminotcVersion = cheminotcVersion;
+      m.route.mode = 'hash';
+      m.route(document.querySelector('#viewport'), '/android', {
+        "/android": Android.component,
+        "/": App.component,
+        "/search": App.component,
+        "/search/:tab/:start/:end/:at": App.component,
+        "/departures/:start/:end/:at": App.component,
+        "/trip/:id": App.component
+      });
+    });
+  }).catch((e) => {
+    Toolkit.handleError(e);
+  });
+
+  Toolkit.Event.bind('cheminot:ready', () => {
+    document.querySelector('#viewport').classList.add('ready');
+    navigator.splashscreen.hide();
+  });
+
 });

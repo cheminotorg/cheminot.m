@@ -30,6 +30,16 @@ window.addEventListener("message", (message: MessageEvent) => {
   }
 }, false);
 
+
+const deviceReady = Q.defer<void>();
+document.addEventListener("deviceready", () => {
+  deviceReady.resolve(null);
+}, false);
+
+export function ready(): Q.Promise<void> {
+  return deviceReady.promise;
+}
+
 export module Keyboard {
 
   const timeout = 2000;

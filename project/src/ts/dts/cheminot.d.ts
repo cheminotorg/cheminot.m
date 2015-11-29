@@ -115,7 +115,7 @@ declare type Analytics = {
 declare var componentHandler: ComponentHandler;
 
 declare type ComponentHandler = {
-  upgradeElement(el: HTMLElement): void;
+  upgradeElement(el: Element, component?: string): void;
   register(c: any): void;
 }
 

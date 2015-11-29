@@ -30,7 +30,6 @@ function renderHeader(ctrl: Header.Ctrl): m.VirtualElement<Header.Ctrl> {
   return m("header", attrs, Header.component.view(ctrl));
 }
 
-
 function renderSearch(ctrl: Search.Ctrl): m.VirtualElement<Search.Ctrl> {
   const attrs = Toolkit.m.attributes
   ({ 'class:hidden': !ctrl.displayed() })
