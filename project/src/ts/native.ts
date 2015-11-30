@@ -37,7 +37,7 @@ document.addEventListener("deviceready", () => {
 }, false);
 
 export function ready(): Q.Promise<void> {
-  return deviceReady.promise;
+  return Cheminot.isBrowser() ? Toolkit.Promise.done() : deviceReady.promise;
 }
 
 export module Keyboard {

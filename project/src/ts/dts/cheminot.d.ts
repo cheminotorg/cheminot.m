@@ -116,6 +116,7 @@ declare var componentHandler: ComponentHandler;
 
 declare type ComponentHandler = {
   upgradeElement(el: Element, component?: string): void;
+  upgradeAllRegistered(): void;
   register(c: any): void;
 }
 

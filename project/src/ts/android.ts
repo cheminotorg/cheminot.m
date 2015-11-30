@@ -1,6 +1,7 @@
 import m = require('mithril');
 import mdl = require('mithril-mdl');
 import Toolkit = require('./toolkit');
+import Zanimo = require('zanimo');
 
 export type Ctrl = {
 }
@@ -13,28 +14,17 @@ export const component = {
 
   view(ctrl: Ctrl): m.VirtualElement<Ctrl>[] {
     const attributes = {
-      fixedHeader: true,
-      fixedTabs: true,
       config: function(el: HTMLElement, isUpdate: boolean, context: m.Context) {
         if (!isUpdate) {
-          var tabs = document.querySelectorAll('.mdl-layout__tab-ripple-container');
-          for (let index = 0; index <= tabs.length; index++) {
-            const tab = tabs.item(index);
-            if(tab) componentHandler.upgradeElement(tab, 'MaterialRipple');
-          }
-
-          setTimeout(() => {
-            window.setTimeout(() => {
-              window.parent.postMessage({ event: 'cheminot:ready' }, window.location.origin);
-              Toolkit.Event.trigger('cheminot:ready')
-            }, 1000)
-          }, 500);
+          componentHandler.upgradeAllRegistered();
+          window.parent.postMessage({ event: 'cheminot:ready' }, window.location.origin);
+          Toolkit.Event.trigger('cheminot:ready')
         }
       }
     }
 
-    return [m('div', attributes, [m(mdl.Layout, attributes, [
-      m(mdl.Header, {}, [
+    return [m('section#search', attributes, [m(mdl.Layout, { fixedHeader: true, fixedTabs: true }, [
+      m(mdl.Header, {  }, [
         m(mdl.HeaderRow, {}, [
           m(mdl.Title, {}, "Cheminot")]),
         m(mdl.Tabs, { ripple: true }, [
@@ -44,7 +34,14 @@ export const component = {
       m(mdl.Drawer, {},
         [m(mdl.Title, {}, "Settings")]),
       m(mdl.Content, {}, [
-        m(mdl.TabPanel, { id: 'today', active: true }, 'today'),
+        m(mdl.TabPanel, { id: 'today', active: true }, [
+          m(mdl.Grid, {}, [
+            m(mdl.Cell, { width: 4 }, [
+              m(mdl.TextInput, { value: '', label: 'Départ', id: 'departure' }, []),
+              m(mdl.TextInput, { value: '', label: 'Arrivé', id: 'arrival' }, [])])]),
+          m(mdl.Grid, {}, [
+            m(mdl.Cell, { width: 2 }, m('span', {}, 'Heure de départ')),
+            m(mdl.Cell, { width: 2 }, m('span', {}, '09:21'))])]),
         m(mdl.TabPanel, { id: 'tomorrow' }, 'tomorrow'),
         m(mdl.TabPanel, { id: 'other' }, 'other')])])])];
 

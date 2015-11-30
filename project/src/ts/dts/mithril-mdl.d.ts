@@ -19,4 +19,10 @@ declare module "mithril-mdl" {
   export const Content: m.Component<any>;
 
   export const Drawer: m.Component<any>;
+
+  export const TextInput: m.Component<any>;
+
+  export const Grid: m.Component<any>;
+
+  export const Cell: m.Component<any>;
 }
