@@ -28,7 +28,14 @@ module.exports.build = function build(platform, settings, config) {
       });
     });
 
-    gulp.add('styl', function() {
+    gulp.add('stylint', function () {
+      buildFile.Log.starting('stylint');
+      buildFile.lintStylus(srcFolder).on('finish', function() {
+        buildFile.Log.finished('stylint');
+      });
+    });
+
+    gulp.add('styl', ['stylint'], function() {
       buildFile.Log.starting('styl');
       return buildFile.buildStyl(srcFolder, wwwFolder).on('finish', function() {
         buildFile.Log.finished('styl');
@@ -112,8 +119,16 @@ module.exports.watch = function watch(f, settings, platform, config) {
 
           stylWatcher.on('change', function(p) {
             buildFile.Log.starting('styl');
-            buildFile.buildStyl(srcFolder, wwwFolder).on('finish', function() {
-              buildFile.Log.finished('styl');
+
+            var defer = Q.defer();
+            buildFile.lintStylus(srcFolder).on('finish', function() {
+              defer.resolve();
+            });
+
+            defer.promise.then(function() {
+              buildFile.buildStyl(srcFolder, wwwFolder).on('finish', function() {
+                buildFile.Log.finished('styl');
+              });
             });
           });
 

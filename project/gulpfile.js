@@ -16,6 +16,7 @@ var gulp = require('gulp'),
     source = require('vinyl-source-stream'),
     preprocess = require('gulp-preprocess'),
     spawn = require('child_process').spawn,
+    stylint = require('gulp-stylint'),
     path = require('path');
 
 var Settings = require('./bin/settings.js');
@@ -94,6 +95,16 @@ function buildStyl(src, dest) {
     .pipe(gulp.dest(path.join(dest, 'css')));
 }
 
+function lintStylus(src) {
+  return gulp.src(path.join(src, 'styl', 'layout.styl'))
+    .pipe(stylint({
+      brackets: "never",
+      namingConvention: true,
+      noImportant: true,
+      failOnWarning: true
+    })).pipe(stylint.reporter());
+}
+
 gulp.task('clean:css', function(cb) {
   return del(['www/css/**/*.css'], cb);
 });
@@ -102,7 +113,9 @@ gulp.task('styl', ['clean:css'], function() {
   return buildStyl('src', 'www');
 });
 
-//// Scripts
+gulp.task('stylint', function () {
+  lintStylus('src');
+});
 
 function buildScripts(src, dest, watch) {
   var bro = browserify(path.join(src, 'ts', 'main.ts')).plugin(tsify, {
@@ -166,7 +179,7 @@ gulp.task('compress:data', function() {
 
 // Watch
 
-gulp.task('watch-styl', ['styl'], function() {
+gulp.task('watch-styl', ['stylint', 'styl'], function() {
   gulp.watch('src/styl/**/*.styl', ['styl']);
 });
 
@@ -187,6 +200,7 @@ gulp.task('build', ['scripts', 'css', 'html']);
 gulp.task('default', ['watch']);
 
 module.exports = {
+  lintStylus: lintStylus,
   buildHtml: buildHtml,
   buildStyl: buildStyl,
   buildScripts: buildScripts,
