@@ -1,28 +1,34 @@
 declare module "mithril-mdl" {
 
   export const Button: m.Component<any>;
-
+  export const Fab: m.Component<any>;
   export const Layout: m.Component<any>;
-
   export const Header: m.Component<any>;
-
   export const HeaderRow: m.Component<any>;
-
   export const Title: m.Component<any>;
-
+  export const Spacer: m.Component<any>;
   export const Tabs: m.Component<any>;
-
   export const Tab: m.Component<any>;
-
   export const TabPanel: m.Component<any>;
-
   export const Content: m.Component<any>;
-
   export const Drawer: m.Component<any>;
-
   export const TextInput: m.Component<any>;
-
   export const Grid: m.Component<any>;
-
   export const Cell: m.Component<any>;
+  export const Menu: m.Component<any>;
+  export const MenuItem: m.Component<any>;
+  export const Icon: m.Component<any>;
+  export const Checkbox: m.Component<any>;
+  export const Radio: m.Component<any>;
+  export const Switch: m.Component<any>;
+  export const IconToggle: m.Component<any>;
+  export const Spinner: m.Component<any>;
+  export const Badge: m.Component<any>;
+  export const List: m.Component<any>;
+  export const ActionListItem: m.Component<any>;
+  export const TwoLineListItem: m.Component<any>;
+  export const ThreeLineListItem: m.Component<any>;
+  export const IconListItem: m.Component<any>;
+  export const ListItem: m.Component<any>;
+  export const ControlListItem: m.Component<any>;
 }

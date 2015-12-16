@@ -155,7 +155,7 @@ export module m {
     return _prop(value, f, scope);
   }
 
-  export function attributes(mask: StringMap<boolean>): (obj: Object, config?: (el: HTMLElement, isUpdate: boolean, context: mithril.Context) => void) => Object {
+  export function attributes(mask?: StringMap<boolean>): (obj: Object, config?: (el: HTMLElement, isUpdate: boolean, context: mithril.Context) => void) => mithril.Attributes {
     return (obj: mithril.Attributes, config?: (el: HTMLElement, isUpdate: boolean) => void) => {
       if(config) obj.config = config;
       return Obj.filter(obj, (path) => {

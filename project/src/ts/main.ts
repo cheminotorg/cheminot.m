@@ -16,14 +16,13 @@ import Q = require('q');
 import m = require('mithril');
 import moment = require('moment');
 import qstart = require('qstart');
-import App = require('./app');
-import Android = require('./android');
 import Routes = require('./routes');
 import Suggestions = require('./suggestions');
 import native = require('./native');
 import Toolkit = require('./toolkit');
 import Locale = require('./locale');
 import Responsive = require('./responsive');
+import { component as App } from './ui/app';
 
 window.onerror = Toolkit.handleError;
 
@@ -32,17 +31,19 @@ native.ready().then(() => {
   Q.all([native.Cheminot.init(), native.Cheminot.gitVersion(), qstart, Suggestions.init(), Responsive.init()]).spread((meta: Meta, cheminotcVersion: string) => {
     Locale.init();
     return native.GoogleAnalytics.startTrackerWithId(Settings.ga_id).fin(() => {
+
       Settings.db = meta;
       Settings.cheminotcVersion = cheminotcVersion;
+
+      const viewport = document.querySelector('#viewport');
+
       m.route.mode = 'hash';
-      m.route(document.querySelector('#viewport'), '/android', {
-        "/android": Android.component,
-        "/": App.component,
-        "/search": App.component,
-        "/search/:tab/:start/:end/:at": App.component,
-        "/departures/:start/:end/:at": App.component,
-        "/trip/:id": App.component
+
+      m.route(viewport, '/', {
+        "/": App,
+        "/search": App,
       });
+
     });
   }).catch((e) => {
     Toolkit.handleError(e);

@@ -414,6 +414,9 @@ declare module m {
   function deps(mockWindow: Window): Window;
 
 
+  type Children<T> = Array<string | m.VirtualElement<T> | m.Component<T>>
+
+
   /**
    * The interface for a virtual element. It's best to consider this immutable
    * for most use cases.
@@ -458,6 +461,10 @@ declare module m {
     preventDefault(): void;
   }
 
+  interface Ev {
+    preventDefault(): void;
+  }
+
   /**
    * A context object for configuration functions.
    *
@@ -467,7 +474,7 @@ declare module m {
     /**
      * A function to call when the node is unloaded. Useful for cleanup.
      */
-    onunload?(): any;
+    onunload?(ev: Ev): any;
 
     /**
      * Set true if the backing DOM node needs to be retained between route
@@ -588,7 +595,12 @@ declare module m {
      *
      * @see m.component
      */
-    view(ctrl: T): VirtualElement<T>;
+    view(ctrl: T,
+         attributes: m.Attributes,
+         ...children: Array<string |
+         m.VirtualElement<T> |
+         m.Component<T>>
+    ): VirtualElement<T>;
   }
 
   /**
