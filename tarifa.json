@@ -19,7 +19,9 @@
       "KeepRunning": true,
       "SplashScreenDelay": 60000,
       "SplashScreen": "screen",
-      "SplashScreenBackgroundColor": "#2F8EDD"
+      "SplashScreenBackgroundColor": "#2F8EDD",
+      "xwalkVersion": "xwalk_core_library_beta:16.45.421.18",
+      "xwalkCommandLine" : "--enable-viewport-meta --disable-pull-to-refresh-effect --show-fps-counter --release beta"
     },
     "android": {
       "manifest": {
