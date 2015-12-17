@@ -68,14 +68,16 @@
       "default": {
         "id": "m.cheminot",
         "product_name": "Cheminot mock",
-        "product_file_name": "cheminot_mock"
+        "product_file_name": "cheminot_mock",
+        "min_sdk_version": "16"
       },
       "stage": {
         "id": "m.cheminot.stage",
         "product_name": "Cheminot stage",
         "product_file_name": "cheminot_stage",
         "hockeyapp_id": "2c23cacff1aa8bc1d9e54d908af747e4",
-        "ga_id": "UA-60596605-2"
+        "ga_id": "UA-60596605-2",
+        "min_sdk_version": "16"
       },
       "prod": {
         "id": "m.cheminot.prod",
@@ -85,7 +87,8 @@
         "product_file_name": "cheminot_prod",
         "release": true,
         "sign": "store",
-        "ga_id": "UA-60596605-2"
+        "ga_id": "UA-60596605-2",
+        "min_sdk_version": "16"
       }
     },
     "browser": {
