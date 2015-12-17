@@ -9,6 +9,8 @@
 /// <reference path='dts/cheminot.d.ts'/>
 /// <reference path='dts/mithril-mdl.d.ts'/>
 /// <reference path='dts/mdl-ripple.d.ts'/>
+/// <reference path='dts/promise.d.ts'/>
+/// <reference path='dts/fetch.d.ts'/>
 
 'use strict';
 
