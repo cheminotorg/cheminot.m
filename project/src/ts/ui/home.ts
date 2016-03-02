@@ -10,7 +10,7 @@ export type Ctrl = {
   onNewTripTouched: (ctrl: Ctrl, e: Event) => void;
 }
 
-function NewTripButton(ctrl: Ctrl): m.Component<Ctrl> {
+function NewTripButton(ctrl: Ctrl): m.VirtualElement<Ctrl> {
   const config = Touch.m.ontap(_.partial(ctrl.onNewTripTouched, ctrl));
   return m(mdl.Fab, { icon: 'add', colored: true, ripple: true, config: config })
 }
