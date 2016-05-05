@@ -12,6 +12,7 @@ import React, {
 } from 'react-native';
 
 // import { MKButton } from 'react-native-material-kit';
+// import Icon from 'react-native-vector-icons/MaterialIcons';
 
 class cheminotm extends Component {
   render() {
