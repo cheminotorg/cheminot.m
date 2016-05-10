@@ -15,7 +15,8 @@ import React, {
   View,
   StatusBar,
   TouchableOpacity,
-  Platform
+  Platform,
+  Image
 } from 'react-native';
 
 import { MKButton, MKColor } from 'react-native-material-kit';
@@ -77,6 +78,33 @@ let NavigationHeaderBackButton = (props: Props) => {
 
 NavigationHeaderBackButton = NavigationContainer.create(NavigationHeaderBackButton);
 
+/// -- Header button
+let NavigationHeaderMenuButton = (props: Props) => {
+  const styles = StyleSheet.create({
+    buttonContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    button: {
+      height: 24,
+      width: 24,
+      margin: Platform.OS === 'ios' ? 10 : 16,
+      resizeMode: 'contain'
+    }
+  });
+  return (
+    <TouchableOpacity style={styles.buttonContainer} onPress={() => console.log('here') }>
+      <View style={styles.button}>
+        <Icon name="menu" size={24} color="#FFF" />
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+NavigationHeaderBackButton = NavigationContainer.create(NavigationHeaderBackButton);
+
 /// -- Fab button
 
 const MKFabButton = MKButton.plainFab()
@@ -122,9 +150,6 @@ class cheminotm extends Component {
         navigationState={navigationState}
         style={styles.animatedView}
         renderOverlay={this._renderOverlay}
-        applyAnimation={(pos, navState) => {
-          Animated.timing(pos, {toValue: navState.index, duration: 500}).start();
-        }}
         renderScene={this._renderCard}
       />
     );
@@ -135,7 +160,7 @@ class cheminotm extends Component {
       <NavigationHeader
         {...props}
         renderLeftComponent={(props: NavigationSceneRendererProps) => {
-          return props.scene.index > 0 ? <NavigationHeaderBackButton /> : null;
+          return props.scene.index > 0 ? <NavigationHeaderBackButton /> : <NavigationHeaderMenuButton />;
         }}
         style={{backgroundColor: MKColor.Indigo}}
         renderTitleComponent={this._renderTitleComponent}
@@ -163,10 +188,13 @@ class cheminotm extends Component {
 
   _renderScene(props) {
     return (
-      <View style={{flexDirection: 'row', justifyContent: 'center', position: 'absolute', left: 0, right: 0, bottom: 64 }}>
-        <MKFabButton onPress={this._onNewTripTap.bind(this, props)}>
-          <Icon name="add" size={24} color="#FFF" />
-        </MKFabButton>
+      <View style={{flex: 1, paddingTop: 56, justifyContent: 'space-around', alignItems: 'center'}}>
+        <Image source={require('./empty.png')} />
+        <View>
+          <MKFabButton onPress={this._onNewTripTap.bind(this, props)}>
+            <Icon name="add" size={24} color="#FFF" />
+          </MKFabButton>
+        </View>
       </View>
     );
   }
