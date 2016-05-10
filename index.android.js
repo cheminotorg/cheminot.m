@@ -10,8 +10,12 @@ import React, {
   Animated,
   StyleSheet,
   ScrollView,
+  BackAndroid,
   Text,
-  View
+  View,
+  StatusBar,
+  TouchableOpacity,
+  Platform
 } from 'react-native';
 
 import { MKButton, MKColor } from 'react-native-material-kit';
@@ -22,13 +26,16 @@ const {
   Card: NavigationCard,
   Header: NavigationHeader,
   Reducer: NavigationReducer,
-  RootContainer: NavigationRootContainer,
+  Container: NavigationContainer,
+  RootContainer: NavigationRootContainer
 } = NavigationExperimental;
+
+/// -- Reducer
 
 const navigationReducer = NavigationReducer.StackReducer({
   getPushedReducerForAction: (action) => {
     if (action.type === 'push') {
-      return (state) => state || {key: action.key};
+      return (state) => state || {key: action.key, label: action.label};
     }
     return null;
   },
@@ -37,10 +44,40 @@ const navigationReducer = NavigationReducer.StackReducer({
     key: 'cheminotm',
     index: 0,
     children: [
-      {key: 'home'},
-    ],
-  },
+      {key: 'home', label: 'Cheminot'}
+    ]
+  }
 });
+
+/// -- Back button
+
+let NavigationHeaderBackButton = (props: Props) => {
+  const styles = StyleSheet.create({
+    buttonContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    button: {
+      height: 24,
+      width: 24,
+      margin: Platform.OS === 'ios' ? 10 : 16,
+      resizeMode: 'contain'
+    }
+  });
+  return (
+    <TouchableOpacity style={styles.buttonContainer} onPress={() => props.onNavigate(NavigationRootContainer.getBackAction())}>
+      <View style={styles.button}>
+        <Icon name="arrow-back" size={24} color="#FFF" />
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+NavigationHeaderBackButton = NavigationContainer.create(NavigationHeaderBackButton);
+
+/// -- Fab button
 
 const MKFabButton = MKButton.plainFab()
                             .withBackgroundColor(MKColor.Teal)
@@ -54,16 +91,27 @@ class cheminotm extends Component {
     this._renderCard = this._renderCard.bind(this);
     this._renderScene = this._renderScene.bind(this);
     this._renderTitleComponent = this._renderTitleComponent.bind(this);
+    BackAndroid.addEventListener('hardwareBackPress', this._handleBackButtonPress.bind(this));
+  }
+
+  _handleBackButtonPress() {
+    return (
+      this._navRootContainer &&
+      this._navRootContainer.handleNavigation(NavigationRootContainer.getBackAction())
+    );
   }
 
   render() {
     return (
-      <NavigationRootContainer
-        reducer={navigationReducer}
-        ref={navRootContainer => { this._navRootContainer = navRootContainer; }}
-        persistenceKey="cheminotm"
-        renderNavigation={this._renderNavigation}
-      />
+      <View style={{flex: 1}}>
+        <StatusBar backgroundColor="#2F3E9E" barStyle="light-content" />
+        <NavigationRootContainer
+          reducer={navigationReducer}
+          ref={navRootContainer => { this._navRootContainer = navRootContainer; }}
+          persistenceKey="cheminotm"
+          renderNavigation={this._renderNavigation}
+        />
+      </View>
     );
   }
 
@@ -85,16 +133,20 @@ class cheminotm extends Component {
   _renderOverlay(props) {
     return (
       <NavigationHeader
-      {...props}
-      renderTitleComponent={this._renderTitleComponent}
+        {...props}
+        renderLeftComponent={(props: NavigationSceneRendererProps) => {
+          return props.scene.index > 0 ? <NavigationHeaderBackButton /> : null;
+        }}
+        style={{backgroundColor: MKColor.Indigo}}
+        renderTitleComponent={this._renderTitleComponent}
       />
     );
   }
 
   _renderTitleComponent(props) {
     return (
-      <NavigationHeader.Title>
-      {props.scene.navigationState.key}
+      <NavigationHeader.Title textStyle={{ color: '#FFF'}}>
+        {props.scene.navigationState.label}
       </NavigationHeader.Title>
     );
   }
@@ -111,7 +163,7 @@ class cheminotm extends Component {
 
   _renderScene(props) {
     return (
-      <View style={{flexDirection: 'row', justifyContent: 'center', position: 'absolute', left: 0, right: 0, bottom: 66 }}>
+      <View style={{flexDirection: 'row', justifyContent: 'center', position: 'absolute', left: 0, right: 0, bottom: 64 }}>
         <MKFabButton onPress={this._onNewTripTap.bind(this, props)}>
           <Icon name="add" size={24} color="#FFF" />
         </MKFabButton>
@@ -122,7 +174,8 @@ class cheminotm extends Component {
   _onNewTripTap(props) {
     props.onNavigate({
       type: 'push',
-      key: 'Route #' + props.scenes.length,
+      key: `scene_${props.scenes.length}`,
+      label: `Route #${props.scenes.length}`
     });
   }
 }
