@@ -23,6 +23,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheminotmDrawer from './js/layout/drawer';
 import NavigationHeaderMenuButton from './js/layout/NavigationHeaderMenuButton';
 import NavigationHeaderBackButton from './js/layout/NavigationHeaderBackButton';
+import Home from './js/home';
 
 const {
   AnimatedView: NavigationAnimatedView,
@@ -52,13 +53,6 @@ const navigationReducer = NavigationReducer.StackReducer({
   }
 });
 
-
-
-/// -- Fab button
-
-const MKFabButton = MKButton.plainFab()
-                            .withBackgroundColor(MKColor.Teal)
-                            .build();
 
 class cheminotm extends Component {
 
@@ -164,16 +158,7 @@ class CheminotNavigationAnimatedView extends Component {
   _renderScene(props) {
     switch(props.scene.navigationState.key) {
       case 'home': {
-        return (
-          <View style={{flex: 1, paddingTop: 56, justifyContent: 'space-around', alignItems: 'center'}}>
-            <Image source={require('./empty.png')} />
-            <View>
-              <MKFabButton onPress={this._onNewTripPress.bind(this, props)}>
-                <Icon name="add" size={24} color="#FFF" />
-              </MKFabButton>
-            </View>
-          </View>
-        );
+        return <Home onPress={this._onNewTripPress.bind(this, props)} />;
       }
       default: {
         return (
