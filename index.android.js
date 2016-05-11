@@ -23,6 +23,7 @@ import React, {
 
 import { MKButton, MKColor } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import CheminotmDrawer from './drawer';
 
 const {
   AnimatedView: NavigationAnimatedView,
@@ -72,6 +73,7 @@ const backButtonStyles = StyleSheet.create({
 export class NavigationHeaderBackButton extends Component {
 
   onBackButtonPress() {
+    console.log(this.props);
     this.props.context.enableDrawer();
     this.props.onNavigate(NavigationRootContainer.getBackAction())
   }
@@ -122,72 +124,6 @@ NavigationHeaderBackButton = NavigationContainer.create(NavigationHeaderBackButt
 const MKFabButton = MKButton.plainFab()
                             .withBackgroundColor(MKColor.Teal)
                             .build();
-
-/// -- Drawer
-
-export default class CheminotmDrawer extends Component {
-
-  state = {
-    disabled: false
-  };
-
-  static childContextTypes = {
-    openDrawer: PropTypes.func,
-    disableDrawer: PropTypes.func,
-    enableDrawer: PropTypes.func
-  };
-
-  getChildContext(): Object {
-    return {
-      disableDrawer: this.disableDrawer.bind(this),
-      enableDrawer: this.enableDrawer.bind(this),
-      openDrawer: this.openDrawer.bind(this)
-    };
-  }
-
-  disableDrawer() {
-    this.setState({
-      disabled: true
-    });
-  }
-
-  enableDrawer() {
-    this.setState({
-      disabled: false
-    });
-  }
-
-  openDrawer() {
-    this._drawer.openDrawer();
-  }
-
-  renderNavigationView() {
-    return (
-      <View style={{flex: 1, backgroundColor: 'white'}}>
-        <Text style={{margin: 10, fontSize: 15, textAlign: 'left', color: MKColor.Grey, top: 24}}>I m in the Drawer!</Text>
-      </View>
-    );
-  }
-
-  render() {
-   return (
-     <DrawerLayoutAndroid
-       ref={drawer => { this._drawer = drawer; }}
-       drawerWidth={290}
-       drawerPosition={DrawerLayoutAndroid.positions.Left}
-       onDrawerOpen={this.onDrawerOpen}
-       onDrawerClose={this.onDrawerClose}
-       drawerLockMode={this.state.disabled ? 'locked-closed' : 'unlocked'}
-       renderNavigationView={this.renderNavigationView}
-       {...this.props}
-       >
-       <View style={{flex: 1, backgroundColor: 'white'}}>
-         {this.props.children}
-       </View>
-      </DrawerLayoutAndroid>
-   );
-  }
-}
 
 class cheminotm extends Component {
 
@@ -330,7 +266,8 @@ class CheminotNavigationAnimatedView extends Component {
 
 CheminotNavigationAnimatedView.contextTypes = {
   openDrawer: PropTypes.func,
-  disableDrawer: PropTypes.func
+  disableDrawer: PropTypes.func,
+  enableDrawer: PropTypes.func
 };
 
 const styles = StyleSheet.create({
