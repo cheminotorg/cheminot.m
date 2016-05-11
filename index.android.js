@@ -1,7 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
+'use strict';
 
 import React, {
   AppRegistry,
@@ -25,6 +22,7 @@ import { MKButton, MKColor } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheminotmDrawer from './js/layout/drawer';
 import NavigationHeaderMenuButton from './js/layout/NavigationHeaderMenuButton';
+import NavigationHeaderBackButton from './js/layout/NavigationHeaderBackButton';
 
 const {
   AnimatedView: NavigationAnimatedView,
@@ -54,43 +52,6 @@ const navigationReducer = NavigationReducer.StackReducer({
   }
 });
 
-/// -- Back button
-
-const backButtonStyles = StyleSheet.create({
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button: {
-    height: 24,
-    width: 24,
-    margin: Platform.OS === 'ios' ? 10 : 16,
-    resizeMode: 'contain'
-  }
-});
-
-export class NavigationHeaderBackButton extends Component {
-
-  onBackButtonPress() {
-    console.log(this.props);
-    this.props.context.enableDrawer();
-    this.props.onNavigate(NavigationRootContainer.getBackAction())
-  }
-
-  render() {
-    return (
-      <TouchableOpacity style={backButtonStyles.buttonContainer} onPress={this.onBackButtonPress.bind(this)}>
-        <View style={backButtonStyles.button}>
-          <Icon name="arrow-back" size={24} color="#FFF" />
-        </View>
-      </TouchableOpacity>
-    );
-  }
-}
-
-NavigationHeaderBackButton = NavigationContainer.create(NavigationHeaderBackButton);
 
 
 /// -- Fab button
