@@ -16,7 +16,9 @@ import React, {
   StatusBar,
   TouchableOpacity,
   Platform,
-  Image
+  Image,
+  DrawerLayoutAndroid,
+  PropTypes
 } from 'react-native';
 
 import { MKButton, MKColor } from 'react-native-material-kit';
@@ -79,6 +81,7 @@ let NavigationHeaderBackButton = (props: Props) => {
 NavigationHeaderBackButton = NavigationContainer.create(NavigationHeaderBackButton);
 
 /// -- Header button
+
 let NavigationHeaderMenuButton = (props: Props) => {
   const styles = StyleSheet.create({
     buttonContainer: {
@@ -95,7 +98,7 @@ let NavigationHeaderMenuButton = (props: Props) => {
     }
   });
   return (
-    <TouchableOpacity style={styles.buttonContainer} onPress={() => console.log('here') }>
+    <TouchableOpacity style={styles.buttonContainer} {...props}>
       <View style={styles.button}>
         <Icon name="menu" size={24} color="#FFF" />
       </View>
@@ -111,15 +114,81 @@ const MKFabButton = MKButton.plainFab()
                             .withBackgroundColor(MKColor.Teal)
                             .build();
 
+/// -- Drawer
+
+export default class CheminotmDrawer extends Component {
+
+  state = {
+    disabled: false
+  };
+
+  static childContextTypes = {
+    openDrawer: PropTypes.func,
+    disableDrawer: PropTypes.func,
+    enableDrawer: PropTypes.func
+  };
+
+  getChildContext(): Object {
+    return {
+      disableDrawer: this.disableDrawer.bind(this),
+      enableDrawer: this.enableDrawer.bind(this),
+      openDrawer: this.openDrawer.bind(this)
+    };
+  }
+
+  disableDrawer() {
+    this.setState({
+      disabled: true
+    });
+  }
+
+  enableDrawer() {
+    this.setState({
+      disabled: false
+    });
+  }
+
+  openDrawer() {
+    this._drawer.openDrawer();
+  }
+
+  renderNavigationView() {
+    return (
+      <View style={{flex: 1, backgroundColor: 'white'}}>
+        <Text style={{margin: 10, fontSize: 15, textAlign: 'left', color: MKColor.Grey, top: 24}}>I m in the Drawer!</Text>
+      </View>
+    );
+  }
+
+  render() {
+   return (
+     <DrawerLayoutAndroid
+       ref={drawer => { this._drawer = drawer; }}
+       drawerWidth={290}
+       drawerPosition={DrawerLayoutAndroid.positions.Left}
+       onDrawerOpen={this.onDrawerOpen}
+       onDrawerClose={this.onDrawerClose}
+       drawerLockMode={false ? 'locked-closed' : 'unlocked'}
+       renderNavigationView={this.renderNavigationView}
+       {...this.props}
+       >
+       <View style={{flex: 1, backgroundColor: 'white'}}>
+         {this.props.children}
+       </View>
+      </DrawerLayoutAndroid>
+   );
+  }
+}
+
 class cheminotm extends Component {
 
   componentWillMount() {
     this._renderNavigation = this._renderNavigation.bind(this);
-    this._renderOverlay = this._renderOverlay.bind(this);
-    this._renderCard = this._renderCard.bind(this);
-    this._renderScene = this._renderScene.bind(this);
-    this._renderTitleComponent = this._renderTitleComponent.bind(this);
     BackAndroid.addEventListener('hardwareBackPress', this._handleBackButtonPress.bind(this));
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return true;
   }
 
   _handleBackButtonPress() {
@@ -132,7 +201,7 @@ class cheminotm extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <StatusBar backgroundColor="#2F3E9E" barStyle="light-content" />
+        <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent={true} barStyle="light-content" />
         <NavigationRootContainer
           reducer={navigationReducer}
           ref={navRootContainer => { this._navRootContainer = navRootContainer; }}
@@ -146,24 +215,44 @@ class cheminotm extends Component {
   _renderNavigation(navigationState, onNavigate) {
     if (!navigationState) return null;
     return (
+      <CheminotmDrawer>
+        <View style={{backgroundColor: MKColor.Indigo, height: 24, top: 0}} />
+        <CheminotNavigationAnimatedView navigationState={navigationState} />
+      </CheminotmDrawer>
+    );
+  }
+}
+
+
+class CheminotNavigationAnimatedView extends Component {
+
+  componentWillMount() {
+    this._renderOverlay = this._renderOverlay.bind(this);
+    this._renderCard = this._renderCard.bind(this);
+    this._renderScene = this._renderScene.bind(this);
+    this._renderTitleComponent = this._renderTitleComponent.bind(this);
+  }
+
+  render() {
+    return (
       <NavigationAnimatedView
-        navigationState={navigationState}
+        navigationState={this.props.navigationState}
         style={styles.animatedView}
         renderOverlay={this._renderOverlay}
         renderScene={this._renderCard}
       />
-    );
+    )
   }
 
   _renderOverlay(props) {
     return (
       <NavigationHeader
-        {...props}
-        renderLeftComponent={(props: NavigationSceneRendererProps) => {
-          return props.scene.index > 0 ? <NavigationHeaderBackButton /> : <NavigationHeaderMenuButton />;
-        }}
-        style={{backgroundColor: MKColor.Indigo}}
-        renderTitleComponent={this._renderTitleComponent}
+      {...props}
+      renderLeftComponent={(props: NavigationSceneRendererProps) => {
+        return props.scene.index > 0 ? <NavigationHeaderBackButton /> : <NavigationHeaderMenuButton onPress={this._onMenuPress.bind(this)}/>;
+      }}
+      style={{backgroundColor: MKColor.Indigo}}
+      renderTitleComponent={this._renderTitleComponent}
       />
     );
   }
@@ -171,7 +260,7 @@ class cheminotm extends Component {
   _renderTitleComponent(props) {
     return (
       <NavigationHeader.Title textStyle={{ color: '#FFF'}}>
-        {props.scene.navigationState.label}
+      {props.scene.navigationState.label}
       </NavigationHeader.Title>
     );
   }
@@ -179,34 +268,55 @@ class cheminotm extends Component {
   _renderCard(props) {
     return (
       <NavigationCard
-        {...props}
-        key={'card_' + props.scene.navigationState.key}
-        renderScene={this._renderScene}
+      {...props}
+      key={'card_' + props.scene.navigationState.key}
+      renderScene={this._renderScene}
       />
     );
   }
 
   _renderScene(props) {
-    return (
-      <View style={{flex: 1, paddingTop: 56, justifyContent: 'space-around', alignItems: 'center'}}>
-        <Image source={require('./empty.png')} />
-        <View>
-          <MKFabButton onPress={this._onNewTripTap.bind(this, props)}>
-            <Icon name="add" size={24} color="#FFF" />
-          </MKFabButton>
-        </View>
-      </View>
-    );
+    switch(props.scene.navigationState.key) {
+      case 'home': {
+        return (
+          <View style={{flex: 1, paddingTop: 56, justifyContent: 'space-around', alignItems: 'center'}}>
+            <Image source={require('./empty.png')} />
+            <View>
+              <MKFabButton onPress={this._onNewTripPress.bind(this, props)}>
+                <Icon name="add" size={24} color="#FFF" />
+              </MKFabButton>
+            </View>
+          </View>
+        );
+      }
+      default: {
+        return (
+          <View style={{flex: 1, paddingTop: 56, justifyContent: 'center', alignItems: 'center'}}>
+            <Text>{props.scene.navigationState.label}</Text>
+          </View>
+        );
+      }
+    }
   }
 
-  _onNewTripTap(props) {
+  _onNewTripPress(props) {
+    this.context.disableDrawer();
     props.onNavigate({
       type: 'push',
       key: `scene_${props.scenes.length}`,
       label: `Route #${props.scenes.length}`
     });
   }
+
+  _onMenuPress(props) {
+    this.context.openDrawer();
+  }
 }
+
+CheminotNavigationAnimatedView.contextTypes = {
+  openDrawer: PropTypes.func,
+  disableDrawer: PropTypes.func
+};
 
 const styles = StyleSheet.create({
   animatedView: {
