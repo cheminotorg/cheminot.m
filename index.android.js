@@ -54,29 +54,38 @@ const navigationReducer = NavigationReducer.StackReducer({
 
 /// -- Back button
 
-let NavigationHeaderBackButton = (props: Props) => {
-  const styles = StyleSheet.create({
-    buttonContainer: {
-      flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    button: {
-      height: 24,
-      width: 24,
-      margin: Platform.OS === 'ios' ? 10 : 16,
-      resizeMode: 'contain'
-    }
-  });
-  return (
-    <TouchableOpacity style={styles.buttonContainer} onPress={() => props.onNavigate(NavigationRootContainer.getBackAction())}>
-      <View style={styles.button}>
-        <Icon name="arrow-back" size={24} color="#FFF" />
-      </View>
-    </TouchableOpacity>
-  );
-};
+const backButtonStyles = StyleSheet.create({
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  button: {
+    height: 24,
+    width: 24,
+    margin: Platform.OS === 'ios' ? 10 : 16,
+    resizeMode: 'contain'
+  }
+});
+
+export class NavigationHeaderBackButton extends Component {
+
+  onBackButtonPress() {
+    this.props.context.enableDrawer();
+    this.props.onNavigate(NavigationRootContainer.getBackAction())
+  }
+
+  render() {
+    return (
+      <TouchableOpacity style={backButtonStyles.buttonContainer} onPress={this.onBackButtonPress.bind(this)}>
+        <View style={backButtonStyles.button}>
+          <Icon name="arrow-back" size={24} color="#FFF" />
+        </View>
+      </TouchableOpacity>
+    );
+  }
+}
 
 NavigationHeaderBackButton = NavigationContainer.create(NavigationHeaderBackButton);
 
@@ -168,7 +177,7 @@ export default class CheminotmDrawer extends Component {
        drawerPosition={DrawerLayoutAndroid.positions.Left}
        onDrawerOpen={this.onDrawerOpen}
        onDrawerClose={this.onDrawerClose}
-       drawerLockMode={false ? 'locked-closed' : 'unlocked'}
+       drawerLockMode={this.state.disabled ? 'locked-closed' : 'unlocked'}
        renderNavigationView={this.renderNavigationView}
        {...this.props}
        >
@@ -226,6 +235,12 @@ class cheminotm extends Component {
 
 class CheminotNavigationAnimatedView extends Component {
 
+  static childContextTypes = {
+    openDrawer: PropTypes.func,
+    disableDrawer: PropTypes.func,
+    enableDrawer: PropTypes.func
+  };
+
   componentWillMount() {
     this._renderOverlay = this._renderOverlay.bind(this);
     this._renderCard = this._renderCard.bind(this);
@@ -249,7 +264,7 @@ class CheminotNavigationAnimatedView extends Component {
       <NavigationHeader
       {...props}
       renderLeftComponent={(props: NavigationSceneRendererProps) => {
-        return props.scene.index > 0 ? <NavigationHeaderBackButton /> : <NavigationHeaderMenuButton onPress={this._onMenuPress.bind(this)}/>;
+        return props.scene.index > 0 ? <NavigationHeaderBackButton context={this.context} sceneIndex={props.scene.index} /> : <NavigationHeaderMenuButton onPress={this._onMenuPress.bind(this)}/>;
       }}
       style={{backgroundColor: MKColor.Indigo}}
       renderTitleComponent={this._renderTitleComponent}
