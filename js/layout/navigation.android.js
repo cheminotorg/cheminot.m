@@ -1,7 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- */
+'use strict';
 
 import React, {
   AppRegistry,
@@ -23,8 +20,7 @@ import React, {
 
 import { MKButton, MKColor } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import CheminotmDrawer from './js/layout/drawer';
-import NavigationHeaderMenuButton from './js/layout/NavigationHeaderMenuButton';
+import CheminotmDrawer from './drawer';
 
 const {
   AnimatedView: NavigationAnimatedView,
@@ -82,9 +78,9 @@ export class NavigationHeaderBackButton extends Component {
   render() {
     return (
       <TouchableOpacity style={backButtonStyles.buttonContainer} onPress={this.onBackButtonPress.bind(this)}>
-        <View style={backButtonStyles.button}>
-          <Icon name="arrow-back" size={24} color="#FFF" />
-        </View>
+      <View style={backButtonStyles.button}>
+      <Icon name="arrow-back" size={24} color="#FFF" />
+      </View>
       </TouchableOpacity>
     );
   }
@@ -92,6 +88,33 @@ export class NavigationHeaderBackButton extends Component {
 
 NavigationHeaderBackButton = NavigationContainer.create(NavigationHeaderBackButton);
 
+/// -- Header button
+
+let NavigationHeaderMenuButton = (props: Props) => {
+  const styles = StyleSheet.create({
+    buttonContainer: {
+      flex: 1,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    button: {
+      height: 24,
+      width: 24,
+      margin: Platform.OS === 'ios' ? 10 : 16,
+      resizeMode: 'contain'
+    }
+  });
+  return (
+    <TouchableOpacity style={styles.buttonContainer} {...props}>
+    <View style={styles.button}>
+    <Icon name="menu" size={24} color="#FFF" />
+    </View>
+    </TouchableOpacity>
+  );
+};
+
+NavigationHeaderBackButton = NavigationContainer.create(NavigationHeaderBackButton);
 
 /// -- Fab button
 
@@ -120,13 +143,13 @@ class cheminotm extends Component {
   render() {
     return (
       <View style={{flex: 1}}>
-        <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent={true} barStyle="light-content" />
-        <NavigationRootContainer
-          reducer={navigationReducer}
-          ref={navRootContainer => { this._navRootContainer = navRootContainer; }}
-          persistenceKey="cheminotm"
-          renderNavigation={this._renderNavigation}
-        />
+      <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent={true} barStyle="light-content" />
+      <NavigationRootContainer
+      reducer={navigationReducer}
+      ref={navRootContainer => { this._navRootContainer = navRootContainer; }}
+      persistenceKey="cheminotm"
+      renderNavigation={this._renderNavigation}
+      />
       </View>
     );
   }
@@ -135,8 +158,8 @@ class cheminotm extends Component {
     if (!navigationState) return null;
     return (
       <CheminotmDrawer>
-        <View style={{backgroundColor: MKColor.Indigo, height: 24, top: 0}} />
-        <CheminotNavigationAnimatedView navigationState={navigationState} />
+      <View style={{backgroundColor: MKColor.Indigo, height: 24, top: 0}} />
+      <CheminotNavigationAnimatedView navigationState={navigationState} />
       </CheminotmDrawer>
     );
   }
@@ -161,10 +184,10 @@ class CheminotNavigationAnimatedView extends Component {
   render() {
     return (
       <NavigationAnimatedView
-        navigationState={this.props.navigationState}
-        style={styles.animatedView}
-        renderOverlay={this._renderOverlay}
-        renderScene={this._renderCard}
+      navigationState={this.props.navigationState}
+      style={styles.animatedView}
+      renderOverlay={this._renderOverlay}
+      renderScene={this._renderCard}
       />
     )
   }
@@ -205,19 +228,19 @@ class CheminotNavigationAnimatedView extends Component {
       case 'home': {
         return (
           <View style={{flex: 1, paddingTop: 56, justifyContent: 'space-around', alignItems: 'center'}}>
-            <Image source={require('./empty.png')} />
-            <View>
-              <MKFabButton onPress={this._onNewTripPress.bind(this, props)}>
-                <Icon name="add" size={24} color="#FFF" />
-              </MKFabButton>
-            </View>
+          <Image source={require('./empty.png')} />
+          <View>
+          <MKFabButton onPress={this._onNewTripPress.bind(this, props)}>
+          <Icon name="add" size={24} color="#FFF" />
+          </MKFabButton>
+          </View>
           </View>
         );
       }
       default: {
         return (
           <View style={{flex: 1, paddingTop: 56, justifyContent: 'center', alignItems: 'center'}}>
-            <Text>{props.scene.navigationState.label}</Text>
+          <Text>{props.scene.navigationState.label}</Text>
           </View>
         );
       }
