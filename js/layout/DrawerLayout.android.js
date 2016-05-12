@@ -9,8 +9,9 @@ import React, {
 } from 'react-native';
 
 import { MKColor } from 'react-native-material-kit';
+import NavigationAnimatedView from './NavigationAnimatedView';
 
-export default class CheminotmDrawer extends Component {
+export default class DrawerLayout extends Component {
 
   state = {
     disabled: false

@@ -2,6 +2,7 @@
 
 import React, {
   Component,
+  NavigationExperimental,
   StyleSheet,
   View,
   Image
@@ -9,10 +10,15 @@ import React, {
 
 import { MKButton, MKColor } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import DrawerContainer from './layout/DrawerContainer';
 
 const NewTripButton = MKButton.plainFab()
                               .withBackgroundColor(MKColor.Teal)
                               .build();
+
+const {
+  Container: NavigationContainer
+} = NavigationExperimental;
 
 const styles = StyleSheet.create({
   container: {
@@ -23,13 +29,23 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class Home extends Component {
+class Home extends Component {
+
+  _onNewTripPress() {
+    this.props.disableDrawer();
+    this.props.onNavigate({
+      type: 'push',
+      key: `scene_${this.props.scenes.length}`,
+      label: `Route #${this.props.scenes.length}`
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Image source={require('./empty.png')} />
         <View>
-          <NewTripButton {...this.props}>
+          <NewTripButton onPress={this._onNewTripPress.bind(this)}>
             <Icon name="add" size={24} color="#FFF" />
           </NewTripButton>
         </View>
@@ -37,3 +53,5 @@ export default class Home extends Component {
     );
   }
 }
+
+module.exports = DrawerContainer.create(NavigationContainer.create(Home));

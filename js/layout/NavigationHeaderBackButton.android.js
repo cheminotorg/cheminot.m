@@ -10,6 +10,7 @@ import React, {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import DrawerContainer from './DrawerContainer';
 
 const {
   Container: NavigationContainer,
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
 });
 
 function onBackButtonPress(props) {
-  props.context.enableDrawer();
+  props.enableDrawer();
   props.onNavigate(NavigationRootContainer.getBackAction())
 }
 
@@ -44,4 +45,4 @@ const NavigationHeaderBackButton = (props: Props) => (
   </TouchableOpacity>
 );
 
-module.exports = NavigationContainer.create(NavigationHeaderBackButton);
+module.exports = DrawerContainer.create(NavigationContainer.create(NavigationHeaderBackButton));
