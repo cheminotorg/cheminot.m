@@ -4,25 +4,20 @@ import React, {
   AppRegistry,
   Component,
   NavigationExperimental,
-  Animated,
   StyleSheet,
-  ScrollView,
-  BackAndroid,
   Text,
   View,
   StatusBar,
-  TouchableOpacity,
-  Platform,
-  Image,
-  DrawerLayoutAndroid,
   PropTypes
 } from 'react-native';
 
 import { MKColor } from 'react-native-material-kit';
 import DrawerLayout from './js/layout/DrawerLayout';
 import NavigationAnimatedView from './js/layout/NavigationAnimatedView';
-import Home from './js/Home';
 import Layout from './js/layout/Layout';
+import NavigationRootBackAndroid from './js/layout/NavigationRootBackAndroid';
+import Home from './js/Home';
+import NewTrip from './js/NewTrip';
 
 const {
   Header: NavigationHeader,
@@ -51,7 +46,7 @@ const navigationReducer = NavigationReducer.StackReducer({
 
 const styles = StyleSheet.create({
   scrollView: {
-    marginTop: NavigationHeader.HEIGHT,
+    marginTop: NavigationHeader.HEIGHT
   }
 });
 
@@ -59,14 +54,6 @@ class cheminotm extends Component {
 
   componentWillMount() {
     this._renderNavigation = this._renderNavigation.bind(this);
-    BackAndroid.addEventListener('hardwareBackPress', this._handleBackButtonPress.bind(this));
-  }
-
-  _handleBackButtonPress() {
-    return (
-      this._navRootContainer &&
-      this._navRootContainer.handleNavigation(NavigationRootContainer.getBackAction())
-    );
   }
 
   render() {
@@ -89,11 +76,7 @@ class cheminotm extends Component {
         return <Home {...props} />;
       }
       default: {
-        return (
-          <View style={{flex: 1, paddingTop: 56, justifyContent: 'center', alignItems: 'center'}}>
-            <Text>{props.scene.navigationState.label}</Text>
-          </View>
-        );
+        return <NewTrip {...props} />;
       }
     }
   }
@@ -103,10 +86,12 @@ class cheminotm extends Component {
     return (
       <DrawerLayout>
         <View style={{backgroundColor: MKColor.Indigo, height: 24, top: 0}} />
+        <NavigationRootBackAndroid>
         <NavigationAnimatedView
           navigationState={navigationState}
           router={this._router}
         />
+        </NavigationRootBackAndroid>
       </DrawerLayout>
     );
   }

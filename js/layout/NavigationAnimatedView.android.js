@@ -11,6 +11,8 @@ import React, {
 
 import NavigationHeaderMenuButton from './NavigationHeaderMenuButton';
 import NavigationHeaderBackButton from './NavigationHeaderBackButton';
+import DrawerContainer from './DrawerContainer';
+import NavigationRootBackAndroid from './NavigationRootBackAndroid';
 import { MKColor } from 'react-native-material-kit';
 
 const {
@@ -27,12 +29,6 @@ const styles = StyleSheet.create({
 });
 
 class CGTNavigationAnimatedView extends Component {
-
-  static childContextTypes = {
-    openDrawer: PropTypes.func,
-    disableDrawer: PropTypes.func,
-    enableDrawer: PropTypes.func
-  };
 
   componentWillMount() {
     this._renderOverlay = this._renderOverlay.bind(this);
@@ -55,16 +51,16 @@ class CGTNavigationAnimatedView extends Component {
   _renderOverlay(props) {
     return (
       <NavigationHeader
-      {...props}
-      renderLeftComponent={(props: NavigationSceneRendererProps) => {
-        if(props.scene.index > 0) {
-          return <NavigationHeaderBackButton context={this.context} sceneIndex={props.scene.index} />;
-        } else {
-          return <NavigationHeaderMenuButton onPress={this._onMenuPress.bind(this)}/>;
-        }
-      }}
-      style={{backgroundColor: MKColor.Indigo}}
-      renderTitleComponent={this._renderTitleComponent}
+        {...props}
+        renderLeftComponent={(props: NavigationSceneRendererProps) => {
+          if(props.scene.index > 0) {
+            return <NavigationHeaderBackButton {...props} />;
+          } else {
+            return <NavigationHeaderMenuButton onPress={this._onMenuPress.bind(this)}/>;
+          }
+        }}
+        style={{backgroundColor: MKColor.Indigo}}
+        renderTitleComponent={this._renderTitleComponent}
       />
     );
   }
@@ -92,10 +88,4 @@ class CGTNavigationAnimatedView extends Component {
   }
 }
 
-NavigationAnimatedView.contextTypes = {
-  openDrawer: PropTypes.func,
-  disableDrawer: PropTypes.func,
-  enableDrawer: PropTypes.func
-};
-
-module.exports = NavigationContainer.create(CGTNavigationAnimatedView);
+module.exports = DrawerContainer.create(NavigationContainer.create(CGTNavigationAnimatedView));

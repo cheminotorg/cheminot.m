@@ -11,6 +11,7 @@ import React, {
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DrawerContainer from './DrawerContainer';
+import NavigationBackAndroidContainer from './NavigationBackAndroidContainer';
 
 const {
   Container: NavigationContainer,
@@ -32,11 +33,14 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class NavigationHeaderBackButton extends Component {
+class NavigationHeaderBackButton extends Component {
+
+  componentWillMount() {
+    console.log(this.props);
+  }
 
   _onBackButtonPress() {
     this.props.enableDrawer();
-    this.props.onNavigate(NavigationRootContainer.getBackAction())
   }
 
   render() {
@@ -50,4 +54,4 @@ export default class NavigationHeaderBackButton extends Component {
   }
 }
 
-module.exports = DrawerContainer.create(NavigationContainer.create(NavigationHeaderBackButton));
+module.exports = NavigationBackAndroidContainer.create(DrawerContainer.create(NavigationContainer.create(NavigationHeaderBackButton)));
