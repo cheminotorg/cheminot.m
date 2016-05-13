@@ -2,7 +2,6 @@
 
 import React, {
   Component,
-  NavigationExperimental,
   StyleSheet,
   View,
   TouchableOpacity,
@@ -10,10 +9,6 @@ import React, {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
-const {
-  Container: NavigationContainer
-} = NavigationExperimental;
 
 const styles = StyleSheet.create({
   buttonContainer: {

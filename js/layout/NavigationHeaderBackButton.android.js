@@ -32,17 +32,22 @@ const styles = StyleSheet.create({
   }
 });
 
-function onBackButtonPress(props) {
-  props.enableDrawer();
-  props.onNavigate(NavigationRootContainer.getBackAction())
-}
+export default class NavigationHeaderBackButton extends Component {
 
-const NavigationHeaderBackButton = (props: Props) => (
-  <TouchableOpacity style={styles.buttonContainer} onPress={() => onBackButtonPress(props)}>
-    <View style={styles.button}>
-      <Icon name="arrow-back" size={24} color="#FFF" />
-    </View>
-  </TouchableOpacity>
-);
+  _onBackButtonPress() {
+    this.props.enableDrawer();
+    this.props.onNavigate(NavigationRootContainer.getBackAction())
+  }
+
+  render() {
+    return (
+      <TouchableOpacity style={styles.buttonContainer} onPress={this._onBackButtonPress.bind(this)}>
+        <View style={styles.button}>
+          <Icon name="arrow-back" size={24} color="#FFF" />
+        </View>
+      </TouchableOpacity>
+    );
+  }
+}
 
 module.exports = DrawerContainer.create(NavigationContainer.create(NavigationHeaderBackButton));
