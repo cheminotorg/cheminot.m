@@ -9,19 +9,25 @@ import React, {
   BackAndroid
 } from 'react-native';
 
+const {
+  Container: NavigationContainer,
+  RootContainer: NavigationRootContainer
+} = NavigationExperimental;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1
   }
 });
 
-export default class NavigationRootBackAndroid extends Component {
+class NavigationRootBackAndroid extends Component {
 
   _handlers = [];
 
   static childContextTypes = {
     addBackButtonListener: PropTypes.func,
-    removeBackButtonListener: PropTypes.func
+    removeBackButtonListener: PropTypes.func,
+    triggerBackButton: PropTypes.func
   };
 
   componentDidMount() {
@@ -34,12 +40,17 @@ export default class NavigationRootBackAndroid extends Component {
 
   getChildContext() {
     return {
-      addBackButtonListener: this._addBackButtonListener,
-      removeBackButtonListener: this._removeBackButtonListener,
+      addBackButtonListener: this._addBackButtonListener.bind(this),
+      removeBackButtonListener: this._removeBackButtonListener.bind(this),
+      triggerBackButton: this._handleBackButton.bind(this)
     };
   }
 
   _addBackButtonListener(listener) {
+    this._handlers.push(listener);
+  }
+
+  _(listener) {
     this._handlers.push(listener);
   }
 
@@ -48,15 +59,24 @@ export default class NavigationRootBackAndroid extends Component {
   }
 
   _handleBackButton() {
+    let handled = false;
     for (let i = this._handlers.length - 1; i >= 0; i--) {
       if (this._handlers[i]()) {
-        return true;
+        handled = true;
+        break;
       }
     }
-    return false;
+    if(handled) {
+      this.props.onNavigate(NavigationRootContainer.getBackAction());
+      return true;
+    } else {
+      return false;
+    }
   }
 
   render() {
     return <View style={styles.container}>{this.props.children}</View>;
   }
 }
+
+module.exports = NavigationContainer.create(NavigationRootBackAndroid)

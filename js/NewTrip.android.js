@@ -26,7 +26,7 @@ class NewTrip extends Component {
 
   componentWillMount() {
     this.props.addBackButtonListener(function() {
-      alert('back');
+      return true;
     });
   }
 

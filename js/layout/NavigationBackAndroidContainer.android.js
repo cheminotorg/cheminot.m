@@ -12,6 +12,7 @@ function create(Component: ReactClass<any>): ReactClass & Object {
         <Component
           addBackButtonListener={this._getAddBackButtonListener()}
           removeBackButtonListener={this._getRemoveBackButtonListener()}
+          triggerBackButton={this._getTriggerBackButton()}
           {...this.props}
         />
       );
@@ -25,22 +26,29 @@ function create(Component: ReactClass<any>): ReactClass & Object {
       return this.props.removeBackButtonListener || this.context.removeBackButtonListener;
     }
 
+    _getTriggerBackButton() {
+      return this.props.triggerBackButton || this.context.triggerBackButton;
+    }
+
     getChildContext() {
       return {
         addBackButtonListener: this._getAddBackButtonListener(),
-        removeBackButtonListener: this._getRemoveBackButtonListener()
+        removeBackButtonListener: this._getRemoveBackButtonListener(),
+        triggerBackButton: this._getTriggerBackButton()
       };
     }
   }
 
   NavigationBackAndroidComponent.contextTypes = {
     addBackButtonListener: PropTypes.func,
-    removeBackButtonListener: PropTypes.func
+    removeBackButtonListener: PropTypes.func,
+    triggerBackButton: PropTypes.func
   };
 
   NavigationBackAndroidComponent.childContextTypes = {
     addBackButtonListener: PropTypes.func,
-    removeBackButtonListener: PropTypes.func
+    removeBackButtonListener: PropTypes.func,
+    triggerBackButton: PropTypes.func
   };
 
   return NavigationBackAndroidComponent;

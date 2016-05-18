@@ -19,7 +19,8 @@ const {
   AnimatedView: NavigationAnimatedView,
   Card: NavigationCard,
   Header: NavigationHeader,
-  Container: NavigationContainer
+  Container: NavigationContainer,
+  RootContainer: NavigationRootContainer
 } = NavigationExperimental;
 
 const styles = StyleSheet.create({
@@ -43,7 +44,6 @@ class CGTNavigationAnimatedView extends Component {
         style={styles.animatedView}
         renderOverlay={this._renderOverlay}
         renderScene={this._renderCard}
-        {...this.props}
       />
     )
   }
@@ -78,7 +78,7 @@ class CGTNavigationAnimatedView extends Component {
       <NavigationCard
         {...props}
         key={'card_' + props.scene.navigationState.key}
-        renderScene={this.props.router.bind(this)}
+        renderScene={this.props.renderScene.bind(this)}
       />
     );
   }

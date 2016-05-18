@@ -62,7 +62,6 @@ class cheminotm extends Component {
         <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent={true} barStyle="light-content" />
         <NavigationRootContainer
           reducer={navigationReducer}
-          ref={navRootContainer => { this._navRootContainer = navRootContainer; }}
           persistenceKey="cheminotm"
           renderNavigation={this._renderNavigation}
         />
@@ -70,7 +69,7 @@ class cheminotm extends Component {
     );
   }
 
-  _router(props) {
+  _renderScene(props) {
     switch(props.scene.navigationState.key) {
       case 'home': {
         return <Home {...props} />;
@@ -87,9 +86,9 @@ class cheminotm extends Component {
       <DrawerLayout>
         <View style={{backgroundColor: MKColor.Indigo, height: 24, top: 0}} />
         <NavigationRootBackAndroid>
-        <NavigationAnimatedView
-          navigationState={navigationState}
-          router={this._router}
+          <NavigationAnimatedView
+            navigationState={navigationState}
+            renderScene={this._renderScene}
         />
         </NavigationRootBackAndroid>
       </DrawerLayout>

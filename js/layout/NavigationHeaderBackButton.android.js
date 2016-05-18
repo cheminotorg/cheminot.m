@@ -35,17 +35,15 @@ const styles = StyleSheet.create({
 
 class NavigationHeaderBackButton extends Component {
 
-  componentWillMount() {
-    console.log(this.props);
-  }
-
   _onBackButtonPress() {
     this.props.enableDrawer();
+    return true;
   }
 
   render() {
+    alert(this.props.triggerBackButton);
     return (
-      <TouchableOpacity style={styles.buttonContainer} onPress={this._onBackButtonPress.bind(this)}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={this.props.triggerBackButton}>
         <View style={styles.button}>
           <Icon name="arrow-back" size={24} color="#FFF" />
         </View>
