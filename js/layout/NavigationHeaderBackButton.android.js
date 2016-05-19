@@ -41,7 +41,6 @@ class NavigationHeaderBackButton extends Component {
   }
 
   render() {
-    alert(this.props.triggerBackButton);
     return (
       <TouchableOpacity style={styles.buttonContainer} onPress={this.props.triggerBackButton}>
         <View style={styles.button}>

@@ -13,9 +13,21 @@ function create(Component: ReactClass<any>): ReactClass & Object {
           addBackButtonListener={this._getAddBackButtonListener()}
           removeBackButtonListener={this._getRemoveBackButtonListener()}
           triggerBackButton={this._getTriggerBackButton()}
+          onNavigate={this._getOnNavigate()}
           {...this.props}
         />
       );
+    }
+
+    _getOnNavigate() {
+      const onNavigate = this.props.onNavigate || this.context.onNavigate;
+      return (action) => {
+        alert('toto');
+        if(action.type === 'back') {
+          this._getTriggerBackButton()();
+        }
+        onNavigate(action);
+      }
     }
 
     _getAddBackButtonListener() {
@@ -40,6 +52,7 @@ function create(Component: ReactClass<any>): ReactClass & Object {
   }
 
   NavigationBackAndroidComponent.contextTypes = {
+    onNavigate: PropTypes.func,
     addBackButtonListener: PropTypes.func,
     removeBackButtonListener: PropTypes.func,
     triggerBackButton: PropTypes.func

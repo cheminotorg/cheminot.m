@@ -13,6 +13,7 @@ import NavigationHeaderMenuButton from './NavigationHeaderMenuButton';
 import NavigationHeaderBackButton from './NavigationHeaderBackButton';
 import DrawerContainer from './DrawerContainer';
 import NavigationRootBackAndroid from './NavigationRootBackAndroid';
+import NavigationBackAndroidContainer from './NavigationBackAndroidContainer';
 import { MKColor } from 'react-native-material-kit';
 
 const {
@@ -83,9 +84,9 @@ class CGTNavigationAnimatedView extends Component {
     );
   }
 
-  _onMenuPress(props) {
-    this.context.openDrawer();
+  _onMenuPress() {
+    this.props.openDrawer();
   }
 }
 
-module.exports = DrawerContainer.create(NavigationContainer.create(CGTNavigationAnimatedView));
+module.exports = NavigationBackAndroidContainer.create(DrawerContainer.create(NavigationContainer.create(CGTNavigationAnimatedView)));

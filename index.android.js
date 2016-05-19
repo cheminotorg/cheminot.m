@@ -80,12 +80,22 @@ class cheminotm extends Component {
     }
   }
 
+  _onBackButton(navigationState, onNavigate) {
+    if(navigationState.index === 1) {
+      this._drawer.enableDrawer();
+    } else {
+      this._drawer.disableDrawer();
+    }
+  }
+
   _renderNavigation(navigationState, onNavigate) {
     if (!navigationState) return null;
     return (
-      <DrawerLayout>
+      <DrawerLayout ref={(drawer) => this._drawer = drawer}>
         <View style={{backgroundColor: MKColor.Indigo, height: 24, top: 0}} />
-        <NavigationRootBackAndroid>
+        <NavigationRootBackAndroid
+          navigationState={navigationState}
+          onBackButton={this._onBackButton.bind(this)}>
           <NavigationAnimatedView
             navigationState={navigationState}
             renderScene={this._renderScene}
