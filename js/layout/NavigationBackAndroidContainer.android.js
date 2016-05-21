@@ -22,7 +22,6 @@ function create(Component: ReactClass<any>): ReactClass & Object {
     _getOnNavigate() {
       const onNavigate = this.props.onNavigate || this.context.onNavigate;
       return (action) => {
-        alert('toto');
         if(action.type === 'back') {
           this._getTriggerBackButton()();
         }

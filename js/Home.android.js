@@ -36,7 +36,7 @@ class Home extends Component {
     this.props.onNavigate({
       type: 'push',
       key: `scene_${this.props.scenes.length}`,
-      label: `Route #${this.props.scenes.length}`
+      label: `Ajouter un trajet`
     });
   }
 

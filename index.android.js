@@ -80,7 +80,7 @@ class cheminotm extends Component {
     }
   }
 
-  _onBackButton(navigationState, onNavigate) {
+  _onBackButton(navigationState) {
     if(navigationState.index === 1) {
       this._drawer.enableDrawer();
     } else {

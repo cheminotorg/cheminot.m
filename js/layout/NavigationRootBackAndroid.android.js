@@ -59,7 +59,7 @@ class NavigationRootBackAndroid extends Component {
   }
 
   _handleBackButton() {
-    this.props.onBackButton(this.props.navigationState, this.props.onNavigate);
+    this.props.onBackButton(this.props.navigationState);
     let handled = false;
     for (let i = this._handlers.length - 1; i >= 0; i--) {
       if (this._handlers[i]()) {
