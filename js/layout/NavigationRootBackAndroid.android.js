@@ -9,6 +9,8 @@ import React, {
   BackAndroid
 } from 'react-native';
 
+import NavigationBackAndroidContainer from './NavigationBackAndroidContainer';
+
 const {
   Container: NavigationContainer,
   RootContainer: NavigationRootContainer
@@ -60,19 +62,23 @@ class NavigationRootBackAndroid extends Component {
 
   _handleBackButton() {
     this.props.onBackButton(this.props.navigationState);
-    let handled = false;
+    let handled = NavigationBackAndroidContainer.result.DEFAULT;
     for (let i = this._handlers.length - 1; i >= 0; i--) {
-      if (this._handlers[i]()) {
-        handled = true;
+      const result = this._handlers[i]();
+      if (result) {
+        handled = result;
         break;
       }
     }
     if(handled) {
-      this.props.onNavigate(NavigationRootContainer.getBackAction());
-      return true;
-    } else {
-      return false;
+      if(handled === NavigationBackAndroidContainer.result.DEFAULT) {
+        this.props.onNavigate(NavigationRootContainer.getBackAction());
+        return true;
+      } else if(handled === NavigationBackAndroidContainer.result.DISMISS) {
+        return true;
+      }
     }
+    return false;
   }
 
   render() {

@@ -18,6 +18,9 @@ import Layout from './js/layout/Layout';
 import NavigationRootBackAndroid from './js/layout/NavigationRootBackAndroid';
 import Home from './js/Home';
 import NewTrip from './js/NewTrip';
+import * as Locale from './js/locale';
+
+Locale.init();
 
 const {
   Header: NavigationHeader,

@@ -67,5 +67,9 @@ function create(Component: ReactClass<any>): ReactClass & Object {
 }
 
 module.exports = {
-  create: create
+  create: create,
+  result: {
+    DISMISS: 'dismiss',
+    DEFAULT: 'default'
+  }
 };

@@ -22,6 +22,7 @@ import NavigationBackAndroidContainer from './layout/NavigationBackAndroidContai
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { MKColor, MKTextField, MKButton } from 'react-native-material-kit';
 import Cheminotdb from './Cheminotdb';
+import moment from 'moment';
 
 const SearchButton = MKButton.flatButton()
                              .withBackgroundColor(MKColor.Teal)
@@ -91,8 +92,12 @@ class NewTrip extends Component {
     stations: [],
     isFocusDeparture: false,
     isFocusArrival: false,
-    selectedDeparture: {},
-    selectedArrival: {},
+    arrivalTerm: '',
+    departureTerm: '',
+    selectedDepartureStation: {},
+    selectedArrivalStation: {},
+    selectedDepartureDate: new Date(),
+    selectedDepartureTime: new Date(),
     tripBlockTop: new Animated.Value(0),
     tripBlockHeight: new Animated.Value(116),
     datetimeBlockTop: new Animated.Value(0),
@@ -100,38 +105,69 @@ class NewTrip extends Component {
   }
 
   componentWillMount() {
-    this.props.addBackButtonListener(function() {
-      return true;
+    this.props.addBackButtonListener(() => {
+      if(this.state.isFocusDeparture) {
+        blurDepartureInput(this.state);
+        this.setState({
+          isFocusDeparture: false
+        });
+        return NavigationBackAndroidContainer.result.DISMISS;
+      } else if(this.state.isFocusArrival) {
+        blurArrivalInput(this.state);
+        this.setState({
+          isFocusArrival: false
+        });
+        return NavigationBackAndroidContainer.result.DISMISS;
+      }
+      return NavigationBackAndroidContainer.result.DEFAULT;
     });
   }
 
-  onDatePickerPress() {
-    DatePickerAndroid.open({});
+  async onDatePickerPress() {
+    const {action, year, month, day} = await DatePickerAndroid.open({
+      date: this.state.selectedDepartureDate
+    });
+    if(action != DatePickerAndroid.dismissedAction) {
+      this.setState({
+        selectedDepartureDate: new Date(year, month, day)
+      });
+    }
   }
 
-  onTimePickerPress() {
-    TimePickerAndroid.open({});
+  async onTimePickerPress() {
+    const date = this.state.selectedDepartureTime;
+    const {action, hour, minute} = await TimePickerAndroid.open({
+      hour: date.getHours(),
+      minute: date.getMinutes(),
+      is24Hour: false
+    });
+    if(action != TimePickerAndroid.dismissedAction) {
+      date.setHours(hour);
+      date.setMinutes(minute);
+      this.setState({
+        selectedDepartureTime: date
+      });
+    }
   }
 
   onDepartureFocus() {
     this.setState({
-      isFocusDeparture: true
+      isFocusDeparture: true,
+      selectedDepartureStation: {}
     });
     focusDepartureInput(this.state);
   }
 
   onArrivalFocus() {
     this.setState({
-      isFocusArrival: true
+      isFocusArrival: true,
+      selectedArrivalStation: {}
     });
-    focusArrivalInput({
-      tripBlockTop: this.state.tripBlockTop,
-      datetimeBlockTop: this.state.datetimeBlockTop,
-      suggestionBlockTop: this.state.suggestionBlockTop
-    });
+    focusArrivalInput(this.state);
   }
 
   onDepartureChangeText(term) {
+    this.setState({departureTerm: term});
     Cheminotdb.searchStops(term, 50).then((stations) => {
       this.setState({
         stations: stations
@@ -140,6 +176,7 @@ class NewTrip extends Component {
   }
 
   onArrivalChangeText(term) {
+    this.setState({arrivalTerm: term});
     Cheminotdb.searchStops(term, 50).then((stations) => {
       this.setState({
         stations: stations
@@ -156,9 +193,11 @@ class NewTrip extends Component {
   }
 
   onDepartureSelected(id, name) {
+    this._departureInput.blur();
     this.setState({
+      stations: [],
       isFocusDeparture: false,
-      selectedDeparture: {
+      selectedDepartureStation: {
         id: id,
         name: name
       }
@@ -167,9 +206,11 @@ class NewTrip extends Component {
   }
 
   onArrivalSelected(id, name) {
+    this._arrivalInput.blur();
     this.setState({
+      stations: [],
       isFocusArrival: false,
-      selectedArrival: {
+      selectedArrivalStation: {
         id: id,
         name: name
       }
@@ -183,18 +224,24 @@ class NewTrip extends Component {
         <Animated.View style={[styles.block, styles.tripBlock, {top: this.state.tripBlockTop, height: this.state.tripBlockHeight}]}>
           <Animated.View>
             <MKTextField
-               value={this.state.selectedDeparture.name || ''}
+               ref={(input) => this._departureInput = input}
+               value={this.state.selectedDepartureStation.name || this.state.departureTerm}
                onChangeText={this.onDepartureChangeText.bind(this)}
                onFocus={this.onDepartureFocus.bind(this)}
                placeholder="Départ"
+               clearTextOnFocus={true}
+               autoCorrect={false}
                style={[styles.textfield, {marginBottom: 14}]} />
           </Animated.View>
           <Animated.View style={{top: this.state.arrivalInputTop}}>
             <MKTextField
-               value={this.state.selectedArrival.name || ''}
+               ref={(input) => this._arrivalInput = input}
+               value={this.state.selectedArrivalStation.name  || this.state.arrivalTerm}
                onChangeText={this.onArrivalChangeText.bind(this)}
                onFocus={this.onArrivalFocus.bind(this)}
                placeholder="Arrivée"
+               clearTextOnFocus={true}
+               autoCorrect={false}
                style={styles.textfield} />
           </Animated.View>
         </Animated.View>
@@ -204,7 +251,7 @@ class NewTrip extends Component {
               <TouchableWithoutFeedback onPress={this.onDatePickerPress.bind(this)}>
                 <View style={{flexDirection: 'row'}}>
                   <Text style={styles.datetimeLabel}>Date de départ</Text>
-                  <Text style={styles.datetimeValue}>21/01/2016</Text>
+                  <Text style={styles.datetimeValue}>{formatDate(this.state.selectedDepartureDate)}</Text>
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -212,7 +259,7 @@ class NewTrip extends Component {
               <TouchableWithoutFeedback style={{flex: 1, backgroundColor: 'green'}} onPress={this.onTimePickerPress.bind(this)}>
                 <View style={{flexDirection: 'row'}}>
                   <Text style={{flex: 1}}>Heure de départ</Text>
-                  <Text style={styles.datetimeValue}>08:00</Text>
+                  <Text style={styles.datetimeValue}>{formatTime(this.state.selectedDepartureTime)}</Text>
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -230,6 +277,14 @@ class NewTrip extends Component {
       </View>
     );
   }
+}
+
+function formatDate(date) {
+  return moment(date).format('dddd D MMMM YYYY');
+}
+
+function formatTime(date) {
+  return moment(date).format('HH:mm');
 }
 
 function animateArrivalInput(from, to) {
@@ -264,7 +319,7 @@ function focusArrivalInput(from) {
   animateArrivalInput(from, {
     tripBlockTop: -65,
     datetimeBlockTop: Dimensions.get('window').height,
-    suggestionBlockTop: 46
+    suggestionBlockTop: 60
   });
 }
 
@@ -364,7 +419,7 @@ const StationsList = React.createClass({
         enableEmptySections={true}
         automaticallyAdjustContentInsets={true}
         renderRow={this.renderRow}
-        renderScrollComponent={props => <RecyclerViewBackedScrollView {...props}/> }
+        renderScrollComponent={props => <RecyclerViewBackedScrollView keyboardShouldPersistTaps={true} {...props}/> }
         renderSeparator={(sectionID, rowID) => <View key={`${sectionID}-${rowID}`} style={{backgroundColor: MKColor.Grey, height: 1}} />}
         {...this.props}
       />
