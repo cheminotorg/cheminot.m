@@ -218,6 +218,14 @@ class NewTrip extends Component {
     blurArrivalInput(this.state);
   }
 
+  onSubmit() {
+    this.props.onNavigate({
+      type: 'push',
+      key: `trips`,
+      label: `Trips`
+    });
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -265,7 +273,7 @@ class NewTrip extends Component {
             </View>
           </View>
           <View style={styles.submitBlock}>
-            <SearchButton />
+            <SearchButton onPress={this.onSubmit.bind(this)} />
           </View>
         </Animated.View>
         <Animated.View style={[styles.suggestionBlock, {top: this.state.suggestionBlockTop, backgroundColor: 'white'}]}>
@@ -417,7 +425,6 @@ const StationsList = React.createClass({
       <ListView
         dataSource={this.state.dataSource}
         enableEmptySections={true}
-        automaticallyAdjustContentInsets={true}
         renderRow={this.renderRow}
         renderScrollComponent={props => <RecyclerViewBackedScrollView keyboardShouldPersistTaps={true} {...props}/> }
         renderSeparator={(sectionID, rowID) => <View key={`${sectionID}-${rowID}`} style={{backgroundColor: MKColor.Grey, height: 1}} />}

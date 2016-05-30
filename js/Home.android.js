@@ -35,7 +35,7 @@ class Home extends Component {
     this.props.disableDrawer();
     this.props.onNavigate({
       type: 'push',
-      key: `scene_${this.props.scenes.length}`,
+      key: `newtrip`,
       label: `Ajouter un trajet`
     });
   }

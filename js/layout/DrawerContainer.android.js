@@ -2,7 +2,7 @@
 
 import React, {
   PropTypes
-}from 'react-native';
+} from 'react-native';
 
 function create(Component: ReactClass<any>): ReactClass & Object {
 

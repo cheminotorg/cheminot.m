@@ -17,8 +17,9 @@ import NavigationAnimatedView from './js/layout/NavigationAnimatedView';
 import Layout from './js/layout/Layout';
 import NavigationRootBackAndroid from './js/layout/NavigationRootBackAndroid';
 import Home from './js/Home';
+import Trips from './js/Trips';
 import NewTrip from './js/NewTrip';
-import * as Locale from './js/locale';
+import Locale from './js/locale';
 
 Locale.init();
 
@@ -77,8 +78,11 @@ class cheminotm extends Component {
       case 'home': {
         return <Home {...props} />;
       }
-      default: {
+      case 'newtrip': {
         return <NewTrip {...props} />;
+      }
+      case 'trips': {
+        return <Trips {...props} />;
       }
     }
   }
