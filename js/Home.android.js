@@ -1,7 +1,7 @@
 'use strict';
 
-import React, {
-  Component,
+import React, { Component } from 'react';
+import {
   NavigationExperimental,
   StyleSheet,
   View,
@@ -11,14 +11,11 @@ import React, {
 import { MKButton, MKColor } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DrawerContainer from './layout/DrawerContainer';
+import NavigationContainer from './layout/NavigationContainer';
 
 const NewTripButton = MKButton.plainFab()
                               .withBackgroundColor(MKColor.Teal)
                               .build();
-
-const {
-  Container: NavigationContainer
-} = NavigationExperimental;
 
 const styles = StyleSheet.create({
   container: {
@@ -35,8 +32,7 @@ class Home extends Component {
     this.props.disableDrawer();
     this.props.onNavigate({
       type: 'push',
-      key: `newtrip`,
-      label: `Ajouter un trajet`
+      key: `newtrip`
     });
   }
 

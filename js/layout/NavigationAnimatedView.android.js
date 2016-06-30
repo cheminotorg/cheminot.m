@@ -1,7 +1,7 @@
 'use strict';
 
-import React, {
-  Component,
+import React, { Component } from 'react';
+import {
   NavigationExperimental,
   StyleSheet,
   Text,
@@ -14,14 +14,16 @@ import NavigationHeaderBackButton from './NavigationHeaderBackButton';
 import DrawerContainer from './DrawerContainer';
 import NavigationRootBackAndroid from './NavigationRootBackAndroid';
 import NavigationBackAndroidContainer from './NavigationBackAndroidContainer';
+import NavigationHeaderContainer from './NavigationHeaderContainer';
+import NavigationContainer from './NavigationContainer';
 import { MKColor } from 'react-native-material-kit';
+
+console.log(NavigationContainer)
 
 const {
   AnimatedView: NavigationAnimatedView,
   Card: NavigationCard,
-  Header: NavigationHeader,
-  Container: NavigationContainer,
-  RootContainer: NavigationRootContainer
+  Header: NavigationHeader
 } = NavigationExperimental;
 
 const styles = StyleSheet.create({
@@ -45,19 +47,21 @@ class CGTNavigationAnimatedView extends Component {
         style={styles.animatedView}
         renderOverlay={this._renderOverlay}
         renderScene={this._renderCard}
+        header={this.props.header}
       />
     )
   }
 
   _renderOverlay(props) {
+    const header = this.props.getHeader(props.scene.route.key)
     return (
       <NavigationHeader
         {...props}
         renderLeftComponent={(props: NavigationSceneRendererProps) => {
           if(props.scene.index > 0) {
-            return <NavigationHeaderBackButton {...props} />;
+            return header.left || <NavigationHeaderBackButton {...props} />;
           } else {
-            return <NavigationHeaderMenuButton onPress={this._onMenuPress.bind(this)}/>;
+            return header.right || <NavigationHeaderMenuButton onPress={this._onMenuPress.bind(this)}/>;
           }
         }}
         style={{backgroundColor: MKColor.Indigo}}
@@ -67,9 +71,10 @@ class CGTNavigationAnimatedView extends Component {
   }
 
   _renderTitleComponent(props) {
+    const header = this.props.getHeader(props.scene.route.key)
     return (
       <NavigationHeader.Title textStyle={{ color: '#FFF'}}>
-        {props.scene.navigationState.label}
+        {header.title}
       </NavigationHeader.Title>
     );
   }
@@ -78,7 +83,7 @@ class CGTNavigationAnimatedView extends Component {
     return (
       <NavigationCard
         {...props}
-        key={'card_' + props.scene.navigationState.key}
+        key={`card_${props.scene.route.key}`}
         renderScene={this.props.renderScene.bind(this)}
       />
     );
@@ -89,4 +94,4 @@ class CGTNavigationAnimatedView extends Component {
   }
 }
 
-module.exports = NavigationBackAndroidContainer.create(DrawerContainer.create(NavigationContainer.create(CGTNavigationAnimatedView)));
+module.exports = NavigationHeaderContainer.create(NavigationBackAndroidContainer.create(DrawerContainer.create(NavigationContainer.create(CGTNavigationAnimatedView))));

@@ -1,7 +1,7 @@
 'use strict';
 
-import React, {
-  Component,
+import React, { Component } from 'react';
+import {
   NavigationExperimental,
   StyleSheet,
   View,
@@ -14,10 +14,9 @@ import React, {
 import { MKButton, MKColor, MKCheckbox, MKSpinner } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DrawerContainer from './layout/DrawerContainer';
-
-const {
-  Container: NavigationContainer
-} = NavigationExperimental;
+import NavigationHeaderContainer from './layout/NavigationHeaderContainer';
+import NavigationHeaderDoneButton from './layout/NavigationHeaderDoneButton';
+import NavigationContainer from './layout/NavigationContainer';
 
 const styles = StyleSheet.create({
   container: {
@@ -25,7 +24,7 @@ const styles = StyleSheet.create({
     marginTop: 56
   },
   tripItem: {
-    padding: 14,
+    padding: 16,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
@@ -62,8 +61,16 @@ class Trips extends Component {
     isLoading: false
   }
 
+  componentWillUnmount() {
+    this.props.resetHeader('trips')
+  }
+
   onTripTouched() {
-    alert('onTripTouched');
+    this.props.setHeader('trips', {
+      left: <NavigationHeaderDoneButton onPress={this.onDonePress.bind(this)}/>,
+      title: '1 trajet sélectionné',
+      right: null
+    });
   }
 
   async onEndReached() {
@@ -75,13 +82,17 @@ class Trips extends Component {
     });
   }
 
+  onDonePress() {
+    alert('Done pressed');
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <TripsList
            isLoading={this.state.isLoading}
            onEndReached={this.onEndReached.bind(this)}
-           onItemTouched={this.onTripTouched}
+           onItemTouched={this.onTripTouched.bind(this)}
            trips={this.state.trips || []} />
       </View>
     );
@@ -107,14 +118,17 @@ const TripsList = React.createClass({
 
   renderRow: function({id, departureTime, arrivalTime, duration, steps}) {
     return (
-      <TouchableNativeFeedback id={id} onPress={this.props.onItemTouched.bind(this, id)}>
+      <TouchableNativeFeedback id={id} onPress={this.props.onItemTouched}>
         <View style={styles.tripItem}>
-          <View style={{}}>
+          <View style={{width: 40, height: 40, padding: 0, backgroundColor: MKColor.Grey, borderRadius: 50, alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={{color: 'white', fontSize: 12}}>1h09</Text>
+          </View>
+          <View style={{marginLeft: 16}}>
             <Text>{departureTime} → {arrivalTime}</Text>
             <Text>{steps} arrêts</Text>
           </View>
           <View style={{flex: 1, alignItems: 'flex-end'}}>
-            <MKCheckbox />
+            <MKCheckbox onCheckedChange={this.props.onItemTouched} />
           </View>
         </View>
       </TouchableNativeFeedback>
@@ -150,4 +164,4 @@ const TripsList = React.createClass({
   }
 });
 
-module.exports = DrawerContainer.create(NavigationContainer.create(Trips));
+module.exports = NavigationHeaderContainer.create(DrawerContainer.create(NavigationContainer.create(Trips)));

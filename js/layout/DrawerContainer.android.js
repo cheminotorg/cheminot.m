@@ -1,8 +1,6 @@
 'use strict';
 
-import React, {
-  PropTypes
-} from 'react-native';
+import React, { PropTypes } from 'react';
 
 function create(Component: ReactClass<any>): ReactClass & Object {
 

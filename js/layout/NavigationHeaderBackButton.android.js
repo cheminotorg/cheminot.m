@@ -1,7 +1,7 @@
 'use strict';
 
-import React, {
-  Component,
+import React, { Component } from 'react';
+import {
   NavigationExperimental,
   StyleSheet,
   View,
@@ -12,11 +12,7 @@ import React, {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DrawerContainer from './DrawerContainer';
 import NavigationBackAndroidContainer from './NavigationBackAndroidContainer';
-
-const {
-  Container: NavigationContainer,
-  RootContainer: NavigationRootContainer
-} = NavigationExperimental;
+import NavigationContainer from './NavigationContainer';
 
 const styles = StyleSheet.create({
   buttonContainer: {

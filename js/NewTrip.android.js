@@ -1,7 +1,7 @@
 'use strict';
 
-import React, {
-  Component,
+import React, { Component } from 'react';
+import {
   NavigationExperimental,
   StyleSheet,
   View,
@@ -19,6 +19,7 @@ import React, {
 
 import DrawerContainer from './layout/DrawerContainer';
 import NavigationBackAndroidContainer from './layout/NavigationBackAndroidContainer';
+import NavigationContainer from './layout/NavigationContainer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { MKColor, MKTextField, MKButton } from 'react-native-material-kit';
 import Cheminotdb from './Cheminotdb';
@@ -30,10 +31,6 @@ const SearchButton = MKButton.flatButton()
                              .withText('RECHERCHER')
                              .withStyle({padding: 14})
                              .build();
-
-const {
-  Container: NavigationContainer
-} = NavigationExperimental;
 
 const styles = StyleSheet.create({
   container: {
@@ -221,8 +218,7 @@ class NewTrip extends Component {
   onSubmit() {
     this.props.onNavigate({
       type: 'push',
-      key: `trips`,
-      label: `Trips`
+      key: `trips`
     });
   }
 

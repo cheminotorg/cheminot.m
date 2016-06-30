@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import {
+  NavigationExperimental,
   StyleSheet,
   View,
   TouchableOpacity,
@@ -9,6 +10,9 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import DrawerContainer from './DrawerContainer';
+import NavigationBackAndroidContainer from './NavigationBackAndroidContainer';
+import NavigationContainer from './NavigationContainer';
 
 const styles = StyleSheet.create({
   buttonContainer: {
@@ -25,14 +29,17 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class NavigationHeaderMenuButton extends Component {
+class NavigationHeaderDoneButton extends Component {
+
   render() {
     return (
-      <TouchableOpacity style={styles.buttonContainer} {...this.props}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={this.props.onPress}>
         <View style={styles.button}>
-          <Icon name="menu" size={24} color="#FFF" />
+          <Icon name="done" size={24} color="#FFF" />
         </View>
       </TouchableOpacity>
     );
   }
 }
+
+module.exports = NavigationBackAndroidContainer.create(DrawerContainer.create(NavigationContainer.create(NavigationHeaderDoneButton)));

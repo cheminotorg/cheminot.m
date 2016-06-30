@@ -1,11 +1,10 @@
 'use strict';
 
-import React, {
-  Component,
+import React, { Component, PropTypes } from 'react';
+import {
   Text,
   View,
-  DrawerLayoutAndroid,
-  PropTypes
+  DrawerLayoutAndroid
 } from 'react-native';
 
 import { MKColor } from 'react-native-material-kit';

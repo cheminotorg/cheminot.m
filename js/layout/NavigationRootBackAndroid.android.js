@@ -1,20 +1,15 @@
 'use strict';
 
-import React, {
-  Component,
+import React, { Component, PropTypes } from 'react';
+import {
   NavigationExperimental,
   StyleSheet,
   View,
-  PropTypes,
   BackAndroid
 } from 'react-native';
 
 import NavigationBackAndroidContainer from './NavigationBackAndroidContainer';
-
-const {
-  Container: NavigationContainer,
-  RootContainer: NavigationRootContainer
-} = NavigationExperimental;
+import NavigationContainer from './NavigationContainer';
 
 const styles = StyleSheet.create({
   container: {
@@ -72,7 +67,7 @@ class NavigationRootBackAndroid extends Component {
     }
     if(handled) {
       if(handled === NavigationBackAndroidContainer.result.DEFAULT) {
-        this.props.onNavigate(NavigationRootContainer.getBackAction());
+        this.props.onNavigate({ type: 'BackAction' });
         return true;
       } else if(handled === NavigationBackAndroidContainer.result.DISMISS) {
         return true;
