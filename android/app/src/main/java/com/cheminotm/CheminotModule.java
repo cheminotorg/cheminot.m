@@ -3,6 +3,7 @@ package com.cheminotm;
 import android.app.Activity;
 import android.util.Log;
 
+import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -11,18 +12,13 @@ import com.facebook.react.bridge.WritableArray;
 
 import java.io.IOException;
 
-public class CheminotModule extends ReactContextBaseJavaModule {
+public class CheminotModule extends ReactContextBaseJavaModule implements LifecycleEventListener {
 
     private Database database;
 
-    public CheminotModule(ReactApplicationContext reactContext, Activity activity) {
+    public CheminotModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        try {
-            database = Database.setup(activity);
-        } catch(IOException e) {
-            e.printStackTrace();
-            Log.e("Cheminot", "Unable to setup database: " + e.getMessage());
-        }
+        reactContext.addLifecycleEventListener(this);
     }
 
     @Override
@@ -30,9 +26,26 @@ public class CheminotModule extends ReactContextBaseJavaModule {
         return "Cheminotdb";
     }
 
-    public CheminotModule(ReactApplicationContext reactContext) {
-        super(reactContext);
+    @Override
+    public void onHostResume() {
+        if(this.database == null) {
+            try {
+                this.database = Database.setup(this.getCurrentActivity());
+            } catch(IOException e) {
+                e.printStackTrace();
+                Log.e("Cheminot", "Unable to setup database: " + e.getMessage());
+            }
+        }
     }
+
+    @Override
+    public void onHostPause() {
+    }
+
+    @Override
+    public void onHostDestroy() {
+    }
+
 
     @ReactMethod
     public void searchStops(String term, Integer limit, Promise promise) {

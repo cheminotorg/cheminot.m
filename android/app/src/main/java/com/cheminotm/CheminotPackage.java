@@ -13,10 +13,7 @@ import java.util.List;
 
 class CheminotPackage implements ReactPackage {
 
-    private Activity activity;
-
-    public CheminotPackage(Activity activity) {
-        this.activity = activity;
+    public CheminotPackage() {
     }
 
     @Override
@@ -31,7 +28,7 @@ class CheminotPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-        modules.add(new CheminotModule(reactContext, this.activity));
+        modules.add(new CheminotModule(reactContext));
         return modules;
     }
 }

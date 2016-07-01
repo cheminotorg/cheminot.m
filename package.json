@@ -7,8 +7,8 @@
   },
   "dependencies": {
     "moment": "^2.13.0",
-    "react": "^15.1.0",
-    "react-native": "^0.28.0",
+    "react": "~15.2.0-rc.1",
+    "react-native": "^0.29.0-rc.0",
     "react-native-material-kit": "^0.3.2",
     "react-native-vector-icons": "^2.0.3"
   }
