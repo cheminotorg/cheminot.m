@@ -10,8 +10,7 @@ import {
 
 import { MKButton, MKColor } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import DrawerContainer from './layout/DrawerContainer';
-import NavigationContainer from './layout/NavigationContainer';
+import CheminotContext from './layout/ContextContainer';
 
 const NewTripButton = MKButton.plainFab()
                               .withBackgroundColor(MKColor.Teal)
@@ -22,18 +21,15 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 56,
     justifyContent: 'space-around',
-    alignItems: 'center'
+    alignItems: 'center',
+    flexDirection: 'column'
   }
 });
 
 class Home extends Component {
 
   _onNewTripPress() {
-    this.props.disableDrawer();
-    this.props.onNavigate({
-      type: 'push',
-      key: `newtrip`
-    });
+    this.props.navigate('push');
   }
 
   render() {
@@ -50,4 +46,4 @@ class Home extends Component {
   }
 }
 
-module.exports = DrawerContainer.create(NavigationContainer.create(Home));
+module.exports = CheminotContext.create(Home);

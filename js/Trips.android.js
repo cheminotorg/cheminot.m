@@ -13,10 +13,8 @@ import {
 
 import { MKButton, MKColor, MKCheckbox, MKSpinner } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import DrawerContainer from './layout/DrawerContainer';
-import NavigationHeaderContainer from './layout/NavigationHeaderContainer';
+import CheminotContext from './layout/ContextContainer';
 import NavigationHeaderDoneButton from './layout/NavigationHeaderDoneButton';
-import NavigationContainer from './layout/NavigationContainer';
 
 const styles = StyleSheet.create({
   container: {
@@ -62,15 +60,15 @@ class Trips extends Component {
   }
 
   componentWillUnmount() {
-    this.props.resetHeader('trips')
+    //this.props.resetHeader('trips')
   }
 
   onTripTouched() {
-    this.props.setHeader('trips', {
-      left: <NavigationHeaderDoneButton onPress={this.onDonePress.bind(this)}/>,
-      title: '1 trajet sélectionné',
-      right: null
-    });
+    /*this.props.setHeader('trips', {
+     *  left: <NavigationHeaderDoneButton onPress={this.onDonePress.bind(this)}/>,
+     *  title: '1 trajet sélectionné',
+     *  right: null
+     *});*/
   }
 
   async onEndReached() {
@@ -164,4 +162,4 @@ const TripsList = React.createClass({
   }
 });
 
-module.exports = NavigationHeaderContainer.create(DrawerContainer.create(NavigationContainer.create(Trips)));
+module.exports = CheminotContext.create(Trips);

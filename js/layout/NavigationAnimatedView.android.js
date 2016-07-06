@@ -18,8 +18,6 @@ import NavigationHeaderContainer from './NavigationHeaderContainer';
 import NavigationContainer from './NavigationContainer';
 import { MKColor } from 'react-native-material-kit';
 
-console.log(NavigationContainer)
-
 const {
   AnimatedView: NavigationAnimatedView,
   Card: NavigationCard,

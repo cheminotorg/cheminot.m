@@ -17,13 +17,11 @@ import {
   TouchableNativeFeedback
 } from 'react-native';
 
-import DrawerContainer from './layout/DrawerContainer';
-import NavigationBackAndroidContainer from './layout/NavigationBackAndroidContainer';
-import NavigationContainer from './layout/NavigationContainer';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { MKColor, MKTextField, MKButton } from 'react-native-material-kit';
 import Cheminotdb from './Cheminotdb';
 import moment from 'moment';
+import CheminotContext from './layout/ContextContainer';
 
 const SearchButton = MKButton.flatButton()
                              .withBackgroundColor(MKColor.Teal)
@@ -101,23 +99,24 @@ class NewTrip extends Component {
     suggestionBlockTop: new Animated.Value(Dimensions.get('window').height)
   }
 
-  componentWillMount() {
-    this.props.addBackButtonListener(() => {
-      if(this.state.isFocusDeparture) {
-        blurDepartureInput(this.state);
-        this.setState({
-          isFocusDeparture: false
-        });
-        return NavigationBackAndroidContainer.result.DISMISS;
-      } else if(this.state.isFocusArrival) {
-        blurArrivalInput(this.state);
-        this.setState({
-          isFocusArrival: false
-        });
-        return NavigationBackAndroidContainer.result.DISMISS;
-      }
-      return NavigationBackAndroidContainer.result.DEFAULT;
-    });
+  constructor(props: any, context: any) {
+    super(props, context);
+    /*this.props.addBackButtonListener(() => {
+     *  if(this.state.isFocusDeparture) {
+     *    blurDepartureInput(this.state);
+     *    this.setState({
+     *      isFocusDeparture: false
+     *    });
+     *    return NavigationBackAndroidContainer.result.DISMISS;
+     *  } else if(this.state.isFocusArrival) {
+     *    blurArrivalInput(this.state);
+     *    this.setState({
+     *      isFocusArrival: false
+     *    });
+     *    return NavigationBackAndroidContainer.result.DISMISS;
+     *  }
+     *  return NavigationBackAndroidContainer.result.DEFAULT;
+     *});*/
   }
 
   async onDatePickerPress() {
@@ -216,10 +215,7 @@ class NewTrip extends Component {
   }
 
   onSubmit() {
-    this.props.onNavigate({
-      type: 'push',
-      key: `trips`
-    });
+    this.props.navigate('push');
   }
 
   render() {
@@ -430,4 +426,4 @@ const StationsList = React.createClass({
   }
 });
 
-module.exports = NavigationBackAndroidContainer.create(DrawerContainer.create(NavigationContainer.create(NewTrip)));
+module.exports = CheminotContext.create(NewTrip);
