@@ -8,10 +8,12 @@ import {
   StyleSheet,
   Text,
   View,
-  StatusBar
+  StatusBar,
+  BackAndroid
 } from 'react-native';
 
 import { MKColor } from 'react-native-material-kit';
+import CheminotContext from './js/layout/ContextContainer';
 import Navigator from './js/layout/Navigator';
 import Home from './js/Home';
 import Trips from './js/Trips';
@@ -77,7 +79,16 @@ class cheminotm extends Component {
     this._navigate = this._navigate.bind(this);
   }
 
-  _navigate(action: string): void {
+  componentDidMount() {
+    BackAndroid.addEventListener('hardwareBackPress', this._handleBackButton.bind(this));
+  }
+
+  _handleBackButton() {
+    this._navigate('pop');
+    return true;
+  }
+
+  _navigate(action: string) {
     let { navigationState } = this.state;
     navigationState = reducer(navigationState, action);
     if (this.state.navigationState !== navigationState) {
@@ -98,7 +109,7 @@ class cheminotm extends Component {
       <View style={{flex: 1}}>
         <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent={true} />
         <Navigator
-           navigate={this._navigate}
+           {...CheminotContext.props(this._navigate)}
            navigationState={this.state.navigationState}
            renderScene={this._renderScene}
            />

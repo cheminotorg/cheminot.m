@@ -12,16 +12,35 @@ function create(Component: ReactClass<any>): ReactClass & Object {
   }
 
   CheminotContextComponent.contextTypes = {
-    navigate: PropTypes.func
+    navigation: React.PropTypes.shape({
+      push: React.PropTypes.func,
+      pop: React.PropTypes.func
+    })
   };
 
   CheminotContextComponent.childContextTypes = {
-    navigate: PropTypes.func
+    navigation: React.PropTypes.shape({
+      push: React.PropTypes.func,
+      pop: React.PropTypes.func
+    })
   };
 
   return CheminotContextComponent;
 }
 
-module.exports = {
-  create: create
+function props(navigate) {
+  return {
+    navigation: {
+      push: navigate.bind(null, 'push'),
+      pop: navigate.bind(null, 'pop')
+    },
+    header: {
+
+    }
+  }
+}
+
+export default {
+  create: create,
+  props: props
 };

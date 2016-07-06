@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { NavigationExperimental, View, Text, StyleSheet } from 'react-native';
 import { MKColor } from 'react-native-material-kit';
-import NavigationHeaderMenuButton from './NavigationHeaderMenuButton';
+import HeaderBackButton from './HeaderBackButton';
 
 const {
   CardStack: NavigationCardStack,
@@ -18,12 +18,10 @@ export default class Navigator extends React.Component {
 
   constructor(props: any, context: any) {
     super(props, context);
-    this._onPushRoute = this.props.navigate.bind(null, 'push');
-    this._onPopRoute = this.props.navigate.bind(null, 'pop');
   }
 
   _renderOverlay(sceneProps: Object): ReactElement {
-    return <Header {...sceneProps} />;
+    return <Header navigation={this.props.navigation} {...sceneProps} />;
   }
 
   render(): ReactElement {
@@ -41,7 +39,11 @@ export default class Navigator extends React.Component {
 class Header extends React.Component {
 
   _renderLeft(): ReactElement {
-    return <NavigationHeaderMenuButton onPress={() => console.log('here') } />;
+    return <HeaderBackButton onPress={this._onBackButtonPressed.bind(this)} />;
+  }
+
+  _onBackButtonPressed() {
+    this.props.navigation.pop();
   }
 
   _renderTitle(): ReactElement {
@@ -56,7 +58,7 @@ class Header extends React.Component {
     return (
       <NavigationHeader
          style={{backgroundColor: MKColor.Indigo}}
-         renderLeftComponent={this._renderLeft}
+         renderLeftComponent={this._renderLeft.bind(this)}
          renderTitleComponent={this._renderTitle}
          {...this.props}
       />

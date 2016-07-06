@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 class Home extends Component {
 
   _onNewTripPress() {
-    this.props.navigate('push');
+    this.props.navigation.push();
   }
 
   render() {

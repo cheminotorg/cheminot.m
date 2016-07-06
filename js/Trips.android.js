@@ -14,7 +14,6 @@ import {
 import { MKButton, MKColor, MKCheckbox, MKSpinner } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheminotContext from './layout/ContextContainer';
-import NavigationHeaderDoneButton from './layout/NavigationHeaderDoneButton';
 
 const styles = StyleSheet.create({
   container: {

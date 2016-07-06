@@ -215,7 +215,7 @@ class NewTrip extends Component {
   }
 
   onSubmit() {
-    this.props.navigate('push');
+    this.props.navigation.push();
   }
 
   render() {

@@ -1,14 +1,12 @@
 'use strict';
 
-import React, { Component } from 'react';
+import React from 'react';
 import {
   StyleSheet,
   View,
   TouchableOpacity,
   Platform
 } from 'react-native';
-
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const styles = StyleSheet.create({
   buttonContainer: {
@@ -25,12 +23,13 @@ const styles = StyleSheet.create({
   }
 });
 
-export default class NavigationHeaderMenuButton extends Component {
+export default class HeaderButton extends React.Component {
+
   render() {
     return (
-      <TouchableOpacity style={styles.buttonContainer} {...this.props}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={this.props.onPress}>
         <View style={styles.button}>
-          <Icon name="menu" size={24} color="#FFF" />
+          {this.props.children}
         </View>
       </TouchableOpacity>
     );
