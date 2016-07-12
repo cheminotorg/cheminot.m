@@ -1,17 +1,20 @@
 'use strict';
 
 import React, { PropTypes } from 'react';
+import CheminotPropTypes from './PropTypes';
 
 function create(Component: ReactClass<any>): ReactClass & Object {
 
   class CheminotContextComponent extends React.Component {
     render() {
-      const navigate = this.context.navigate || this.props.navigate;
-      return <Component {...this.props} navigate={navigate} />;
+      const navigation = this.context.navigation || this.props.navigation;
+      const cheminotState = this.context.cheminotState || this.props.cheminotState;
+      return <Component {...this.props} navigation={navigation} cheminotState={cheminotState} />;
     }
   }
 
   CheminotContextComponent.contextTypes = {
+    state: CheminotPropTypes.State,
     navigation: React.PropTypes.shape({
       push: React.PropTypes.func,
       pop: React.PropTypes.func
@@ -19,6 +22,7 @@ function create(Component: ReactClass<any>): ReactClass & Object {
   };
 
   CheminotContextComponent.childContextTypes = {
+    state: CheminotPropTypes.State,
     navigation: React.PropTypes.shape({
       push: React.PropTypes.func,
       pop: React.PropTypes.func
@@ -28,15 +32,11 @@ function create(Component: ReactClass<any>): ReactClass & Object {
   return CheminotContextComponent;
 }
 
-function props(navigate) {
+function props(p) {
+  const {navigation, cheminotState} = p;
   return {
-    navigation: {
-      push: navigate.bind(null, 'push'),
-      pop: navigate.bind(null, 'pop')
-    },
-    header: {
-
-    }
+    cheminotState: cheminotState,
+    navigation: navigation
   }
 }
 

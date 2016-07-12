@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 
 class Home extends Component {
 
-  _onNewTripPress() {
+  _onNewTripPressed() {
     this.props.navigation.push();
   }
 
@@ -37,7 +37,7 @@ class Home extends Component {
       <View style={styles.container}>
         <Image source={require('./empty.png')} />
         <View>
-          <NewTripButton onPress={this._onNewTripPress.bind(this)}>
+          <NewTripButton onPress={this._onNewTripPressed.bind(this)}>
             <Icon name="add" size={24} color="#FFF" />
           </NewTripButton>
         </View>

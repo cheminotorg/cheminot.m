@@ -13,14 +13,15 @@ import {
 } from 'react-native';
 
 import { MKColor } from 'react-native-material-kit';
-import CheminotContext from './js/layout/ContextContainer';
 import Navigator from './js/layout/Navigator';
 import Home from './js/Home';
 import Trips from './js/Trips';
 import NewTrip from './js/NewTrip';
 import Locale from './js/locale';
+import CheminotContext from './js/layout/ContextContainer';
+import CheminotPropTypes from './js/layout/PropTypes';
 
-import type  {
+import type, {
   NavigationSceneRendererProps,
   NavigationState,
   NavigationTransitionProps,
@@ -37,10 +38,13 @@ const {
 } = NavigationExperimental;
 
 const styles = StyleSheet.create({
-  scrollView: {
-    marginTop: NavigationHeader.HEIGHT
-  }
 });
+
+const HEADERS = {
+  home: { title: 'Cheminot' },
+  newtrip: { title: 'Route A', back: true },
+  trips: { title: 'Route B', back: true }
+};
 
 const ROUTES = [
   {key: 'home'},
@@ -48,22 +52,35 @@ const ROUTES = [
   {key: 'trips'}
 ];
 
-function reducer(state: ?NavigationState, action: any): NavigationState {
+function reducer(state: ?CheminotPropTypes.State, action: any): CheminotState {
   if (!state) {
+    const route = ROUTES[0];
     return {
-      navigationState: {
+      header: HEADERS[route.key],
+      navigation: {
         index: 0,
-        routes: [ROUTES[0]]
+        routes: [route]
       }
     };
   }
 
   switch (action) {
-    case 'push':
+    case 'push': {
       const route = ROUTES[state.index + 1];
-      return NavigationStateUtils.push(state, route);
-    case 'pop':
-      return NavigationStateUtils.pop(state);
+      return {
+        ...state,
+        header: HEADERS[route.key],
+        navigation: NavigationStateUtils.push(state, route)
+      }
+    }
+    case 'pop': {
+      const route = ROUTES[state.index - 1];
+      return {
+        ...state,
+        header: HEADERS[route.key],
+        navigation: NavigationStateUtils.pop(state)
+      }
+    }
   }
 
   return state;
@@ -71,7 +88,12 @@ function reducer(state: ?NavigationState, action: any): NavigationState {
 
 class cheminotm extends Component {
 
-  state: NavigationState;
+  state: CheminotPropTypes.State
+
+  navigation = {
+    push: this._navigate.bind(this, 'push'),
+    pop: this._navigate.bind(this, 'pop')
+  }
 
   constructor(props: any, context: any) {
     super(props, context);
@@ -89,18 +111,22 @@ class cheminotm extends Component {
   }
 
   _navigate(action: string) {
-    let { navigationState } = this.state;
-    navigationState = reducer(navigationState, action);
-    if (this.state.navigationState !== navigationState) {
-      this.setState({navigationState});
+    const { navigation: navigationState } = this.state;
+    const nextState = reducer(navigationState, action);
+    if(this.state !== nextState) {
+      this.setState(nextState);
     }
+  }
+
+  _getContext() {
+    return CheminotContext.props({navigation: this.navigation, cheminotState: this.state});
   }
 
   _renderScene(sceneProps: Object): ReactElement {
     switch(sceneProps.scene.route.key) {
-      case 'home': return <Home {...this.props} />;
-      case 'newtrip': return <NewTrip {...this.props} />;
-      case 'trips': return <Trips {...this.props} />;
+      case 'home': return <Home {...this._getContext()} />;
+      case 'newtrip': return <NewTrip {...this._getContext()} />;
+      case 'trips': return <Trips {...this._getContext()} />;
     }
   }
 
@@ -109,10 +135,8 @@ class cheminotm extends Component {
       <View style={{flex: 1}}>
         <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent={true} />
         <Navigator
-           {...CheminotContext.props(this._navigate)}
-           navigationState={this.state.navigationState}
-           renderScene={this._renderScene}
-           />
+           {...this._getContext()}
+           renderScene={this._renderScene.bind(this)} />
       </View>
     );
   }

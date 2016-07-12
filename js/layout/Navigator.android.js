@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { NavigationExperimental, View, Text, StyleSheet } from 'react-native';
 import { MKColor } from 'react-native-material-kit';
 import HeaderBackButton from './HeaderBackButton';
+import CheminotContext from './ContextContainer';
 
 const {
   CardStack: NavigationCardStack,
@@ -21,14 +22,14 @@ export default class Navigator extends React.Component {
   }
 
   _renderOverlay(sceneProps: Object): ReactElement {
-    return <Header navigation={this.props.navigation} {...sceneProps} />;
+    return <Header {...CheminotContext.props(this.props)} {...sceneProps} />;
   }
 
   render(): ReactElement {
     return (
       <NavigationCardStack
          onNavigateBack={this._onPopRoute}
-         navigationState={this.props.navigationState}
+         navigationState={this.props.cheminotState.navigation}
          renderOverlay={this._renderOverlay.bind(this)}
          renderScene={this.props.renderScene.bind(this)}
          style={styles.navigator} />
@@ -39,7 +40,13 @@ export default class Navigator extends React.Component {
 class Header extends React.Component {
 
   _renderLeft(): ReactElement {
-    return <HeaderBackButton onPress={this._onBackButtonPressed.bind(this)} />;
+    if(this.props.cheminotState.header.back) {
+      return <HeaderBackButton onPress={this._onBackButtonPressed.bind(this)} />;
+    }
+  }
+
+  _renderRight(): ReactElement {
+    return null;
   }
 
   _onBackButtonPressed() {
@@ -48,8 +55,8 @@ class Header extends React.Component {
 
   _renderTitle(): ReactElement {
     return (
-      <NavigationHeader.Title textStyle={{ color: '#FFF'}}>
-        {'Cheminot'}
+      <NavigationHeader.Title textStyle={{color: '#FFF'}}>
+        {this.props.cheminotState.header.title}
       </NavigationHeader.Title>
     );
   }
@@ -59,7 +66,8 @@ class Header extends React.Component {
       <NavigationHeader
          style={{backgroundColor: MKColor.Indigo}}
          renderLeftComponent={this._renderLeft.bind(this)}
-         renderTitleComponent={this._renderTitle}
+         renderRightComponent={this._renderRight.bind(this)}
+         renderTitleComponent={this._renderTitle.bind(this)}
          {...this.props}
       />
     );
