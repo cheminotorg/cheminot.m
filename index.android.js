@@ -90,6 +90,10 @@ class cheminotm extends Component {
 
   state: CheminotPropTypes.State
 
+  header = {
+    set: this._setHeader.bind(this)
+  }
+
   navigation = {
     push: this._navigate.bind(this, 'push'),
     pop: this._navigate.bind(this, 'pop')
@@ -118,8 +122,19 @@ class cheminotm extends Component {
     }
   }
 
+  _setHeader(header: CheminotPropTypes.HeaderState) {
+    this.setState({
+      ...this.state,
+      header: header
+    });
+  }
+
   _getContext() {
-    return CheminotContext.props({navigation: this.navigation, cheminotState: this.state});
+    return CheminotContext.props({
+      navigation: this.navigation,
+      header: this.header,
+      cheminotState: this.state
+    });
   }
 
   _renderScene(sceneProps: Object): ReactElement {

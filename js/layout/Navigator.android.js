@@ -42,11 +42,13 @@ class Header extends React.Component {
   _renderLeft(): ReactElement {
     if(this.props.cheminotState.header.back) {
       return <HeaderBackButton onPress={this._onBackButtonPressed.bind(this)} />;
+    } else {
+      return this.props.cheminotState.header.left;
     }
   }
 
   _renderRight(): ReactElement {
-    return null;
+    return this.props.cheminotState.header.right;
   }
 
   _onBackButtonPressed() {

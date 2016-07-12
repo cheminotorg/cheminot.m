@@ -4,12 +4,14 @@ import { NavigationState } from 'NavigationTypeDefinition';
 
 const HeaderState = PropTypes.shape({
   back: PropTypes.bool,
-  title: React.PropTypes.string
+  title: React.PropTypes.string,
+  left: React.PropTypes.node,
+  right: React.PropTypes.node
 });
 
 const State = PropTypes.shape({
   navigation: NavigationState,
-  header: HeaderState.isRequired
+  header: HeaderState
 });
 
 export default {

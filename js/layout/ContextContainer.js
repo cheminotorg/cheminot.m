@@ -7,14 +7,22 @@ function create(Component: ReactClass<any>): ReactClass & Object {
 
   class CheminotContextComponent extends React.Component {
     render() {
+      const header = this.context.header || this.props.header;
       const navigation = this.context.navigation || this.props.navigation;
       const cheminotState = this.context.cheminotState || this.props.cheminotState;
-      return <Component {...this.props} navigation={navigation} cheminotState={cheminotState} />;
+      return <Component
+               {...this.props}
+               navigation={navigation}
+               header={header}
+               cheminotState={cheminotState} />;
     }
   }
 
   CheminotContextComponent.contextTypes = {
     state: CheminotPropTypes.State,
+    header: React.PropTypes.shape({
+      set: React.PropTypes.func
+    }),
     navigation: React.PropTypes.shape({
       push: React.PropTypes.func,
       pop: React.PropTypes.func
@@ -23,6 +31,9 @@ function create(Component: ReactClass<any>): ReactClass & Object {
 
   CheminotContextComponent.childContextTypes = {
     state: CheminotPropTypes.State,
+    header: React.PropTypes.shape({
+      set: React.PropTypes.func
+    }),
     navigation: React.PropTypes.shape({
       push: React.PropTypes.func,
       pop: React.PropTypes.func
@@ -33,10 +44,11 @@ function create(Component: ReactClass<any>): ReactClass & Object {
 }
 
 function props(p) {
-  const {navigation, cheminotState} = p;
+  const {navigation, header, cheminotState} = p;
   return {
     cheminotState: cheminotState,
-    navigation: navigation
+    navigation: navigation,
+    header: header
   }
 }
 
