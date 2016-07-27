@@ -91,7 +91,8 @@ class cheminotm extends Component {
   state: CheminotPropTypes.State
 
   header = {
-    set: this._setHeader.bind(this)
+    set: this._setHeader.bind(this),
+    reset: this._resetHeader.bind(this)
   }
 
   navigation = {
@@ -120,6 +121,13 @@ class cheminotm extends Component {
     if(this.state !== nextState) {
       this.setState(nextState);
     }
+  }
+
+  _resetHeader() {
+    this.setState({
+      ...this.state,
+      header: HEADERS[ROUTES[this.state.navigation.index].key]
+    });
   }
 
   _setHeader(header: CheminotPropTypes.HeaderState) {

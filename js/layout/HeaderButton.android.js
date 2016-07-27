@@ -18,8 +18,7 @@ const styles = StyleSheet.create({
   button: {
     height: 24,
     width: 24,
-    margin: Platform.OS === 'ios' ? 10 : 16,
-    resizeMode: 'contain'
+    margin: Platform.OS === 'ios' ? 10 : 16
   }
 });
 

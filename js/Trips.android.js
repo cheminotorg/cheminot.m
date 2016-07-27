@@ -11,6 +11,7 @@ import {
   TouchableNativeFeedback
 } from 'react-native';
 
+import moment from 'moment';
 import { MKButton, MKColor, MKCheckbox, MKSpinner } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheminotContext from './layout/ContextContainer';
@@ -30,49 +31,84 @@ const styles = StyleSheet.create({
   }
 });
 
-function TRIPS(id) {
-  id = id ? id : '';
-  return [
-    {id: `${id}trip#1`, departureTime: '07:57', arrivalTime: '09:06', duration: '1h09', steps: 9},
-    {id: `${id}trip#2`, departureTime: '07:57', arrivalTime: '09:06', duration: '1h09', steps: 9},
-    {id: `${id}trip#3`, departureTime: '07:57', arrivalTime: '09:06', duration: '1h09', steps: 9},
-    {id: `${id}trip#4`, departureTime: '07:57', arrivalTime: '09:06', duration: '1h09', steps: 9},
-    {id: `${id}trip#5`, departureTime: '07:57', arrivalTime: '09:06', duration: '1h09', steps: 9},
-    {id: `${id}trip#6`, departureTime: '07:57', arrivalTime: '09:06', duration: '1h09', steps: 9},
-    {id: `${id}trip#7`, departureTime: '07:57', arrivalTime: '09:06', duration: '1h09', steps: 9},
-    {id: `${id}trip#8`, departureTime: '07:57', arrivalTime: '09:06', duration: '1h09', steps: 9}
-  ]
-};
+function formatTime(date) {
+  return moment(date).format('HH:mm');
+}
 
-function FTRIPS() {
-  return new Promise(function (resolve, reject) {
-    setTimeout(() => {
-      resolve(TRIPS(Date.now()));
-    }, 4000);
+function parseTrips(response) {
+  return response.json().then((json) => {
+    const trips = json.results.map((result) => {
+      const stopTimeA = result.stopTimes[0];
+      const stopTimeB = result.stopTimes[result.stopTimes.length - 1];
+      return {
+        id: result.id,
+        departureTime: formatTime(stopTimeA.departure),
+        arrivalTime: formatTime(stopTimeB.arrival),
+        duration: '1h08',
+        steps: result.stopTimes.length
+      }
+    });
+    return {
+      trips: trips,
+      nextUrl: json.next,
+      prevUrl: json.prev
+    };
   });
+}
+
+function fetchTrips(url) {
+  if(url) {
+    return fetch(url).then(parseTrips);
+  } else {
+    const endpoint = 'http://10.0.3.2:8080/api';
+    const at = (new Date()).toISOString();
+    const params = {vs: '8739400', ve: '8739100', at: at, limit: 10};
+    const qs = Object.keys(params).reduce((acc, key) => {
+      const newparam = `${key}=${params[key]}`;
+      return acc ? `${acc}&${newparam}` : newparam;
+    }, '');
+    return fetch(`${endpoint}/trips/search.json?${qs}`).then(parseTrips);
+  }
 }
 
 class Trips extends Component {
 
   state = {
-    trips: TRIPS(),
-    isLoading: false
+    trips: [],
+    isLoading: false,
+    nextUrl: null,
+    selected: []
   }
 
-  onTripTouched() {
-    this.props.header.set({
-      title: '1 trajet sélectionné',
-      left: <HeaderDoneButton onPress={this.onDonePressed.bind(this)}/>
+  onTripSelected(e, id) {
+    const selected = e.checked ? this.state.selected.concat(id) : this.state.selected.filter((s) => s != id);
+    this.setState({
+      selected: selected
     });
+    if(selected.length > 0) {
+      this.props.header.set({
+        title: `${selected.length} trajet sélectionné`,
+        left: <HeaderDoneButton onPress={this.onDonePressed.bind(this)}/>
+      });
+    } else {
+      this.props.header.reset();
+    }
+  }
+
+  componentDidMount() {
+    this.onEndReached();
   }
 
   async onEndReached() {
-    this.setState({isLoading: true});
-    const trips = await FTRIPS();
-    this.setState({
-      isLoading: false,
-      trips: this.state.trips.concat(TRIPS())
-    });
+    if(!this.state.isLoading) {
+      this.setState({isLoading: true});
+      const {trips, nextUrl} = await fetchTrips(this.state.nextUrl);
+      this.setState({
+        isLoading: false,
+        trips: this.state.trips.concat(trips),
+        nextUrl: nextUrl
+      });
+    }
   }
 
   onDonePressed() {
@@ -85,7 +121,7 @@ class Trips extends Component {
         <TripsList
            isLoading={this.state.isLoading}
            onEndReached={this.onEndReached.bind(this)}
-           onItemTouched={this.onTripTouched.bind(this)}
+           onTripSelected={this.onTripSelected.bind(this)}
            trips={this.state.trips || []} />
       </View>
     );
@@ -111,17 +147,17 @@ const TripsList = React.createClass({
 
   renderRow: function({id, departureTime, arrivalTime, duration, steps}) {
     return (
-      <TouchableNativeFeedback id={id} onPress={this.props.onItemTouched}>
+      <TouchableNativeFeedback id={id} onPress={(e) => this.props.onTripSelected(e, id)}>
         <View style={styles.tripItem}>
           <View style={{width: 40, height: 40, padding: 0, backgroundColor: MKColor.Grey, borderRadius: 50, alignItems: 'center', justifyContent: 'center'}}>
             <Text style={{color: 'white', fontSize: 12}}>1h09</Text>
           </View>
           <View style={{marginLeft: 16}}>
-            <Text>{departureTime} → {arrivalTime}</Text>
+            <Text>{departureTime} → {arrivalTime} ({duration})</Text>
             <Text>{steps} arrêts</Text>
           </View>
           <View style={{flex: 1, alignItems: 'flex-end'}}>
-            <MKCheckbox onCheckedChange={this.props.onItemTouched} />
+            <MKCheckbox onCheckedChange={(e) => this.props.onTripSelected(e, id)} />
           </View>
         </View>
       </TouchableNativeFeedback>
@@ -150,7 +186,7 @@ const TripsList = React.createClass({
          renderRow={this.renderRow}
          renderScrollComponent={props => <RecyclerViewBackedScrollView {...props}/>}
          renderSeparator={(sectionID, rowID) => <View key={`${sectionID}-${rowID}`} style={{backgroundColor: MKColor.Grey, height: 1}} />}
-         onEndReachedThreshold={1}
+         onEndReachedThreshold={80}
          {...this.props}
       />
     );
