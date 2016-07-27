@@ -64,7 +64,14 @@ function reducer(state: ?CheminotPropTypes.State, action: any): CheminotState {
     };
   }
 
-  switch (action) {
+  switch (action.type) {
+    case 'go': {
+      return {
+        ...state,
+        header: HEADERS[action.key],
+        navigation: NavigationStateUtils.jumpTo(state, action.key)
+      }
+    }
     case 'push': {
       const route = ROUTES[state.index + 1];
       return {
@@ -96,8 +103,9 @@ class cheminotm extends Component {
   }
 
   navigation = {
-    push: this._navigate.bind(this, 'push'),
-    pop: this._navigate.bind(this, 'pop')
+    go: (key) => this._navigate({type: 'go', key: key}),
+    push: this._navigate.bind(this, {type: 'push'}),
+    pop: this._navigate.bind(this, {type: 'pop'})
   }
 
   constructor(props: any, context: any) {

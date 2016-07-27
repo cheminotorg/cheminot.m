@@ -112,7 +112,7 @@ class Trips extends Component {
   }
 
   onDonePressed() {
-    alert('Done pressed');
+    this.props.navigation.go('home');
   }
 
   render() {
