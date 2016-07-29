@@ -3,14 +3,19 @@
 import React, { Component } from 'react';
 import {
   NavigationExperimental,
+  ScrollView,
+  MapView,
   StyleSheet,
   View,
-  Image
+  Image,
+  Text
 } from 'react-native';
 
-import { MKButton, MKColor } from 'react-native-material-kit';
+import { MKButton, MKColor, getTheme } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheminotContext from './layout/ContextContainer';
+
+const theme = getTheme();
 
 const NewTripButton = MKButton.plainFab()
                               .withBackgroundColor(MKColor.Teal)
@@ -20,9 +25,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 56,
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    alignItems: 'center'
   }
 });
 
@@ -35,11 +39,30 @@ class Home extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image source={require('./empty.png')} />
-        <View>
-          <NewTripButton onPress={this._onNewTripPressed.bind(this)}>
-            <Icon name="add" size={24} color="#FFF" />
-          </NewTripButton>
+        <ScrollView style={{paddingLeft: 10, paddingRight: 10, paddingTop: 10}}>
+          <TripCard />
+          <TripCard />
+        </ScrollView>
+      </View>
+    );
+  }
+}
+
+class TripCard extends Component {
+
+  render() {
+    return (
+      <View style={{marginBottom: 10}}>
+        <View style={theme.cardStyle}>
+          <Text style={{}}>Chartres - Paris</Text>
+          <Text style={{}}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Mauris sagittis pellentesque lacus eleifend lacinia...
+          </Text>
+          <MapView
+             style={{height: 200, margin: 40}}
+             showsUserLocation={true}
+             />
         </View>
       </View>
     );
