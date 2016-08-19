@@ -8,7 +8,8 @@ import {
   Text,
   ListView,
   RecyclerViewBackedScrollView,
-  TouchableNativeFeedback
+  TouchableNativeFeedback,
+  AsyncStorage
 } from 'react-native';
 
 import moment from 'moment';
@@ -35,30 +36,9 @@ function formatTime(date) {
   return moment(date).format('HH:mm');
 }
 
-function parseTrips(response) {
-  return response.json().then((json) => {
-    const trips = json.results.map((result) => {
-      const stopTimeA = result.stopTimes[0];
-      const stopTimeB = result.stopTimes[result.stopTimes.length - 1];
-      return {
-        id: result.id,
-        departureTime: formatTime(stopTimeA.departure),
-        arrivalTime: formatTime(stopTimeB.arrival),
-        duration: '1h08',
-        steps: result.stopTimes.length
-      }
-    });
-    return {
-      trips: trips,
-      nextUrl: json.next,
-      prevUrl: json.prev
-    };
-  });
-}
-
 function fetchTrips(url) {
   if(url) {
-    return fetch(url).then(parseTrips);
+    return fetch(url).then((response) => response.json());
   } else {
     const endpoint = 'http://10.0.3.2:8080/api';
     const at = (new Date()).toISOString();
@@ -67,7 +47,7 @@ function fetchTrips(url) {
       const newparam = `${key}=${params[key]}`;
       return acc ? `${acc}&${newparam}` : newparam;
     }, '');
-    return fetch(`${endpoint}/trips/search.json?${qs}`).then(parseTrips);
+    return fetch(`${endpoint}/trips/search.json?${qs}`).then((response) => response.json());
   }
 }
 
@@ -102,16 +82,20 @@ class Trips extends Component {
   async onEndReached() {
     if(!this.state.isLoading) {
       this.setState({isLoading: true});
-      const {trips, nextUrl} = await fetchTrips(this.state.nextUrl);
+      const response = await fetchTrips(this.state.nextUrl);
       this.setState({
         isLoading: false,
-        trips: this.state.trips.concat(trips),
-        nextUrl: nextUrl
+        trips: this.state.trips.concat(response.results),
+        nextUrl: response.next
       });
     }
   }
 
-  onDonePressed() {
+  async onDonePressed() {
+    const selectedTrips = this.state.trips.filter((trip) => {
+      return this.state.selected.some((id) => trip.id == id);
+    });
+    await AsyncStorage.setItem('trips', JSON.stringify(selectedTrips));
     this.props.navigation.go('home');
   }
 
@@ -145,9 +129,16 @@ const TripsList = React.createClass({
     });
   },
 
-  renderRow: function({id, departureTime, arrivalTime, duration, steps}) {
+  renderRow: function(trip) {
+    const stopTimeA = trip.stopTimes[0];
+    const stopTimeB = trip.stopTimes[trip.stopTimes.length - 1];
+    const departureTime = formatTime(stopTimeA.departure);
+    const arrivalTime = formatTime(stopTimeB.arrival);
+    const steps = trip.stopTimes.length
+    const duration = '1h08';
+
     return (
-      <TouchableNativeFeedback id={id} onPress={(e) => this.props.onTripSelected(e, id)}>
+      <TouchableNativeFeedback id={trip.id} onPress={(e) => this.props.onTripSelected(e, trip.id)}>
         <View style={styles.tripItem}>
           <View style={{width: 40, height: 40, padding: 0, backgroundColor: MKColor.Grey, borderRadius: 50, alignItems: 'center', justifyContent: 'center'}}>
             <Text style={{color: 'white', fontSize: 12}}>1h09</Text>
@@ -157,7 +148,7 @@ const TripsList = React.createClass({
             <Text>{steps} arrêts</Text>
           </View>
           <View style={{flex: 1, alignItems: 'flex-end'}}>
-            <MKCheckbox onCheckedChange={(e) => this.props.onTripSelected(e, id)} />
+            <MKCheckbox onCheckedChange={(e) => this.props.onTripSelected(e, trip.id)} />
           </View>
         </View>
       </TouchableNativeFeedback>
