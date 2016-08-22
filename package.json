@@ -8,7 +8,7 @@
   "dependencies": {
     "moment": "^2.13.0",
     "react": "~15.2.0",
-    "react-native": "^v0.30.0",
+    "react-native": "^v0.31.0",
     "react-native-maps": "^0.7.1",
     "react-native-material-kit": "^0.3.2",
     "react-native-vector-icons": "^2.0.3"

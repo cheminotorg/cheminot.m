@@ -8,7 +8,8 @@ import {
   View,
   Image,
   Text,
-  AsyncStorage
+  AsyncStorage,
+  Switch
 } from 'react-native';
 
 import { MKButton, MKColor, getTheme } from 'react-native-material-kit';
@@ -38,7 +39,7 @@ class Home extends Component {
     trips: []
   }
 
-  componentDidMount() {
+  componentWillReceiveProps() {
     AsyncStorage.getItem('trips').then((json) => {
       if(json) {
         const trips = JSON.parse(json);
@@ -71,54 +72,102 @@ class Home extends Component {
       );
     } else {
       return (
-        <View style={styles.container}>
+        <View style={{paddingTop: 56, flex: 1}}>
           <ScrollView style={{paddingLeft: 10, paddingRight: 10, paddingTop: 10}}>
-            <TripCard currentLocation={this.state.currentLocation} />
-            <TripCard currentLocation={this.state.currentLocation} />
+            {
+              this.state.trips.map((trip, index) =>
+                <TripCard key={`home#trip#${index}`} trip={trip} currentLocation={this.state.currentLocation} />
+              )
+            }
           </ScrollView>
-          <NewTripButton onPress={this._onNewTripPressed.bind(this)}>
-            <Icon name="add" size={24} color="#FFF" />
-          </NewTripButton>
+          <View style={{position: 'absolute', left: 0, right: 0, bottom: 10, flex: 1, alignItems: 'center', padding: 10}}>
+            <NewTripButton onPress={this._onNewTripPressed.bind(this)}>
+              <Icon name="add" size={24} color="#FFF" />
+            </NewTripButton>
+          </View>
         </View>
       );
     }
   }
 }
 
+class TripCardCalendarItem extends Component {
+  render() {
+    return (
+      <View style={{backgroundColor: MKColor.Teal, width: 20, height: 20, borderRadius: 10, alignItems: 'center', justifyContent: 'center'}}>
+        <Text style={{color: 'white', fontSize: 10}}>{this.props.children}</Text>
+      </View>
+    );
+  }
+}
+
+class TripCardCalendar extends Component {
+
+  render() {
+    return (
+      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+        <TripCardCalendarItem>L</TripCardCalendarItem>
+        <TripCardCalendarItem>M</TripCardCalendarItem>
+        <TripCardCalendarItem>M</TripCardCalendarItem>
+        <TripCardCalendarItem>J</TripCardCalendarItem>
+        <TripCardCalendarItem>V</TripCardCalendarItem>
+        <TripCardCalendarItem>S</TripCardCalendarItem>
+        <TripCardCalendarItem>D</TripCardCalendarItem>
+      </View>
+    );
+  }
+}
+
 class TripCard extends Component {
 
   render() {
-    let options = {
+    const stopTimes = this.props.trip.stopTimes;
+    const stationA = stopTimes[0];
+    const stationB = stopTimes[stopTimes.length - 1];
+
+    const options = {
       showsUserLocation: false,
       showsPointsOfInterest: false,
       style: {height: 100},
       zoomEnabled: false,
       scrollEnabled: false,
       loadingEnabled: true,
-      pitchEnabled: false
+      pitchEnabled: false,
+      initialRegion: {
+        latitude: stationA.lat,
+        longitude: stationA.lng,
+        latitudeDelta: Math.abs(stationA.lat - stationB.lat),
+        longitudeDelta: Math.abs(stationA.lng - stationB.lng)
+      }
     };
-
-    if(this.props.currentLocation) {
-      options = Object.assign(options, {
-        initialRegion: {
-          latitude: this.props.currentLocation.coords.latitude,
-          longitude: this.props.currentLocation.coords.longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421
-        },
-        loadingEnabled: false
-      });
-    }
 
     return (
       <View style={{marginBottom: 10}}>
         <View style={theme.cardStyle}>
-          <Text>Chartres - Paris</Text>
-          <Text>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Mauris sagittis pellentesque lacus eleifend lacinia...
-          </Text>
-          <MapView {...options} />
+          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+            <Text>Chartres - Paris</Text>
+            <Switch />
+          </View>
+          <Text>Durée: 1h08</Text>
+          <TripCardCalendar />
+          <MapView {...options}>
+            {
+              this.props.trip.stopTimes.map((stopTime, index) =>
+                <MapView.Marker
+                  key={`tripcard#marker#${index}`}
+                  coordinate={{latitude: stopTime.lat, longitude: stopTime.lng}}
+                  title={stopTime.name}
+                />
+              )
+            }
+            <MapView.Polyline
+              coordinates={this.props.trip.stopTimes.map((stopTime) => {
+                return {latitude: stopTime.lat, longitude: stopTime.lng};
+              })} />
+          </MapView>
+          <View>
+            <Icon name="delete" size={24} />
+          </View>
         </View>
       </View>
     );
