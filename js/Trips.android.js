@@ -135,6 +135,7 @@ const TripsList = React.createClass({
     const departureTime = formatTime(stopTimeA.departure);
     const arrivalTime = formatTime(stopTimeB.arrival);
     const steps = trip.stopTimes.length
+    const calendar = trip.calendar;
     const duration = '1h08';
 
     return (
@@ -144,7 +145,7 @@ const TripsList = React.createClass({
             <Text style={{color: 'white', fontSize: 12}}>1h09</Text>
           </View>
           <View style={{marginLeft: 16}}>
-            <Text>{departureTime} → {arrivalTime} ({duration})</Text>
+            <Text>{departureTime} → {arrivalTime}</Text>
             <Text>{steps} arrêts</Text>
           </View>
           <View style={{flex: 1, alignItems: 'flex-end'}}>

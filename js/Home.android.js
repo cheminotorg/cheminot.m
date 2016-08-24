@@ -16,6 +16,7 @@ import { MKButton, MKColor, getTheme } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheminotContext from './layout/ContextContainer';
 import MapView from 'react-native-maps';
+import WeekCalendar from './WeekCalendar'
 
 const theme = getTheme();
 
@@ -91,33 +92,6 @@ class Home extends Component {
   }
 }
 
-class TripCardCalendarItem extends Component {
-  render() {
-    return (
-      <View style={{backgroundColor: MKColor.Teal, width: 20, height: 20, borderRadius: 10, alignItems: 'center', justifyContent: 'center'}}>
-        <Text style={{color: 'white', fontSize: 10}}>{this.props.children}</Text>
-      </View>
-    );
-  }
-}
-
-class TripCardCalendar extends Component {
-
-  render() {
-    return (
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <TripCardCalendarItem>L</TripCardCalendarItem>
-        <TripCardCalendarItem>M</TripCardCalendarItem>
-        <TripCardCalendarItem>M</TripCardCalendarItem>
-        <TripCardCalendarItem>J</TripCardCalendarItem>
-        <TripCardCalendarItem>V</TripCardCalendarItem>
-        <TripCardCalendarItem>S</TripCardCalendarItem>
-        <TripCardCalendarItem>D</TripCardCalendarItem>
-      </View>
-    );
-  }
-}
-
 class TripCard extends Component {
 
   render() {
@@ -145,11 +119,11 @@ class TripCard extends Component {
       <View style={{marginBottom: 10}}>
         <View style={theme.cardStyle}>
           <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-            <Text>Chartres - Paris</Text>
+            <Text>Chartres - Paris - 07h58</Text>
             <Switch />
           </View>
           <Text>Durée: 1h08</Text>
-          <TripCardCalendar />
+          <WeekCalendar />
           <MapView {...options}>
             {
               this.props.trip.stopTimes.map((stopTime, index) =>
