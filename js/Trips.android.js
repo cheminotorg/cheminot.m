@@ -20,8 +20,7 @@ import HeaderDoneButton from './layout/HeaderDoneButton';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 56
+    flex: 1
   },
   tripItem: {
     padding: 16,

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { MKColor } from 'react-native-material-kit';
 
 const itemStyles = StyleSheet.create({

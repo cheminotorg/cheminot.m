@@ -21,7 +21,7 @@ export default class Navigator extends React.Component {
     super(props, context);
   }
 
-  _renderOverlay(sceneProps: Object): ReactElement {
+  _renderHeader(sceneProps: Object): ReactElement {
     return <Header {...CheminotContext.props(this.props)} {...sceneProps} />;
   }
 
@@ -30,7 +30,7 @@ export default class Navigator extends React.Component {
       <NavigationCardStack
          onNavigateBack={this._onPopRoute}
          navigationState={this.props.cheminotState.navigation}
-         renderOverlay={this._renderOverlay.bind(this)}
+         renderHeader={this._renderHeader.bind(this)}
          renderScene={this.props.renderScene.bind(this)}
          style={styles.navigator} />
     );

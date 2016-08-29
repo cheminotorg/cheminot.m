@@ -27,7 +27,6 @@ const NewTripButton = MKButton.plainFab()
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 56,
     flexDirection: 'column',
     alignItems: 'center'
   }
@@ -45,11 +44,7 @@ class Home extends Component {
       if(json) {
         const trips = JSON.parse(json);
         this.setState({trips: trips});
-      } else {
-        alert('not found');
       }
-    }).catch((e) => {
-      console.log(e);
     });
 
     navigator.geolocation.getCurrentPosition((location) => {

@@ -32,8 +32,7 @@ const SearchButton = MKButton.flatButton()
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 56 + 20
+    flex: 1
   },
   block: {
     backgroundColor: 'white',

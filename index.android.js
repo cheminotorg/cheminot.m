@@ -119,7 +119,7 @@ class cheminotm extends Component {
   }
 
   _handleBackButton() {
-    this._navigate('pop');
+    this.navigation.pop();
     return true;
   }
 
@@ -164,7 +164,7 @@ class cheminotm extends Component {
   render(): ReactElement<any> {
     return (
       <View style={{flex: 1}}>
-        <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" translucent={true} />
+        <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" />
         <Navigator
            {...this._getContext()}
            renderScene={this._renderScene.bind(this)} />
