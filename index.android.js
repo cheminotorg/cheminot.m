@@ -65,12 +65,14 @@ function reducer(state: ?CheminotPropTypes.State, action: any): CheminotState {
   }
 
   switch (action.type) {
-    case 'go': {
+    case 'rewind': {
+      const index = NavigationStateUtils.indexOf(state, action.key);
+      const updatedRoutes = state.routes.slice(0, index + 1);
       return {
         ...state,
         header: HEADERS[action.key],
-        navigation: NavigationStateUtils.jumpTo(state, action.key)
-      }
+        navigation: NavigationStateUtils.reset(state, updatedRoutes, index)
+      };
     }
     case 'push': {
       const route = ROUTES[state.index + 1];
@@ -103,7 +105,7 @@ class cheminotm extends Component {
   }
 
   navigation = {
-    go: (key) => this._navigate({type: 'go', key: key}),
+    rewind: (key) => this._navigate({type: 'rewind', key: key}),
     push: this._navigate.bind(this, {type: 'push'}),
     pop: this._navigate.bind(this, {type: 'pop'})
   }
@@ -154,6 +156,7 @@ class cheminotm extends Component {
   }
 
   _renderScene(sceneProps: Object): ReactElement {
+    console.log('index.renderScene');
     switch(sceneProps.scene.route.key) {
       case 'home': return <Home {...this._getContext()} />;
       case 'newtrip': return <NewTrip {...this._getContext()} />;
@@ -162,6 +165,7 @@ class cheminotm extends Component {
   }
 
   render(): ReactElement<any> {
+    console.log('index.render');
     return (
       <View style={{flex: 1}}>
         <StatusBar backgroundColor="rgba(0, 0, 0, 0.2)" />

@@ -95,7 +95,7 @@ class Trips extends Component {
       return this.state.selected.some((id) => trip.id == id);
     });
     await AsyncStorage.setItem('trips', JSON.stringify(selectedTrips));
-    this.props.navigation.go('home');
+    this.props.navigation.rewind('home');
   }
 
   render() {

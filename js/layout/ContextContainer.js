@@ -36,7 +36,8 @@ function create(Component: ReactClass<any>): ReactClass & Object {
     }),
     navigation: React.PropTypes.shape({
       push: React.PropTypes.func,
-      pop: React.PropTypes.func
+      pop: React.PropTypes.func,
+      rewind: React.PropTypes.func
     })
   };
 
