@@ -1,8 +1,5 @@
-'use strict';
-
 import React, { Component } from 'react';
 import {
-  NavigationExperimental,
   ScrollView,
   StyleSheet,
   View,
@@ -10,14 +7,14 @@ import {
   Text,
   AsyncStorage,
   Switch,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 
 import { MKButton, MKColor, getTheme } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import CheminotContext from './layout/ContextContainer';
 import MapView from 'react-native-maps';
-import WeekCalendar from './WeekCalendar'
+import CheminotContext from './layout/ContextContainer';
+import WeekCalendar from './WeekCalendar';
 
 const theme = getTheme();
 
@@ -30,7 +27,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
   addButton: {
     position: 'absolute',
@@ -39,89 +36,108 @@ const styles = StyleSheet.create({
     bottom: 0,
     flex: 1,
     alignItems: 'flex-end',
-    padding: 10
-  }
+    padding: 10,
+  },
 });
 
 class Home extends Component {
 
+  constructor(props, context) {
+    super(props, context);
+    this._onDeleteTripPressed = this._onDeleteTripPressed.bind(this);
+    this._onNewTripPressed = this._onNewTripPressed.bind(this);
+  }
+
   state = {
     currentLocation: null,
-    trips: []
+    trips: [],
   }
 
   componentWillReceiveProps() {
     AsyncStorage.getItem('trips').then((json) => {
-      if(json) {
+      if (json) {
         const trips = JSON.parse(json);
-        this.setState({trips: trips});
+        this.setState({ trips });
       }
     });
 
     navigator.geolocation.getCurrentPosition((location) => {
-      this.setState({currentLocation: location});
+      this.setState({ currentLocation: location });
     }, () => {}, { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 });
   }
 
   _onNewTripPressed() {
-    this.props.navigation.push();
+    this.props.navigation.push('newtrip');
   }
 
   async _onDeleteTripPressed(id) {
-    const updatedTrips = this.state.trips.filter((trip) => trip.id != id);
+    const updatedTrips = this.state.trips.filter((trip) => trip.id !== id);
     await AsyncStorage.setItem('trips', JSON.stringify(updatedTrips));
-    this.setState({trips: updatedTrips});
+    this.setState({ trips: updatedTrips });
   }
 
-  renderTrips() {
-    return this.state.trips.map((trip, index) =>
-      <TripCard key={`home#trip#${index}`}
-                onDeleteTripPressed={this._onDeleteTripPressed.bind(this)}
-                trip={trip}
-                currentLocation={this.state.currentLocation} />
+  _renderTrips(trips) {
+    return trips.map((trip, index) =>
+      <TripCard
+        key={`home#trip#${index}`}
+        onDeleteTripPressed={this._onDeleteTripPressed}
+        trip={trip}
+        currentLocation={this.state.currentLocation}
+      />
     );
   }
 
   render() {
-    if(!this.state.trips.length) {
+    const trips = this.state.trips;
+    if (!trips.length) {
       return (
         <View style={styles.container}>
           <Image source={require('./empty.png')} />
           <View style={{}}>
-          <NewTripButton onPress={this._onNewTripPressed.bind(this)}>
-            <Icon name="add" size={24} color="#FFF" />
-          </NewTripButton>
-          </View>
-        </View>
-      );
-    } else {
-      return (
-        <View style={{flex: 1}}>
-          <ScrollView style={{paddingLeft: 10, paddingRight: 10, paddingTop: 10}}>
-            {this.renderTrips()}
-          </ScrollView>
-          <View style={styles.addButton}>
-            <NewTripButton onPress={this._onNewTripPressed.bind(this)}>
+            <NewTripButton onPress={this._onNewTripPressed}>
               <Icon name="add" size={24} color="#FFF" />
             </NewTripButton>
           </View>
         </View>
       );
     }
+
+    return (
+      <View style={{ flex: 1 }}>
+        <ScrollView style={{ paddingLeft: 10, paddingRight: 10, paddingTop: 10 }}>
+          {this._renderTrips(trips)}
+        </ScrollView>
+        <View style={styles.addButton}>
+          <NewTripButton onPress={this._onNewTripPressed}>
+            <Icon name="add" size={24} color="#FFF" />
+          </NewTripButton>
+        </View>
+      </View>
+    );
   }
 }
 
 class TripCard extends Component {
 
+  constructor(props, context) {
+    super(props, context);
+    this._onDeleteTripPressed = this._onDeleteTripPressed.bind(this);
+  }
+
+  _onDeleteTripPressed() {
+    this.props.onDeleteTripPressed(this.props.trip.id);
+  }
+
   render() {
-    const stopTimes = this.props.trip.stopTimes;
+    const trip = this.props.trip;
+    const stopTimes = trip.stopTimes;
     const stationA = stopTimes[0];
     const stationB = stopTimes[stopTimes.length - 1];
 
     const options = {
       showsUserLocation: false,
       showsPointsOfInterest: false,
-      style: {height: 100},
+      style: { height: 100 },
       zoomEnabled: false,
       scrollEnabled: false,
       loadingEnabled: true,
@@ -130,35 +146,36 @@ class TripCard extends Component {
         latitude: stationA.lat,
         longitude: stationA.lng,
         latitudeDelta: Math.abs(stationA.lat - stationB.lat),
-        longitudeDelta: Math.abs(stationA.lng - stationB.lng)
-      }
+        longitudeDelta: Math.abs(stationA.lng - stationB.lng),
+      },
     };
 
+    const coordinates = stopTimes.map((stopTime) => (
+      { latitude: stopTime.lat, longitude: stopTime.lng }
+    ));
+
+    const markers = stopTimes.map((stopTime, index) =>
+      <MapView.Marker
+        key={`tripcard#marker#${index}`}
+        coordinate={{ latitude: stopTime.lat, longitude: stopTime.lng }}
+        title={stopTime.name}
+      />
+    );
+
     return (
-      <View style={{marginBottom: 10}}>
+      <View style={{ marginBottom: 10 }}>
         <View style={theme.cardStyle}>
-          <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <Text>Chartres - Paris - 07h58</Text>
             <Switch />
           </View>
           <Text>Durée: 1h08</Text>
           <WeekCalendar />
           <MapView {...options}>
-            {
-              this.props.trip.stopTimes.map((stopTime, index) =>
-                <MapView.Marker
-                  key={`tripcard#marker#${index}`}
-                  coordinate={{latitude: stopTime.lat, longitude: stopTime.lng}}
-                  title={stopTime.name}
-                />
-              )
-            }
-            <MapView.Polyline
-              coordinates={this.props.trip.stopTimes.map((stopTime) => {
-                return {latitude: stopTime.lat, longitude: stopTime.lng};
-              })} />
+            {markers}
+            <MapView.Polyline coordinates={coordinates} />
           </MapView>
-          <TouchableOpacity onPress={() => this.props.onDeleteTripPressed(this.props.trip.id) }>
+          <TouchableOpacity onPress={this._onDeleteTripPressed}>
             <Icon name="delete" size={24} />
           </TouchableOpacity>
         </View>

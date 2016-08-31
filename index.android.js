@@ -1,18 +1,16 @@
-'use strict';
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 
 import {
   AppRegistry,
-  NavigationExperimental,
-  StyleSheet,
-  Text,
   View,
   StatusBar,
-  BackAndroid
+  BackAndroid,
+  NavigationExperimental,
 } from 'react-native';
 
-import { MKColor } from 'react-native-material-kit';
+const { StateUtils: NavigationStateUtils } = NavigationExperimental;
+
 import Navigator from './js/layout/Navigator';
 import Home from './js/Home';
 import Trips from './js/Trips';
@@ -21,46 +19,29 @@ import Locale from './js/locale';
 import CheminotContext from './js/layout/ContextContainer';
 import CheminotPropTypes from './js/layout/PropTypes';
 
-import type, {
-  NavigationSceneRendererProps,
-  NavigationState,
-  NavigationTransitionProps,
-  NavigationTransitionSpec,
-} from 'NavigationTypeDefinition';
-
 Locale.init();
-
-const {
-  PropTypes: NavigationPropTypes,
-  StateUtils: NavigationStateUtils,
-  Transitioner: NavigationTransitioner,
-  Header: NavigationHeader
-} = NavigationExperimental;
-
-const styles = StyleSheet.create({
-});
 
 const HEADERS = {
   home: { title: 'Cheminot' },
   newtrip: { title: 'Route A', back: true },
-  trips: { title: 'Route B', back: true }
+  trips: { title: 'Route B', back: true },
 };
 
 const ROUTES = [
-  {key: 'home'},
-  {key: 'newtrip'},
-  {key: 'trips'}
+  { key: 'home' },
+  { key: 'newtrip' },
+  { key: 'trips' },
 ];
 
-function reducer(state: ?CheminotPropTypes.State, action: any): CheminotState {
+function reducer(state: ?CheminotPropTypes.State, action: any): CheminotPropTypes.State {
   if (!state) {
     const route = ROUTES[0];
     return {
       header: HEADERS[route.key],
       navigation: {
         index: 0,
-        routes: [route]
-      }
+        routes: [route],
+      },
     };
   }
 
@@ -79,20 +60,21 @@ function reducer(state: ?CheminotPropTypes.State, action: any): CheminotState {
       return {
         ...state,
         header: HEADERS[route.key],
-        navigation: NavigationStateUtils.push(state, route)
-      }
+        navigation: NavigationStateUtils.push(state, route),
+      };
     }
     case 'pop': {
       const route = ROUTES[state.index - 1];
       return {
         ...state,
         header: HEADERS[route.key],
-        navigation: NavigationStateUtils.pop(state)
-      }
+        navigation: NavigationStateUtils.pop(state),
+      };
+    }
+    default: {
+      return state;
     }
   }
-
-  return state;
 }
 
 class cheminotm extends Component {
@@ -128,7 +110,7 @@ class cheminotm extends Component {
   _navigate(action: string) {
     const { navigation: navigationState } = this.state;
     const nextState = reducer(navigationState, action);
-    if(this.state !== nextState) {
+    if (this.state !== nextState) {
       this.setState(nextState);
     }
   }
@@ -143,7 +125,7 @@ class cheminotm extends Component {
   _setHeader(header: CheminotPropTypes.HeaderState) {
     this.setState({
       ...this.state,
-      header: header
+      header: header,
     });
   }
 

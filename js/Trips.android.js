@@ -1,34 +1,30 @@
-'use strict';
-
 import React, { Component } from 'react';
 import {
-  NavigationExperimental,
   StyleSheet,
   View,
   Text,
   ListView,
   RecyclerViewBackedScrollView,
   TouchableNativeFeedback,
-  AsyncStorage
+  AsyncStorage,
 } from 'react-native';
 
 import moment from 'moment';
-import { MKButton, MKColor, MKCheckbox, MKSpinner } from 'react-native-material-kit';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { MKColor, MKCheckbox, MKSpinner } from 'react-native-material-kit';
 import CheminotContext from './layout/ContextContainer';
 import HeaderDoneButton from './layout/HeaderDoneButton';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
   },
   tripItem: {
     padding: 16,
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white'
-  }
+    backgroundColor: 'white',
+  },
 });
 
 function formatTime(date) {
@@ -36,12 +32,12 @@ function formatTime(date) {
 }
 
 function fetchTrips(url) {
-  if(url) {
+  if (url) {
     return fetch(url).then((response) => response.json());
   } else {
     const endpoint = 'http://10.0.3.2:8080/api';
     const at = (new Date()).toISOString();
-    const params = {vs: '8739400', ve: '8739100', at: at, limit: 10};
+    const params = { vs: '8739400', ve: '8739100', at, limit: 10 };
     const qs = Object.keys(params).reduce((acc, key) => {
       const newparam = `${key}=${params[key]}`;
       return acc ? `${acc}&${newparam}` : newparam;
@@ -52,49 +48,57 @@ function fetchTrips(url) {
 
 class Trips extends Component {
 
+  constructor(props, context) {
+    super(props, context);
+
+    this._onTripSelected = this._onTripSelected.bind(this);
+    this._onEndReached = this._onEndReached.bind(this);
+    this._onDonePressed = this._onDonePressed.bind(this);
+  }
+
   state = {
     trips: [],
     isLoading: false,
     nextUrl: null,
-    selected: []
+    selected: [],
   }
 
-  onTripSelected(e, id) {
-    const selected = e.checked ? this.state.selected.concat(id) : this.state.selected.filter((s) => s != id);
-    this.setState({
-      selected: selected
-    });
-    if(selected.length > 0) {
+  componentDidMount() {
+    this._onEndReached();
+  }
+
+  _onTripSelected(e, id) {
+    const selected = e.checked ? this.state.selected.concat(id) : this.state.selected.filter((s) => s !== id);
+    this.setState({ selected });
+    if (selected.length > 0) {
       this.props.header.set({
         title: `${selected.length} trajet sélectionné`,
-        left: <HeaderDoneButton onPress={this.onDonePressed.bind(this)}/>
+        left: <HeaderDoneButton onPress={this._onDonePressed} />,
       });
     } else {
       this.props.header.reset();
     }
   }
 
-  componentDidMount() {
-    this.onEndReached();
-  }
-
-  async onEndReached() {
-    if(!this.state.isLoading) {
-      this.setState({isLoading: true});
+  async _onEndReached() {
+    if (!this.state.isLoading) {
+      this.setState({ isLoading: true });
       const response = await fetchTrips(this.state.nextUrl);
       this.setState({
         isLoading: false,
         trips: this.state.trips.concat(response.results),
-        nextUrl: response.next
+        nextUrl: response.next,
       });
     }
   }
 
-  async onDonePressed() {
-    const selectedTrips = this.state.trips.filter((trip) => {
-      return this.state.selected.some((id) => trip.id == id);
-    });
-    await AsyncStorage.setItem('trips', JSON.stringify(selectedTrips));
+  async _onDonePressed() {
+    const selectedTrips = this.state.trips.filter((trip) =>
+      this.state.selected.some((id) => trip.id === id)
+    );
+    await AsyncStorage.setItem('trips', JSON.stringify([]));
+    const trips = JSON.parse(await AsyncStorage.getItem('trips'));
+    await AsyncStorage.setItem('trips', JSON.stringify(trips.concat(selectedTrips)));
     this.props.navigation.rewind('home');
   }
 
@@ -102,86 +106,118 @@ class Trips extends Component {
     return (
       <View style={styles.container}>
         <TripsList
-           isLoading={this.state.isLoading}
-           onEndReached={this.onEndReached.bind(this)}
-           onTripSelected={this.onTripSelected.bind(this)}
-           trips={this.state.trips || []} />
+          isLoading={this.state.isLoading}
+          onEndReached={this._onEndReached}
+          onTripSelected={this._onTripSelected}
+          trips={this.state.trips || []}
+        />
       </View>
     );
   }
 }
 
-const TripsList = React.createClass({
+class TripsListItem extends Component {
 
-  getInitialState: function() {
-    const ds = new ListView.DataSource({
-      rowHasChanged: (trip1, trip2) => trip1.id !== trip2.id
-    });
-    return {
-      dataSource: ds.cloneWithRows(this.props.trips)
-    };
-  },
+  constructor(props, context) {
+    super(props, context);
+    this._onTripSelected = this._onTripSelected.bind(this);
+  }
 
-  componentWillReceiveProps: function(props) {
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(props.trips)
-    });
-  },
+  _onTripSelected(e) {
+    this.props.onTripSelected(e, this.props.trip.id);
+  }
 
-  renderRow: function(trip) {
+  render() {
+    const trip = this.props.trip;
     const stopTimeA = trip.stopTimes[0];
     const stopTimeB = trip.stopTimes[trip.stopTimes.length - 1];
     const departureTime = formatTime(stopTimeA.departure);
     const arrivalTime = formatTime(stopTimeB.arrival);
-    const steps = trip.stopTimes.length
-    const calendar = trip.calendar;
-    const duration = '1h08';
+    const steps = trip.stopTimes.length;
 
     return (
-      <TouchableNativeFeedback id={trip.id} onPress={(e) => this.props.onTripSelected(e, trip.id)}>
+      <TouchableNativeFeedback>
         <View style={styles.tripItem}>
-          <View style={{width: 40, height: 40, padding: 0, backgroundColor: MKColor.Grey, borderRadius: 50, alignItems: 'center', justifyContent: 'center'}}>
-            <Text style={{color: 'white', fontSize: 12}}>1h09</Text>
+          <View style={{ width: 40, height: 40, padding: 0, backgroundColor: MKColor.Grey, borderRadius: 50, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ color: 'white', fontSize: 12 }}>1h09</Text>
           </View>
-          <View style={{marginLeft: 16}}>
+          <View style={{ marginLeft: 16 }}>
             <Text>{departureTime} → {arrivalTime}</Text>
             <Text>{steps} arrêts</Text>
           </View>
-          <View style={{flex: 1, alignItems: 'flex-end'}}>
-            <MKCheckbox onCheckedChange={(e) => this.props.onTripSelected(e, trip.id)} />
+          <View style={{ flex: 1, alignItems: 'flex-end' }}>
+            <MKCheckbox onCheckedChange={this._onTripSelected} />
           </View>
         </View>
       </TouchableNativeFeedback>
-    )
-  },
+    );
+  }
+}
 
-  renderFooter: function() {
-    if(this.props.isLoading) {
+class TripsList extends Component {
+
+  constructor(props, context) {
+    super(props, context);
+
+    this._renderRow = this._renderRow.bind(this);
+    this._renderFooter = this._renderFooter.bind(this);
+    this._renderSeparator = this._renderSeparator.bind(this);
+    this._renderScrollComponent = this._renderScrollComponent.bind(this);
+
+    const ds = new ListView.DataSource({
+      rowHasChanged: (trip1, trip2) => trip1.id !== trip2.id,
+    });
+
+    this.state = {
+      dataSource: ds.cloneWithRows(props.trips),
+    };
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(props.trips),
+    });
+  }
+
+  _renderRow(trip) {
+    return <TripsListItem onTripSelected={this.props.onTripSelected} trip={trip} />;
+  }
+
+  _renderFooter() {
+    if (this.props.isLoading) {
       return (
-        <View style={[styles.tripItem, {flexDirection: 'column'}]}>
+        <View style={[styles.tripItem, { flexDirection: 'column' }]}>
           <MKSpinner />
         </View>
       );
     } else {
       return null;
     }
-  },
+  }
 
-  render: function() {
+  _renderSeparator(sectionID, rowID) {
+    return <View key={`${sectionID}-${rowID}`} style={{ backgroundColor: MKColor.Grey, height: 1 }} />;
+  }
+
+  _renderScrollComponent(props) {
+    return <RecyclerViewBackedScrollView {...props} />;
+  }
+
+  render() {
     return (
       <ListView
-         enableEmptySections={true}
-         renderFooter={this.renderFooter}
-         dataSource={this.state.dataSource}
-         automaticallyAdjustContentInsets={true}
-         renderRow={this.renderRow}
-         renderScrollComponent={props => <RecyclerViewBackedScrollView {...props}/>}
-         renderSeparator={(sectionID, rowID) => <View key={`${sectionID}-${rowID}`} style={{backgroundColor: MKColor.Grey, height: 1}} />}
-         onEndReachedThreshold={80}
-         {...this.props}
+        enableEmptySections
+        renderFooter={this._renderFooter}
+        dataSource={this.state.dataSource}
+        automaticallyAdjustContentInsets
+        renderRow={this._renderRow}
+        renderScrollComponent={this._renderScrollComponent}
+        renderSeparator={this._renderSeparator}
+        onEndReachedThreshold={80}
+        {...this.props}
       />
     );
   }
-});
+}
 
 module.exports = CheminotContext.create(Trips);
