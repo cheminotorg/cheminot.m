@@ -9,16 +9,13 @@ import {
   Animated,
   Easing,
   Dimensions,
-  ListView,
-  RecyclerViewBackedScrollView,
-  TouchableNativeFeedback,
 } from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { MKColor, MKTextField, MKButton } from 'react-native-material-kit';
 import moment from 'moment';
-import Cheminotdb from './Cheminotdb';
-import CheminotContext from './layout/ContextContainer';
+import Cheminotdb from '../Cheminotdb';
+import CheminotContext from '../layout/ContextContainer';
+import StationsList from './StationsList';
 
 const SearchButton = MKButton.flatButton()
                              .withBackgroundColor(MKColor.Teal)
@@ -374,69 +371,6 @@ function blurDepartureInput(from) {
     datetimeBlockTop: 0,
     suggestionBlockTop: Dimensions.get('window').height,
   });
-}
-
-class StationsListItem extends Component {
-
-  constructor(props, context) {
-    super(props, context);
-    this._onItemSelected = this._onItemSelected.bind(this);
-  }
-
-  _onItemSelected() {
-    this.props.onItemSelected(this.props.id, this.props.name);
-  }
-
-  render() {
-    return (
-      <TouchableNativeFeedback onPress={this._onItemSelected}>
-        <View style={{ paddingTop: 10, paddingBottom: 10, flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-          <Icon name="location-on" size={24} color={MKColor.Grey} />
-          <Text style={{ color: MKColor.Grey }}>{this.props.name}</Text>
-        </View>
-      </TouchableNativeFeedback>
-    );
-  }
-};
-
-class StationsList extends Component {
-
-  constructor(props, context) {
-    super(props, context);
-
-    this._renderRow = this._renderRow.bind(this);
-
-    const ds = new ListView.DataSource({
-      rowHasChanged: (station1, station2) => station1.id !== station2.id,
-    });
-
-    this.state = {
-      dataSource: ds.cloneWithRows(props.stations),
-    };
-  }
-
-  componentWillReceiveProps(props) {
-    this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(props.stations),
-    });
-  }
-
-  _renderRow({ id, name }) {
-    return <StationsListItem onItemSelected={this.props.onItemSelected} id={id} name={name} />;
-  }
-
-  render() {
-    return (
-      <ListView
-        dataSource={this.state.dataSource}
-        enableEmptySections
-        renderRow={this._renderRow}
-        renderScrollComponent={props => <RecyclerViewBackedScrollView keyboardShouldPersistTaps {...props} />}
-        renderSeparator={(sectionID, rowID) => <View key={`${sectionID}-${rowID}`} style={{ backgroundColor: MKColor.Grey, height: 1 }} />}
-        {...this.props}
-      />
-    );
-  }
 }
 
 module.exports = CheminotContext.create(NewTrip);

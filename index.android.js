@@ -12,9 +12,9 @@ import {
 const { StateUtils: NavigationStateUtils } = NavigationExperimental;
 
 import Navigator from './js/layout/Navigator';
-import Home from './js/Home';
-import Trips from './js/Trips';
-import NewTrip from './js/NewTrip';
+import Home from './js/home/Home';
+import Trips from './js/trips/Trips';
+import NewTrip from './js/newtrip/NewTrip';
 import Locale from './js/locale';
 import CheminotContext from './js/layout/ContextContainer';
 import CheminotPropTypes from './js/layout/PropTypes';
