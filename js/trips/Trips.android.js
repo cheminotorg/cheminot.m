@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  AsyncStorage,
 } from 'react-native';
 
 import CheminotContext from '../layout/ContextContainer';
 import HeaderDoneButton from '../layout/HeaderDoneButton';
 import TripsList from './TripsList';
+import Storage from '../common/Storage';
 
 const styles = StyleSheet.create({
   container: {
@@ -80,9 +80,8 @@ class Trips extends Component {
     const selectedTrips = this.state.trips.filter((trip) =>
       this.state.selected.some((id) => trip.id === id)
     );
-    await AsyncStorage.setItem('trips', JSON.stringify([]));
-    const trips = JSON.parse(await AsyncStorage.getItem('trips'));
-    await AsyncStorage.setItem('trips', JSON.stringify(trips.concat(selectedTrips)));
+    const trips = await Storage.getItem('trips');
+    await Storage.setItem('trips', trips.concat(selectedTrips));
     this.props.navigation.rewind('home');
   }
 

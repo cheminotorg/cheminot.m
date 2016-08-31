@@ -4,13 +4,13 @@ import {
   StyleSheet,
   View,
   Image,
-  AsyncStorage,
 } from 'react-native';
 
 import { MKButton, MKColor } from 'react-native-material-kit';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheminotContext from '../layout/ContextContainer';
 import TripCard from './TripCard';
+import Storage from '../common/Storage';
 
 const NewTripButton = MKButton.plainFab()
                               .withBackgroundColor(MKColor.Teal)
@@ -48,12 +48,9 @@ class Home extends Component {
   }
 
   componentWillReceiveProps() {
-    AsyncStorage.getItem('trips').then((json) => {
-      if (json) {
-        const trips = JSON.parse(json);
-        this.setState({ trips });
-      }
-    });
+    Storage.getItem('trips').then((trips) => (
+      this.setState({ trips })
+    ));
 
     navigator.geolocation.getCurrentPosition((location) => {
       this.setState({ currentLocation: location });
@@ -66,7 +63,7 @@ class Home extends Component {
 
   async _onDeleteTripPressed(id) {
     const updatedTrips = this.state.trips.filter((trip) => trip.id !== id);
-    await AsyncStorage.setItem('trips', JSON.stringify(updatedTrips));
+    await Storage.setItem('trips', updatedTrips);
     this.setState({ trips: updatedTrips });
   }
 
