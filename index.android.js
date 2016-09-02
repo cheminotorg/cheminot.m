@@ -101,6 +101,13 @@ class cheminotm extends Component {
     rewind: (key) => this._navigate({ type: 'rewind', key }),
     push: this._navigate.bind(this, { type: 'push' }),
     pop: this._navigate.bind(this, { type: 'pop' }),
+    isAt: this._isAtRoute.bind(this),
+  }
+
+  _isAtRoute(nextProps, key) {
+    const navigationState = nextProps.cheminotState.navigation;
+    const index = NavigationStateUtils.indexOf(navigationState, key);
+    return navigationState.index === index;
   }
 
   _handleBackButton() {
@@ -136,7 +143,6 @@ class cheminotm extends Component {
   }
 
   _renderScene(sceneProps) {
-    console.log('index.renderScene');
     switch (sceneProps.scene.route.key) {
       case 'newtrip': return <NewTrip {...this._getContext()} />;
       case 'trips': return <Trips {...this._getContext()} />;

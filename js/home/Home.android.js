@@ -57,6 +57,10 @@ class Home extends Component {
     }, () => {}, { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 });
   }
 
+  shouldComponentUpdate(nextProps) {
+    return this.props.navigation.isAt(nextProps, 'home');
+  }
+
   _onNewTripPressed() {
     this.props.navigation.push('newtrip');
   }

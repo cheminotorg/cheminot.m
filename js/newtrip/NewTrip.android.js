@@ -122,6 +122,10 @@ class NewTrip extends Component {
     suggestionBlockTop: new Animated.Value(Dimensions.get('window').height),
   }
 
+  shouldComponentUpdate(nextProps) {
+    return this.props.navigation.isAt(nextProps, 'newtrip');
+  }
+
   async _onDatePickerPress() {
     const { action, year, month, day } = await DatePickerAndroid.open({
       date: this.state.selectedDepartureDate,

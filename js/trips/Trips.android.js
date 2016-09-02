@@ -51,6 +51,10 @@ class Trips extends Component {
     this._onEndReached();
   }
 
+  shouldComponentUpdate(nextProps) {
+    return this.props.navigation.isAt(nextProps, 'trips');
+  }
+
   _onTripSelected(e, id) {
     const selected = e.checked ? this.state.selected.concat(id) : this.state.selected.filter((s) => s !== id);
     this.setState({ selected });
