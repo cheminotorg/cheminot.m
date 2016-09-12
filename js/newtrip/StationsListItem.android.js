@@ -29,4 +29,4 @@ export default class StationsListItem extends Component {
       </TouchableNativeFeedback>
     );
   }
-};
+}

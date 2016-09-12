@@ -2,20 +2,27 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
+  Text,
   DatePickerAndroid,
   TimePickerAndroid,
+  TouchableWithoutFeedback,
   Animated,
   Easing,
   Dimensions,
 } from 'react-native';
 
-import { MKTextField } from 'react-native-material-kit';
+import { MKColor, MKTextField, MKButton } from 'react-native-material-kit';
+import moment from 'moment';
 import Cheminotdb from '../Cheminotdb';
 import CheminotContext from '../layout/ContextContainer';
 import StationsList from './StationsList';
-import DepartureTimesList from './DepartureTimesList';
-import WeekCalendar from '../common/WeekCalendar';
-import Api from '../common/Api';
+
+const SearchButton = MKButton.flatButton()
+                             .withBackgroundColor(MKColor.Teal)
+                             .withTextStyle({ color: 'white' })
+                             .withText('RECHERCHER')
+                             .withStyle({ padding: 14 })
+                             .build();
 
 const styles = StyleSheet.create({
   container: {
@@ -42,13 +49,28 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
-  textfield: {
+  datetimeRow: {
+    flex: 1,
+    padding: 20,
+  },
+  dateRow: {
+    borderTopColor: 'rgba(0, 0, 0, 0.12)',
+    borderTopWidth: 1,
+  },
+  datetimeValue: {
+    color: MKColor.Teal,
+    textAlign: 'right',
     flex: 1,
   },
-  weekCalendar: {
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: 'white',
+  datetimeLabel: {
+    flex: 1,
+  },
+  submitBlock: {
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  textfield: {
+    flex: 1,
   },
 });
 
@@ -58,19 +80,34 @@ class NewTrip extends Component {
     super(props, context);
 
     this._onStationSelected = this._onStationSelected.bind(this);
+    this._onSubmit = this._onSubmit.bind(this);
     this._onArrivalChangeText = this._onArrivalChangeText.bind(this);
     this._onDepartureChangeText = this._onDepartureChangeText.bind(this);
     this._onDepartureFocus = this._onDepartureFocus.bind(this);
     this._onArrivalFocus = this._onArrivalFocus.bind(this);
     this._onDatePickerPress = this._onDatePickerPress.bind(this);
     this._onTimePickerPress = this._onTimePickerPress.bind(this);
-    this._onWeekChange = this._onWeekChange.bind(this);
-    this._onDepartureTimeSelected = this._onDepartureTimeSelected.bind(this);
+
+    /*this.props.addBackButtonListener(() => {
+     *  if(this.state.isFocusDeparture) {
+     *    blurDepartureInput(this.state);
+     *    this.setState({
+     *      isFocusDeparture: false
+     *    });
+     *    return NavigationBackAndroidContainer.result.DISMISS;
+     *  } else if(this.state.isFocusArrival) {
+     *    blurArrivalInput(this.state);
+     *    this.setState({
+     *      isFocusArrival: false
+     *    });
+     *    return NavigationBackAndroidContainer.result.DISMISS;
+     *  }
+     *  return NavigationBackAndroidContainer.result.DEFAULT;
+     *});*/
   }
 
   state = {
     stations: [],
-    departures: [],
     isFocusDeparture: false,
     isFocusArrival: false,
     arrivalTerm: '',
@@ -81,8 +118,8 @@ class NewTrip extends Component {
     selectedDepartureTime: new Date(),
     tripBlockTop: new Animated.Value(0),
     tripBlockHeight: new Animated.Value(116),
-    suggestionBlockTop: new Animated.Value(Dimensions.get('window').height),
     datetimeBlockTop: new Animated.Value(0),
+    suggestionBlockTop: new Animated.Value(Dimensions.get('window').height),
   }
 
   shouldComponentUpdate(nextProps) {
@@ -144,10 +181,6 @@ class NewTrip extends Component {
     this.setState({ stations });
   }
 
-  _onDepartureTimeSelected(departure) {
-    console.log(departure);
-  }
-
   _onStationSelected(id, name) {
     if (this.state.isFocusDeparture) {
       this._onDepartureSelected(id, name);
@@ -176,9 +209,8 @@ class NewTrip extends Component {
     blurArrivalInput(this.state);
   }
 
-  async _onWeekChange(day, week) {
-    const response = await Api.searchDepartures('8739400', '8739100', week);
-    this.setState({ departures: response.results });
+  _onSubmit() {
+    this.props.navigation.push();
   }
 
   render() {
@@ -210,18 +242,28 @@ class NewTrip extends Component {
           </Animated.View>
         </Animated.View>
         <Animated.View style={{ top: this.state.datetimeBlockTop }}>
-          <View style={styles.weekCalendar}>
-            <WeekCalendar
-              onPress={this._onWeekChange}
-               days={WeekCalendar.ALL}
-            />
+          <View style={styles.block}>
+            <View style={styles.datetimeRow}>
+              <TouchableWithoutFeedback onPress={this._onDatePickerPress}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.datetimeLabel}>Date de départ</Text>
+                  <Text style={styles.datetimeValue}>{formatDate(this.state.selectedDepartureDate)}</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+            <View style={[styles.dateRow, styles.datetimeRow]}>
+              <TouchableWithoutFeedback style={{ flex: 1, backgroundColor: 'green' }} onPress={this._onTimePickerPress}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{ flex: 1 }}>Heure de départ</Text>
+                  <Text style={styles.datetimeValue}>{formatTime(this.state.selectedDepartureTime)}</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </View>
+          <View style={styles.submitBlock}>
+            <SearchButton onPress={this._onSubmit} />
           </View>
         </Animated.View>
-        <DepartureTimesList
-          departures={this.state.departures || []}
-          style={{ backgroundColor: 'white' }}
-          onDepartureTimeSelected={this._onDepartureTimeSelected}
-        />
         <Animated.View style={[styles.suggestionBlock, { top: this.state.suggestionBlockTop, backgroundColor: 'white' }]}>
           <StationsList
             stations={this.state.stations || []}
@@ -232,6 +274,14 @@ class NewTrip extends Component {
       </View>
     );
   }
+}
+
+function formatDate(date) {
+  return moment(date).format('dddd D MMMM YYYY');
+}
+
+function formatTime(date) {
+  return moment(date).format('HH:mm');
 }
 
 function animateArrivalInput(from, to) {
@@ -262,9 +312,9 @@ function animateArrivalInput(from, to) {
 
 function focusArrivalInput(from) {
   animateArrivalInput(from, {
-    tripBlockTop: -45,
+    tripBlockTop: -65,
     datetimeBlockTop: Dimensions.get('window').height,
-    suggestionBlockTop: 80,
+    suggestionBlockTop: 60,
   });
 }
 
@@ -311,10 +361,10 @@ function animateDepartureInput(from, to) {
 
 function focusDepartureInput(from) {
   animateDepartureInput(from, {
-    tripBlockTop: 0,
+    tripBlockTop: -20,
     tripBlockHeight: 58,
     datetimeBlockTop: Dimensions.get('window').height,
-    suggestionBlockTop: 66,
+    suggestionBlockTop: 46,
   });
 }
 

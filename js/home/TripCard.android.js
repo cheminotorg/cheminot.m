@@ -18,10 +18,15 @@ export default class TripCard extends Component {
   constructor(props, context) {
     super(props, context);
     this._onDeleteTripPressed = this._onDeleteTripPressed.bind(this);
+    this._onWeekItemPressed = this._onWeekItemPressed.bind(this);
   }
 
   _onDeleteTripPressed() {
     this.props.onDeleteTripPressed(this.props.trip.id);
+  }
+
+  _onWeekItemPressed(day) {
+    console.log(day);
   }
 
   render() {
@@ -66,7 +71,10 @@ export default class TripCard extends Component {
             <Switch />
           </View>
           <Text>Durée: 1h08</Text>
-          <WeekCalendar />
+          <WeekCalendar
+            onPress={this._onWeekItemPressed}
+            days={{ monday: true, wednesday: true }}
+          />
           <MapView {...options}>
             {markers}
             <MapView.Polyline coordinates={coordinates} />
