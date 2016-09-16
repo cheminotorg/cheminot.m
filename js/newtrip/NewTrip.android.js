@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
   },
   block: {
     backgroundColor: 'white',
-    marginBottom: 20,
+    marginBottom: 10,
     elevation: 2,
   },
   tripBlock: {
@@ -209,14 +209,12 @@ class NewTrip extends Component {
             />
           </Animated.View>
         </Animated.View>
-        <Animated.View style={{ top: this.state.datetimeBlockTop }}>
-          <View style={styles.weekCalendar}>
-            <WeekCalendar
-              onPress={this._onWeekChange}
-               days={WeekCalendar.ALL}
-            />
-          </View>
-        </Animated.View>
+        <View style={styles.weekCalendar}>
+          <WeekCalendar
+            onPress={this._onWeekChange}
+            days={WeekCalendar.ALL}
+          />
+        </View>
         <DepartureTimesList
           departures={this.state.departures || []}
           style={{ backgroundColor: 'white' }}
