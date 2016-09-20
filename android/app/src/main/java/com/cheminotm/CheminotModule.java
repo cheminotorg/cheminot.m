@@ -52,4 +52,10 @@ public class CheminotModule extends ReactContextBaseJavaModule implements Lifecy
         WritableArray stations = Station.toWritableArray(database.matchesStations(term, limit));
         promise.resolve(stations);
     }
+
+    @ReactMethod
+    public void nearestStops(Double lat, Double lng, Double radius, Integer limit, Promise promise) {
+        WritableArray stations = Station.toWritableArray(database.nearestStations(lat, lng, radius, limit));
+        promise.resolve(stations);
+    }
 }

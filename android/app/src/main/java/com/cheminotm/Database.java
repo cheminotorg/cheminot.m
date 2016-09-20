@@ -22,8 +22,8 @@ class Database {
     }
 
     public List<Station> matchesStations(String term, Integer limit) {
-        ArrayList<Station> stations = new ArrayList<Station>();
         Cursor cursor = db.query(true, "stationfts", null, "name MATCH ?", new String[]{"^" + term + "*"}, null, null, "name", limit.toString());
+        ArrayList<Station> stations = new ArrayList<Station>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             String id = cursor.getString(0);
@@ -33,6 +33,41 @@ class Database {
         }
         cursor.close();
         return stations;
+    }
+
+    public List<LocatedStation> nearestStations(Double lat, Double lng, Double radius, Integer limit) {
+        final double mult = 1.1;
+        Position pos = new Position(lat, lng);
+
+        Position p1 = Position.calculateDerivedPosition(pos, mult * radius, 0);
+        Position p2 = Position.calculateDerivedPosition(pos, mult * radius, 90);
+        Position p3 = Position.calculateDerivedPosition(pos, mult * radius, 180);
+        Position p4 = Position.calculateDerivedPosition(pos, mult * radius, 270);
+
+        String whereClause = "lat > ? AND lat < ? AND lng < ? AND lng > ?";
+        String[] whereValues = new String[]{
+            String.valueOf(p3.getLat()),
+            String.valueOf(p1.getLat()),
+            String.valueOf(p2.getLng()),
+            String.valueOf(p4.getLng())
+        };
+
+        Cursor cursor = db.query(true, "station", null, whereClause, whereValues, null, null, null, limit.toString());
+
+        List<LocatedStation> nearestStations = new ArrayList<LocatedStation>();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            String stationId = cursor.getString(0);
+            String stationName = cursor.getString(1);
+            Double stationLat = cursor.getDouble(3);
+            Double stationLng = cursor.getDouble(4);
+            nearestStations.add(new LocatedStation(stationId, stationName, new Position(stationLat, stationLng)));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        LocatedStation.sortByDistance(pos, nearestStations);
+
+        return nearestStations;
     }
 
     public static Database setup(Activity activity) throws IOException {

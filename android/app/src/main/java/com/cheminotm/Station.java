@@ -5,6 +5,8 @@ import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 class Station {
@@ -32,7 +34,7 @@ class Station {
         return map;
     }
 
-    public static WritableArray toWritableArray(List<Station> stations) {
+    public static WritableArray toWritableArray(List<? extends Station> stations) {
         WritableNativeArray array = new WritableNativeArray();
         for(Station station : stations) {
             array.pushMap(toWritableMap(station));
