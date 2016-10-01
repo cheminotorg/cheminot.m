@@ -7,14 +7,16 @@ function buildQueryString(params) {
   }, '');
 }
 
-function searchTrips(vs, ve, _at, limit = 10) {
-  const at = _at.toISOString();
-  const qs = buildQueryString({ vs, ve, at, limit });
+function fetchTrips(vs, ve, departureTimes) {
+  return fetch(`${ENDPOINT}/trips/departure/${vs}/arrival/${ve}`).then((response) => response.json());
+}
+
+function searchTrips(vs, ve, at, limit = 10) {
+  const qs = buildQueryString({ vs, ve, at: at.toISOString(), limit });
   return fetch(`${ENDPOINT}/trips/search.json?${qs}`).then((response) => response.json());
 }
 
-function searchDepartures(vs, ve, _week) {
-  const week = _week || {};
+function searchDepartures(vs, ve, week = {}) {
   const qs = buildQueryString(Object.assign({ vs, ve }, week));
   console.log(`${ENDPOINT}/departures/search.json?${qs}`);
   return fetch(`${ENDPOINT}/departures/search.json?${qs}`).then((response) => (

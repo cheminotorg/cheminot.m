@@ -22,18 +22,18 @@ export default class DeparturesList extends Component {
     });
 
     this.state = {
-      dataSource: ds.cloneWithRows(props.departures),
+      dataSource: ds.cloneWithRows(props.departureTimes),
     };
   }
 
   componentWillReceiveProps(props) {
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(props.departures),
+      dataSource: this.state.dataSource.cloneWithRows(props.departureTimes),
     });
   }
 
-  _renderRow(departure) {
-    return <DeparturesListItem onDepartureTimeSelected={this.props.onDepartureTimeSelected} departure={departure} />;
+  _renderRow(departureTime) {
+    return <DeparturesListItem onDepartureTimeSelected={this.props.onDepartureTimeSelected} departureTime={departureTime} />;
   }
 
   _renderScrollComponent(props) {

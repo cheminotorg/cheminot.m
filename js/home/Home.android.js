@@ -47,10 +47,9 @@ class Home extends Component {
     trips: [],
   }
 
-  componentWillReceiveProps() {
-    Storage.getItem('trips').then((trips) => (
-      this.setState({ trips })
-    ));
+  async componentWillReceiveProps() {
+    const departureTimes = await Storage.getDepartureTimes();
+    //const trips = await Api.fet
 
     navigator.geolocation.getCurrentPosition((location) => {
       this.setState({ currentLocation: location });

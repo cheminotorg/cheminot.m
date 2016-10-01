@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  DatePickerAndroid,
-  TimePickerAndroid,
   Animated,
   Easing,
   Dimensions,
@@ -15,7 +13,13 @@ import CheminotContext from '../layout/ContextContainer';
 import StationsList from './StationsList';
 import DepartureTimesList from './DepartureTimesList';
 import WeekCalendar from '../common/WeekCalendar';
+import HeaderDoneButton from '../layout/HeaderDoneButton';
 import Api from '../common/Api';
+import Storage from '../common/Storage';
+
+// Cheminotdb.nearestStops(48.44820979, 1.48123655, 4000, 10).then((response) => {
+//   console.log(response);
+// });
 
 const styles = StyleSheet.create({
   container: {
@@ -62,58 +66,28 @@ class NewTrip extends Component {
     this._onDepartureChangeText = this._onDepartureChangeText.bind(this);
     this._onDepartureFocus = this._onDepartureFocus.bind(this);
     this._onArrivalFocus = this._onArrivalFocus.bind(this);
-    this._onDatePickerPress = this._onDatePickerPress.bind(this);
-    this._onTimePickerPress = this._onTimePickerPress.bind(this);
     this._onWeekChange = this._onWeekChange.bind(this);
     this._onDepartureTimeSelected = this._onDepartureTimeSelected.bind(this);
+    this._onDonePressed = this._onDonePressed.bind(this);
   }
 
   state = {
     stations: [],
-    departures: [],
+    departureTimes: [],
     isFocusDeparture: false,
     isFocusArrival: false,
     arrivalTerm: '',
     departureTerm: '',
     selectedDepartureStation: {},
     selectedArrivalStation: {},
-    selectedDepartureDate: new Date(),
-    selectedDepartureTime: new Date(),
+    selectedDepartureTimes: [],
     tripBlockTop: new Animated.Value(0),
     tripBlockHeight: new Animated.Value(116),
     suggestionBlockTop: new Animated.Value(Dimensions.get('window').height),
-    datetimeBlockTop: new Animated.Value(0),
   }
 
   shouldComponentUpdate(nextProps) {
     return this.props.navigation.isAt(nextProps, 'newtrip');
-  }
-
-  async _onDatePickerPress() {
-    const { action, year, month, day } = await DatePickerAndroid.open({
-      date: this.state.selectedDepartureDate,
-    });
-    if (action !== DatePickerAndroid.dismissedAction) {
-      this.setState({
-        selectedDepartureDate: new Date(year, month, day),
-      });
-    }
-  }
-
-  async _onTimePickerPress() {
-    const date = this.state.selectedDepartureTime;
-    const { action, hour, minute } = await TimePickerAndroid.open({
-      hour: date.getHours(),
-      minute: date.getMinutes(),
-      is24Hour: false,
-    });
-    if (action !== TimePickerAndroid.dismissedAction) {
-      date.setHours(hour);
-      date.setMinutes(minute);
-      this.setState({
-        selectedDepartureTime: date,
-      });
-    }
   }
 
   _onDepartureFocus() {
@@ -121,7 +95,12 @@ class NewTrip extends Component {
       isFocusDeparture: true,
       selectedDepartureStation: {},
     });
-    focusDepartureInput(this.state);
+
+    animateDepartureInput(this.state, {
+      tripBlockTop: 0,
+      tripBlockHeight: 58,
+      suggestionBlockTop: 66,
+    });
   }
 
   _onArrivalFocus() {
@@ -129,7 +108,11 @@ class NewTrip extends Component {
       isFocusArrival: true,
       selectedArrivalStation: {},
     });
-    focusArrivalInput(this.state);
+
+    animateArrivalInput(this.state, {
+      tripBlockTop: -45,
+      suggestionBlockTop: 80,
+    });
   }
 
   async _onDepartureChangeText(term) {
@@ -144,15 +127,44 @@ class NewTrip extends Component {
     this.setState({ stations });
   }
 
-  _onDepartureTimeSelected(departure) {
-    console.log(departure);
+  _onDepartureTimeSelected(e, departureTime) {
+    let selectedDepartureTimes = [];
+    if (e.checked) {
+      selectedDepartureTimes = this.state.selectedDepartureTimes.concat(departureTime);
+    } else {
+      selectedDepartureTimes = this.state.selectedDepartureTimes.filter(s => s.at !== departureTime.at);
+    }
+    this.setState({ selectedDepartureTimes });
+    if (selectedDepartureTimes.length > 0) {
+      this.props.header.set({
+        title: `${selectedDepartureTimes.length} départ sélectionné`,
+        left: <HeaderDoneButton onPress={this._onDonePressed} />,
+      });
+    } else {
+      this.props.header.reset();
+    }
   }
 
-  _onStationSelected(id, name) {
+  async _onDonePressed() {
+    await Storage.setDepartureTimes({
+      vs: this.state.selectedDepartureStation.id,
+      ve: this.state.selectedArrivalStation.id,
+      departureTimes: this.state.selectedDepartureTimes,
+    });
+    this.props.navigation.rewind('home');
+  }
+
+  async _onStationSelected(id, name) {
     if (this.state.isFocusDeparture) {
       this._onDepartureSelected(id, name);
     } else {
       this._onArrivalSelected(id, name);
+    }
+    const vs = this.state.isFocusDeparture ? id : this.state.selectedDepartureStation.id;
+    const ve = this.state.isFocusDeparture ? this.state.selectedArrivalStation.id : id;
+    if (vs && ve) {
+      const response = await Api.searchDepartures(vs, ve);
+      this.setState({ departureTimes: response.results });
     }
   }
 
@@ -163,7 +175,12 @@ class NewTrip extends Component {
       isFocusDeparture: false,
       selectedDepartureStation: { id, name },
     });
-    blurDepartureInput(this.state);
+
+    animateDepartureInput(this.state, {
+      tripBlockTop: 0,
+      tripBlockHeight: 58 * 2,
+      suggestionBlockTop: Dimensions.get('window').height,
+    });
   }
 
   _onArrivalSelected(id, name) {
@@ -173,12 +190,32 @@ class NewTrip extends Component {
       isFocusArrival: false,
       selectedArrivalStation: { id, name },
     });
-    blurArrivalInput(this.state);
+
+    animateArrivalInput(this.state, {
+      tripBlockTop: 0,
+      suggestionBlockTop: Dimensions.get('window').height,
+    });
   }
 
   async _onWeekChange(day, week) {
-    const response = await Api.searchDepartures('8739400', '8739100', week);
-    this.setState({ departures: response.results });
+    const vs = this.state.selectedDepartureStation.id;
+    const ve = this.state.selectedArrivalStation.id;
+    const response = await Api.searchDepartures(vs, ve, week);
+    this.setState({ departureTimes: response.results });
+  }
+
+  _renderWeekCalendar() {
+    if (this.state.selectedDepartureStation.name && this.state.selectedArrivalStation.name) {
+      return (
+        <View style={styles.weekCalendar}>
+          <WeekCalendar
+            onPress={this._onWeekChange}
+            week={WeekCalendar.ALL}
+          />
+        </View>
+      );
+    }
+    return null;
   }
 
   render() {
@@ -209,14 +246,9 @@ class NewTrip extends Component {
             />
           </Animated.View>
         </Animated.View>
-        <View style={styles.weekCalendar}>
-          <WeekCalendar
-            onPress={this._onWeekChange}
-            days={WeekCalendar.ALL}
-          />
-        </View>
+        { this._renderWeekCalendar() }
         <DepartureTimesList
-          departures={this.state.departures || []}
+          departureTimes={this.state.departureTimes || []}
           style={{ backgroundColor: 'white' }}
           onDepartureTimeSelected={this._onDepartureTimeSelected}
         />
@@ -242,13 +274,6 @@ function animateArrivalInput(from, to) {
       }
     ),
     Animated.timing(
-      from.datetimeBlockTop, {
-        easing: Easing.ease,
-        toValue: to.datetimeBlockTop,
-        duration: 250,
-      }
-    ),
-    Animated.timing(
       from.suggestionBlockTop, {
         easing: Easing.out(Easing.ease),
         toValue: to.suggestionBlockTop,
@@ -256,22 +281,6 @@ function animateArrivalInput(from, to) {
       }
     ),
   ]).start();
-}
-
-function focusArrivalInput(from) {
-  animateArrivalInput(from, {
-    tripBlockTop: -45,
-    datetimeBlockTop: Dimensions.get('window').height,
-    suggestionBlockTop: 80,
-  });
-}
-
-function blurArrivalInput(from) {
-  animateArrivalInput(from, {
-    tripBlockTop: 0,
-    datetimeBlockTop: 0,
-    suggestionBlockTop: Dimensions.get('window').height,
-  });
 }
 
 function animateDepartureInput(from, to) {
@@ -291,13 +300,6 @@ function animateDepartureInput(from, to) {
       }
     ),
     Animated.timing(
-      from.datetimeBlockTop, {
-        easing: Easing.ease,
-        toValue: to.datetimeBlockTop,
-        duration: 250,
-      }
-    ),
-    Animated.timing(
       from.suggestionBlockTop, {
         easing: Easing.out(Easing.ease),
         toValue: to.suggestionBlockTop,
@@ -305,24 +307,6 @@ function animateDepartureInput(from, to) {
       }
     ),
   ]).start();
-}
-
-function focusDepartureInput(from) {
-  animateDepartureInput(from, {
-    tripBlockTop: 0,
-    tripBlockHeight: 58,
-    datetimeBlockTop: Dimensions.get('window').height,
-    suggestionBlockTop: 66,
-  });
-}
-
-function blurDepartureInput(from) {
-  animateDepartureInput(from, {
-    tripBlockTop: 0,
-    tripBlockHeight: 58 * 2,
-    datetimeBlockTop: 0,
-    suggestionBlockTop: Dimensions.get('window').height,
-  });
 }
 
 module.exports = CheminotContext.create(NewTrip);

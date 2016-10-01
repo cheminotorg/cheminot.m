@@ -48,11 +48,19 @@ function createItemStyles(active) {
 
 const WeekCalendarItem = (props) => {
   const itemStyles = createItemStyles(props.active || false);
-  return (
-    <TouchableOpacity style={itemStyles.circle} onPress={props.onPress}>
-      <Text style={itemStyles.text}>{props.children}</Text>
-    </TouchableOpacity>
-  );
+  if (props.disabled) {
+    return (
+      <View style={itemStyles.circle} onPress={props.onPress}>
+        <Text style={itemStyles.text}>{props.children}</Text>
+      </View>
+    );
+  } else {
+    return (
+      <TouchableOpacity style={itemStyles.circle} onPress={props.onPress}>
+        <Text style={itemStyles.text}>{props.children}</Text>
+      </TouchableOpacity>
+    );
+  }
 };
 
 const WEEK = {
@@ -75,13 +83,16 @@ export default class WeekCalendar extends Component {
   static ALL = ALL_DAYS;
 
   state = {
-    [WEEK.MONDAY]: false,
-    [WEEK.TUESDAY]: false,
-    [WEEK.WEDNESDAY]: false,
-    [WEEK.THURSDAY]: false,
-    [WEEK.FRIDAY]: false,
-    [WEEK.SATURDAY]: false,
-    [WEEK.SUNDAY]: false,
+    week: {
+      [WEEK.MONDAY]: false,
+      [WEEK.TUESDAY]: false,
+      [WEEK.WEDNESDAY]: false,
+      [WEEK.THURSDAY]: false,
+      [WEEK.FRIDAY]: false,
+      [WEEK.SATURDAY]: false,
+      [WEEK.SUNDAY]: false,
+    },
+    readonly: false,
   }
 
   constructor(props, context) {
@@ -97,122 +108,120 @@ export default class WeekCalendar extends Component {
 
   componentWillMount() {
     this.setState({
-      [WEEK.MONDAY]: this.props.days[WEEK.MONDAY],
-      [WEEK.TUESDAY]: this.props.days[WEEK.TUESDAY],
-      [WEEK.WEDNESDAY]: this.props.days[WEEK.WEDNESDAY],
-      [WEEK.THURSDAY]: this.props.days[WEEK.THURSDAY],
-      [WEEK.FRIDAY]: this.props.days[WEEK.FRIDAY],
-      [WEEK.SATURDAY]: this.props.days[WEEK.SATURDAY],
-      [WEEK.SUNDAY]: this.props.days[WEEK.SUNDAY],
+      readonly: this.props.readonly,
+      week: Object.assign(this.state.week, this.props.week),
     });
   }
 
   _setWeekState(day) {
-    const nextState = {
-      ...this.state,
-      ...{ [day]: !this.state[day] },
+    const nextWeekState = {
+      ...this.state.week,
+      ...{ [day]: !this.state.week[day] },
     };
-    this.setState(nextState);
-    return nextState;
+    this.setState({ week: nextWeekState });
+    return nextWeekState;
   }
 
   _onMondayPressed() {
-    const nextState = this._setWeekState(WEEK.MONDAY);
-    this.props.onPress(WEEK.MONDAY, nextState);
+    if (!this.state.readonly) {
+      const nextWeekState = this._setWeekState(WEEK.MONDAY);
+      this.props.onPress(WEEK.MONDAY, nextWeekState);
+    }
   }
 
   _onTuesdayPressed() {
-    const nextState = this._setWeekState(WEEK.TUESDAY);
-    this.props.onPress(WEEK.TUESDAY, nextState);
+    if (!this.state.readonly) {
+      const nextWeekState = this._setWeekState(WEEK.TUESDAY);
+      this.props.onPress(WEEK.TUESDAY, nextWeekState);
+    }
   }
 
   _onWednesdayPressed() {
-    const nextState = this._setWeekState(WEEK.WEDNESDAY);
-    this.props.onPress(WEEK.WEDNESDAY, nextState);
+    if (!this.state.readonly) {
+      const nextWeekState = this._setWeekState(WEEK.WEDNESDAY);
+      this.props.onPress(WEEK.WEDNESDAY, nextWeekState);
+    }
   }
 
   _onThursdayPressed() {
-    const nextState = this._setWeekState(WEEK.THURSDAY);
-    this.props.onPress(WEEK.THURSDAY, nextState);
+    if (!this.state.readonly) {
+      const nextWeekState = this._setWeekState(WEEK.THURSDAY);
+      this.props.onPress(WEEK.THURSDAY, nextWeekState);
+    }
   }
 
   _onFridayPressed() {
-    const nextState = this._setWeekState(WEEK.FRIDAY);
-    this.props.onPress(WEEK.FRIDAY, nextState);
+    if (!this.state.readonly) {
+      const nextWeekState = this._setWeekState(WEEK.FRIDAY);
+      this.props.onPress(WEEK.FRIDAY, nextWeekState);
+    }
   }
 
   _onSaturdayPressed() {
-    const nextState = this._setWeekState(WEEK.SATURDAY);
-    this.props.onPress(WEEK.SATURDAY, nextState);
+    if (!this.state.readonly) {
+      const nextWeekState = this._setWeekState(WEEK.SATURDAY);
+      this.props.onPress(WEEK.SATURDAY, nextWeekState);
+    }
   }
 
   _onSundayPressed() {
-    const nextState = this._setWeekState(WEEK.SUNDAY);
-    this.props.onPress(WEEK.SUNDAY, nextState);
-  }
-
-  _renderDays() {
-    const week = {
-      monday: (
-        <WeekCalendarItem
-          key={WEEK.MONDAY}
-          onPress={this._onMondayPressed}
-          active={this.state[WEEK.MONDAY]}
-        >L</WeekCalendarItem>
-      ),
-      tuesday: (
-        <WeekCalendarItem
-          key={WEEK.TUESDAY}
-          onPress={this._onTuesdayPressed}
-          active={this.state[WEEK.TUESDAY]}
-        >M</WeekCalendarItem>
-      ),
-      wednesday: (
-        <WeekCalendarItem
-          key={WEEK.WEDNESDAY}
-          onPress={this._onWednesdayPressed}
-          active={this.state[WEEK.WEDNESDAY]}
-        >M</WeekCalendarItem>
-      ),
-      thursday: (
-        <WeekCalendarItem
-          key={WEEK.THURSDAY}
-          onPress={this._onThursdayPressed}
-          active={this.state[WEEK.THURSDAY]}
-        >J</WeekCalendarItem>
-      ),
-      friday: (
-        <WeekCalendarItem
-          key={WEEK.FRIDAY}
-          onPress={this._onFridayPressed}
-          active={this.state[WEEK.FRIDAY]}
-        >V</WeekCalendarItem>
-      ),
-      saturday: (
-        <WeekCalendarItem
-          key={WEEK.SATURDAY}
-          onPress={this._onSaturdayPressed}
-          active={this.state[WEEK.SATURDAY]}
-        >S</WeekCalendarItem>
-      ),
-      sunday: (
-        <WeekCalendarItem
-          key={WEEK.SUNDAY}
-          onPress={this._onSundayPressed}
-          active={this.state[WEEK.SUNDAY]}
-        >D</WeekCalendarItem>
-      ),
-    };
-
-    return Object.keys(week)
-      .filter((day) => (this.props.days ? this.props.days[day] : true))
-      .map((day) => week[day]);
+    if (!this.state.readonly) {
+      const nextWeekState = this._setWeekState(WEEK.SUNDAY);
+      this.props.onPress(WEEK.SUNDAY, nextWeekState);
+    }
   }
 
   render() {
     return (
       <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-        {this._renderDays()}
+        <WeekCalendarItem
+          key={WEEK.MONDAY}
+          onPress={this._onMondayPressed}
+          active={this.state.week[WEEK.MONDAY]}
+          disabled={this.state.readonly}
+        >L</WeekCalendarItem>
+
+        <WeekCalendarItem
+          key={WEEK.TUESDAY}
+          onPress={this._onTuesdayPressed}
+          active={this.state.week[WEEK.TUESDAY]}
+          disabled={this.state.readonly}
+        >M</WeekCalendarItem>
+
+        <WeekCalendarItem
+          key={WEEK.WEDNESDAY}
+          onPress={this._onWednesdayPressed}
+          active={this.state.week[WEEK.WEDNESDAY]}
+          disabled={this.state.readonly}
+        >M</WeekCalendarItem>
+
+        <WeekCalendarItem
+          key={WEEK.THURSDAY}
+          onPress={this._onThursdayPressed}
+          active={this.state.week[WEEK.THURSDAY]}
+          disabled={this.state.readonly}
+        >J</WeekCalendarItem>
+
+        <WeekCalendarItem
+          key={WEEK.FRIDAY}
+          onPress={this._onFridayPressed}
+          active={this.state.week[WEEK.FRIDAY]}
+          disabled={this.state.readonly}
+        >V</WeekCalendarItem>
+
+        <WeekCalendarItem
+          key={WEEK.SATURDAY}
+          onPress={this._onSaturdayPressed}
+          active={this.state.week[WEEK.SATURDAY]}
+          disabled={this.state.readonly}
+        >S</WeekCalendarItem>
+
+        <WeekCalendarItem
+          key={WEEK.SUNDAY}
+          onPress={this._onSundayPressed}
+          active={this.state.week[WEEK.SUNDAY]}
+          disabled={this.state.readonly}
+        >D</WeekCalendarItem>
       </View>
     );
   }

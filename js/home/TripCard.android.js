@@ -68,12 +68,15 @@ export default class TripCard extends Component {
         <View style={theme.cardStyle}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <Text>Chartres - Paris - 07h58</Text>
-            <Switch />
+            <TouchableOpacity>
+              <Icon name="more-vert" size={24} />
+            </TouchableOpacity>
           </View>
           <Text>Durée: 1h08</Text>
           <WeekCalendar
+            readonly
+            week={{ monday: true }}
             onPress={this._onWeekItemPressed}
-            days={{ monday: true, wednesday: true }}
           />
           <MapView {...options}>
             {markers}
