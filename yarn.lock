@@ -2671,7 +2671,11 @@ module-deps@^3.9.1:
     through2 "^1.0.0"
     xtend "^4.0.0"
 
-moment@^2.13.0, moment@2.x.x:
+moment@2.13.0:
+  version "2.13.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.13.0.tgz#24162d99521e6d40f99ae6939e806d2139eaac52"
+
+moment@2.x.x:
   version "2.15.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.15.2.tgz#1bfdedf6a6e345f322fe956d5df5bd08a8ce84dc"
 
@@ -3024,6 +3028,10 @@ qs@4.0.0:
 ramda@~0.21.0:
   version "0.21.0"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.21.0.tgz#a001abedb3ff61077d4ff1d577d44de77e8d0a35"
+
+ramda@0.22.1:
+  version "0.22.1"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.22.1.tgz#031da0c3df417c5b33c96234757eb37033f36a0e"
 
 random-bytes@~1.0.0:
   version "1.0.0"

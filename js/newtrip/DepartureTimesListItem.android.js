@@ -1,4 +1,4 @@
-import moment from 'moment';
+import DateTime from '../common/DateTime';
 
 import React, { Component } from 'react';
 import {
@@ -8,11 +8,6 @@ import {
 } from 'react-native';
 
 import { MKColor, MKCheckbox } from 'react-native-material-kit';
-
-function formatMinutes(minutes) {
-  const time = moment.duration(minutes, 'minutes');
-  return moment.utc(time.asMilliseconds()).format('HH:mm');
-}
 
 export default class DeparturesListItem extends Component {
 
@@ -29,9 +24,9 @@ export default class DeparturesListItem extends Component {
     return (
       <TouchableNativeFeedback>
         <View style={{ paddingTop: 10, paddingBottom: 10, flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-          <Text style={{ color: MKColor.Grey }}>{formatMinutes(this.props.departureTime.at)}</Text>
+          <Text style={{ color: MKColor.Grey }}>{DateTime.formatMinutes(this.props.departureTime)}</Text>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
-            <MKCheckbox onCheckedChange={this._onDepartureTimeSelected} />
+            <MKCheckbox onCheckedChange={this._onDepartureTimeSelected} checked={this.props.checked} />
           </View>
         </View>
       </TouchableNativeFeedback>

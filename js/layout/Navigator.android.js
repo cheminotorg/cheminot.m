@@ -6,7 +6,7 @@ import CheminotContext from './ContextContainer';
 
 const {
   CardStack: NavigationCardStack,
-  Header: NavigationHeader
+  Header: NavigationHeader,
 } = NavigationExperimental;
 
 const styles = StyleSheet.create({

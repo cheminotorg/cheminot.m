@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import moment from 'moment';
+import R from 'ramda';
+
 import {
   ScrollView,
   StyleSheet,
@@ -11,6 +14,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import CheminotContext from '../layout/ContextContainer';
 import TripCard from './TripCard';
 import Storage from '../common/Storage';
+import WeekCalendar from '../common/WeekCalendar';
 
 const NewTripButton = MKButton.plainFab()
                               .withBackgroundColor(MKColor.Teal)
@@ -34,6 +38,36 @@ const styles = StyleSheet.create({
   },
 });
 
+async function listStarredTrips() {
+  const allTrips = await Storage.getAllTripsOrElse(() => {});
+  return R.unnest(R.toPairs(allTrips).map(([id, { vs, ve, trips: tripsByDepartureTime, week }]) => {
+    return R.toPairs(tripsByDepartureTime).map(([minutes, trips]) => {
+      const data = trips.map((trip) => {
+        const startdate = trip.calendar.startdate;
+        const enddate = trip.calendar.enddate;
+        const today = moment().startOf('day');
+        const departureTime = today.add(minutes, 'minutes');
+        const availableInPeriod = departureTime.isBetween(startdate, enddate, null, '[]');
+        const removedToday = today.isSame(trip.calendarDates.date) && trip.calendarDates.type === 2;
+        const addedToday = today.isSame(trip.calendarDates.date) && trip.calendarDates.type === 1;
+        return {
+          vs,
+          ve,
+          trip,
+          availableToday: (availableInPeriod && !removedToday) || addedToday,
+          week: WeekCalendar.merge(week, trip.calendar),
+        };
+      });
+
+      const sortedData = R.sort((a, b) => (
+        (a.availableToday || !b.availableToday) ? -1 : 1
+      ))(data);
+
+      return sortedData[0];
+    });
+  }));
+}
+
 class Home extends Component {
 
   constructor(props, context) {
@@ -47,13 +81,12 @@ class Home extends Component {
     trips: [],
   }
 
-  async componentWillReceiveProps() {
-    const departureTimes = await Storage.getDepartureTimes();
-    //const trips = await Api.fet
-
-    navigator.geolocation.getCurrentPosition((location) => {
-      this.setState({ currentLocation: location });
-    }, () => {}, { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 });
+  async componentDidMount() {
+    const trips = await listStarredTrips();
+    this.setState({ trips });
+    // navigator.geolocation.getCurrentPosition((location) => {
+    //   this.setState({ currentLocation: location });
+    // }, () => {}, { enableHighAccuracy: true, timeout: 10000, maximumAge: 1000 });
   }
 
   shouldComponentUpdate(nextProps) {
@@ -71,11 +104,15 @@ class Home extends Component {
   }
 
   _renderTrips(trips) {
-    return trips.map((trip, index) =>
+    return trips.map(({ ve, vs, trip, availableToday, week }) =>
       <TripCard
-        key={`home#trip#${index}`}
+        key={`home#trip#${trip.id}`}
         onDeleteTripPressed={this._onDeleteTripPressed}
+        ve={ve}
+        vs={vs}
         trip={trip}
+        week={week}
+        availableToday={availableToday}
         currentLocation={this.state.currentLocation}
       />
     );

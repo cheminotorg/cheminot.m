@@ -1,3 +1,5 @@
+import R from 'ramda';
+
 const ENDPOINT = 'http://10.0.3.2:8080/api';
 
 function buildQueryString(params) {
@@ -7,8 +9,17 @@ function buildQueryString(params) {
   }, '');
 }
 
-function fetchTrips(vs, ve, departureTimes) {
-  return fetch(`${ENDPOINT}/trips/departure/${vs}/arrival/${ve}`).then((response) => response.json());
+function fetchTrips(vs, ve, week = {}) {
+  const qs = buildQueryString(Object.assign({ vs, ve }, week));
+  return fetch(`${ENDPOINT}/trips.json?${qs}`).then((response) => (
+    response.json()
+  ));
+}
+
+function fetchTripsByDepartureTime(vs, ve, week = {}) {
+  return fetchTrips(vs, ve, week).then((response) => (
+    R.groupBy((trip) => trip.stopTimes[0].departure)(response.results)
+  ));
 }
 
 function searchTrips(vs, ve, at, limit = 10) {
@@ -16,15 +27,7 @@ function searchTrips(vs, ve, at, limit = 10) {
   return fetch(`${ENDPOINT}/trips/search.json?${qs}`).then((response) => response.json());
 }
 
-function searchDepartures(vs, ve, week = {}) {
-  const qs = buildQueryString(Object.assign({ vs, ve }, week));
-  console.log(`${ENDPOINT}/departures/search.json?${qs}`);
-  return fetch(`${ENDPOINT}/departures/search.json?${qs}`).then((response) => (
-    response.json()
-  ));
-}
-
 export default {
   searchTrips,
-  searchDepartures,
+  fetchTripsByDepartureTime,
 };

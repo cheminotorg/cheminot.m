@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Animated,
-  Easing,
-  Dimensions,
 } from 'react-native';
 
 import { MKTextField } from 'react-native-material-kit';
@@ -22,32 +19,24 @@ import Storage from '../common/Storage';
 // });
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  block: {
-    backgroundColor: 'white',
-    marginBottom: 10,
-    elevation: 2,
-  },
   tripBlock: {
-    top: 0,
+    elevation: 2,
     paddingTop: 12,
-    paddingBottom: 24,
+    paddingBottom: 12,
     paddingLeft: 16,
     paddingRight: 16,
+    backgroundColor: 'brown',
   },
   suggestionBlock: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
+    flex: 1,
     paddingTop: 4,
     paddingLeft: 10,
     paddingRight: 10,
+    backgroundColor: 'orange',
   },
   textfield: {
-    flex: 1,
+    height: 30,
+    backgroundColor: 'blue',
   },
   weekCalendar: {
     padding: 10,
@@ -73,7 +62,8 @@ class NewTrip extends Component {
 
   state = {
     stations: [],
-    departureTimes: [],
+    starredTrips: [],
+    tripsByDepartureTime: [],
     isFocusDeparture: false,
     isFocusArrival: false,
     arrivalTerm: '',
@@ -81,9 +71,7 @@ class NewTrip extends Component {
     selectedDepartureStation: {},
     selectedArrivalStation: {},
     selectedDepartureTimes: [],
-    tripBlockTop: new Animated.Value(0),
-    tripBlockHeight: new Animated.Value(116),
-    suggestionBlockTop: new Animated.Value(Dimensions.get('window').height),
+    selectedWeek: WeekCalendar.ALL,
   }
 
   shouldComponentUpdate(nextProps) {
@@ -94,12 +82,7 @@ class NewTrip extends Component {
     this.setState({
       isFocusDeparture: true,
       selectedDepartureStation: {},
-    });
-
-    animateDepartureInput(this.state, {
-      tripBlockTop: 0,
-      tripBlockHeight: 58,
-      suggestionBlockTop: 66,
+      tripsByDepartureTime: [],
     });
   }
 
@@ -107,11 +90,7 @@ class NewTrip extends Component {
     this.setState({
       isFocusArrival: true,
       selectedArrivalStation: {},
-    });
-
-    animateArrivalInput(this.state, {
-      tripBlockTop: -45,
-      suggestionBlockTop: 80,
+      tripsByDepartureTime: [],
     });
   }
 
@@ -127,17 +106,12 @@ class NewTrip extends Component {
     this.setState({ stations });
   }
 
-  _onDepartureTimeSelected(e, departureTime) {
-    let selectedDepartureTimes = [];
-    if (e.checked) {
-      selectedDepartureTimes = this.state.selectedDepartureTimes.concat(departureTime);
-    } else {
-      selectedDepartureTimes = this.state.selectedDepartureTimes.filter(s => s.at !== departureTime.at);
-    }
-    this.setState({ selectedDepartureTimes });
-    if (selectedDepartureTimes.length > 0) {
+  _syncDepartureTimesSelected(departureTimes) {
+    this.setState({ selectedDepartureTimes: departureTimes });
+    if (departureTimes.length > 0) {
+      const plural = (departureTimes.length > 1) ? 's' : '';
       this.props.header.set({
-        title: `${selectedDepartureTimes.length} départ sélectionné`,
+        title: `${departureTimes.length} départ${plural} sélectionné${plural}`,
         left: <HeaderDoneButton onPress={this._onDonePressed} />,
       });
     } else {
@@ -145,11 +119,27 @@ class NewTrip extends Component {
     }
   }
 
+  _onDepartureTimeSelected(e, departureTime) {
+    let selectedDepartureTimes = [];
+    if (e.checked) {
+      selectedDepartureTimes = this.state.selectedDepartureTimes.concat(departureTime);
+    } else {
+      selectedDepartureTimes = this.state.selectedDepartureTimes.filter(s => s !== departureTime);
+    }
+    this._syncDepartureTimesSelected(selectedDepartureTimes);
+  }
+
   async _onDonePressed() {
-    await Storage.setDepartureTimes({
+    const tripsByDepartureTime = this.state.selectedDepartureTimes.reduce((acc, departureTime) => {
+      acc[departureTime] = this.state.tripsByDepartureTime[departureTime];
+      return acc;
+    }, {});
+
+    await Storage.setTrips({
       vs: this.state.selectedDepartureStation.id,
       ve: this.state.selectedArrivalStation.id,
-      departureTimes: this.state.selectedDepartureTimes,
+      trips: tripsByDepartureTime,
+      week: this.state.selectedWeek,
     });
     this.props.navigation.rewind('home');
   }
@@ -163,8 +153,16 @@ class NewTrip extends Component {
     const vs = this.state.isFocusDeparture ? id : this.state.selectedDepartureStation.id;
     const ve = this.state.isFocusDeparture ? this.state.selectedArrivalStation.id : id;
     if (vs && ve) {
-      const response = await Api.searchDepartures(vs, ve);
-      this.setState({ departureTimes: response.results });
+      const [tripsByDepartureTime, { trips: starredTrips, week }] = await Promise.all([
+        Api.fetchTripsByDepartureTime(vs, ve),
+        Storage.getTrips(vs, ve),
+      ]);
+      this._syncDepartureTimesSelected(Object.keys(starredTrips));
+      this.setState({
+        starredTrips,
+        tripsByDepartureTime,
+        selectedWeek: week,
+      });
     }
   }
 
@@ -175,12 +173,6 @@ class NewTrip extends Component {
       isFocusDeparture: false,
       selectedDepartureStation: { id, name },
     });
-
-    animateDepartureInput(this.state, {
-      tripBlockTop: 0,
-      tripBlockHeight: 58 * 2,
-      suggestionBlockTop: Dimensions.get('window').height,
-    });
   }
 
   _onArrivalSelected(id, name) {
@@ -190,123 +182,81 @@ class NewTrip extends Component {
       isFocusArrival: false,
       selectedArrivalStation: { id, name },
     });
-
-    animateArrivalInput(this.state, {
-      tripBlockTop: 0,
-      suggestionBlockTop: Dimensions.get('window').height,
-    });
   }
 
   async _onWeekChange(day, week) {
     const vs = this.state.selectedDepartureStation.id;
     const ve = this.state.selectedArrivalStation.id;
-    const response = await Api.searchDepartures(vs, ve, week);
-    this.setState({ departureTimes: response.results });
+    const tripsByDepartureTime = await Api.fetchTripsByDepartureTime(vs, ve, week);
+    const selectedDepartureTimes = Object.keys(this.state.starredTrips).filter((starredDepartureTime) => (
+      !!tripsByDepartureTime[starredDepartureTime]
+    ));
+    this._syncDepartureTimesSelected(selectedDepartureTimes);
+    this.setState({ selectedWeek: week, tripsByDepartureTime });
   }
 
-  _renderWeekCalendar() {
-    if (this.state.selectedDepartureStation.name && this.state.selectedArrivalStation.name) {
-      return (
+  _renderDeparturesList() {
+    const departureTimes = Object.keys(this.state.tripsByDepartureTime).map((departureTime) => (
+      parseInt(departureTime, 10)
+    ));
+
+    return (
+      <View style={{ flex: 1 }}>
         <View style={styles.weekCalendar}>
           <WeekCalendar
             onPress={this._onWeekChange}
-            week={WeekCalendar.ALL}
+            week={this.state.selectedWeek}
           />
         </View>
-      );
-    }
-    return null;
+        <DepartureTimesList
+          style={{ backgroundColor: 'white' }}
+          departureTimes={departureTimes}
+          onDepartureTimeSelected={this._onDepartureTimeSelected}
+          starredTrips={this.state.starredTrips}
+        />
+      </View>
+    );
+  }
+
+  _renderSuggestions() {
+    return (
+      <View style={styles.suggestionBlock}>
+        <StationsList
+          stations={this.state.stations || []}
+          onItemSelected={this._onStationSelected}
+        />
+      </View>
+    );
   }
 
   render() {
     return (
-      <View style={styles.container}>
-        <Animated.View style={[styles.block, styles.tripBlock, { top: this.state.tripBlockTop, height: this.state.tripBlockHeight }]}>
-          <Animated.View>
-            <MKTextField
-              ref={(input) => { this._departureInput = input; }}
-              value={this.state.selectedDepartureStation.name || this.state.departureTerm}
-              onChangeText={this._onDepartureChangeText}
-              onFocus={this._onDepartureFocus}
-              placeholder="Départ"
-              clearTextOnFocus
-              autoCorrect
-              style={[styles.textfield, { marginBottom: 14 }]}
-            />
-          </Animated.View>
-          <Animated.View style={{ top: this.state.arrivalInputTop }}>
-            <MKTextField
-              ref={(input) => { this._arrivalInput = input; }}
-              value={this.state.selectedArrivalStation.name || this.state.arrivalTerm}
-              onChangeText={this._onArrivalChangeText}
-              onFocus={this._onArrivalFocus}
-              placeholder="Arrivée"
-              clearTextOnFocus
-              style={styles.textfield}
-            />
-          </Animated.View>
-        </Animated.View>
-        { this._renderWeekCalendar() }
-        <DepartureTimesList
-          departureTimes={this.state.departureTimes || []}
-          style={{ backgroundColor: 'white' }}
-          onDepartureTimeSelected={this._onDepartureTimeSelected}
-        />
-        <Animated.View style={[styles.suggestionBlock, { top: this.state.suggestionBlockTop, backgroundColor: 'white' }]}>
-          <StationsList
-            stations={this.state.stations || []}
-            style={{ backgroundColor: 'white' }}
-            onItemSelected={this._onStationSelected}
+      <View style={{ flex: 1 }}>
+        <View style={styles.tripBlock}>
+          <MKTextField
+            ref={(input) => { this._departureInput = input; }}
+            value={this.state.selectedDepartureStation.name || this.state.departureTerm}
+            onChangeText={this._onDepartureChangeText}
+            onFocus={this._onDepartureFocus}
+            placeholder="Départ"
+            clearTextOnFocus
+            autoCorrect
+            style={[styles.textfield, { marginBottom: 14 }]}
           />
-        </Animated.View>
+          <MKTextField
+            ref={(input) => { this._arrivalInput = input; }}
+            value={this.state.selectedArrivalStation.name || this.state.arrivalTerm}
+            onChangeText={this._onArrivalChangeText}
+            onFocus={this._onArrivalFocus}
+            placeholder="Arrivée"
+            clearTextOnFocus
+            style={styles.textfield}
+          />
+        </View>
+        { (this.state.selectedDepartureStation.name && this.state.selectedArrivalStation.name) ? this._renderDeparturesList() : this._renderSuggestions() }
       </View>
     );
   }
-}
-
-function animateArrivalInput(from, to) {
-  Animated.parallel([
-    Animated.timing(
-      from.tripBlockTop, {
-        easing: Easing.inOut(Easing.quad),
-        toValue: to.tripBlockTop,
-        duration: 250,
-      }
-    ),
-    Animated.timing(
-      from.suggestionBlockTop, {
-        easing: Easing.out(Easing.ease),
-        toValue: to.suggestionBlockTop,
-        duration: 250,
-      }
-    ),
-  ]).start();
-}
-
-function animateDepartureInput(from, to) {
-  Animated.parallel([
-    Animated.timing(
-      from.tripBlockTop, {
-        easing: Easing.inOut(Easing.quad),
-        toValue: to.tripBlockTop,
-        duration: 250,
-      }
-    ),
-    Animated.timing(
-      from.tripBlockHeight, {
-        easing: Easing.ease,
-        toValue: to.tripBlockHeight,
-        duration: 250,
-      }
-    ),
-    Animated.timing(
-      from.suggestionBlockTop, {
-        easing: Easing.out(Easing.ease),
-        toValue: to.suggestionBlockTop,
-        duration: 250,
-      }
-    ),
-  ]).start();
 }
 
 module.exports = CheminotContext.create(NewTrip);

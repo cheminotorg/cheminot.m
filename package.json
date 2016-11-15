@@ -6,11 +6,12 @@
     "start": "node node_modules/react-native/local-cli/cli.js start"
   },
   "dependencies": {
-    "moment": "^2.13.0",
+    "moment": "2.13.0",
     "react": "~15.3.1",
     "react-native": "0.37.0-rc.0",
     "react-native-maps": "0.10.2",
     "react-native-material-kit": "0.3.3",
-    "react-native-vector-icons": "3.0.0"
+    "react-native-vector-icons": "3.0.0",
+    "ramda": "0.22.1"
   }
 }

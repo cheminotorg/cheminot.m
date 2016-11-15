@@ -33,7 +33,14 @@ export default class DeparturesList extends Component {
   }
 
   _renderRow(departureTime) {
-    return <DeparturesListItem onDepartureTimeSelected={this.props.onDepartureTimeSelected} departureTime={departureTime} />;
+    const isChecked = !!this.props.starredTrips[departureTime];
+    return (
+      <DeparturesListItem
+        onDepartureTimeSelected={this.props.onDepartureTimeSelected}
+        checked={isChecked}
+        departureTime={departureTime}
+      />
+    );
   }
 
   _renderScrollComponent(props) {

@@ -82,6 +82,18 @@ export default class WeekCalendar extends Component {
 
   static ALL = ALL_DAYS;
 
+  static merge(calendarA, calendarB) {
+    return {
+      [WEEK.MONDAY]: calendarA[WEEK.MONDAY] && calendarB[WEEK.MONDAY],
+      [WEEK.TUESDAY]: calendarA[WEEK.TUESDAY] && calendarB[WEEK.TUESDAY],
+      [WEEK.WEDNESDAY]: calendarA[WEEK.WEDNESDAY] && calendarB[WEEK.WEDNESDAY],
+      [WEEK.THURSDAY]: calendarA[WEEK.THURSDAY] && calendarB[WEEK.THURSDAY],
+      [WEEK.FRIDAY]: calendarA[WEEK.FRIDAY] && calendarB[WEEK.FRIDAY],
+      [WEEK.SATURDAY]: calendarA[WEEK.SATURDAY] && calendarB[WEEK.SATURDAY],
+      [WEEK.SUNDAY]: calendarA[WEEK.SUNDAY] && calendarB[WEEK.SUNDAY],
+    };
+  }
+
   state = {
     week: {
       [WEEK.MONDAY]: false,
@@ -97,6 +109,7 @@ export default class WeekCalendar extends Component {
 
   constructor(props, context) {
     super(props, context);
+
     this._onMondayPressed = this._onMondayPressed.bind(this);
     this._onTuesdayPressed = this._onTuesdayPressed.bind(this);
     this._onWednesdayPressed = this._onWednesdayPressed.bind(this);
@@ -106,11 +119,15 @@ export default class WeekCalendar extends Component {
     this._onSundayPressed = this._onSundayPressed.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.setState({
       readonly: this.props.readonly,
       week: Object.assign(this.state.week, this.props.week),
     });
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({ week: props.week, readonly: props.readonly });
   }
 
   _setWeekState(day) {
