@@ -1,0 +1,16 @@
+{
+  "parser": "babel-eslint",
+  "extends": "airbnb-base",
+  "rules": {
+    "no-unused-vars": 0,
+    "no-underscore-dangle": 0
+  },
+  "settings": {
+    "import/parser": "babel-eslint",
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".android.js", ".ios"]
+      }
+    }
+  }
+}
