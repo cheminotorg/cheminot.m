@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
 
 async function listStarredTrips() {
   const allTrips = await Storage.getAllTripsOrElse(() => {});
-  return R.unnest(R.toPairs(allTrips).map(([id, { vs, ve, trips: tripsByDepartureTime, week }]) => {
+  return R.unnest(R.toPairs(allTrips).map(([, { vs, ve, trips: tripsByDepartureTime, week }]) => {
     return R.toPairs(tripsByDepartureTime).map(([minutes, trips]) => {
       const data = trips.map((trip) => {
         const startdate = trip.calendar.startdate;
@@ -98,7 +98,7 @@ class Home extends Component {
   }
 
   async _onDeleteTripPressed(id) {
-    const updatedTrips = this.state.trips.filter((trip) => trip.id !== id);
+    const updatedTrips = this.state.trips.filter(trip => trip.id !== id);
     await Storage.setItem('trips', updatedTrips);
     this.setState({ trips: updatedTrips });
   }
@@ -114,7 +114,7 @@ class Home extends Component {
         week={week}
         availableToday={availableToday}
         currentLocation={this.state.currentLocation}
-      />
+      />,
     );
   }
 
